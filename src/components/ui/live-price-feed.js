@@ -1,6 +1,10 @@
 import { ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { useBreakpoint } from '../../lib/hooks/use-breakpoint'
 import { useIsMounted } from '../../lib/hooks/use-is-mounted';
+import useSWR from 'swr';
+import {priceFeedData} from "../../data/price-feed";
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 export function LivePriceFeed({
   id,
@@ -12,6 +16,7 @@ export function LivePriceFeed({
   isChangePositive,
   prices,
 }) {
+
   return (
     <div className="flex items-center text-left gap-3 rounded-lg bg-white p-5 shadow-card dark:bg-light-dark">
       <div className="w-full flex-col">
@@ -65,6 +70,15 @@ export function LivePriceFeed({
 export default function PriceFeedSlider({ priceFeeds }) {
   const isMounted = useIsMounted();
   const breakpoint = useBreakpoint();
+
+  const { data, error } = useSWR('https://singular.app/api/stats/collection/3208723ec6f65df810-ITEM?rmrk2Only=false', fetcher)
+
+  if (error) return <div>Failed to load</div>
+  if (!data) return <div>Loading...</div>
+
+  priceFeedData[0]['balance'] = data.totalNFTs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  priceFeedData[1]['balance'] = data.owners.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  priceFeedData[2]['balance'] = data.volume.all.toFixed(1) + ' KSM';
 
   const sliderBreakPoints = {
     500: {
