@@ -9,7 +9,7 @@ export default function FAQ( props ) {
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">What is Tails</h5>
                     <p>Tails is a drag and drop page builder built on Top of TailwindCSS. You can drop components to create a page that you can export.</p>
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">Can I try it for Free?</h5>
-                    <p>Absolutely, you can try out tails for free; however, if you wish to access all the components and export the page you'll need to upgrade your account.</p>
+                    <p>Absolutely, you can try out tails for free; however, if you wish to access all the components and export the page you&apos;ll need to upgrade your account.</p>
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">Where do I go to upgrade my account?</h5>
                     <p>
                         You can upgrade your account by visiting The Pro Upgrade Page. You will also gain access to many other applications and sections of the site.
@@ -17,7 +17,7 @@ export default function FAQ( props ) {
                     </p>
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">How long will I have access to Tails</h5>
                     <p>
-                        You will have unlimited access to all your pre-built pages; however, if you want to be able to download and export your pages, you'll need a pro account.
+                        You will have unlimited access to all your pre-built pages; however, if you want to be able to download and export your pages, you&apos;ll need a pro account.
                         Paddle for processing payments.
                     </p>
                 </div>
@@ -27,9 +27,9 @@ export default function FAQ( props ) {
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">What is the license on the pages?</h5>
                     <p>You have unlimited use to the templates used in Tails; however, you cannot re-use the templates to sell for others to use.</p>
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">Can I cancel my account if I not longer need it?</h5>
-                    <p>Of course, you can feel free to cancel your account at anytime, and you can feel free to come back and upgrade again whenever you're ready.</p>
+                    <p>Of course, you can feel free to cancel your account at anytime, and you can feel free to come back and upgrade again whenever you&apos;re ready.</p>
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">What if I need help with my project?</h5>
-                    <p>If you need assistance implementing the templates into your project you can contact support or you can visit our <a href="https://devdojo.com/questions" className="text-indigo-500 underline">question section</a>.
+                    <p>If you need assistance implementing the templates into your project you can contact support or you can visit our question section.
                     </p>
                 </div>
             </div>
