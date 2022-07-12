@@ -6,7 +6,7 @@ import { NextSeo } from 'next-seo'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPersonBooth } from '@fortawesome/free-solid-svg-icons'
 import Button from '../components/ui/button'
-import ReferndumTabs from '../components/ui/referendum-list'
+import ReferndumTabs from '../components/ui/referendum-tabs'
 
 function Vote() {
   return (

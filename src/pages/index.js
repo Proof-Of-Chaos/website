@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLightbulb } from '@fortawesome/free-solid-svg-icons'
 import NFTSnippets from '../components/ui/nft-snippets'
+import FAQ from '../components/ui/faq'
 
 function Home() {
   return (
@@ -40,10 +41,7 @@ function Home() {
             </Link>
           </div>
       </section>
-
-      <section className="h-screen">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati vero quasi quae itaque ullam voluptate quisquam provident qui mollitia. Consequuntur sit ipsam libero dolore laudantium neque nemo fugiat corporis repellat!
-      </section>
+      <FAQ />
     </>
   )
 }

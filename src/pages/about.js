@@ -1,19 +1,18 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import FAQ from '../components/ui/faq'
 import Layout from '../layouts/layout'
 
-function Home() {
+function About() {
   return (
     <>
-      <section className="h-screen ">
-        <h1 className="text-4xl uppercase font-bold">About</h1>
-      </section>
+      <FAQ />
     </>
   )
 }
 
-Home.getLayout = function getLayout(page) {
+About.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
 }
 
-export default Home
+export default About

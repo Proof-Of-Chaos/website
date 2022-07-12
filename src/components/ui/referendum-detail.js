@@ -30,13 +30,23 @@ export default function ReferendumDetail({ referendum }) {
           {referendum.status === 'active' && (
             <>
               {!isExpanded ? (
-                <Button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="mt-4 w-full xs:mt-6 xs:w-auto md:mt-10"
-                  shape="rounded"
-                >
-                  Vote Now
-                </Button>
+                <>
+                  <Button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="mt-4 mr-4 w-full xs:mt-6 xs:w-auto md:mt-10"
+                    shape="rounded"
+                  >
+                    Take Quiz + Vote
+                  </Button>
+                  <Button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="mt-4 w-full xs:mt-6 xs:w-auto md:mt-10"
+                    shape="rounded"
+                    variant="calm"
+                  >
+                    Vote Now
+                  </Button>
+                </>
               ) : (
                 <div>Vote Action</div>
               )}

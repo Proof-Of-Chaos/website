@@ -37,9 +37,9 @@ export function MenuItems() {
           <Link
             key={index}
             href={item.href}
-            activeClassName="text-gray-900"
+            activeClassName="text-gray-700"
           >
-            <a className="mx-4 text-lg font-medium uppercase text-gray-800 transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+            <a className="mx-4 text-lg font-medium text-gray-800 transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
               {item.name}
             </a>
           </Link>
