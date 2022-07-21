@@ -46,8 +46,8 @@ export default function NFTSnippets( props ) {
               width={ 120 }
               height={ 120 }
             />
-            <div 
-              className="absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed transition duration-300 ease-in-out"
+            <div
+              className="absolute hover:bg-transparent top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed transition duration-300 ease-in-out"
               style={ { backgroundColor: 'rgba(255, 255, 255, 0.6)' } }
             />
           </div>
