@@ -64,17 +64,21 @@ export default function ReferendumVoteModal( { id, title } ) {
           id="wallet-select"
           label="Select Wallet"
           type="select"
+          tooltip="Select the wallet for voting"
         />
         <Input
           id="vote-amount"
           label="Value"
           type="number"
+          tooltip="The value is locked for the selected time below"
         />
         <Input
           id="vote-lock"
           label="Vote Lock"
           type="select"
+          className="text-xs"
           options={ VOTE_LOCK_OPTIONS }
+          tooltip="How long your value is locked - increases voting power"
         />
       </form>
 

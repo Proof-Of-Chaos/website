@@ -23,7 +23,7 @@ export default function ModalsContainer() {
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-50"
+        className="relative z-50 overflow-visible"
         onClose={closeModal}
       >
         <Transition.Child
