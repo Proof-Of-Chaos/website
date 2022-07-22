@@ -2,43 +2,22 @@ import { Transition, Dialog } from "@headlessui/react";
 import { Fragment } from 'react'
 import Button from "../ui/button";
 import { useModal } from "./context";
+import ReferendumVoteModal from "./referendum-vote";
+import SelectWalletModal from "./select-wallet";
 
-function SelectWalletModal() {
-  const { closeModal } = useModal();
-  return(
-    <>
-      <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-        Select Wallet
-      </Dialog.Title>
-      <div className="mt-2">
-        <ul>
-          <li>Polkadot.js</li>
-          <li>Talisman</li>
-        </ul>
-      </div>
-
-      <div className="mt-4">
-        <Button
-          variant="warning"
-          onClick={closeModal}>
-          Cancel
-        </Button>
-      </div>
-    </>
-  )
-}
-
-function renderModalContent(view){
+function renderModalContent(view, props={}){
   switch(view) {
     case 'VIEW_CONNECT_WALLET':
       return <SelectWalletModal />
+    case 'VIEW_REFERENDUM_VOTE':
+      return <ReferendumVoteModal {...props}/>
     default:
       return null
   }
 }
 
 export default function ModalsContainer() {
-  const { view, isOpen, closeModal } = useModal();
+  const { view, props, isOpen, closeModal } = useModal();
 
   return(
     <Transition appear show={isOpen} as={Fragment}>
@@ -70,7 +49,7 @@ export default function ModalsContainer() {
               leaveTo="opacity-0 scale-95"
               className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
             >
-              { view && renderModalContent(view) }
+              { view && renderModalContent(view, props) }
             </Transition.Child>
           </div>
         </div>

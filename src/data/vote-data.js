@@ -2,15 +2,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const referendumData = [
   {
-    id: '1',
+    id: '203',
     title: 'Treasury Assets Management #1',
-    accepted: {
+    aye: {
       vote: 10303,
-      percentage: 90,
+      percentage: 60,
     },
-    rejected: {
+    nay: {
       vote: 303,
-      percentage: 10,
+      percentage: 40,
     },
     executed_at: '2022-10-01T01:02:03',
     proposed_by: {
@@ -124,11 +124,11 @@ export const referendumData = [
   {
     id: '2',
     title: 'Retroactive Proxy Contract Airdrop — Phase One',
-    accepted: {
+    aye: {
       vote: 303,
       percentage: 30,
     },
-    rejected: {
+    nay: {
       vote: 787,
       percentage: 70,
     },
@@ -242,13 +242,13 @@ export const referendumData = [
     ],
   },
   {
-    id: '3',
+    id: '201',
     title: 'Reduce the UNI proposal submission threshold to 2.5M',
-    accepted: {
+    aye: {
       vote: 7303,
       percentage: 87,
     },
-    rejected: {
+    nay: {
       vote: 813,
       percentage: 23,
     },
@@ -364,11 +364,11 @@ export const referendumData = [
   {
     id: '4',
     title: 'Community-Enabled Analytics',
-    accepted: {
+    aye: {
       vote: 9303,
       percentage: 90,
     },
-    rejected: {
+    nay: {
       vote: 989,
       percentage: 10,
     },
@@ -484,11 +484,11 @@ export const referendumData = [
   {
     id: '5',
     title: 'Stake XRP Earn Cake Syrup Pool',
-    accepted: {
+    aye: {
       vote: 10303,
       percentage: 90,
     },
-    rejected: {
+    nay: {
       vote: 303,
       percentage: 10,
     },
@@ -604,11 +604,11 @@ export const referendumData = [
   {
     id: '6',
     title: 'Claim Rewards from Locked Staking',
-    accepted: {
+    aye: {
       vote: 1003,
       percentage: 90,
     },
-    rejected: {
+    nay: {
       vote: 303,
       percentage: 10,
     },
@@ -724,11 +724,11 @@ export const referendumData = [
   {
     id: '7',
     title: 'Loan and/or fixed term with the Cake',
-    accepted: {
+    aye: {
       vote: 11003,
       percentage: 90,
     },
-    rejected: {
+    nay: {
       vote: 303,
       percentage: 10,
     },

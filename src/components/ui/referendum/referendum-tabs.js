@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Tab } from "@headlessui/react";
-import { getVotesByStatus } from "../../data/vote-data";
+import { getVotesByStatus } from "../../../data/vote-data";
 import ReferendumDetail from "./referendum-detail";
 
 function classNames(...classes) {
@@ -12,11 +12,11 @@ export function ReferendumList( { voteStatus } ) {
   return (
     <>
       { totalVotes > 0 ? (
-        votes.map( vote => (
+        votes.map( (vote, idx) => (
           <div
             key={`${vote.title}-key-${vote.id}`}
           >
-            <ReferendumDetail referendum={ vote } />
+            <ReferendumDetail referendum={ vote } listIndex={ idx } />
           </div>
         ))) : (
           <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
