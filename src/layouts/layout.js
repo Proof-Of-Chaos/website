@@ -2,18 +2,25 @@ import { useWindowScroll } from "react-use"
 import { MenuItems } from './layout-menu'
 import { useBreakpoint } from '../lib/hooks/use-breakpoint'
 import { isMounted, useIsMounted } from '../lib/hooks/use-is-mounted'
-import Hamburger from 'hamburger-react'
+import Hamburger from "../components/ui/hamburger"
 import WalletConnect from "../components/nft/wallet-connect"
 import Logo from "../components/ui/logo";
 import Footer from "../components/ui/footer"
+import { useState } from "react"
 
 function HeaderRight() {
+  let [isOpen, setIsOpen] = useState(false);
+  const openDrawer = () => {}
+
   return(
     <div className="order-last flex shrink-0 items-center">
       <WalletConnect />
       <div className="lg:hidden">
         <Hamburger
-          className="shadow-main dark:border dark:border-solid dark:border-gray-700 dark:bg-light-dark dark:text-white"
+          isOpen={isOpen}
+          onClick={() => openDrawer('DASHBOARD_SIDEBAR')}
+          variant="transparent"
+          className="dark:text-white"
         />
       </div>
     </div>

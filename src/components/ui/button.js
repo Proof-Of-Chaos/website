@@ -8,12 +8,13 @@ const classes = {
   shapes: {
     pill: 'rounded-full',
     rounded: ['rounded-md sm:rounded-lg'],
+    circle: 'rounded-full p-0 m-0 px-0 py-0',
   },
   size: {
     large: 'px-7 sm:px-9 h-11 sm:h-13',
     medium: 'px-5 sm:px-8 h-10 sm:h-12',
     small: 'px-7 h-10',
-    mini: 'px-4 h-8',
+    mini: 'px-3 h-12',
   },
   variant: {
       calm: 'text-gray-800 dark:text-white bg-transparent border-2 border-gray-800 dark:border-white',
