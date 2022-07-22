@@ -16,7 +16,7 @@ export default function NFTSnippets( props ) {
 
   return(
     <div 
-      className="nft-snippets absolute top-0 left-0 right-0 bottom-0"
+      className="nft-snippets overflow-x-hidden overflow-y-visible absolute top-0 left-0 right-0 bottom-0"
     >
       {nfts.map( (nft, idx) => {
         const l = `${ positions[idx][0] }%`

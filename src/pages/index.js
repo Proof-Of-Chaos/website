@@ -17,7 +17,7 @@ function Home() {
           <div className="relative px-10 py-20">
             <NFTSnippets />
             <div className="relative z-10 mx-auto text-left md:text-center max-w-screen-xl overflow-hidden">
-              <h1 className="z-90 mb-6 text-5xl font-extrabold max-w-5xl mx-auto tracking-normal text-gray-900 sm:text-6xl md:text-6xl lg:text-7xl md:tracking-tight lg:leading-tight"> We <span className="w-full text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 lg:inline">incentivize voting</span> to decentralize Kusama</h1>
+              <h1 className="z-90 mb-6 text-4xl font-extrabold max-w-5xl mx-auto tracking-normal text-gray-900 sm:text-6xl md:text-6xl lg:text-7xl md:tracking-tight lg:leading-tight"> We <span className="w-full text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 lg:inline">incentivize voting</span> to decentralize Kusama</h1>
               <p className="px-0 mb-6 text-lg text-gray-600 md:text-xl lg:px-24">The items in the collection are airdropped 100% free of charge to voters of Kusama referenda. Each time a wallet votes on a Referendum, a new Item is airdropped to its wallet.</p>
               <Button className="mr-5" variant="calm">
                 <span className="pr-2">Learn More</span><FontAwesomeIcon icon={ faLightbulb} />

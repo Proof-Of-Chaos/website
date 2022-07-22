@@ -25,7 +25,7 @@ export default function Input( props ) {
         className="mt-4 form-label block text-sm font-medium uppercase tracking-wider text-gray-900 dark:text-white">
         { tooltip !== '' ?
           <div className='has-tooltip relative'>
-            <span className='tooltip rounded p-1 bg-gray-100/70 absolute'>
+            <span className='tooltip rounded p-1 bg-gray-100/90 absolute'>
               {tooltip}
             </span>
             { label }
