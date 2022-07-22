@@ -34,6 +34,7 @@ function Vote() {
             shape="rounded"
             fullWidth={true}
             className="uppercase"
+            variant="calm"
           >
             Connect Wallet
           </Button>

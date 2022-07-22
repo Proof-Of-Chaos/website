@@ -30,7 +30,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        brand: colors.teal,
+        brand: colors.cyan,
         primary: 'rgba(var(--color-primary) / <alpha-value>)',
         dark: '#0D1321',
       },

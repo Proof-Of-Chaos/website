@@ -46,14 +46,12 @@ export default function ReferendumVoteModal( { id, title } ) {
 
       <div className="mt-6">
         <Button
-          className="mr-2 bg-green-500"
-          variant="warning"
+          className="mr-2 bg-green-500 hover:bg-green-600"
           onClick={closeModal}>
           Aye
         </Button>
         <Button
-          className="mr-2 bg-red-500"
-          variant="warning"
+          className="mr-2 bg-red-500 hover:bg-red-600"
           onClick={closeModal}>
           Nay
         </Button>

@@ -30,7 +30,7 @@ const Button = forwardRef(
       children,
       type = 'button',
       className,
-      variant = 'primary',
+      variant = '',
       size = 'medium',
       shape = 'pill',
       disabled = false,

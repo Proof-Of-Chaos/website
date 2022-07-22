@@ -74,6 +74,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                   onClick={() => openModal('VIEW_REFERENDUM_VOTE', referendum )}
                   className="mt-4 w-full xs:w-auto"
                   shape="rounded"
+                  variant="primary"
                 >
                   Take Quiz + Vote
                 </Button>
