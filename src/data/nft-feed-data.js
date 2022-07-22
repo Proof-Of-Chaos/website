@@ -1,6 +1,6 @@
 import BitcoinImage from '../../public/icons/btc.svg';
 
-export const priceFeedData = [
+export const nftFeedData = [
   {
     id: '0',
     name: 'NFTs sent',

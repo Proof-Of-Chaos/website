@@ -21,39 +21,22 @@ export const allNfts = [
     },
   },
   {
-    id: 193,
+    id: 202,
     common: {
-      thumb: '',
+      rmrkId: 'ITEM-202BALL-715',
+      thumb: 'bafybeiaf7sj67ijl6f3eoobnkj4ijfp5oumdg3xctpxztj2ldb6i25h2ba',
       amount: 112,
       artist: 13,
     },
     rare: {
-      thumb: '',
+      thumb: 'bafybeicnsmt5vbbs5c5g563gqas7ozfl3tfnjcttd2jmtmsu7gwulg7ps4',
       amount: 123,
       artist: 11,
     },
     epic: {
-      thumb: '',
+      thumb: 'bafybeif2thq6kmhp5pt453hxsrze2cdlhtbrjv4r4sankxaexnios5lbnq',
       amount: 123,
       artist: 14,
-    },
-  },
-  {
-    id: 192,
-    common: {
-      thumb: '',
-      amount: 512,
-      artist: 11,
-    },
-    rare: {
-      thumb: '',
-      amount: 123,
-      artist: 11,
-    },
-    epic: {
-      thumb: '',
-      amount: 123,
-      artist: 13,
     },
   },
 ]

@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Button from '../components/ui/button'
-import PriceFeedSlider from '../components/ui/live-price-feed'
+import NftFeed from '../components/ui/nft-feed'
 import Layout from '../layouts/layout'
-import { priceFeedData } from '../data/price-feed'
+import { nftFeedData, priceFeedData } from '../data/nft-feed-data'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLightbulb } from '@fortawesome/free-solid-svg-icons'
@@ -32,7 +32,7 @@ function Home() {
           </div>
           <div className="px-4 py-12 mx-auto text-center lg:px-36">
             <span className="font-semibold text-gray-400 uppercase block pb-6">Numbers</span>
-            <PriceFeedSlider priceFeeds={ priceFeedData } />
+            <NftFeed priceFeeds={ nftFeedData } />
             <Link href="/statistics">
               <Button variant="calm" className="my-8" href="">
                 See all Statistics
@@ -41,7 +41,6 @@ function Home() {
             </Link>
           </div>
       </section>
-      <FAQ />
     </>
   )
 }

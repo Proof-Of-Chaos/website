@@ -9,6 +9,8 @@ function PageNFTs() {
   return (
     <section className="mx-auto w-full max-w-[1160px] text-sm sm:pt-10 4xl:pt-14">
       { allNfts.map( nft => <NFTDetail key={ nft.id } nft={ nft } /> ) }
+      <pre className="text-red-500 text-center">... implement a fetch to get more NFTs ...</pre>
+      <pre className="text-red-500 text-center">pages/nfts.js</pre>
     </section>
   )
 }

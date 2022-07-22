@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export const cripticVotes = [
+export const referendumData = [
   {
     id: '1',
     title: 'Treasury Assets Management #1',
@@ -847,7 +847,7 @@ export const cripticVotes = [
 // getVotesByStatus
 //
 export function getVotesByStatus(status) {
-  const votesByStatus = cripticVotes.filter((vote) => vote.status === status);
+  const votesByStatus = referendumData.filter((vote) => vote.status === status);
   return {
     votes: votesByStatus,
     totalVotes: votesByStatus.length,
