@@ -2,6 +2,8 @@ import Head from 'next/head';
 import { ThemeProvider } from 'next-themes';
 import '../../styles/globals.css'
 import ModalsContainer from '../components/modals/container';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout ?? ((page) => page)
@@ -13,8 +15,9 @@ function MyApp({ Component, pageProps }) {
           content="width=device-width, initial-scale=1 maximum-scale=1"
         />
       </Head>
-        {getLayout(<Component {...pageProps} />)}
-        <ModalsContainer />
+      {getLayout(<Component {...pageProps} />)}
+      <ModalsContainer />
+      <ToastContainer />
     </>
   )
 }

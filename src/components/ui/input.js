@@ -6,7 +6,7 @@ export default function Input( props ) {
     type,
     min = 0,
     step=0.01,
-    options={}
+    options=[]
   } = props;
   return (
     <>

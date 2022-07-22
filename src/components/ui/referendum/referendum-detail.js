@@ -44,7 +44,6 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                   <Button
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="mt-4 mr-4 w-full xs:mt-6 xs:w-auto md:mt-10"
-                    shape="rounded"
                     variant="calm"
                   >
                     Referendum Details
@@ -73,7 +72,6 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                 <Button
                   onClick={() => openModal('VIEW_REFERENDUM_VOTE', referendum )}
                   className="mt-4 w-full xs:w-auto"
-                  shape="rounded"
                   variant="primary"
                 >
                   Take Quiz + Vote
@@ -81,7 +79,6 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                 <Button
                   onClick={() => openModal('VIEW_REFERENDUM_VOTE', referendum )}
                   className="mt-0 w-full xs:w-auto"
-                  shape="rounded"
                   variant="calm"
                 >
                   Vote Now

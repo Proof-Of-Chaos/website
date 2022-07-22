@@ -31,8 +31,6 @@ function Vote() {
             </div>
           </div>
           <Button
-            shape="rounded"
-            fullWidth={true}
             className="uppercase"
             variant="calm"
           >
