@@ -32,9 +32,7 @@ const MenuLinks = [
 ];
 
 export function MenuItems() {
-
   let { pathname } = useRouter();
-  
 
   return (
     <div className="flex items-center xl:px-10 2xl:px-14 3xl:px-16">

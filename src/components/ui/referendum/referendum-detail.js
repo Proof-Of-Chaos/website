@@ -70,7 +70,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
             {isExpanded &&
               <>
                 <Button
-                  onClick={() => openModal('VIEW_REFERENDUM_VOTE', referendum )}
+                  onClick={() => openModal('VIEW_REFERENDUM_QUIZ', referendum )}
                   className="mt-4 w-full xs:w-auto"
                   variant="primary"
                 >

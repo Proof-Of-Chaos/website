@@ -2,6 +2,7 @@ import { Transition, Dialog } from "@headlessui/react";
 import { Fragment } from 'react'
 import Button from "../ui/button";
 import { useModal } from "./context";
+import ReferendumQuizModal from "./referendum-quiz";
 import ReferendumVoteModal from "./referendum-vote";
 import SelectWalletModal from "./select-wallet";
 
@@ -11,6 +12,8 @@ function renderModalContent(view, props={}){
       return <SelectWalletModal />
     case 'VIEW_REFERENDUM_VOTE':
       return <ReferendumVoteModal {...props}/>
+    case 'VIEW_REFERENDUM_QUIZ':
+      return <ReferendumQuizModal {...props}/>
     default:
       return null
   }

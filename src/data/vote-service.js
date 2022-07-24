@@ -1,5 +1,13 @@
+import { quizzes } from "./vote-quiz";
+
+
 export async function voteOnReferendum( refId, amount, lockup ) {
-  Promise.resolve('fake data')
+  return Promise.resolve('fake data')
+}
+
+export async function getQuizById( referendumId ) {
+  await setTimeoutPromise(2000);
+  return quizzes[ referendumId ];
 }
 
 export async function setTimeoutPromise(timeout) {
