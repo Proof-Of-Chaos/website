@@ -4,6 +4,8 @@ import Link from 'next/link';
 // import Button from '@/components/ui/button';
 import { Menu } from '@headlessui/react';
 import { Transition } from '@headlessui/react';
+import cn from 'classnames';
+import { useRouter } from 'next/router';
 // import Link from '@/components/ui/links/active-link';
 
 // import Scrollbar from '@/components/ui/scrollbar';
@@ -30,21 +32,34 @@ const MenuLinks = [
 ];
 
 export function MenuItems() {
+
+  let { pathname } = useRouter();
+  
+
   return (
     <div className="flex items-center xl:px-10 2xl:px-14 3xl:px-16">
-      {MenuLinks.map((item, index) => (
-        <>
-          <Link
-            key={index}
-            href={item.href}
-            activeClassName="text-gray-700"
-          >
-            <a className="mx-4 text-lg font-medium text-gray-800 transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-              {item.name}
-            </a>
-          </Link>
-        </>
-      ))}
+      {MenuLinks.map((item, index) => {
+        console.log( pathname === item.href);
+        return (
+          <>
+            <Link
+              key={index}
+              href={item.href}
+            >
+              <a
+                className={
+                  cn(
+                    "mx-4 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
+                    item.href === pathname ? 'text-brand-600' : 'text-black'
+                  )
+                }
+              >
+                {item.name}
+              </a>
+            </Link>
+          </>
+        )
+      })}
     </div>
   );
 }

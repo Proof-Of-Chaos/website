@@ -14,7 +14,7 @@ function Home() {
   return (
     <>
       <section className="h-auto relative">
-          <div className="relative px-10 py-20">
+          <div className="relative px-6 py-20 sm:px-10 mb-10 overflow-visible">
             <NFTSnippets />
             <div className="relative z-10 mx-auto text-left md:text-center max-w-screen-xl overflow-hidden">
               <h1 className="z-90 mb-6 text-4xl font-extrabold max-w-5xl mx-auto tracking-normal text-gray-900 sm:text-6xl md:text-6xl lg:text-7xl md:tracking-tight lg:leading-tight"> We <span className="w-full text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 lg:inline">incentivize voting</span> to decentralize Kusama</h1>
