@@ -70,13 +70,14 @@ export default function ReferendumVoteModal( { id, title } ) {
           id="vote-amount"
           label="Value"
           type="number"
+          className="text-base"
           tooltip="The value is locked for the selected time below"
         />
         <Input
           id="vote-lock"
           label="Vote Lock"
           type="select"
-          className="text-xs"
+          className="text-xs sm:text-sm md:text-base"
           options={ VOTE_LOCK_OPTIONS }
           tooltip="How long your value is locked - increases voting power"
         />

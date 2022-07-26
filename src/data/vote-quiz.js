@@ -5,8 +5,10 @@ export const quizzes = {
       answers: [
         'Polkadot',
         'Kusama',
-        'Gavin Wood'
-      ]
+        'Gavin Wood',
+        'Fourth Answer'
+      ],
+      multiple: true,
     },
     {
       question: 'What is the name of Polkadot\'s founder (ref 203)?',
@@ -32,7 +34,8 @@ export const quizzes = {
         'Wavin Good',
         'Mavin Wood',
         'Gavin Wood'
-      ]
+      ],
+      multiple: true,
     }
   ],
 }

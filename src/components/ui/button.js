@@ -1,9 +1,10 @@
 import { forwardRef } from 'react'
 import cn from 'classnames'
+import { twMerge } from 'tailwind-merge'
 
 const classes = {
   base: 'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm',
-  hover: 'hover:shadow-md hover:-translate-y-0.5 focus:-translate-y-0.5 focus:shadow-large focus:outline-none',
+  hover: 'hover:shadow-md hover:-translate-y-0.5',
   disabled: 'opacity-50 cursor-not-allowed',
   shapes: {
     pill: 'rounded-full',
@@ -42,14 +43,13 @@ const Button = forwardRef(
       ref={ref}
       disabled={disabled}
       type={type}
-      className={ cn(
+      className={ twMerge(className, cn(
         classes.base,
         classes.hover,
         classes.variant[ variant ],
         classes.size[ size ],
         classes.shapes[ shape ],
-        className,
-      )}
+      ))}
       {...props}
     >
       {children}

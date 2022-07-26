@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSWR from 'swr';
 import { Dialog } from "@headlessui/react";
-import { getQuizById, setTimeoutPromise } from "../../data/vote-service";
+import { getQuizAnswers, getQuizById, storeQuizAnswers } from "../../data/vote-service";
 import Button from "../ui/button";
 import Input from "../ui/input";
 import { useModal } from "./context";
@@ -9,11 +9,14 @@ import { toast } from 'react-toastify';
 
 export default function ReferendumQuizModal( { id, title } ) {
   const { closeModal } = useModal();
-  const { data, error } = useSWR('quizzes', async  () => getQuizById( id ) );
+  const fieldsetRef = useRef();
+  const { data: initialAnswers } = useSWR( 'answers', async () => getQuizAnswers() );
+  const { data: questions, error } = useSWR( 'questions', async () => getQuizById( id ) );
+  const [ userAnswers, setUserAnswers ] = useState({});
 
   async function onSend() {
     toast.promise(
-      setTimeoutPromise(3000),
+      storeQuizAnswers( userAnswers ),
       {
         pending: `sending your quiz answers for referendum ${ id }`,
         success: 'answers successfully recorded 🗳️',
@@ -22,33 +25,82 @@ export default function ReferendumQuizModal( { id, title } ) {
     ).then( () => { closeModal() } );
   }
 
+  useEffect( () => {
+    if ( initialAnswers ) {
+      console.log( 'retrieved answers from storage', initialAnswers )
+      setUserAnswers( initialAnswers )
+      onLoadAnswers()
+    }
+  }, [ initialAnswers ] )
+
+  function onLoadAnswers( loadedAnswers ){
+    console.log( 'onloadanswers' );
+    loadedAnswers?.map( (a) => {
+      console.log( a );
+    })
+  }
+
+  function onChangeInputs( e, questionIndex, multiple ) {
+    let qAnswer = null;
+    if ( multiple ) {
+      const checkboxes = document.querySelectorAll(`[name=ref${id}question${questionIndex}]`)
+      qAnswer = [ ...checkboxes ].reduce(
+        ( prev, cur, idx ) => {
+        return [ ...prev, cur.checked ];
+       },
+       []
+      )
+    } else {
+      qAnswer = e.target.value
+    }
+
+    const newUserAnswers = {
+      ...userAnswers,
+      [`ref${id}`]: {
+        ...userAnswers[`ref${id}`],
+        timestamp: Date.now(),
+        [`${ questionIndex }`]: qAnswer,
+      }
+    }
+    console.log( `user changed answer for ref ${ id } question ${ questionIndex } to ${ qAnswer }` )
+    setUserAnswers( newUserAnswers );
+  }
+
   return(
     <>
-      <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+      <Dialog.Title as="h3" className="text-xl font-medium leg-6 text-gray-900">
         Quiz for Referendum { id }
       </Dialog.Title>
-      <div className="mt-2">
+      <div className="mt-1 text-sm">
         { title }
       </div>
-      { ! data ?
-        <div>Loading...</div>
+      { ! questions ?
+        <div className="min-h-[200px] flex justify-center items-center">Loading...</div>
       :
         <>
-          <form className="mt-5">
-            { data.map( ( { question, answers }, idx) => {
-              const selectOptions = answers.map( a => {
+          <form className="mt-4">
+            { questions.map( ( { question, answers, multiple }, i) => {
+              const selectOptions = answers.map( (a, j) => {
                 return {
-                  value: idx,
+                  value: j,
                   label: a,
                 }
               })
-              console.log( 'so', selectOptions, question, answers );
-              return (<Input
-                key={ `quiz-${idx}`}
-                type="select"
-                id={`q${idx}`}
-                label="test"
-              />)
+              return (
+                <fieldset
+                  key={ `quiz-${i}`}
+                  className="px-4 pt-2 pb-3 font-semibold border-2 border-gray-400 hover:border-gray-500 hover:shadow-lg transition rounded-md my-6"
+                >
+                  <legend className="px-3">{ question }</legend>
+                  <Input
+                    type={ multiple ? 'checkbox' : 'radio' }
+                    id={`r${id}q${i}`}
+                    name={ `ref${id}question${i}` }
+                    options={ selectOptions }
+                    onChange={ (e) => onChangeInputs( e, i, multiple ) }
+                  />
+                </fieldset>
+              )
             })
           }
           </form>

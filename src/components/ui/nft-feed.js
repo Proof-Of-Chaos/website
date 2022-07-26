@@ -74,7 +74,7 @@ export default function PriceFeedSlider({ priceFeeds }) {
   const { data, error } = useSWR('https://singular.app/api/stats/collection/3208723ec6f65df810-ITEM?rmrk2Only=false', fetcher)
 
   if (error) return <div>Failed to load</div>
-  if (!data) return <div>Loading...</div>
+  if (!data) return <div>Loading Quiz...</div>
 
   nftFeedData[0]['balance'] = data.totalNFTs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   nftFeedData[1]['balance'] = data.owners.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
