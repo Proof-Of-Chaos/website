@@ -4,6 +4,7 @@ import Button from "../button"
 import ReferendumCountdown from './referendum-countdown'
 import ReferendumStats from "./referendum-stats";
 import { useModal } from "../../modals/context";
+import { useQuizzes } from "../../../lib/hooks/use-quizzes";
 
 export default function ReferendumDetail({ referendum, listIndex }) {
   let [isExpanded, setIsExpanded] = useState(false);
@@ -13,6 +14,9 @@ export default function ReferendumDetail({ referendum, listIndex }) {
       setIsExpanded(true);
     }
   }, [listIndex])
+
+  const { quizzes, loading, error } = useQuizzes();
+  const questions = quizzes?.[referendum.id];
 
   const { openModal } = useModal();
 
@@ -25,6 +29,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
           'shadow-card hover:shadow-lg': !isExpanded,
         }
       )}
+      onClick={() => setIsExpanded(!isExpanded)}
     >
       <div className="flex w-full flex-col-reverse justify-between md:grid md:grid-cols-3">
         <div className="self-start md:col-span-2 p-2">
@@ -69,13 +74,15 @@ export default function ReferendumDetail({ referendum, listIndex }) {
             <ReferendumCountdown date={referendum.executed_at} />
             {isExpanded &&
               <>
-                <Button
-                  onClick={() => openModal('VIEW_REFERENDUM_QUIZ', referendum )}
-                  className="mt-4 w-full xs:w-auto"
-                  variant="primary"
-                >
-                  Take Quiz + Vote
-                </Button>
+                { !loading && ! error && questions &&
+                  <Button
+                    onClick={() => openModal('VIEW_REFERENDUM_QUIZ', referendum )}
+                    className="mt-4 w-full xs:w-auto"
+                    variant="primary"
+                  >
+                    Take Quiz + Vote
+                  </Button>
+                }
                 <Button
                   onClick={() => openModal('VIEW_REFERENDUM_VOTE', referendum )}
                   className="mt-0 w-full xs:w-auto"
