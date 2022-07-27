@@ -11,6 +11,44 @@
   right: 0;
 }
 
+.bg-dark {
+  @apply bg-gradient-to-br from-gray-800 to-black;
+}
+
+.bg-dark-i {
+  @apply bg-gradient-to-tr from-gray-500 via-black to-gray-900;
+}
+
+.nft-common {
+  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-gray-100 to-gray-300 rounded text-black;
+}
+
+.nft-rare {
+  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-blue-400 to-emerald-400 rounded text-black;
+}
+
+.nft-epic {
+  @apply shadow-md text-black px-1.5 text-base py-0.5 rounded bg-gradient-to-r from-pink-400 via-red-400 to-yellow-200 background-animate;
+}
+
+.background-animate {
+  background-size: 300%;
+
+  -webkit-animation: AnimationName 3s linear infinite;
+  -moz-animation: AnimationName 3s linear infinite;
+  animation: AnimationName 3s linear infinite;
+}
+
+@keyframes AnimationName {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
 @tailwind utilities;
 
 @layer base {
