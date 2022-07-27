@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { allNfts } from "../../data/nfts-all"
 
 // mock the quizzes api
-const nftsFetcher = async () => {
+export const nftsFetcher = async () => {
   await new Promise(res => setTimeout(res, 1000));
   return allNfts
 };
