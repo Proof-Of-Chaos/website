@@ -23,7 +23,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
   return (
     <div
       className={cn(
-        'mb-3 rounded-lg bg-white p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6',
+        'mb-3 rounded-lg bg-gradient-to-tr from-gray-100 to-gray-50 p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6',
         {
           'shadow-lg': isExpanded,
           'shadow-card hover:shadow-lg': !isExpanded,
