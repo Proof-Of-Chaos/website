@@ -15,36 +15,31 @@ function Vote() {
         title="Vote on Kusama"
         description="Get incentive NFTs for voting on Referenda"
       />
-      <section className="py-16 bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900">
-        <div className="relative max-w-6xl mx-auto">
-            <div className="flex flex-col items-start leading-7 border-0 border-gray-200 lg:items-center lg:flex-row">
-                <div className="box-border flex-1 text-left border-solid sm:text-left">
-                    <h2 className="m-0 text-gray-200 text-2xl marker:font-semibold leading-tight tracking-tight text-left border-0 border-gray-200 sm:text-4xl">
-                        Boost Your Luck
-                    </h2>
-                    <p className="mt-2 font-md text-gray-200 border-0 border-gray-200 sm:font-lg leading-8">
-                        Take a quiz before voting in referenda and your chances <br/> of receiving <span className="nft-rare">rare</span> and <span className="nft-epic">epic</span> NFTs will increase.
-                    </p>
-                </div>
-                <div className="flex flex-col">
-                  <Button
-                    href=""
-                    className="text-gray-200 dark:text-white bg-transparent border-2 border-gray-200 dark:border-white"
-                  >
-                      Learn More
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <line x1="5" y1="12" x2="19" y2="12"></line>
-                          <polyline points="12 5 19 12 12 19"></polyline>
-                      </svg>
-                  </Button>
-                  <Button
-                    href=""
-                    className="mt-4 text-gray-200 dark:text-white bg-transparent border-2 border-gray-200 dark:border-white"
-                  >
-                      I know
-                  </Button>
-                </div>
+      <section className="bg-gradient-to-r from-blue-500 to-purple-500">
+        <div className="px-4 py-8 mx-auto max-w-7xl">
+          <div
+            className="relative py-6 overflow-hidden rounded-lg lg:py-12 md:px-6 lg:p-16 lg:flex lg:items-center lg:justify-between"
+            data-rounded="rounded-lg" data-rounded-max="rounded-full">
+            <div className="relative p-6 rounded-lg md:p-0 md:pb-4">
+              <h2 className="text-3xl font-extrabold leading-9 tracking-tight text-white sm:text-4xl sm:leading-10">
+                Boost Your Luck.
+              </h2>
+              <p className="w-full mt-5 text-base leading-8 text-white md:w-3/4" data-primary="pink-600">
+                Take a quiz before voting in referenda and your chances of receiving <span className="nft-rare">rare</span> and <span className="nft-epic">epic</span> NFTs will increase.
+              </p>
             </div>
+            <div
+              className="relative flex flex-col items-center w-full px-6 space-y-5 md:space-x-5 md:space-y-0 md:flex-row md:w-auto lg:flex-shrink-0 md:px-0">
+              <a href="#_"
+                className="block w-full px-5 py-3 text-base font-medium leading-6 text-center text-purple-600 transition duration-150 ease-in-out bg-purple-100 rounded-md md:inline-flex md:shadow md:w-auto hover:bg-white focus:outline-none focus:shadow-outline"
+                data-primary="purple-600" data-rounded="rounded-md">
+                Learn more
+              </a>
+              <a href="#_" className="text-white border-2 px-5 py-3 w-full md:w-auto text-center rounded-md border-white">
+                I know
+              </a>
+            </div>
+          </div>
         </div>
       </section>
       <section className="mx-auto w-full max-w-[1160px] text-sm sm:pt-10 4xl:pt-14">
