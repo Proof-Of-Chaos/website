@@ -6,6 +6,10 @@ import { Menu } from '@headlessui/react';
 import { Transition } from '@headlessui/react';
 import cn from 'classnames';
 import { useRouter } from 'next/router';
+import WalletConnect from '../components/nft/wallet-connect';
+import Logo from '../components/ui/logo';
+import Button from '../components/ui/button';
+import { useDrawer } from '../components/drawer/context';
 // import Link from '@/components/ui/links/active-link';
 
 // import Scrollbar from '@/components/ui/scrollbar';
@@ -63,161 +67,60 @@ export function MenuItems() {
 }
 
 export default function DrawerMenu() {
-  // const { closeDrawer } = useDrawer();
+  let { pathname } = useRouter();
+  const { closeDrawer } = useDrawer();
   return (
     <div className="relative w-full max-w-full bg-white dark:bg-dark xs:w-80">
       <div className="flex h-24 items-center justify-between overflow-hidden px-6 py-4">
         <div className="md:hidden">
-          close drawer button
+          <Button onClick={ closeDrawer } className="hover:shadow-none px-0 mx-0 pl-1">
+            <svg className="w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 460.775 460.775" xmlSpace="preserve">
+              <path d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55
+                c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55
+                c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505
+                c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55
+                l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719
+                c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"/>
+            </svg>
+          </Button>
         </div>
       </div>
 
       {/* <Scrollbar style={{ height: 'calc(100% - 96px)' }}> */}
         <div className="flex flex-col px-6 pb-16 sm:pb-20">
-          <Menu>
-            {({ open }) => (
-              <>
-                <Menu.Button className="flex items-center justify-between border-t border-dashed py-3.5 text-justify text-sm font-medium uppercase text-gray-900 transition first:border-t-0 hover:text-gray-900 dark:text-white dark:hover:text-white">
-                  Explore
-                  {/* <ChevronForward
-                    className={`ml-3 transition-transform ${
-                      open ? 'rotate-90' : ''
-                    }`}
-                  /> */}
-                </Menu.Button>
-                <Transition
-                  as={Fragment}
-                  enter="ease-in-out duration-200"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in-out duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <Menu.Items className="">
-                    <Menu.Item>
+            <>
+              <Logo />
+              <div className="pt-4 flex flex-col">
+                {MenuLinks.map((item, index) => {
+                  console.log( pathname === item.href);
+                  return (
+                    <>
                       <Link
-                        href="/"
-                        className="mb-3.5 flex items-center text-sm font-normal uppercase text-gray-600 before:mr-3.5 before:block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-gray-600 dark:text-gray-400 dark:before:bg-gray-400 dark:hover:text-white"
-                        activeClassName="!text-gray-900 dark:!text-white dark:before:!bg-white before:!bg-gray-900 before:scale-125"
+                        key={index}
+                        href={item.href}
                       >
-                        Collection
+                        <a
+                          className={
+                            cn(
+                              "pb-1 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
+                              item.href === pathname ? 'text-brand-600' : 'text-black'
+                            )
+                          }
+                        >
+                          {item.name}
+                        </a>
                       </Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                      <Link
-                        href="/profile"
-                        className="mb-3.5 flex items-center text-sm font-normal uppercase text-gray-600 before:mr-3.5 before:block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-gray-600 dark:text-gray-400 dark:before:bg-gray-400 dark:hover:text-white"
-                        activeClassName="!text-gray-900 dark:!text-white dark:before:!bg-white before:!bg-gray-900 before:scale-125"
-                      >
-                        Trending
-                      </Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                      <Link
-                        href="/"
-                        className="mb-3.5 flex items-center text-sm font-normal uppercase text-gray-600 before:mr-3.5 before:block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-gray-600 dark:text-gray-400 dark:before:bg-gray-400 dark:hover:text-white"
-                        activeClassName="!text-gray-900 dark:!text-white dark:before:!bg-white before:!bg-gray-900 before:scale-125"
-                      >
-                        Browse
-                      </Link>
-                    </Menu.Item>
-                  </Menu.Items>
-                </Transition>
-              </>
-            )}
-          </Menu>
-
-          <Link
-            href="/"
-            className="border-t border-dashed py-3.5 text-sm font-medium uppercase text-gray-900 transition first:border-t-0 hover:text-gray-900 dark:border-gray-700 dark:text-white"
-            activeClassName="text-gray-900 dark:text-white"
-          >
-            Feed
-          </Link>
-          <Link
-            href="/"
-            className="border-t border-dashed py-3.5 text-sm font-medium uppercase text-gray-900 transition first:border-t-0 hover:text-gray-900 dark:border-gray-700 dark:text-white"
-            activeClassName="text-gray-900 dark:text-white"
-          >
-            Activity
-          </Link>
-
-          <Menu>
-            {({ open }) => (
-              <>
-                <Menu.Button className="flex items-center justify-between border-t border-dashed py-3.5 text-justify text-sm font-medium uppercase text-gray-900 transition first:border-t-0 hover:text-gray-900 dark:border-gray-700 dark:text-white dark:hover:text-white">
-                  Account
-                  {/* <ChevronForward
-                    className={`ml-3 transition-transform ${
-                      open ? 'rotate-90' : ''
-                    }`}
-                  /> */}
-                </Menu.Button>
-                <Transition
-                  as={Fragment}
-                  enter="ease-in-out duration-200"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in-out duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <Menu.Items className="">
-                    <Menu.Item>
-                      <Link
-                        href="/"
-                        className="mb-3.5 flex items-center text-sm font-normal uppercase text-gray-600 before:mr-3.5 before:block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-gray-600 dark:text-gray-400 dark:before:bg-gray-400 dark:hover:text-white"
-                        activeClassName="!text-gray-900 dark:!text-white dark:before:!bg-white before:!bg-gray-900 before:scale-125"
-                      >
-                        View profile
-                      </Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                      <Link
-                        href="/"
-                        className="mb-3.5 flex items-center text-sm font-normal uppercase text-gray-600 before:mr-3.5 before:block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-gray-600 dark:text-gray-400 dark:before:bg-gray-400 dark:hover:text-white"
-                        activeClassName="!text-gray-900 dark:!text-white dark:before:!bg-white before:!bg-gray-900 before:scale-125"
-                      >
-                        settings
-                      </Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                      <Link
-                        href="/"
-                        className="mb-3.5 flex items-center text-sm font-normal uppercase text-gray-600 before:mr-3.5 before:block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-gray-600 dark:text-gray-400 dark:before:bg-gray-400 dark:hover:text-white"
-                        activeClassName="!text-gray-900 dark:!text-white dark:before:!bg-white before:!bg-gray-900 before:scale-125"
-                      >
-                        help
-                      </Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                      <Link
-                        href="/"
-                        className="mb-3.5 flex items-center text-sm font-normal uppercase text-gray-600 before:mr-3.5 before:block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-gray-600 dark:text-gray-400 dark:before:bg-gray-400 dark:hover:text-white"
-                        activeClassName="!text-gray-900 dark:!text-white dark:before:!bg-white before:!bg-gray-900 before:scale-125"
-                      >
-                        Disconnect
-                      </Link>
-                    </Menu.Item>
-                  </Menu.Items>
-                </Transition>
-              </>
-            )}
-          </Menu>
-
-          <Link
-            href="/"
-            className="border-t border-dashed py-3.5 text-sm font-medium uppercase text-gray-900 transition first:border-t-0 hover:text-gray-900 dark:border-gray-700 dark:text-white"
-            activeClassName="text-gray-900 dark:text-white"
-          >
-            Notification
-          </Link>
+                    </>
+                  )
+                })}
+              </div>
+          </>
         </div>
       {/* </Scrollbar> */}
 
-      <div className="absolute left-0 bottom-4 z-10 w-full  px-6">
-        <button>Connect</button>
+      <div className="absolute left-0 bottom-4 z-10 w-full px-6">
+        <WalletConnect className="w-full" />
       </div>
     </div>
   );

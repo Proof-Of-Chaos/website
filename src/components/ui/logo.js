@@ -8,7 +8,7 @@ export default function Logo(props) {
       href="/"
       { ...props }
     >
-    <a href="#_" className="text-xl font-black leading-none text-gray-900 select-none logo">GovRewards<span className="text-indigo-600">.</span></a>
+    <a href="#_" className="text-xl font-black leading-none text-gray-900 select-none logo">Proof of Chaos<span className="text-indigo-600">.</span></a>
     </Link>
   )
 }

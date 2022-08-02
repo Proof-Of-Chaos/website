@@ -7,20 +7,18 @@ import WalletConnect from "../components/nft/wallet-connect"
 import Logo from "../components/ui/logo";
 import Footer from "../components/ui/footer"
 import { useState } from "react"
+import { useDrawer } from "../components/drawer/context"
 
 function HeaderRight() {
-  let [isOpen, setIsOpen] = useState(false);
-  const openDrawer = () => {}
+  const { openDrawer, isOpen } = useDrawer();
 
   return(
     <div className="order-last flex shrink-0 items-center">
-      <WalletConnect />
+      <WalletConnect className="hidden sm:block" />
       <div className="lg:hidden">
         <Hamburger
           isOpen={isOpen}
           onClick={() => openDrawer('DASHBOARD_SIDEBAR')}
-          variant="transparent"
-          className="dark:text-white"
         />
       </div>
     </div>

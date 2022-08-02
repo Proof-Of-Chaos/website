@@ -10,6 +10,7 @@ export default function WalletConnect (props) {
       onClick={() => openModal('VIEW_CONNECT_WALLET')}
       className="flex justify-center shadow-main hover:shadow-large"
       variant="primary"
+      { ...props }
     >
       <FontAwesomeIcon className="pl-1" icon={ faWallet }/><span className="pl-3">Connect</span>
     </Button>

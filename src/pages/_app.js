@@ -4,6 +4,7 @@ import '../../styles/globals.css'
 import ModalsContainer from '../components/modals/container';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DrawersContainer from '../components/drawer/container';
 
 function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout ?? ((page) => page)
@@ -16,6 +17,7 @@ function MyApp({ Component, pageProps }) {
         />
       </Head>
       {getLayout(<Component {...pageProps} />)}
+      <DrawersContainer />
       <ModalsContainer />
       <ToastContainer />
     </>

@@ -3,7 +3,7 @@ import Button from "../ui/button";
 
 function SingleNFT( { id, rarity, data: { thumb, artist, amount } } ) {
   return (
-    <div className="text-white single-nft relative  p-4 transform transition duration-200 hover:scale-105">
+    <div className="single-nft relative  p-4 transform transition duration-200 hover:scale-105">
       <span className={ `absolute z-10 -ml-4 -mt-3 px-2 nft-${rarity}` }>{ rarity }</span>
       { thumb && thumb !== '' ?
         <Image
@@ -23,12 +23,12 @@ function SingleNFT( { id, rarity, data: { thumb, artist, amount } } ) {
 export default function NFTDetail( { nft } ) {
   const { id } = nft;
   return (
-    <div className="bg-dark nft-detail mb-4 border-2 hover:shadow-xl shadow-sm flex flex-wrap justify-between p-10 transition-shadow duration-200 dark:bg-light-dark xs:p-6">
+    <div className="nft-detail mb-4 border-2 hover:shadow-xl shadow-sm flex flex-wrap justify-between p-10 transition-shadow duration-200 dark:bg-light-dark xs:p-6">
       <div className="flex flex-col justify-between lg:w-1/4 w-full">
-        <span className="text-2xl font-bold text-white">Referendum { id }</span>
+        <span className="text-2xl font-bold">Referendum { id }</span>
         <span className="text-orange-600 mt-5">here could be statistics</span>
         <Button
-          className="border-2 text-gray-200 w-56"
+          className="border-2 text-gray-800 w-56"
         >
           Get on
           <svg className="pl-3 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 693.24 169.09">
