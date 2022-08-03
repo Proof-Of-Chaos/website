@@ -52,14 +52,14 @@ export default function ReferendumVoteModal( { id, title } ) {
 
   return(
     <>
-      <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+      <Dialog.Title as="h3" className="text-2xl font-medium leading-6 text-gray-900">
         Vote on Referendum { id }
       </Dialog.Title>
-      <div className="mt-2">
+      <div className="mt-4">
         { title }
       </div>
 
-      <form className="mt-5">
+      <form className="mt-8">
         <Input
           id="wallet-select"
           label="Select Wallet"
@@ -85,17 +85,17 @@ export default function ReferendumVoteModal( { id, title } ) {
 
       <div className="mt-6">
         <Button
-          className="mr-2 bg-green-500 hover:bg-green-600"
+          className="mr-2 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white"
           onClick={ () => onClickAye() }>
           Aye
         </Button>
         <Button
-          className="mr-2 bg-red-500 hover:bg-red-600"
+          className="mr-2 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white text-4xl"
           onClick={closeModal}>
           Nay
         </Button>
         <Button
-          variant="warning"
+          variant="calm"
           onClick={closeModal}>
           Cancel
         </Button>

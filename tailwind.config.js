@@ -30,12 +30,12 @@ module.exports = {
     },
     extend: {
       colors: {
-        brand: colors.cyan,
+        brand: colors.indigo,
         primary: 'rgba(var(--color-primary) / <alpha-value>)',
         dark: '#0D1321',
       },
       fontFamily: {
-        body: ['Fira Code', 'monospace'],
+        body: ['Ubuntu Mono', 'monospace'],
       },
       animation: {
         floatingOne: 'floatingOne 12s infinite',

@@ -21,19 +21,19 @@ export const quizzes = {
   ],
   5: [
     {
-      question: 'What is the name of ref 5 parachain?',
+      question: 'What is the name of ref 5 parachain with a very long question to see how it displays on small devices not desktop devices?',
       answers: [
-        'Polkadot',
-        'Kusama',
-        'Gavin Wood'
+        'Polkadot Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam optio sequi quod accusantium consectetur.',
+        'Kusama Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam optio sequi quod accusantium consectetur.',
+        'Gavin Wood Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam optio sequi quod accusantium consectetur.'
       ]
     },
     {
       question: 'What is the name of Polkadot\'s founder (ref 5)?',
       answers: [
-        'Wavin Good',
-        'Mavin Wood',
-        'Gavin Wood'
+        'Wavin Good Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam optio sequi quod accusantium consectetur.',
+        'Mavin Wood Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam optio sequi quod accusantium consectetur.',
+        'Gavin Wood Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam optio sequi quod accusantium consectetur.'
       ],
       multiple: true,
     }

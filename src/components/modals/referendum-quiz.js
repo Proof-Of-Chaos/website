@@ -6,13 +6,20 @@ import Button from "../ui/button";
 import Input from "../ui/input";
 import { useModal } from "./context";
 import { toast } from 'react-toastify';
+import useAppStore from "../../zustand";
+import { useQuizzes } from "../../lib/hooks/use-quizzes";
 
 export default function ReferendumQuizModal( { id, title } ) {
   const { closeModal } = useModal();
   const fieldsetRef = useRef();
   const { data: initialAnswers } = useSWR( 'answers', async () => getQuizAnswers() );
-  const { data: questions, error } = useSWR( 'questions', async () => getQuizById( id ) );
+  // const { data: questions, error } = useSWR( 'questions', async () => getQuizById( id ) );
   const [ userAnswers, setUserAnswers ] = useState({});
+
+  const { quizzes } = useQuizzes();
+  const questions = quizzes?.[id];
+
+  const updateQuiz = useAppStore( ( state ) => state.updateQuiz );
 
   async function onSend() {
     toast.promise(
@@ -55,15 +62,11 @@ export default function ReferendumQuizModal( { id, title } ) {
     }
 
     const newUserAnswers = {
-      ...userAnswers,
-      [`ref${id}`]: {
-        ...userAnswers[`ref${id}`],
-        timestamp: Date.now(),
-        [`${ questionIndex }`]: qAnswer,
-      }
+      [`${ questionIndex }`]: qAnswer,
     }
     console.log( `user changed answer for ref ${ id } question ${ questionIndex } to ${ qAnswer }` )
-    setUserAnswers( newUserAnswers );
+    // setUserAnswers( newUserAnswers );
+    updateQuiz( id, newUserAnswers );
   }
 
   return(
@@ -107,12 +110,13 @@ export default function ReferendumQuizModal( { id, title } ) {
 
             <div className="mt-6">
               <Button
-                className="mr-2 bg-green-500 hover:bg-green-600"
+                className="mr-2"
+                variant="primary"
                 onClick={ onSend }>
                 Submit
               </Button>
               <Button
-                variant="warning"
+                variant="calm"
                 onClick={ closeModal }>
                 Cancel
               </Button>

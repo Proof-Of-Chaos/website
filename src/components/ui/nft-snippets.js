@@ -1,9 +1,10 @@
 import Image from 'next/image'
-import { nfts } from '../../data/nft-snippets'
 import { getRandomIntBetween } from '../../lib/utils'
 import cn from 'classnames';
+import { useNfts } from '../../lib/hooks/use-nfts';
 
 export default function NFTSnippets( props ) {
+  const { nfts } = useNfts();
   const positions = [
     [10,10],
     [12,80],
@@ -15,10 +16,10 @@ export default function NFTSnippets( props ) {
   const animNames = ['One','Two','Three'];
 
   return(
-    <div 
+    <div
       className="nft-snippets absolute top-0 left-0 right-0 bottom-0"
     >
-      {nfts.map( (nft, idx) => {
+      {nfts && Object.values(nfts)?.map( (nft, idx) => {
         const l = `${ positions[idx][0] }%`
         const t = `${ positions[idx][1] }%`
 
