@@ -110,12 +110,13 @@ export default function ReferendumQuizModal( { id, title } ) {
 
             <div className="mt-6">
               <Button
-                className="mr-2 bg-green-500 hover:bg-green-600"
+                className="mr-2"
+                variant="primary"
                 onClick={ onSend }>
                 Submit
               </Button>
               <Button
-                variant="warning"
+                variant="calm"
                 onClick={ closeModal }>
                 Cancel
               </Button>

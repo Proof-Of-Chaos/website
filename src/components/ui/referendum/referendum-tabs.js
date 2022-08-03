@@ -38,7 +38,7 @@ export default function ReferndumTabs( props ) {
   })
 
   return (
-    <div className="w-full px-2 py-16 sm:px-0">
+    <div className="w-full px-4 py-8">
       <Tab.Group>
         <Tab.List className="flex mb-4 pb-4 border-brand-600">
           {Object.keys(categories).map((category) => (
@@ -46,10 +46,10 @@ export default function ReferndumTabs( props ) {
               key={category}
               className={({ selected }) =>
                 classNames(
-                  'w-full py-4 text-sm font-medium leading-5 border-b-4 text-brand-700 outline-none',
+                  'vote-tab relative w-full py-4 leading-5 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 text-brand-700 outline-none uppercase text-base tracking-widest',
                   selected
-                    ? 'bg-white border-brand-600'
-                    : 'text-black border-gray-400 hover:bg-white/[0.12] hover:text-gray-600'
+                    ? 'active bg-white border-brand-200 border-b-brand-300'
+                    : 'text-black border-gray-400 hover:bg-white/[0.12] hover:text-gray-600 border-t-0 border-l-0 border-r-0 border-b-0'
                 )
               }
             >

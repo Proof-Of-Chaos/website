@@ -23,7 +23,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
   return (
     <div
       className={cn(
-        'mb-3 rounded-lg bg-gradient-to-tr from-gray-100 to-gray-50 p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6',
+        'mb-6 bg-white p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-brand-100 border-b-brand-200',
         {
           'shadow-lg': isExpanded,
           'shadow-card hover:shadow-lg': !isExpanded,
@@ -35,11 +35,11 @@ export default function ReferendumDetail({ referendum, listIndex }) {
         <div className="self-start md:col-span-2 p-2">
           <h3
             onClick={() => setIsExpanded(!isExpanded)}
-            className="cursor-pointer text-base font-medium leading-normal dark:text-gray-100 2xl:text-lg"
+            className="cursor-pointer text-xl leading-normal dark:text-gray-100"
           >
             {referendum.title}
           </h3>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-gray-600 dark:text-gray-400 border-b border-gray-200 pb-4 mb-4 mr-8 border-dashed">
             Referendum #{referendum.id}
           </p>
           {referendum.status === 'active' && (
@@ -60,9 +60,8 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                 </>
               ) : (
                 <div>
-                  <h4 className="mt-4 mb-6 uppercase dark:text-gray-100">Description</h4>
                   <div
-                    className="dynamic-html grid gap-2 leading-relaxed text-gray-600 dark:text-gray-400"
+                    className="dynamic-html grid gap-2 leading-relaxed text-gray-600 dark:text-gray-400 pr-8"
                     dangerouslySetInnerHTML={{ __html: referendum.description }}
                   />
                 </div>
