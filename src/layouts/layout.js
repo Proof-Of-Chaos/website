@@ -32,7 +32,7 @@ export function Header() {
 
   return (
     <nav
-      className={`fixed top-0 z-30 flex w-full items-center justify-between px-4 transition-all duration-300 ltr:right-0 rtl:left-0 sm:px-6 lg:px-8 xl:px-10 3xl:px-12 ${
+      className={`fixed top-0 z-30 flex w-full items-center justify-between px-4 transition-all duration-300 ltr:right-0 rtl:left-0 sm:px-10 lg:px-10 xl:px-10 3xl:px-12 ${
         windowY > 10
           ? 'h-16 bg-gradient-to-b from-gray-50 to-gray-50/80 shadow-card backdrop-blur-sm dark:from-dark dark:to-dark/80 sm:h-20'
           : 'h-16 bg-body dark:bg-dark sm:h-24'
@@ -51,7 +51,7 @@ export default function Layout({ children }) {
   return(
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="mb-12 flex flex-grow flex-col pt-16 sm:pt-24">
+      <main className="mb-12 flex flex-grow flex-col pt-16 sm:pt-24 overflow-x-hidden">
         {children}
       </main>
       <Footer />

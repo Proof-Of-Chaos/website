@@ -70,7 +70,7 @@ export default function DrawerMenu() {
   let { pathname } = useRouter();
   const { closeDrawer } = useDrawer();
   return (
-    <div className="relative w-full max-w-full bg-white dark:bg-dark xs:w-80">
+    <div className="relative w-full max-w-full bg-white dark:bg-dark w-80">
       <div className="flex h-24 items-center justify-between overflow-hidden px-6 py-4">
         <div className="md:hidden">
           <Button onClick={ closeDrawer } className="hover:shadow-none px-0 mx-0 pl-1">
@@ -88,7 +88,7 @@ export default function DrawerMenu() {
       </div>
 
       {/* <Scrollbar style={{ height: 'calc(100% - 96px)' }}> */}
-        <div className="flex flex-col px-6 pb-16 sm:pb-20">
+        <div className="flex flex-col px-6 pb-26 sm:pb-20">
             <>
               <Logo />
               <div className="pt-4 flex flex-col">

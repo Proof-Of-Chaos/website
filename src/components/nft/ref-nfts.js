@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Button from "../ui/button";
 
-function SingleNFT( { id, rarity, data: { thumb, artist, amount } } ) {
+function SingleNFT( { nft: { ref, rarity, thumb, artist, amount } } ) {
   return (
     <div className="single-nft relative p-4 transform transition duration-200 hover:scale-105 flex justify-center flex-col items-center">
       <div>
@@ -9,7 +9,7 @@ function SingleNFT( { id, rarity, data: { thumb, artist, amount } } ) {
         { thumb && thumb !== '' ?
           <Image
             src={`https://gateway.ipfs.io/ipfs/${ thumb }`}
-            alt={ `GovRewards NFT for Referendum ${ id } of rarity common` }
+            alt={ `GovRewards NFT for Referendum ${ ref } of rarity common` }
             width={ 200 }
             height={ 200 }
           /> :
@@ -22,25 +22,26 @@ function SingleNFT( { id, rarity, data: { thumb, artist, amount } } ) {
   )
 }
 
-export default function NFTDetail( { nft } ) {
-  const { id } = nft;
+export default function NFTDetail( { nfts } ) {
   return (
     <div className="nft-detail mx-4 mb-4 p-6 border-2 hover:shadow-lg shadow-sm  transition-shadow duration-200 dark:bg-light-dark">
-      <h3 className="text-2xl font-bold pb-4">Referendum { id }</h3>
+      <h3 className="text-2xl font-bold pb-4">Referendum { nfts[0].ref }</h3>
       <div className="flex flex-wrap justify-between">
-        { [ 'common', 'rare', 'epic' ].map( (rarity, idx) => (
-          <div key={ `${id}-${rarity} `} className={ `nft-detail-${rarity} order${idx+1} w-full lg:w-1/4 md:w-1/3` }>
+        { [ 'common', 'rare', 'epic' ].map( rarity => {
+          const nftByRarity = nfts.find( nft => nft.rarity === rarity )
+          return (
+            <div key={ `${nftByRarity.ref}-${nftByRarity.rarity} `} className={ `nft-detail-${nftByRarity.rarity} w-full lg:w-1/4 md:w-1/3` }>
             <SingleNFT
-              id={ id }
-              data={ nft[ rarity ] }
-              rarity={ rarity }
+              id={ nftByRarity.ref }
+              nft={ nftByRarity }
             />
           </div>
-        ))}
+          )
+        })}
         <div className="flex flex-col justify-between lg:w-1/4 w-full">
-          <span className="text-orange-600 mt-5">here could be statistics</span>
+          <span className="text-orange-600 mt-5 p-4">here could be statistics</span>
           <Button
-            className="border-2 text-gray-800 w-56"
+            className="border-2 text-gray-800 w-full"
           >
             Get on
             <svg className="pl-3 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 693.24 169.09">
