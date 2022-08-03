@@ -24,7 +24,7 @@ function Vote() {
               <h2 className="text-3xl font-extrabold leading-9 tracking-tight text-white sm:text-4xl sm:leading-10">
                 Boost Your Luck
               </h2>
-              <p className="w-full max-w-2xl mt-5 text-base leading-8 text-white md:w-3/4" data-primary="pink-600">
+              <p className="w-full max-w-lg mt-5 text-base leading-8 text-white md:w-3/4" data-primary="pink-600">
                 Take a quiz before voting in referenda and your chances of receiving <span className="nft-rare">rare</span> and <span className="nft-epic">epic</span> NFTs will increase when all answers are correct.
               </p>
             </div>
