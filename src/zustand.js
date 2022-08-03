@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import create from "zustand";
+import { persist } from 'zustand/middleware'
 import { getQuizById, getQuizzes } from "./data/vote-service";
 
 const log = (config) => (set, get, api) =>
@@ -13,17 +14,19 @@ const log = (config) => (set, get, api) =>
     api
   )
 
-const useBeeStore = create(
-  log((set) => ({
-    bees: false,
-    setBees: (input) => set({ bees: input }),
-  }))
-)
-
 const useAppStore = create(
-  log((set) => ({
+  log(persist((set) => ({
     user: {
       quizAnswers: {},
+      knowsAboutLuckBoost: false,
+    },
+    updateLuckBoostKnowledge: ( val ) => {
+      set((state)=>({
+        user: {
+          ...state.user,
+          knowsAboutLuckBoost: val,
+        }
+      }))
     },
     updateQuiz: ( referendumId, answer ) =>
       set((state) => ({
@@ -39,7 +42,9 @@ const useAppStore = create(
           }
         }
       }))
-  }))
+  })),     {
+    name: 'app-storage', // unique name
+  })
 )
 
 export default useAppStore;

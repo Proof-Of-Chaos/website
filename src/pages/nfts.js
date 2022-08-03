@@ -8,7 +8,7 @@ function PageNFTs({ nfts }) {
   // const { nfts, loading, error } = useNfts();
 
   const nftsByReferendumId = groupBy( nfts, 'ref' );
-  console.log( 'yyy', nftsByReferendumId );
+  // console.log( 'yyy', nftsByReferendumId );
 
   return (
     <section className="mx-auto w-full max-w-[1160px] text-sm sm:pt-10 4xl:pt-14">
