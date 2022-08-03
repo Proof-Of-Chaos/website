@@ -15,7 +15,7 @@ function About() {
 
           <div className="w-full mt-5 md:mt-0 md:w-4/5 md:pl-2">
             <p className="text-base font-normal text-gray-700 md:text-lg">
-              Take advantage of our state of the art features and toolset. We are helping businesses develop a split-testing, marketing superhero mentality. We've cracked the secrets that it takes to convert visitors into customers. Try our service free for 14-days and you can start building your next great idea.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta debitis hic ullam itaque magnam, harum, autem impedit dolorum porro animi commodi explicabo qui iusto eius eum delectus dolor modi. Quam.
               </p>
           </div>
         </div>
@@ -27,7 +27,7 @@ function About() {
           </div>
           <div className="w-full mt-5 md:mt-0 md:w-4/5 md:pl-2">
             <p className="text-base font-normal text-gray-700 md:text-lg">
-              Take advantage of our state of the art features and toolset. We are helping businesses develop a split-testing, marketing superhero mentality. We've cracked the secrets that it takes to convert visitors into customers. Try our service free for 14-days and you can start building your next great idea.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta debitis hic ullam itaque magnam, harum, autem impedit dolorum porro animi commodi explicabo qui iusto eius eum delectus dolor modi. Quam.
               </p>
           </div>
         </div>
@@ -39,7 +39,7 @@ function About() {
           </div>
           <div className="w-full mt-5 md:mt-0 md:w-4/5 md:pl-2">
             <p className="text-base font-normal text-gray-700 md:text-lg">
-              Take advantage of our state of the art features and toolset. We are helping businesses develop a split-testing, marketing superhero mentality. We've cracked the secrets that it takes to convert visitors into customers. Try our service free for 14-days and you can start building your next great idea.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta debitis hic ullam itaque magnam, harum, autem impedit dolorum porro animi commodi explicabo qui iusto eius eum delectus dolor modi. Quam.
               </p>
           </div>
         </div>
