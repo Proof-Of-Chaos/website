@@ -7,8 +7,8 @@ const classes = {
   disabled: ['opacity-50 cursor-not-allowed'],
   shapes: {
     rounded: ['rounded-md sm:rounded-lg'],
-    pill: ['rounded-full'],
-    circle: ['rounded-full'],
+    pill: ['rounded-lg'],
+    circle: ['rounded-lg'],
   },
   size: {
     large: ['px-7 sm:px-9 h-11 sm:h-13', 'h-11 sm:h-13'],
@@ -18,7 +18,7 @@ const classes = {
   },
   variant: {
     calm: ['text-gray-800 dark:text-white bg-transparent border-2 border-gray-300 dark:border-white'],
-    primary: ['text-white', 'bg-gradient-to-r from-blue-500/80 to-purple-500/80', 'hover:bg-brand-500', 'hover:ring-brand-800'],
+    primary: ['text-white', 'bg-gradient-to-r from-blue-400 to-purple-400', 'hover:bg-brand-500', 'hover:ring-brand-800'],
     secondary: ['bg-gray-200 hover:bg-gray-800 focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 text-gray-900 hover:text-white'],
     warning: ['bg-amber-400 text-gray-800'],
     danger: ['bg-red-500 hover:bg-red-800 focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 text-white'],

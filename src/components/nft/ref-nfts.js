@@ -28,15 +28,22 @@ export default function NFTDetail( { nfts } ) {
       <h3 className="text-2xl font-bold pb-4">Referendum { nfts[0].ref }</h3>
       <div className="flex flex-wrap justify-between">
         { [ 'common', 'rare', 'epic' ].map( rarity => {
-          const nftByRarity = nfts.find( nft => nft.rarity === rarity )
-          return (
-            <div key={ `${nftByRarity.ref}-${nftByRarity.rarity} `} className={ `nft-detail-${nftByRarity.rarity} w-full lg:w-1/4 md:w-1/3` }>
-            <SingleNFT
-              id={ nftByRarity.ref }
-              nft={ nftByRarity }
-            />
-          </div>
-          )
+          const nftByRarity = nfts.find( nft => nft?.rarity === rarity )
+
+          if ( nftByRarity ) {
+            return (
+              <div key={ `${nftByRarity.ref}-${nftByRarity.rarity} `} className={ `nft-detail-${nftByRarity.rarity} w-full lg:w-1/4 md:w-1/3` }>
+              <SingleNFT
+                id={ nftByRarity.ref }
+                nft={ nftByRarity }
+              />
+            </div>
+            )
+          }
+
+          return
+            ( <div key={ rarity }>Loading</div> )
+
         })}
         <div className="flex flex-col justify-between lg:w-1/4 w-full">
           <span className="text-orange-600 mt-5 p-4">here could be statistics</span>

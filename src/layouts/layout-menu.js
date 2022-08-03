@@ -41,7 +41,6 @@ export function MenuItems() {
   return (
     <div className="flex items-center xl:px-10 2xl:px-14 3xl:px-16">
       {MenuLinks.map((item, index) => {
-        console.log( pathname === item.href);
         return (
           <>
             <Link
@@ -93,7 +92,6 @@ export default function DrawerMenu() {
               <Logo />
               <div className="pt-4 flex flex-col">
                 {MenuLinks.map((item, index) => {
-                  console.log( pathname === item.href);
                   return (
                     <>
                       <Link
