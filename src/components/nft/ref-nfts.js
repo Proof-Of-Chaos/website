@@ -24,7 +24,7 @@ function SingleNFT( { nft: { ref, rarity, thumb, artist, amount } } ) {
 
 export default function NFTDetail( { nfts } ) {
   return (
-    <div className="nft-detail mx-4 mb-4 p-6 hover:shadow-lg shadow-sm border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-brand-100 border-b-brand-200 transition-shadow duration-200 dark:bg-light-dark">
+    <div className="nft-detail mx-4 mb-4 p-6 hover:shadow-lg shadow-sm border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-100 border-b-gray-200 transition-shadow duration-200 dark:bg-light-dark">
       <h3 className="text-2xl font-bold pb-4">Referendum { nfts[0].ref }</h3>
       <div className="flex flex-wrap justify-between">
         { [ 'common', 'rare', 'epic' ].map( rarity => {
