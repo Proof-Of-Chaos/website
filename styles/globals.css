@@ -77,4 +77,12 @@
     border-top: 8px solid rgba(129, 140, 248, 0.7);
     clear: both;
   }
+
+  .nft-snippet-item > .nft-snippet-overlay {
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .nft-snippet-item:hover > .nft-snippet-overlay {
+    background-color: transparent;
+  }
 }

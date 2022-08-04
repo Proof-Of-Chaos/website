@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { getRandomIntBetween } from '../../lib/utils'
 import cn from 'classnames';
 import { useNfts } from '../../lib/hooks/use-nfts';
+import { sampleSize } from 'lodash';
 
 export default function NFTSnippets( props ) {
   const { nfts } = useNfts();
@@ -19,13 +20,15 @@ export default function NFTSnippets( props ) {
     <div
       className="nft-snippets absolute top-0 left-0 right-0 bottom-0"
     >
-      {nfts && Object.values(nfts)?.map( (nft, idx) => {
-        const l = `${ positions[idx][0] }%`
-        const t = `${ positions[idx][1] }%`
+      {nfts && sampleSize(Object.values(nfts), 6)?.map( (nft, idx) => {
+        const l = `${ positions[idx%6][0] }%`
+        const t = `${ positions[idx%6][1] }%`
+
+        if ( idx === 3 ) return
 
         return(
           <div
-            key={ nft.thumb }
+            key={ idx }
             className={ cn(
               'nft-snippet-item absolute shadow-lg',
               {
@@ -48,8 +51,7 @@ export default function NFTSnippets( props ) {
               height={ 120 }
             />
             <div
-              className="absolute hover:bg-transparent top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed transition duration-300 ease-in-out"
-              style={ { backgroundColor: 'rgba(255, 255, 255, 0.6)' } }
+              className="nft-snippet-overlay absolute top-0 right-0 bottom-0 left-0 w-full h-full overflow-hidden bg-fixed transition duration-300 ease-in-out"
             />
           </div>
         )
