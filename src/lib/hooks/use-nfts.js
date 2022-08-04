@@ -23,6 +23,7 @@ async function fetchReferendums() {
           amount: attr.total_supply.value,
           artist: attr.artist.value,
           rarity: attr.rarity.value,
+          url: 'https://singular.app/collections/' + item.collectionId + '?search=' + encodeURIComponent(item.metadata_name),
         });
       });
     });

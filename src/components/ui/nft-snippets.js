@@ -21,10 +21,8 @@ export default function NFTSnippets( props ) {
       className="nft-snippets absolute top-0 left-0 right-0 bottom-0"
     >
       {nfts && sampleSize(Object.values(nfts), 6)?.map( (nft, idx) => {
-        const l = `${ positions[idx%6][0] }%`
-        const t = `${ positions[idx%6][1] }%`
-
-        if ( idx === 3 ) return
+        const l = `${ positions[idx][0] }%`
+        const t = `${ positions[idx][1] }%`
 
         return(
           <div
@@ -46,7 +44,7 @@ export default function NFTSnippets( props ) {
           >
             <Image
               src={`https://gateway.ipfs.io/ipfs/${ nft.thumb }`}
-              alt={`Referendum ${ nft.referendum }`}
+              alt={`Kusama NFT for ${ nft.ref }`}
               width={ 120 }
               height={ 120 }
             />
