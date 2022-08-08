@@ -4,8 +4,7 @@ const modalAtom = atom({ isOpen: false, view: '', props:{} });
 
 export function useModal() {
   const [state, setState] = useAtom(modalAtom);
-  const openModal = (view, props) => {
-    console.log( 'will open modal', view, 'with props', props );
+  const openModal = (view, props) => {
     setState({ ...state, isOpen: true, view, props });
   }
   const closeModal = () => setState({ ...state, isOpen: false });

@@ -9,7 +9,7 @@ import SelectWalletModal from "./select-wallet";
 function renderModalContent(view, props={}){
   switch(view) {
     case 'VIEW_CONNECT_WALLET':
-      return <SelectWalletModal />
+      return <SelectWalletModal {...props} />
     case 'VIEW_REFERENDUM_VOTE':
       return <ReferendumVoteModal {...props}/>
     case 'VIEW_REFERENDUM_QUIZ':

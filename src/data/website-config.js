@@ -17,24 +17,24 @@ export const websiteConfig = {
         // {
         //     "ref":"Referendum 215",
         //     "thumb":"bafybeifmcl3iksfr3q25cd25pnogvqn6oisa2yjgj6r2fywdjd5ri2hp7q",
-        //     "amount":"?",
-        //     "artist":"?",
+        //     "amount":"1128",
+        //     "artist":"LokiKot(@LokiPages)",
         //     "rarity":"common",
         //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+215"
         // },
         // {
         //     "ref":"Referendum 215",
         //     "thumb":"bafybeib2ozu2ugygo2ujob4fkplgj63tapjbcnkqdhumf37luw47wq3a2u",
-        //     "amount":"?",
-        //     "artist":"?",
+        //     "amount":"220",
+        //     "artist":"@kseniashikh",
         //     "rarity":"rare",
         //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+215"
         // },
         // {
         //     "ref":"Referendum 215",
         //     "thumb":"bafybeiavzja42z6viqfokvtlb7g4onz2md36jkmos3b7j6gdbehxra7wee",
-        //     "amount":"?",
-        //     "artist":"?",
+        //     "amount":"127",
+        //     "artist":"LokiKot(@LokiPages)",
         //     "rarity":"epic",
         //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+215"
         // },
@@ -89,24 +89,24 @@ export const websiteConfig = {
         // {
         //     "ref":"Referendum 212",
         //     "thumb":"bafybeih47yyz3m4ltvpit7pkaq7uwd7o6otzp226t4dzqofquahsptkgui",
-        //     "amount":"?",
-        //     "artist":"?",
+        //     "amount":"1292",
+        //     "artist":"@kseniashikh",
         //     "rarity":"common",
         //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+212"
         // },
         // {
         //     "ref":"Referendum 212",
         //     "thumb":"bafybeibjt62lhiddwj2ldmlcb7e5cfblrki4kks2rr42yntjrha4egmrxe",
-        //     "amount":"?",
-        //     "artist":"?",
+        //     "amount":"195",
+        //     "artist":"@kseniashikh",
         //     "rarity":"rare",
         //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+212"
         // },
         // {
         //     "ref":"Referendum 212",
         //     "thumb":"bafybeibf2bwzlfvs4oszxw7djzjkxaeq3q5yswxiqfqfblacfnbnppku5y",
-        //     "amount":"?",
-        //     "artist":"?",
+        //     "amount":"121",
+        //     "artist":"LokiKot(@LokiPages)",
         //     "rarity":"epic",
         //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+212"
         // },
