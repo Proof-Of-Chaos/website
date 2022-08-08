@@ -47,19 +47,38 @@ export default function SelectWalletModal( { setAccount } ) {
       <>
         { wallet &&
           <>
-            { accounts.map( ( account, index) => {
-              return (
-                  <li className="list-none cursor-pointer"
-                      key={index}
-                      onClick={() => selectAccount(account)}
-                  >
-                    <a className="block mx-4 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white text-black">
-                      { account.name }
-                    </a>
-                  </li>
-              )
-            })
-            }
+            <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+              Select Account
+            </Dialog.Title>
+            <div className="mt-2">
+              <ul>
+                { accounts.map( ( account, index) => {
+                  return (
+                      <li className="list-none cursor-pointer"
+                          key={index}
+                          onClick={() => selectAccount(account)}
+                      >
+                        <a className="block mx-4 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white text-black">
+                          { account.name }
+                        </a>
+                      </li>
+                  )
+                })
+                }
+              </ul>
+            </div>
+            <div className="mt-4">
+              <Button
+                variant="calm"
+                onClick={() => { setWallet(null) }}>
+                &larr; Back
+              </Button>
+              <Button
+                variant="calm"
+                onClick={closeModal}>
+                Cancel
+              </Button>
+            </div>
           </>
         }
         { !wallet &&
