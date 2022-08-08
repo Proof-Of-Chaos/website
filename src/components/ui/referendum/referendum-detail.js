@@ -7,6 +7,7 @@ import { useModal } from "../../modals/context";
 import { useQuizzes } from "../../../lib/hooks/use-quizzes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { getWallets } from '@talisman-connect/wallets';
 
 export default function ReferendumDetail({ referendum, listIndex }) {
   let [isExpanded, setIsExpanded] = useState(false);
@@ -19,8 +20,25 @@ export default function ReferendumDetail({ referendum, listIndex }) {
 
   const { quizzes, loading, error } = useQuizzes();
   const questions = quizzes?.[referendum.id];
+  const supportedWallets = getWallets();
 
   const { openModal } = useModal();
+
+  const openModalAfterConnect = function(view, referendum) {
+    let connectedWallet = localStorage.getItem('connectedWallet')
+    let useWallet = supportedWallets.find(foundWallet => foundWallet.extensionName === connectedWallet)
+
+    if (connectedWallet && useWallet) {
+      openModal( view, referendum )
+    } else {
+      openModal('VIEW_CONNECT_WALLET', { setAccount: (account) => {
+          localStorage.setItem('selectedAccount', JSON.stringify(account))
+          setTimeout(function() {
+            openModal(view, referendum)
+          }, 500);
+      } })
+    }
+  }
 
   return (
     <div
@@ -87,7 +105,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
               <>
                 { !loading && ! error && questions &&
                   <Button
-                    onClick={() => openModal('VIEW_REFERENDUM_QUIZ', referendum )}
+                    onClick={() => openModalAfterConnect('VIEW_REFERENDUM_QUIZ', referendum )}
                     className="mt-4 w-full xs:w-auto"
                     variant="primary"
                   >
@@ -95,7 +113,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                   </Button>
                 }
                 <Button
-                  onClick={() => openModal('VIEW_REFERENDUM_VOTE', referendum )}
+                  onClick={() => openModalAfterConnect('VIEW_REFERENDUM_VOTE', referendum )}
                   className="mt-0 w-full xs:w-auto"
                   variant="calm"
                 >

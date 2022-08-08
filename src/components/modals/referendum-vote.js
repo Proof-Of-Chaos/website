@@ -4,9 +4,12 @@ import Button from "../ui/button";
 import Input from "../ui/input";
 import { useModal } from "./context";
 import { toast } from 'react-toastify';
+import {useEffect, useState} from "react";
+import {getWallets} from "@talisman-connect/wallets";
 
 export default function ReferendumVoteModal( { id, title } ) {
   const { closeModal } = useModal();
+  const [ accounts, setAccounts ] = useState([])
 
   const VOTE_LOCK_OPTIONS = [
     {
@@ -39,6 +42,23 @@ export default function ReferendumVoteModal( { id, title } ) {
     },
   ]
 
+  useEffect(() => {
+    let connectedWallet = localStorage.getItem('connectedWallet')
+    let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWallet)
+
+    if (useWallet) {
+      useWallet.enable('ProofOfChaos').then(() => {
+        try {
+          useWallet.subscribeAccounts((accounts) => {
+            setAccounts(accounts)
+          });
+        } catch (err) {
+          console.log("Wallet connect error: ", err)
+        }
+      });
+    }
+  }, [])
+
   async function onClickAye() {
     toast.promise(
       setTimeoutPromise(3000),
@@ -64,6 +84,13 @@ export default function ReferendumVoteModal( { id, title } ) {
           id="wallet-select"
           label="Select Wallet"
           type="select"
+          value={ JSON.parse(localStorage.getItem('selectedAccount'))?.address }
+          options={ accounts.map( (account) => {
+            return {
+              label: account.name,
+              value: account.address,
+            };
+          })}
           tooltip="Select the wallet for voting"
         />
         <Input
