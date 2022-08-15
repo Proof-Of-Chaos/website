@@ -41,7 +41,7 @@ function About() {
             </p>
             <h4 className=" font-bold pt-4">Minimum voting requirement</h4>
             <p className="text-base font-normal text-gray-700">
-            For each referendum there are multiple types of NFTs with different rarities that voters will receive. The type of NFT each voter will receive depends on a “luck factor”. This “luck factor” can be influenced by a voter to a given extent. Votes with a higher vote amount (considering conviction) are more likely to receive one of the rarer NFTs.
+            Voters that do not meet the minimum KSM vote requirements will receive the least rare NFTs with a 90% royalty. Conviction is of course considered and thus even a very small holder can easily meet the minimum requirement by locking up their funds for longer periods. The idea behind the minimum requirement is to discourage users from voting with many wallets and very little funds on each.
             </p>
           </div>
         </div>
