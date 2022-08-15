@@ -1,10 +1,17 @@
+import { faWallet } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image"
+import useAppStore from "../../zustand";
 import Button from "../ui/button";
 
-function SingleNFT( { nft: { ref, rarity, thumb, artist, amount } } ) {
+function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
+  const userNFTs = useAppStore( (state) => state.user.nfts );
+  const mutatedNFts = userNFTs?.map( ({ symbol }) => symbol)
+
   return (
     <div className="single-nft relative p-4 transform transition duration-200 hover:scale-105 flex justify-center flex-col items-center">
       <div>
+        { mutatedNFts.includes( symbol ) && <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }><FontAwesomeIcon icon={ faWallet } size={"sm"} /> owned</span>}
         <span className={ `absolute z-10 -ml-4 -mt-3 px-2 nft-${rarity}` }>{ rarity }</span>
         { thumb && thumb !== '' ?
           <Image
@@ -23,6 +30,7 @@ function SingleNFT( { nft: { ref, rarity, thumb, artist, amount } } ) {
 }
 
 export default function NFTDetail( { nfts } ) {
+
   return (
     <div className="nft-detail mx-4 mb-4 p-6 hover:shadow-lg shadow-sm border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-100 border-b-gray-200 transition-shadow duration-200 dark:bg-light-dark">
       <h3 className="text-2xl font-bold pb-4">{ nfts[0].ref }</h3>

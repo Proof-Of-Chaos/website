@@ -31,12 +31,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
     if (connectedWallet && useWallet) {
       openModal( view, referendum )
     } else {
-      openModal('VIEW_CONNECT_WALLET', { setAccount: (account) => {
-          localStorage.setItem('selectedAccount', JSON.stringify(account))
-          setTimeout(function() {
-            openModal(view, referendum)
-          }, 500);
-      } })
+      openModal('VIEW_CONNECT_WALLET')
     }
   }
 

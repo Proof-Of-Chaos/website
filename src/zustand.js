@@ -15,36 +15,67 @@ const log = (config) => (set, get, api) =>
   )
 
 const useAppStore = create(
-  log(persist((set) => ({
-    user: {
-      quizAnswers: {},
-      knowsAboutLuckBoost: false,
-    },
-    updateLuckBoostKnowledge: ( val ) => {
-      set((state)=>({
-        user: {
-          ...state.user,
-          knowsAboutLuckBoost: val,
-        }
-      }))
-    },
-    updateQuiz: ( referendumId, answer ) =>
-      set((state) => ({
-        user: {
-          ...state.user,
-          quizAnswers: {
-            ...state.user.quizAnswers,
-            [`${referendumId}`]: {
-              ...state.user.quizAnswers[`${referendumId}`],
-              timestamp: Date.now(),
-              ...answer,
-            },
+  log(
+    persist((set) => ({
+      user: {
+        quizAnswers: {},
+        knowsAboutLuckBoost: false,
+        connectedWalletProvider: null,
+        connectedWallet: null,
+        nfts: [],
+      },
+      updateUserNfts: ( nfts ) => {
+        set((state)=>({
+          user: {
+            ...state.user,
+            nfts,
           }
-        }
-      }))
-  })),     {
-    name: 'app-storage', // unique name
-  })
+        }))
+      },
+      updateLuckBoostKnowledge: ( val ) => {
+        set((state)=>({
+          user: {
+            ...state.user,
+            knowsAboutLuckBoost: val,
+          }
+        }))
+      },
+      updateConnectedWalletProvider: ( walletProvider ) => {
+        set((state)=>({
+          user: {
+            ...state.user,
+            connectedWalletProvider: walletProvider,
+          }
+        }))
+      },
+      updateConnectedWallet: ( wallet ) => {
+        set((state)=>({
+          user: {
+            ...state.user,
+            connectedWallet: wallet,
+          }
+        }))
+      },
+      updateQuiz: ( referendumId, answer ) =>
+        set((state) => ({
+          user: {
+            ...state.user,
+            quizAnswers: {
+              ...state.user.quizAnswers,
+              [`${referendumId}`]: {
+                ...state.user.quizAnswers[`${referendumId}`],
+                timestamp: Date.now(),
+                ...answer,
+              },
+            }
+          }
+        }))
+      }),
+      {
+        name: 'govrewards-storage', // unique name
+      }
+    )
+  )
 )
 
 export default useAppStore;

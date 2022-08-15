@@ -6,10 +6,12 @@ import { useModal } from "./context";
 import { toast } from 'react-toastify';
 import {useEffect, useState} from "react";
 import {getWallets} from "@talisman-connect/wallets";
+import useAppStore from "../../zustand";
 
 export default function ReferendumVoteModal( { id, title } ) {
   const { closeModal } = useModal();
   const [ accounts, setAccounts ] = useState([])
+  const connectedWalletProvider = useAppStore((state) => state.user.connectedWalletProvider)
 
   const VOTE_LOCK_OPTIONS = [
     {
@@ -43,8 +45,7 @@ export default function ReferendumVoteModal( { id, title } ) {
   ]
 
   useEffect(() => {
-    let connectedWallet = localStorage.getItem('connectedWallet')
-    let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWallet)
+    let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWalletProvider)
 
     if (useWallet) {
       useWallet.enable('ProofOfChaos').then(() => {

@@ -1,10 +1,19 @@
 import useSWR from "swr";
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 import { websiteConfig } from "../../data/website-config"
+import useAppStore from "../../zustand";
 
 export const nftsFetcher = async () => {
   return await fetchReferendums()
 };
+
+export const userNftsFetcher = async () => {
+  return await fetchUserNFTs()
+};
+
+async function fetchUserNFTs() {
+  return await fetchNFTsForUser();
+}
 
 async function fetchReferendums() {
   let referendums = websiteConfig.classic_referendums;
@@ -18,6 +27,7 @@ async function fetchReferendums() {
         let attr = item.metadata_properties;
         referendums.push({
           ref: item.metadata_name,
+          symbol: item.symbol,
           rmrkId: item.id,
           thumb: thumb,
           amount: attr.total_supply.value,
@@ -32,6 +42,48 @@ async function fetchReferendums() {
   return referendums.sort((a, b) => {
     if (a.ref > b.ref){ return -1 } else if (a.ref < b.ref){ return 1 } else { return 0 } // sort by ref name
   });
+}
+
+async function fetchNFTsForUser( address ) {
+  const client = new ApolloClient({
+    uri: websiteConfig.singular_graphql_endpoint,
+    cache: new InMemoryCache()
+  });
+
+  let data = await client.query({
+    query: gql` 
+          query ExampleQuery($where: nfts_bool_exp, $limit: Int) {
+            nfts(where: $where, limit: $limit) {
+              id
+              symbol
+              metadata_name
+            }
+          }
+        `,
+    variables:
+    {
+      "where": {
+        "rootowner": {
+          "_in": [
+            "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
+            "5CwW67PPdZQQCcdWJVaRJCepSQSrtKUumDAGa7UZbBKwd9R2"
+          ]
+        },
+        "collectionId": {
+          "_in": [
+            "3208723ec6f65df810-ITEM",
+            "3208723ec6f65df810-ITEMXEVRLOOT",
+            "3208723ec6f65df810-ITEMXRMRK",
+            "3208723ec6f65df810-ITEMXMT",
+            "3208723ec6f65df810-ITEMXPUNKS",
+        ],
+        }
+      },
+      "limit": 100
+    }
+  });
+
+  return data;
 }
 
 async function fetchNFTsForRarity(rarity) {
@@ -61,6 +113,7 @@ async function fetchNFTsForRarity(rarity) {
                 metadata_name
                 metadata_properties
                 priority
+                symbol
             }
         `,
     variables:
@@ -128,3 +181,15 @@ export const useNfts = () => {
     error,
   };
 };
+
+export const useUserNfts = () => {
+  const { data, mutate, error } = useSWR( 'userNfts', userNftsFetcher )
+  const loading = !data && !error;
+
+  return {
+    loading,
+    userNfts: data,
+    mutate,
+    error,
+  };
+}

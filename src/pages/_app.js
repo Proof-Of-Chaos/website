@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import { ThemeProvider } from 'next-themes';
 import '../../styles/globals.css'
+import '@talisman-connect/components/talisman-connect-components.esm.css';
+import '@talisman-connect/ui/talisman-connect-ui.esm.css';
 import ModalsContainer from '../components/modals/container';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

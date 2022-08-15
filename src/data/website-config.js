@@ -44,7 +44,8 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
+            "symbol":"214QCC",
         },
         {
             "ref":"Referendum 214",
@@ -52,7 +53,8 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"rare",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
+            "symbol":"214PQ",
         },
         {
             "ref":"Referendum 214",

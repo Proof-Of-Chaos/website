@@ -3,8 +3,9 @@ import Button from "../ui/button";
 import { getWallets } from '@talisman-connect/wallets';
 import { useModal } from "./context";
 import { useEffect, useState } from 'react'
+import useAppStore from "../../zustand";
 
-export default function SelectWalletModal( { setAccount } ) {
+export default function SelectWalletModal() {
   const [ wallet, setWallet ] = useState(null)
   const [ accounts, setAccounts ] = useState([])
 
@@ -13,20 +14,27 @@ export default function SelectWalletModal( { setAccount } ) {
   const polkadotJs = supportedWallets.find(result => result.extensionName === 'polkadot-js')
   const talisman = supportedWallets.find(result => result.extensionName === 'talisman')
 
+  const updateConnectedWalletProvider = useAppStore( ( state ) => state.updateConnectedWalletProvider );
+  const updateConnectedWallet = useAppStore( ( state ) => state.updateConnectedWallet );
+  const connectedWallet = useAppStore((state) => state.user.connectedWallet)
+
   useEffect(() => {
-    let connectedWallet = localStorage.getItem('connectedWallet')
     if (connectedWallet) {
       let useWallet = supportedWallets.find(foundWallet => foundWallet.extensionName === connectedWallet)
       if (useWallet) {
         selectWallet(useWallet)
       }
     }
-  }, [])
+  }, [ connectedWallet, supportedWallets ])
+
+  function setAccount ( account ) {
+    updateConnectedWallet( account )
+  }
 
   const selectWallet = function(wallet) {
     wallet.enable('ProofOfChaos').then(() => {
       try {
-        localStorage.setItem('connectedWallet', wallet.extensionName)
+        updateConnectedWalletProvider( wallet.extensionName );
         setWallet(wallet)
 
         wallet.subscribeAccounts((accounts) => {
@@ -124,6 +132,16 @@ export default function SelectWalletModal( { setAccount } ) {
                 variant="calm"
                 onClick={closeModal}>
               Cancel
+            </Button>
+            <Button
+              className="ml-2"
+              variant="calm"
+              onClick={ () => {
+                updateConnectedWallet( null )
+                closeModal()
+              } }
+            >
+              Logout
             </Button>
           </div>
         </>
