@@ -65,6 +65,40 @@
     font-size: 18px; 
   }
 
+  a {
+    @apply text-brand-600;
+  }
+
+  main a {
+    @apply underline;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0px;
+  }
+
+  ul li {
+    padding-top: 0.5rem;
+  }
+
+  ul li::before
+  {
+      content: '→';
+      margin-right: 0.5rem;    /* any design */
+  }
+
+  ul ul li::before
+  {
+      content: '-';
+      margin-right: 0.5rem;    /* any design */
+  }
+
+  ul.list-none li::before {
+    content: '';
+    margin-right: 0;
+  }
+
   .vote-tab.active::after {
     content: '';
     position: absolute;

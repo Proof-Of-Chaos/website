@@ -35,19 +35,19 @@ function Vote() {
             </div>
             <div
               className="relative flex flex-col items-center w-full px-6 space-y-5 md:space-x-5 md:space-y-0 md:flex-row md:w-auto lg:flex-shrink-0 md:px-0">
-              <a href="#_"
+              <Button href="#_"
                 className="block w-full px-5 py-3 text-base font-medium leading-6 text-center text-indigo-900 transition duration-150 ease-in-out bg-purple-100 border-2 border-gray-100 rounded-md md:inline-flex md:shadow md:w-auto hover:bg-white focus:outline-none focus:shadow-outline"
                 onClick={ () => updateLuckKnowledge( true ) }
               >
                 Learn more
-              </a>
-              <a
+              </Button>
+              <Button
                 href="#"
                 onClick={ () => updateLuckKnowledge( true ) }
                 className="text-white border-2 px-5 py-3 w-full md:w-auto text-center rounded-md border-white hover:bg-indigo-800/40"
               >
                 I know
-              </a>
+              </Button>
             </div>
           </div>
         </div>

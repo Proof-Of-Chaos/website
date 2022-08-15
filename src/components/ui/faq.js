@@ -6,31 +6,35 @@ export default function FAQ( props ) {
             <h2 className="mb-4 text-xl font-bold md:text-3xl">Frequently Asked Questions</h2>
             <div className="grid grid-cols-1 gap-0 text-gray-600 md:grid-cols-2 md:gap-16">
                 <div>
-                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">What is Tails</h5>
-                    <p>Tails is a drag and drop page builder built on Top of TailwindCSS. You can drop components to create a page that you can export.</p>
-                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">Can I try it for Free?</h5>
-                    <p>Absolutely, you can try out tails for free; however, if you wish to access all the components and export the page you&apos;ll need to upgrade your account.</p>
-                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">Where do I go to upgrade my account?</h5>
+                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">What is this project trying to achieve?</h5>
+                    <p>Through our incentives we are looking to get more people involved in dotsama governance!</p>
+
+                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">When was this project started? </h5>
+                    <p>The RMRK1 collection launched in referendum 171. In Referendum 181 the composable (RMRK2) shelf collection was launched. </p>
+
+                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">Are you affiliated with Parity or any other organisation?</h5>
                     <p>
-                        You can upgrade your account by visiting The Pro Upgrade Page. You will also gain access to many other applications and sections of the site.
-                        here.
+                    No, this project was started by the community. The team behind it has no affiliations with any other organisation. 
                     </p>
-                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">How long will I have access to Tails</h5>
+                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">What happens after the shelf is full? 
+</h5>
                     <p>
-                        You will have unlimited access to all your pre-built pages; however, if you want to be able to download and export your pages, you&apos;ll need a pro account.
-                        Paddle for processing payments.
+                    The current plan is to move to a living room into which the shelf and future referenda items will be equippable to.
+
                     </p>
                 </div>
                 <div>
-                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">How do I implement into my project</h5>
-                    <p>Implementation in your project is very simple. You can use the exported page as a starting point, or you can copy and paste the HTML into your own page.</p>
-                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">What is the license on the pages?</h5>
-                    <p>You have unlimited use to the templates used in Tails; however, you cannot re-use the templates to sell for others to use.</p>
-                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">Can I cancel my account if I not longer need it?</h5>
-                    <p>Of course, you can feel free to cancel your account at anytime, and you can feel free to come back and upgrade again whenever you&apos;re ready.</p>
-                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">What if I need help with my project?</h5>
-                    <p>If you need assistance implementing the templates into your project you can contact support or you can visit our question section.
-                    </p>
+                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">How do I get involved? 
+</h5>
+                    <p><a href="https://discord.gg/MKbjet8QwG">Come join our discord!</a>. We would love to have you. </p>
+
+                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">Will you expand to other parachains? 
+</h5>
+                    <p>A major focus is to decentralize the project and through this decentralization also make it scalable. We will soon start working on designated UIs that would allow any parachain team to easily launch their own nft rewards collection. 
+</p>
+                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">How is this project financed?
+</h5>
+                    <p>The project is financed through royalty revenues from secondary sales. Recently we also started to generate income through primary sales of some additional collections. The Kusama treasury has been very supportive and stepped in to help us cover our costs whenever we fell short with our revenues.</p>
                 </div>
             </div>
         </div>
