@@ -21,7 +21,17 @@ export default function WalletConnect (props) {
       variant="primary"
       { ...props }
     >
-      <FontAwesomeIcon className="pl-1" icon={ faWallet }/><span className="pl-3">{ selectedWallet ? selectedWallet.name : 'Connect' } </span>
+      { selectedWallet ?
+        <>
+          <FontAwesomeIcon className="pl-1" icon={ faWallet }/>
+          <span className="pl-3">{ selectedWallet.name }</span>
+        </>
+        :
+        <>
+          <FontAwesomeIcon className="pl-1" icon={ faWallet }/>
+          <span className="pl-3">Connect</span>
+        </>
+      }
     </Button>
   )
 }
