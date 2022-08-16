@@ -7,7 +7,7 @@ export default function Roadmap() {
             <div className="w-full lg:max-w-md">
               <h2 className="mb-4 text-3xl font-bold leading-tight tracking-tight font-heading">Our (vague) Roadmap</h2>
               <p className="mb-4 font-medium tracking-tight text-gray-400 xl:mb-6">RMRK3.0, Decentralization, Soul-Bound NFTs</p>
-              <ul className="list-inside">
+              <ul className="list-inside list-default">
                 <li className="">
                   <span className="font-medium">Integrating RMRK3.0</span>
                 </li>
@@ -19,7 +19,7 @@ export default function Roadmap() {
                 </li>
                 <li className="">
                   <span className="font-medium">Decentralizing + scaling the project<br/>(semi-decentralisation)</span>
-                  <ul className="list-inside pl-3">
+                  <ul className="list-inside pl-3 list-default">
                     <li className="">
                       <span className="font-medium">Building dedicated UIs as tools to decentralise the decision making on the send-outs.</span>
                     </li>

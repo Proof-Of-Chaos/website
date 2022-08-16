@@ -14,6 +14,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.6.6",
+    "@osn/polkadot-react-identicon": "^1.0.8",
     "@polkadot/react-identicon": "^2.9.5",
     "@tailwindcss/forms": "^0.5.2",
     "@tailwindcss/typography": "^0.5.3",
@@ -46,11 +47,15 @@
     "zustand": "^4.0.0"
   },
   "devDependencies": {
+    "@emotion/styled": "^11.10.0",
+    "@polkadot/api": "^9.2.1",
+    "@polkadot/extension-dapp": "^0.44.5",
     "autoprefixer": "^10.4.7",
     "babel-plugin-styled-components": "^2.0.7",
     "eslint": "8.19.0",
     "eslint-config-next": "12.2.2",
     "postcss": "^8.4.14",
-    "postcss-import": "^14.1.0"
+    "postcss-import": "^14.1.0",
+    "ss58": "^1.0.2"
   }
 }

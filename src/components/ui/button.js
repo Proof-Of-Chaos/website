@@ -2,7 +2,7 @@ import { forwardRef } from 'react'
 import cn from 'classnames'
 
 const classes = {
-  base: ['relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm'],
+  base: ['relative no-underline inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm'],
   hover: ['hover:shadow-md hover:-translate-y-0.5'],
   disabled: ['opacity-50 cursor-not-allowed'],
   shapes: {
@@ -12,7 +12,7 @@ const classes = {
   },
   size: {
     large: ['px-7 sm:px-9 h-11 sm:h-13', 'h-11 sm:h-13'],
-    medium: ['px-5 sm:px-8 h-10 sm:h-12', 'h-10 sm:h-12'],
+    medium: ['px-5 sm:px-6 h-10 sm:h-12', 'h-10 sm:h-12'],
     small: ['px-7 h-10'],
     mini: ['px-3 h-8'],
   },

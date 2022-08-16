@@ -4,6 +4,7 @@ import { getWallets } from '@talisman-connect/wallets';
 import { useModal } from "./context";
 import { useEffect, useState } from 'react'
 import useAppStore from "../../zustand";
+import { decodeAddress, encodeAddress } from '@polkadot/keyring'
 
 export default function SelectWalletModal() {
   const [ wallet, setWallet ] = useState(null)
@@ -28,7 +29,10 @@ export default function SelectWalletModal() {
   }, [ connectedWallet, supportedWallets ])
 
   function setAccount ( account ) {
-    updateConnectedWallet( account )
+    updateConnectedWallet( {
+      ...account,
+      ksmAddress: encodeAddress( account?.address, 2 )
+    } )
   }
 
   const selectWallet = function(wallet) {

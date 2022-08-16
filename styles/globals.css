@@ -86,21 +86,25 @@
     padding-top: 0.5rem;
   }
 
-  ul li::before
+  ul.list-default li::before
   {
       content: '→';
       margin-right: 0.5rem;    /* any design */
   }
 
-  ul ul li::before
+  ul.list-default ul li::before
   {
       content: '-';
       margin-right: 0.5rem;    /* any design */
   }
 
   ul.list-none li::before {
-    content: '';
-    margin-right: 0;
+    content: '' !important;
+    margin-right: 0 !important;
+  }
+
+  .wallet-connect {
+    display: flex !important;
   }
 
   .vote-tab.active::after {

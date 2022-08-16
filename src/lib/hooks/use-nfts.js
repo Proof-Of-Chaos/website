@@ -7,13 +7,9 @@ export const nftsFetcher = async () => {
   return await fetchReferendums()
 };
 
-export const userNftsFetcher = async () => {
-  return await fetchUserNFTs()
+export const userNftsFetcher = async ( address ) => {
+  return await fetchNFTsForUser( address );
 };
-
-async function fetchUserNFTs() {
-  return await fetchNFTsForUser();
-}
 
 async function fetchReferendums() {
   let referendums = websiteConfig.classic_referendums;
@@ -52,7 +48,7 @@ async function fetchNFTsForUser( address ) {
 
   let data = await client.query({
     query: gql` 
-          query ExampleQuery($where: nfts_bool_exp, $limit: Int) {
+          query UserNFTsQuery($where: nfts_bool_exp, $limit: Int) {
             nfts(where: $where, limit: $limit) {
               id
               symbol
@@ -64,10 +60,7 @@ async function fetchNFTsForUser( address ) {
     {
       "where": {
         "rootowner": {
-          "_in": [
-            "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
-            "5CwW67PPdZQQCcdWJVaRJCepSQSrtKUumDAGa7UZbBKwd9R2"
-          ]
+          "_eq": address,
         },
         "collectionId": {
           "_in": [

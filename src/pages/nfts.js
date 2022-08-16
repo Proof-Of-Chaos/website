@@ -9,16 +9,21 @@ import useAppStore from '../zustand';
 function PageNFTs() {
   const [nfts, setNfts] = useState(groupBy( websiteConfig.classic_referendums, 'ref' ))
   const updateUserNfts = useAppStore( (state) => state.updateUserNfts )
+  const userWallet = useAppStore( (state) => state.user.connectedWallet )
 
   useEffect(() => {
     nftsFetcher().then((data) => {
         setNfts(groupBy( data, 'ref' ))
         console.log( 'aaa', nfts );
     })
-    userNftsFetcher().then( ( { data } )=> {
-      updateUserNfts( data.nfts )
-    })
   }, [])
+
+  useEffect(()=> {
+    userNftsFetcher( userWallet?.ksmAddress ).then( ( { data } )=> {
+      updateUserNfts( data.nfts )
+      console.log('new user nfts:', data.nfts )
+    })
+  }, [ userWallet ])
 
   return (
     <section className="mx-auto w-full max-w-[1160px] text-sm sm:pt-10 4xl:pt-14">
