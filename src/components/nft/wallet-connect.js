@@ -15,7 +15,6 @@ export default function WalletConnect (props) {
 
   useEffect(() => {
     setSelectedWallet( connectedWallet )
-    console.log( 'xxx', selectedWallet )
   }, [ connectedWallet ])
 
   return(
