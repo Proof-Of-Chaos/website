@@ -40,7 +40,7 @@ export default function NFTDetail( { nfts } ) {
 
   const totalAmount = distinctUserNFTs?.reduce((acc,cur) => {
     let ret = 0;
-    isFinite( cur.amount ) ? ret = acc + cur.amount : ret = acc
+    isFinite( cur.amount ) ? ret = acc + parseInt(cur.amount) : ret = acc
     return ret
   }, 0)
 
