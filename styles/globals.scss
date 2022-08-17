@@ -31,6 +31,10 @@
   @apply shadow-md text-black px-1.5 text-base py-0.5 rounded bg-gradient-to-r from-pink-400 via-red-400 to-yellow-200 background-animate;
 }
 
+.nft-legendary {
+  @apply shadow-md text-black px-1.5 text-base py-0.5 rounded bg-gradient-to-r from-pink-400 via-emerald-400 to-yellow-200 background-animate;
+}
+
 .nft-owned {
   @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded text-black;
 }

@@ -1,14 +1,15 @@
 import { faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
+import { uniqBy } from "lodash";
 import Image from "next/image"
 import { useUserNfts } from "../../lib/hooks/use-nfts";
-import useAppStore from "../../zustand";
 import Button from "../ui/button";
 
 function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
-  const { data: userNFTs } = useUserNfts( "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m" )
+  const { data: userNFTs } = useUserNfts()
   const userNFTSymbols = userNFTs?.map( ( { symbol } ) => symbol )
-  
+
   return (
     <div className="single-nft relative p-4 transform transition duration-200 hover:scale-105 flex justify-center flex-col items-center">
       <div>
@@ -17,7 +18,7 @@ function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
         { thumb && thumb !== '' ?
           <Image
             src={`https://ipfs.rmrk.link/ipfs/${ thumb }`}
-            alt={ `GovRewards NFT for Referendum ${ ref } of rarity common` }
+            alt={ `GovRewards NFT for Referendum ${ ref } of rarity ${ rarity }` }
             width={ 400 }
             height={ 400 }
           /> :
@@ -31,7 +32,13 @@ function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
 }
 
 export default function NFTDetail( { nfts } ) {
-  const totalAmount = nfts?.reduce((acc,cur) => {
+
+  //warning: we receive not always 3 nfts, sometimes there are 
+
+
+  const distinctUserNFTs = uniqBy( nfts, 'rarity' )
+
+  const totalAmount = distinctUserNFTs?.reduce((acc,cur) => {
     let ret = 0;
     isFinite( cur.amount ) ? ret = acc + cur.amount : ret = acc
     return ret
@@ -41,12 +48,19 @@ export default function NFTDetail( { nfts } ) {
     <div className="nft-detail mx-4 mb-4 p-6 pb-10 border-b-2 transition-shadow duration-200 dark:bg-light-dark">
       <h3 className="text-4xl font-bold pb-4">{ nfts[0].ref }</h3>
       <div className="flex flex-wrap justify-between">
-        { [ 'common', 'rare', 'epic' ].map( (rarity, idx) => {
-          let nftByRarity = nfts.find( nft => nft?.rarity === rarity )
+        { [ 'common', 'rare', 'epic', 'legendary' ].map( (rarity, idx) => {
+          let nftByRarity = distinctUserNFTs.find( nft => nft?.rarity === rarity )
 
           if ( nftByRarity ) {
             return (
-              <div key={ `${nftByRarity.ref}-${nftByRarity.rarity} `} className={ `nft-detail-${nftByRarity.rarity} w-full lg:w-1/4 md:w-1/3` }>
+              <div
+                key={ `${nftByRarity.ref}-${nftByRarity.rarity} `}
+                className={ classNames(
+                  'flex flex-col justify-between items-center w-full', {
+                    'lg:w-1/4 md:w-1/3': distinctUserNFTs.length <= 3,
+                    'lg:w-1/5 md:w-1/4': distinctUserNFTs.length === 4,
+                  })}
+                >
                 <SingleNFT
                   id={ nftByRarity.ref }
                   nft={ nftByRarity }
@@ -59,7 +73,12 @@ export default function NFTDetail( { nfts } ) {
             ( <div key={ rarity }>Loading</div> )
 
         })}
-        <div className="flex flex-col justify-between items-center lg:w-1/4 w-full">
+        <div className={ classNames(
+          'flex flex-col justify-between items-center w-full', {
+            'lg:w-1/4': distinctUserNFTs.length <= 3,
+            'lg:w-1/5': distinctUserNFTs.length === 4,
+          }
+        )}>
           <div className="flex flex-col items-center">
             <p className="text-gray-700">Total NFTs sent</p>
             <h4 className="text-3xl font-bold">{ totalAmount }</h4>
@@ -68,6 +87,7 @@ export default function NFTDetail( { nfts } ) {
                 href={nfts[0].url}
                 target="_blank"
                 rel="noreferrer"
+                className="no-underline"
             >
               <Button
                 className="border-2 text-gray-800 w-full no-underline"

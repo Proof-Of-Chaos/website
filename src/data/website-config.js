@@ -568,7 +568,7 @@ export const websiteConfig = {
         },
         {
             "ref":"Referendum 193",
-            "thumb":"bafkreihvksuaumnhx6v4bilcn3pzhlynhygwixxl656blzurh4laxu3ooi",
+            "thumb":"bafybeics4c24rh5bxtuglo36pejb77cwyw2oyqkrv2wd5nqop7jzjfnchy",
             "amount":"?",
             "artist":"?",
             "rarity":"legendary",
