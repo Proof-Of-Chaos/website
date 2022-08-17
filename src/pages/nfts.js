@@ -9,9 +9,13 @@ import useSWR, { SWRConfig } from 'swr';
 import objectHash from 'object-hash'
 import Loader from '../components/ui/loader';
 
+export async function getStaticProps() {
+  const nfts = websiteConfig.classic_referendums
+  return { props: { nfts } }
+}
 
-function PageNFTs({ fallback }) {
-  const { data, isLoading } = useNFTs()
+function PageNFTs({ nfts }) {
+  const { data, isLoading } = useNFTs({ initialData: nfts })
   const groupedNFTs = groupBy( data,'ref' )
 
   return (

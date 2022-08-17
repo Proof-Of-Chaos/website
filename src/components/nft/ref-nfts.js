@@ -2,7 +2,7 @@ import { faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { uniqBy } from "lodash";
-import Image from "next/image"
+import Image from "../ui/image-fade"
 import { useUserNfts } from "../../lib/hooks/use-nfts";
 import Button from "../ui/button";
 

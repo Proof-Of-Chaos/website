@@ -1,10 +1,10 @@
-import Image from 'next/image'
+import Image from "../ui/image-fade"
 import { getRandomIntBetween } from '../../lib/utils'
 import cn from 'classnames';
 import { sampleSize } from 'lodash';
 import { useNFTs } from '../../lib/hooks/use-nfts';
 
-export default function NFTSnippets( props ) {
+export default function NFTSnippets( { initial } ) {
   const { data: nfts } = useNFTs();
   const positions = [
     [10,10],

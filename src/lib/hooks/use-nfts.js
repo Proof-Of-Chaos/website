@@ -129,7 +129,7 @@ async function fetchThumb(firstResource) {
   return data.data.resources[0].thumb.replace('ipfs://ipfs/', '');
 }
 
-export function useNFTs() {
+export function useNFTs( queryOptions ) {
   return useQuery(["NFTs"], async () => {
     const { nfts } = await fetchReferendumNFTsDistinct()
     const transformedNFTs = await Promise.all(nfts.map( async ( item ) => {
@@ -147,7 +147,7 @@ export function useNFTs() {
       }
     }));
     return [ ...transformedNFTs, ...websiteConfig.classic_referendums ]
-  })
+  }, queryOptions)
 }
 
 export const useUserNfts = () => {

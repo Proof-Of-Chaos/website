@@ -9,8 +9,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLightbulb } from '@fortawesome/free-solid-svg-icons'
 import NFTSnippets from '../components/ui/nft-snippets'
 import FAQ from '../components/ui/faq'
+import { websiteConfig } from '../data/website-config'
 
-function Home() {
+export async function getStaticProps() {
+  const nfts = websiteConfig.classic_referendums
+  return { props: { nfts } }
+}
+
+function Home({ nfts }) {
   return (
     <>
       <section className="h-auto relative">
@@ -29,7 +35,7 @@ function Home() {
                 </Button>
               </Link>
             </div>
-            <NFTSnippets />
+            <NFTSnippets initial={ nfts }/>
           </div>
           <div className="px-4 py-12 mx-auto text-center lg:px-36">
             <span className="font-semibold text-gray-400 uppercase block pb-6">Numbers</span>
