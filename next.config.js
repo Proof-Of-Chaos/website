@@ -4,6 +4,8 @@ const nextConfig = {
   // swcMinify: true,
   images: {
     domains: ['gateway.ipfs.io', 'ipfs.rmrk.link'],
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self' ipfs.rmrk.link; script-src 'none'; sandbox;",
   },
 }
 
