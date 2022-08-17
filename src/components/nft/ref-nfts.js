@@ -1,24 +1,25 @@
 import { faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image"
+import { useUserNfts } from "../../lib/hooks/use-nfts";
 import useAppStore from "../../zustand";
 import Button from "../ui/button";
 
 function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
-  const userNFTs = useAppStore( (state) => state.user.nfts );
-  const mutatedNFts = userNFTs?.map( ({ symbol }) => symbol)
-
+  const { data: userNFTs } = useUserNfts( "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m" )
+  const userNFTSymbols = userNFTs?.map( ( { symbol } ) => symbol )
+  
   return (
     <div className="single-nft relative p-4 transform transition duration-200 hover:scale-105 flex justify-center flex-col items-center">
       <div>
-        { mutatedNFts?.includes( symbol ) && <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }><FontAwesomeIcon icon={ faWallet } size={"sm"} /> owned</span>}
+        { userNFTSymbols?.includes( symbol ) && <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }><FontAwesomeIcon icon={ faWallet } size={"sm"} /> owned</span>}
         <span className={ `absolute z-10 -ml-4 -mt-3 px-2 nft-${rarity}` }>{ rarity }</span>
         { thumb && thumb !== '' ?
           <Image
             src={`https://ipfs.rmrk.link/ipfs/${ thumb }`}
             alt={ `GovRewards NFT for Referendum ${ ref } of rarity common` }
-            width={ 200 }
-            height={ 200 }
+            width={ 400 }
+            height={ 400 }
           /> :
           <div className="error">No image found</div>
         }
@@ -30,22 +31,27 @@ function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
 }
 
 export default function NFTDetail( { nfts } ) {
+  const totalAmount = nfts?.reduce((acc,cur) => {
+    let ret = 0;
+    isFinite( cur.amount ) ? ret = acc + cur.amount : ret = acc
+    return ret
+  }, 0)
 
   return (
-    <div className="nft-detail mx-4 mb-4 p-6 hover:shadow-lg shadow-sm border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-100 border-b-gray-200 transition-shadow duration-200 dark:bg-light-dark">
-      <h3 className="text-2xl font-bold pb-4">{ nfts[0].ref }</h3>
+    <div className="nft-detail mx-4 mb-4 p-6 pb-10 border-b-2 transition-shadow duration-200 dark:bg-light-dark">
+      <h3 className="text-4xl font-bold pb-4">{ nfts[0].ref }</h3>
       <div className="flex flex-wrap justify-between">
-        { [ 'common', 'rare', 'epic' ].map( rarity => {
-          const nftByRarity = nfts.find( nft => nft?.rarity === rarity )
+        { [ 'common', 'rare', 'epic' ].map( (rarity, idx) => {
+          let nftByRarity = nfts.find( nft => nft?.rarity === rarity )
 
           if ( nftByRarity ) {
             return (
               <div key={ `${nftByRarity.ref}-${nftByRarity.rarity} `} className={ `nft-detail-${nftByRarity.rarity} w-full lg:w-1/4 md:w-1/3` }>
-              <SingleNFT
-                id={ nftByRarity.ref }
-                nft={ nftByRarity }
-              />
-            </div>
+                <SingleNFT
+                  id={ nftByRarity.ref }
+                  nft={ nftByRarity }
+                />
+              </div>
             )
           }
 
@@ -53,15 +59,18 @@ export default function NFTDetail( { nfts } ) {
             ( <div key={ rarity }>Loading</div> )
 
         })}
-        <div className="flex flex-col justify-between lg:w-1/4 w-full">
-          <span className="text-orange-600 mt-5 p-4">here could be statistics</span>
+        <div className="flex flex-col justify-between items-center lg:w-1/4 w-full">
+          <div className="flex flex-col items-center">
+            <p className="text-gray-700">Total NFTs sent</p>
+            <h4 className="text-3xl font-bold">{ totalAmount }</h4>
+          </div>
             <a
                 href={nfts[0].url}
                 target="_blank"
                 rel="noreferrer"
             >
               <Button
-                className="border-2 text-gray-800 w-full"
+                className="border-2 text-gray-800 w-full no-underline"
               >
                 Get on
                 <svg className="pl-3 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 693.24 169.09">

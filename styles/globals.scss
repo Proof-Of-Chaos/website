@@ -43,6 +43,25 @@
   animation: AnimationName 3s linear infinite;
 }
 
+.loader {
+  span {
+    animation: loading01 1.4s infinite alternate;
+    @for $i from 0 through 6 {
+      &:nth-child(#{$i+1}) {
+        animation-delay: #{$i*.1}s;
+      }
+    }
+  }
+}
+@keyframes loading01 {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @keyframes AnimationName {
   0%,
   100% {

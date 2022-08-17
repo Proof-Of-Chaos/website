@@ -45,7 +45,6 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
-            "symbol":"214QCC",
         },
         {
             "ref":"Referendum 214",
@@ -54,7 +53,6 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
-            "symbol":"214PQ",
         },
         {
             "ref":"Referendum 214",
@@ -62,7 +60,7 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
         },
         {
             "ref":"Referendum 213",
@@ -70,7 +68,7 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"rare",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213",
         },
         {
             "ref":"Referendum 213",
@@ -78,7 +76,7 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213",
         },
         {
             "ref":"Referendum 213",
@@ -477,7 +475,7 @@ export const websiteConfig = {
             "thumb":"bafybeigalmspsvcb3lxva2a3oqmkit2jb6h3ehujljyw75mgvsxdvt3dpy",
             "amount":"?",
             "artist":"?",
-            "rarity":"common",
+            "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+196"
         },
         {
@@ -485,7 +483,7 @@ export const websiteConfig = {
             "thumb":"bafybeid7m5xxtcln5d7zcvn73arkgw3lw4ye5j4rqnaeonmtkwsayagjk4",
             "amount":"?",
             "artist":"?",
-            "rarity":"rare",
+            "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+196"
         },
         {
@@ -493,7 +491,7 @@ export const websiteConfig = {
             "thumb":"bafybeidvniwmvx7uqffivxqygdmpcnie27pbg7uunldb2s7ret43dc32w4",
             "amount":"?",
             "artist":"?",
-            "rarity":"epic",
+            "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+196"
         },
         {

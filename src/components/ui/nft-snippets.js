@@ -1,11 +1,11 @@
 import Image from 'next/image'
 import { getRandomIntBetween } from '../../lib/utils'
 import cn from 'classnames';
-import { useNfts } from '../../lib/hooks/use-nfts';
 import { sampleSize } from 'lodash';
+import { useNFTs } from '../../lib/hooks/use-nfts';
 
 export default function NFTSnippets( props ) {
-  const { nfts } = useNfts();
+  const { data: nfts } = useNFTs();
   const positions = [
     [10,10],
     [12,80],
