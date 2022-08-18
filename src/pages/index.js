@@ -40,11 +40,10 @@ function Home({ nfts }) {
           <div className="px-4 py-12 mx-auto text-center lg:px-36">
             <span className="font-semibold text-gray-400 uppercase block pb-6">Numbers</span>
             <NftFeed priceFeeds={ nftFeedData } />
-            <Link href="/statistics">
-              <Button variant="black" className="my-8" href="">
-                See all Statistics →
-              </Button>
-            </Link>
+            <a target="_blank" rel="noreferrer" href="https://app.web3go.xyz/#/NftDetail?id=3208723ec6f65df810-ITEM" 
+            className="bg-gray-900 text-white relative no-underline inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm px-5 sm:px-6 h-10 sm:h-12 rounded-md sm:rounded-lg mt-4">
+              See more statistics on web3go →
+            </a>
           </div>
       </section>
       <section className="w-full flex py-20 px-5 sm:px-10 md:px-5">

@@ -1,7 +1,7 @@
 import { faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { uniqBy } from "lodash";
+import { uniqBy, every } from "lodash";
 import Image from "../ui/image-fade"
 import { useUserNfts } from "../../lib/hooks/use-nfts";
 import Button from "../ui/button";
@@ -38,7 +38,9 @@ export default function NFTDetail( { nfts } ) {
 
   const distinctUserNFTs = uniqBy( nfts, 'rarity' )
 
-  const totalAmount = distinctUserNFTs?.reduce((acc,cur) => {
+  const totalAmount =
+    every(distinctUserNFTs, (nft)=>isFinite(nft.amount)) &&
+    distinctUserNFTs?.reduce((acc,cur) => {
     let ret = 0;
     isFinite( cur.amount ) ? ret = acc + parseInt(cur.amount) : ret = acc
     return ret
@@ -80,8 +82,10 @@ export default function NFTDetail( { nfts } ) {
           }
         )}>
           <div className="flex flex-col items-center">
-            <p className="text-gray-700">Total NFTs sent</p>
-            <h4 className="text-3xl font-bold">{ totalAmount }</h4>
+            { totalAmount && <>
+              <p className="text-gray-700">Total NFTs sent</p>
+              <h4 className="text-3xl font-bold">{ totalAmount }</h4>
+            </>}
           </div>
             <a
                 href={nfts[0].url}

@@ -29,10 +29,10 @@ const MenuLinks = [
     name: 'Vote',
     href: '/vote',
   },
-  {
-    name: 'Statistics',
-    href: '/statistics',
-  },
+  // {
+  //   name: 'Statistics',
+  //   href: '/statistics',
+  // },
 ];
 
 export function MenuItems() {
@@ -44,7 +44,7 @@ export function MenuItems() {
         return (
           <>
             <Link
-              key={index}
+              key={item.name}
               href={item.href}
             >
               <a
