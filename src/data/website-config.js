@@ -576,14 +576,6 @@ export const websiteConfig = {
         },
         {
             "ref":"Referendum 192",
-            "thumb":"bafkreiguo4jnn2l3zmlscbmk3ogwho2ldx6rmvge76pospoay25xa44m2e",
-            "amount":"?",
-            "artist":"?",
-            "rarity":"legendary",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192"
-        },
-        {
-            "ref":"Referendum 192",
             "thumb":"bafybeihi75mlqiglhoc5eczmjotk2nw7c5ve6eimjalrmf2egdqfjd6xp4",
             "amount":"?",
             "artist":"?",
