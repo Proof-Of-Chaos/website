@@ -6,40 +6,55 @@ import { useEffect, useState } from 'react'
 import useAppStore from "../../zustand"
 import Identicon from "../ui/identicon"
 import classNames from "classnames"
+import { WalletSelect } from '@talisman-connect/components';
+import { encodeAddress } from '@polkadot/keyring'
 
 
 export default function WalletConnect (props) {
   const { openModal } = useModal();
-  const [ selectedWallet, setSelectedWallet ] = useState(null)
+  // const [ connectedWallet, setSelectedWallet ] = useState(null)
   const connectedWallet = useAppStore((state) => state.user.connectedWallet)
-
-  useEffect(() => {
-    setSelectedWallet( connectedWallet )
-  }, [ connectedWallet ])
+  const updateConnectedWallet = useAppStore( ( state ) => state.updateConnectedWallet );
 
   return(
-    <Button
-      onClick={() => openModal('VIEW_CONNECT_WALLET')}
-      className={ `wallet-connect flex shadow-main hover:shadow-large ${props.className}` }
-      variant="calm"
-    >
-      { selectedWallet ?
-        <>
-          <div className="identicon-wrap">
-            <Identicon
-              size={32}
-              id={selectedWallet.address}
-              schema="polkadot"
-            />
-          </div>
-          <span className="pl-3">{ selectedWallet.name }</span>
-        </>
-        :
-        <>
-          <FontAwesomeIcon className="pl-1" icon={ faWallet }/>
-          <span className="pl-3">Connect</span>
-        </>
-      }
-    </Button>
+    <>
+      <WalletSelect
+        dappName="Proof of Chaos Governance"
+        open={false}
+        onAccountSelected={(account) => {
+          updateConnectedWallet( {
+            ...account,
+            ksmAddress: encodeAddress( account?.address, 2 )
+          } )
+        }}
+
+        triggerComponent={
+          <Button
+            className={ `wallet-connect flex shadow-main hover:shadow-large ${props.className}` }
+            variant="calm"
+          >
+            { connectedWallet ?
+              <>
+                <div className="identicon-wrap">
+                  <Identicon
+                    size={32}
+                    id={connectedWallet.address}
+                    schema="polkadot"
+                  />
+                </div>
+                <span className="pl-3">{ connectedWallet.name }</span>
+              </>
+              :
+              <>
+                <FontAwesomeIcon className="pl-1" icon={ faWallet }/>
+                <span className="pl-3">Connect</span>
+              </>
+            }
+          </Button>
+        }
+
+        showAccountsList={true}
+      />
+    </>
   )
 }

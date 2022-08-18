@@ -80,7 +80,50 @@
 
 @layer base {
   :root {
-    --color-primary: 255, 115, 179;
+    --color-primary: 5, 0, 179;
+    /* Light theme */
+    --talisman-connect-control-foreground: #f2f;
+    --talisman-connect-active-background: #e5e5e5;
+    --talisman-connect-active-foreground: inherit;
+    --talisman-connect-modal-background: #fafafa;
+    --talisman-connect-modal-foreground: inherit;
+    --talisman-connect-button-background: #333;
+    --talisman-connect-button-foreground: inherit;
+
+    --talisman-connect-modal-gutter: 1rem;
+    --talisman-connect-font-family: "Ubuntu mono";
+    --talisman-connect-border-radius: 0.5rem;
+
+    --talisman-connect-modal-width: 100%;
+    --talisman-connect-modal-max-width: 600px;
+    --talisman-connect-modal-max-height: 470px;
+
+    --talisman-connect-button-gutter: 1rem;
+    --talisman-connect-button-border-radius: 0.15rem;
+
+    --talisman-connect-modal-header-font-size: 1.5rem;
+    --modal-max-width: 600px;
+  }
+
+  div[class^='Modal-module_modal-content'] {
+    max-width: 600px;
+  }
+
+  main[class^='Modal-module_modal-content-body'] {
+    button {
+      @apply bg-gradient-to-r border-2 border-solid border-gray-400 bg-white hover:bg-gradient-to-r hover:from-indigo-200 hover:to-indigo-400
+    }
+  }
+
+  header[class^='Modal-module_modal-header'] {
+    font-weight: bold;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --talisman-connect-modal-min-width: 470px;
+      --talisman-connect-modal-max-width: 470px;
+    }
   }
 
   html,
