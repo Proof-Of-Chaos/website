@@ -1,26 +1,36 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { Tab } from "@headlessui/react";
 import { getVotesByStatus } from "../../../data/vote-data";
 import ReferendumDetail from "./referendum-detail";
+import { referendumFetcher } from '../../../lib/hooks/use-referendums'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export function ReferendumList( { voteStatus } ) {
+
+  const [ referendums, setReferendums ] = useState([]);
   const { votes, totalVotes } = getVotesByStatus(voteStatus);
+
+  useEffect(() => {
+    referendumFetcher().then((referendums) => {
+      setReferendums(referendums)
+    })
+  }, [])
+
   return (
     <>
       { totalVotes > 0 ? (
-        votes.map( (vote, idx) => (
+        referendums.map( (referendum, idx) => (
           <div
-            key={`${vote.title}-key-${vote.id}`}
+            key={`${referendum.title}-key-${referendum.id}`}
           >
-            <ReferendumDetail referendum={ vote } listIndex={ idx } />
+            <ReferendumDetail referendum={ referendum } listIndex={ idx } />
           </div>
         ))) : (
           <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
-            There are no referenda to vote atm
+            There are currently no referendums to vote
           </h2>
         )
       }
@@ -28,7 +38,7 @@ export function ReferendumList( { voteStatus } ) {
   )
 }
 
-export default function ReferndumTabs( props ) {
+export default function ReferendumTabs( props ) {
   const { totalVotes: totalActiveVotes } = getVotesByStatus('active');
   const { totalVotes: totalPastVotes } = getVotesByStatus('past');
 

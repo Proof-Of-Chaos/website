@@ -1,4 +1,6 @@
 import { quizzes } from "./vote-quiz";
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import useAppStore from "../zustand";
 
 export async function voteOnReferendum( refId, amount, lockup ) {
   return Promise.resolve('fake data')
@@ -16,6 +18,32 @@ export async function getQuizById( referendumId ) {
 
 export async function setTimeoutPromise(timeout) {
   return new Promise((resolve) => setTimeout(resolve, timeout))
+}
+
+export async function castVote(signer, aye, ref, address, balance, conviction) {
+  return new Promise((resolve) => {
+    const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
+    ApiPromise.create({ provider: wsProvider }).then((api) => {
+
+      let vote = {
+        Standard: {
+          vote: {
+            aye: aye,
+            conviction: conviction,
+          },
+          balance: balance
+        }
+      };
+
+      api.tx.democracy.vote(ref, vote).signAndSend(address, {signer: signer}, result => {
+        if (result.status.isInBlock) {
+          console.log('in a block');
+        } else if (result.status.isFinalized) {
+          resolve()
+        }
+      }).catch((e) => { throw(e) }) // TODO: toast message (promise reject?)
+    });
+  })
 }
 
 export async function getQuizAnswers() {

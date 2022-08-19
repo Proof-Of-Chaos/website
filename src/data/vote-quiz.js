@@ -1,7 +1,7 @@
 export const quizzes = {
-  203 : [
+  223 : [
     {
-      question: 'What is the name of ref 203 parachain?',
+      question: 'What is the name of ref 223 parachain?',
       answers: [
         'Polkadot',
         'Kusama',
@@ -11,7 +11,7 @@ export const quizzes = {
       multiple: true,
     },
     {
-      question: 'What is the name of Polkadot\'s founder (ref 203)?',
+      question: 'What is the name of Polkadot\'s founder (ref 223)?',
       answers: [
         'Wavin Good',
         'Mavin Wood',

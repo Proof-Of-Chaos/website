@@ -21,7 +21,7 @@ export default function ReferendumStats( { aye, nay } ) {
           <p>
             {aye?.vote} ({aye?.percentage}%)
           </p>
-          <p>174.48K DOT</p>
+          <p>{aye?.voteVolume}</p>
         </div>
         <div className="text-red-500 ltr:text-right rtl:text-left">
           <h5 className="mb-1 font-medium uppercase sm:mb-2 sm:text-base">
@@ -30,9 +30,7 @@ export default function ReferendumStats( { aye, nay } ) {
           <p>
             {nay?.vote} ({nay?.percentage}%)
           </p>
-          <p>
-            14.18K DOT
-          </p>
+          <p>{nay?.voteVolume}</p>
         </div>
       </div>
     </div>

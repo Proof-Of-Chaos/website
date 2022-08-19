@@ -1,5 +1,5 @@
 import { Dialog } from "@headlessui/react";
-import { setTimeoutPromise } from "../../data/vote-service";
+import { castVote } from "../../data/vote-service";
 import Button from "../ui/button";
 import Input from "../ui/input";
 import { useModal } from "./context";
@@ -10,48 +10,55 @@ import useAppStore from "../../zustand";
 
 export default function ReferendumVoteModal( { id, title } ) {
   const { closeModal } = useModal();
-  const [ accounts, setAccounts ] = useState([])
-  const connectedWalletProvider = useAppStore((state) => state.user.connectedWalletProvider)
-
   const VOTE_LOCK_OPTIONS = [
     {
-      value: '0.1',
+      value: 'None',
       label: '0.1x - no lockup',
     },
     {
-      value: '1',
+      value: 'Locked1x',
       label: '1x - locked for 1 enactment period (8 days)',
     },
     {
-      value: '2',
+      value: 'Locked2x',
       label: '2x - locked for 2 enactment periods (16 days)',
     },
     {
-      value: '4',
+      value: 'Locked4x',
       label: '3x - locked for 4 enactment periods (32 days)',
     },
     {
-      value: '8',
+      value: 'Locked8x',
       label: '4x - locked for 8 enactment periods (64 days)',
     },
     {
-      value: '16',
+      value: 'Locked1x6',
       label: '5x - locked for 16 enactment periods (128 days)',
     },
     {
-      value: '32',
+      value: 'Locked3x2',
       label: '6x - locked for 32 enactment periods (256 days)',
     },
   ]
 
+  const [ accounts, setAccounts ] = useState([])
+  const [ state, setState ] = useState({
+    'wallet-select': null,
+    'vote-amount': 1,
+    'vote-lock': VOTE_LOCK_OPTIONS[0].value,
+  })
+  const connectedWallet = useAppStore((state) => state.user.connectedWallet)
+
   useEffect(() => {
-    let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWalletProvider)
+    let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWallet?.source)
 
     if (useWallet) {
       useWallet.enable('ProofOfChaos').then(() => {
         try {
           useWallet.subscribeAccounts((accounts) => {
             setAccounts(accounts)
+            state["wallet-select"] = JSON.parse(localStorage.getItem('selectedAccount'))?.address ?? accounts[0] ?? null
+            setState(state)
           });
         } catch (err) {
           console.log("Wallet connect error: ", err)
@@ -60,15 +67,29 @@ export default function ReferendumVoteModal( { id, title } ) {
     }
   }, [])
 
-  async function onClickAye() {
-    toast.promise(
-      setTimeoutPromise(3000),
-      {
-        pending: `sending your vote for referendum ${ id }`,
-        success: 'vote successfully recorded 🗳️',
-        error: 'error recording vote 🤯'
-      }
-    ).then( () => { closeModal() } );
+  const setFormFieldValue = (e) => {
+    let field = e.target.getAttribute('id')
+    state[field] = e.target.value
+    setState(state)
+  }
+
+  async function onClickCastVote(aye = true) {
+    const balance = parseFloat(state['vote-amount']) * 1000000000000;
+    let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWallet?.source)
+
+    // TODO: message when no wallet is connected OR connect wallet prompt
+    if (useWallet) {
+      const signer = useWallet.signer;
+
+      toast.promise(
+        castVote(signer, aye, id, state['wallet-select'], balance, state['vote-lock']),
+        {
+          pending: `sending your vote for referendum ${ id }`,
+          success: 'vote successfully recorded 🗳️',
+          error: 'error recording vote 🤯'
+        }
+      ).then( () => { closeModal() } );
+    }
   }
 
   return(
@@ -85,7 +106,7 @@ export default function ReferendumVoteModal( { id, title } ) {
           id="wallet-select"
           label="Select Wallet"
           type="select"
-          value={ JSON.parse(localStorage.getItem('selectedAccount'))?.address }
+          value={ state["wallet-select"] }
           options={ accounts.map( (account) => {
             return {
               label: account.name,
@@ -93,13 +114,17 @@ export default function ReferendumVoteModal( { id, title } ) {
             };
           })}
           tooltip="Select the wallet for voting"
+          onChange={setFormFieldValue.bind(this)}
         />
         <Input
           id="vote-amount"
           label="Value"
           type="number"
+          step="0.1"
+          value={ state["vote-amount"] }
           className="text-base"
           tooltip="The value is locked for the selected time below"
+          onChange={setFormFieldValue.bind(this)}
         />
         <Input
           id="vote-lock"
@@ -108,18 +133,19 @@ export default function ReferendumVoteModal( { id, title } ) {
           className="text-xs sm:text-sm md:text-base"
           options={ VOTE_LOCK_OPTIONS }
           tooltip="How long your value is locked - increases voting power"
+          onChange={setFormFieldValue.bind(this)}
         />
       </form>
 
       <div className="mt-6">
         <Button
           className="mr-2 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white"
-          onClick={ () => onClickAye() }>
+          onClick={ () => onClickCastVote(true) }>
           Aye
         </Button>
         <Button
           className="mr-2 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white text-4xl"
-          onClick={closeModal}>
+          onClick={ () => onClickCastVote(false) }>
           Nay
         </Button>
         <Button
