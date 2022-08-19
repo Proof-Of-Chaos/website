@@ -8,9 +8,13 @@ import { useQuizzes } from "../../../lib/hooks/use-quizzes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { getWallets } from '@talisman-connect/wallets';
+import useAppStore from "../../../zustand";
+import WalletConnect from "../../nft/wallet-connect";
 
 export default function ReferendumDetail({ referendum, listIndex }) {
   let [isExpanded, setIsExpanded] = useState(false);
+  const { openModal } = useModal();
+  const connectedAccount = useAppStore((state) => state.user.connectedAccount)
 
   useEffect( () => {
     if (listIndex === 0 ) {
@@ -20,20 +24,6 @@ export default function ReferendumDetail({ referendum, listIndex }) {
 
   const { quizzes, loading, error } = useQuizzes();
   const questions = quizzes?.[referendum.id];
-  const supportedWallets = getWallets();
-
-  const { openModal } = useModal();
-
-  const openModalAfterConnect = function(view, referendum) {
-    let connectedWallet = localStorage.getItem('connectedWallet')
-    let useWallet = supportedWallets.find(foundWallet => foundWallet.extensionName === connectedWallet)
-
-    if (connectedWallet && useWallet) {
-      openModal( view, referendum )
-    } else {
-      openModal('VIEW_CONNECT_WALLET')
-    }
-  }
 
   return (
     <div
@@ -96,27 +86,50 @@ export default function ReferendumDetail({ referendum, listIndex }) {
               Voting ends in
             </h3>
             <ReferendumCountdown date={referendum.executed_at} />
-            {isExpanded &&
+            { isExpanded &&
               <>
-                { !loading && ! error && questions &&
+                { connectedAccount ?
+                  <>
+                  { !loading && ! error && questions &&
+                    <Button
+                      onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
+                      className="mt-4 w-full xs:w-auto"
+                      variant="primary"
+                    >
+                      Take Quiz + Vote
+                    </Button>
+                  }
                   <Button
-                    onClick={() => openModalAfterConnect('VIEW_REFERENDUM_QUIZ', referendum )}
-                    className="mt-4 w-full xs:w-auto"
-                    variant="primary"
+                    onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
+                    className="mt-0 w-full xs:w-auto"
+                    variant="calm"
                   >
-                    Take Quiz + Vote
+                    Vote Now
                   </Button>
+                  <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
+                </>
+              :
+              <>
+                <WalletConnect
+                  className="w-full"
+                  title="Vote Now"
+                  onAccountSelected={ ( ) => { 
+                    openModal( 'VIEW_REFERENDUM_VOTE', referendum )
+                  } }
+                />
+                { !loading && ! error && questions && <WalletConnect
+                    className="w-full"
+                    variant="primary"
+                    title="Take Quiz + Vote"
+                    onAccountSelected={ ( ) => { 
+                      openModal( 'VIEW_REFERENDUM_QUIZ', referendum )
+                    } }
+                  />
                 }
-                <Button
-                  onClick={() => openModalAfterConnect('VIEW_REFERENDUM_VOTE', referendum )}
-                  className="mt-0 w-full xs:w-auto"
-                  variant="calm"
-                >
-                  Vote Now
-                </Button>
-                <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
               </>
             }
+            </>
+          }
           </div>
         )}
       </div>

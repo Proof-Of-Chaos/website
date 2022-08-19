@@ -22,6 +22,7 @@ const useAppStore = create(
         knowsAboutLuckBoost: false,
         connectedWalletProvider: null,
         connectedWallet: null,
+        connectedAccount: null,
         nfts: [],
       },
       updateUserNfts: ( nfts ) => {
@@ -53,6 +54,14 @@ const useAppStore = create(
           user: {
             ...state.user,
             connectedWallet: wallet,
+          }
+        }))
+      },
+      updateConnectedAccount: ( account ) => {
+        set((state)=>({
+          user: {
+            ...state.user,
+            connectedAccount: account,
           }
         }))
       },

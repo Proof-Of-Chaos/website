@@ -21,28 +21,31 @@ export async function setTimeoutPromise(timeout) {
 }
 
 export async function castVote(signer, aye, ref, address, balance, conviction) {
-  return new Promise((resolve) => {
+  return new Promise( async ( resolve, reject ) => {
     const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
-    ApiPromise.create({ provider: wsProvider }).then((api) => {
+    const api = await ApiPromise.create({ provider: wsProvider })
 
-      let vote = {
-        Standard: {
-          vote: {
-            aye: aye,
-            conviction: conviction,
-          },
-          balance: balance
-        }
-      };
+    let vote = {
+      Standard: {
+        vote: {
+          aye: aye,
+          conviction: conviction,
+        },
+        balance: balance
+      }
+    };
 
-      api.tx.democracy.vote(ref, vote).signAndSend(address, {signer: signer}, result => {
+    try {
+      await api.tx.democracy.vote(ref, vote).signAndSend(address, {signer: signer}, result => {
         if (result.status.isInBlock) {
-          console.log('in a block');
+          resolve( 'in block' )
         } else if (result.status.isFinalized) {
-          resolve()
+          resolve( 'finalized' )
         }
-      }).catch((e) => { throw(e) }) // TODO: toast message (promise reject?)
-    });
+      })
+    } catch (err) {
+      reject( 'voting cancelled' )
+    }
   })
 }
 

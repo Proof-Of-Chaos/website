@@ -5,8 +5,9 @@ import Input from "../ui/input";
 import { useModal } from "./context";
 import { toast } from 'react-toastify';
 import {useEffect, useState} from "react";
-import {getWallets} from "@talisman-connect/wallets";
+import {getWalletBySource, getWallets} from "@talisman-connect/wallets";
 import useAppStore from "../../zustand";
+import { web3FromSource } from "@talisman-connect/components";
 
 export default function ReferendumVoteModal( { id, title } ) {
   const { closeModal } = useModal();
@@ -41,54 +42,40 @@ export default function ReferendumVoteModal( { id, title } ) {
     },
   ]
 
-  const [ accounts, setAccounts ] = useState([])
+  const connectedAccount = useAppStore((state) => state.user.connectedAccount)
+  const connectedWallet = useAppStore((state) => state.user.connectedWallet)
+  const { accounts } = connectedWallet
+
   const [ state, setState ] = useState({
-    'wallet-select': null,
+    'wallet-select': connectedAccount?.address,
     'vote-amount': 1,
     'vote-lock': VOTE_LOCK_OPTIONS[0].value,
   })
-  const connectedWallet = useAppStore((state) => state.user.connectedWallet)
-
-  useEffect(() => {
-    let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWallet?.source)
-
-    if (useWallet) {
-      useWallet.enable('ProofOfChaos').then(() => {
-        try {
-          useWallet.subscribeAccounts((accounts) => {
-            setAccounts(accounts)
-            state["wallet-select"] = JSON.parse(localStorage.getItem('selectedAccount'))?.address ?? accounts[0] ?? null
-            setState(state)
-          });
-        } catch (err) {
-          console.log("Wallet connect error: ", err)
-        }
-      });
-    }
-  }, [])
 
   const setFormFieldValue = (e) => {
-    let field = e.target.getAttribute('id')
-    state[field] = e.target.value
-    setState(state)
+    setState({
+      ...state,
+      [e.target.getAttribute('id')]: e.target.value,
+    })
   }
 
   async function onClickCastVote(aye = true) {
-    const balance = parseFloat(state['vote-amount']) * 1000000000000;
-    let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWallet?.source)
+    const balance = parseFloat(state['vote-amount']) * 1000000000000
+    const injector = web3FromSource( connectedAccount?.source );
+    const signer = injector?.signer
 
-    // TODO: message when no wallet is connected OR connect wallet prompt
-    if (useWallet) {
-      const signer = useWallet.signer;
-
+    try {
       toast.promise(
-        castVote(signer, aye, id, state['wallet-select'], balance, state['vote-lock']),
+        castVote(signer, aye, id, state['wallet-select'], balance, state['vote-lock'])
+          .then( () => { closeModal() } ),
         {
-          pending: `sending your vote for referendum ${ id }`,
-          success: 'vote successfully recorded 🗳️',
-          error: 'error recording vote 🤯'
+          pending: `Sending your vote for Referendum #${ id }`,
+          success: 'Thank you for voting 🗳️',
+          error: 'Vote not recorded 🤯'
         }
-      ).then( () => { closeModal() } );
+      )
+    } catch (err) {
+      console.log( '>>> err', err );
     }
   }
 
@@ -140,12 +127,12 @@ export default function ReferendumVoteModal( { id, title } ) {
       <div className="mt-6">
         <Button
           className="mr-2 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white"
-          onClick={ () => onClickCastVote(true) }>
+          onClick={ async () => onClickCastVote(true) }>
           Aye
         </Button>
         <Button
           className="mr-2 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white text-4xl"
-          onClick={ () => onClickCastVote(false) }>
+          onClick={ async () => onClickCastVote(false) }>
           Nay
         </Button>
         <Button

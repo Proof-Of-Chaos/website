@@ -10,19 +10,36 @@ import { WalletSelect } from '@talisman-connect/components';
 import { encodeAddress } from '@polkadot/keyring'
 
 
-export default function WalletConnect (props) {
+export default function WalletConnect ( { className, title, onAccountSelected, variant = 'calm' } ) {
   const { openModal } = useModal();
   // const [ connectedWallet, setSelectedWallet ] = useState(null)
   const connectedWallet = useAppStore((state) => state.user.connectedWallet)
+  const connectedAccount = useAppStore((state) => state.user.connectedAccount)
   const updateConnectedWallet = useAppStore( ( state ) => state.updateConnectedWallet );
+  const updateConnectedAccount = useAppStore( ( state ) => state.updateConnectedAccount );
 
   return(
     <>
       <WalletSelect
         dappName="Proof of Chaos Governance"
         open={false}
-        onAccountSelected={(account) => {
+
+        onWalletSelected={(wallet) => {
           updateConnectedWallet( {
+            ...wallet,
+          } )
+        }}
+
+        onUpdatedAccounts={(accounts) => {
+          updateConnectedWallet( {
+            ...connectedWallet,
+            accounts,
+          } )
+        }}
+
+        onAccountSelected={ (account) => {
+          typeof onAccountSelected === 'function' ? onAccountSelected() : () => {}
+          updateConnectedAccount( {
             ...account,
             ksmAddress: encodeAddress( account?.address, 2 )
           } )
@@ -30,24 +47,28 @@ export default function WalletConnect (props) {
 
         triggerComponent={
           <Button
-            className={ `wallet-connect flex shadow-main hover:shadow-large ${props.className}` }
-            variant="calm"
+            className={ `wallet-connect flex shadow-main hover:shadow-large ${className}` }
+            variant={ variant }
           >
-            { connectedWallet ?
+            { connectedAccount ?
               <>
                 <div className="identicon-wrap">
                   <Identicon
                     size={32}
-                    id={connectedWallet.address}
+                    id={connectedAccount.address}
                     schema="polkadot"
                   />
                 </div>
-                <span className="pl-3">{ connectedWallet.name }</span>
+                <span className="pl-3">{ connectedAccount.name }</span>
               </>
               :
               <>
-                <FontAwesomeIcon className="pl-1" icon={ faWallet }/>
-                <span className="pl-3">Connect</span>
+                { title ? title :
+                <>
+                  <FontAwesomeIcon className="pl-1" icon={ faWallet }/>
+                  <span className="pl-3">Connect</span>
+                </>
+                }
               </>
             }
           </Button>
