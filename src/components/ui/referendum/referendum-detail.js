@@ -8,8 +8,10 @@ import { useQuizzes } from "../../../lib/hooks/use-quizzes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { getWallets } from '@talisman-connect/wallets';
+import useAppStore from "../../../zustand";
 
 export default function ReferendumDetail({ referendum, listIndex }) {
+  const connectedWallet = useAppStore((state) => state.user.connectedWallet)
   let [isExpanded, setIsExpanded] = useState(false);
 
   useEffect( () => {
@@ -25,13 +27,12 @@ export default function ReferendumDetail({ referendum, listIndex }) {
   const { openModal } = useModal();
 
   const openModalAfterConnect = function(view, referendum) {
-    let connectedWallet = localStorage.getItem('connectedWallet')
-    let useWallet = supportedWallets.find(foundWallet => foundWallet.extensionName === connectedWallet)
+    let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWallet?.source)
 
-    if (connectedWallet && useWallet) {
+    if (useWallet) {
       openModal( view, referendum )
     } else {
-      openModal('VIEW_CONNECT_WALLET')
+      alert("Connect wallet first. TODO: trigger wallet connect")
     }
   }
 

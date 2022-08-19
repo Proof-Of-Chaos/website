@@ -43,11 +43,11 @@ export default function ReferendumVoteModal( { id, title } ) {
 
   const [ accounts, setAccounts ] = useState([])
   const [ state, setState ] = useState({
-    'wallet-select': null,
-    'vote-amount': 1,
     'vote-lock': VOTE_LOCK_OPTIONS[0].value,
   })
   const connectedWallet = useAppStore((state) => state.user.connectedWallet)
+  let initialWallet = null;
+  let initialVoteAmount = 1;
 
   useEffect(() => {
     let useWallet = getWallets().find(foundWallet => foundWallet.extensionName === connectedWallet?.source)
@@ -57,7 +57,9 @@ export default function ReferendumVoteModal( { id, title } ) {
         try {
           useWallet.subscribeAccounts((accounts) => {
             setAccounts(accounts)
-            state["wallet-select"] = JSON.parse(localStorage.getItem('selectedAccount'))?.address ?? accounts[0] ?? null
+            initialWallet = JSON.parse(localStorage.getItem('selectedAccount'))?.address ?? accounts[0].address ?? null
+            state["wallet-select"] = initialWallet
+            state["vote-amount"] = initialVoteAmount
             setState(state)
           });
         } catch (err) {
@@ -106,7 +108,7 @@ export default function ReferendumVoteModal( { id, title } ) {
           id="wallet-select"
           label="Select Wallet"
           type="select"
-          value={ state["wallet-select"] }
+          value={ initialWallet }
           options={ accounts.map( (account) => {
             return {
               label: account.name,
@@ -121,7 +123,7 @@ export default function ReferendumVoteModal( { id, title } ) {
           label="Value"
           type="number"
           step="0.1"
-          value={ state["vote-amount"] }
+          value={ initialVoteAmount }
           className="text-base"
           tooltip="The value is locked for the selected time below"
           onChange={setFormFieldValue.bind(this)}
