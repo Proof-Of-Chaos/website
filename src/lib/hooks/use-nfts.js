@@ -151,7 +151,7 @@ export function useNFTs( queryOptions ) {
 }
 
 export const useUserNfts = () => {
-  const ksmAddress = useAppStore( (state) => state.user.connectedWallet?.ksmAddress )
+  const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
   return useQuery(["userNFTs", ksmAddress ], async () => {
     const data = await fetchNFTsForUser( ksmAddress );
     return data.nfts

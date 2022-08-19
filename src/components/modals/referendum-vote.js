@@ -44,6 +44,7 @@ export default function ReferendumVoteModal( { id, title } ) {
 
   const connectedAccount = useAppStore((state) => state.user.connectedAccount)
   const connectedWallet = useAppStore((state) => state.user.connectedWallet)
+  const { address } = connectedAccount
   const { accounts } = connectedWallet
 
   const [ state, setState ] = useState({
@@ -51,6 +52,8 @@ export default function ReferendumVoteModal( { id, title } ) {
     'vote-amount': 1,
     'vote-lock': VOTE_LOCK_OPTIONS[0].value,
   })
+
+  console.log( connectedWallet, connectedAccount, accounts )
 
   const setFormFieldValue = (e) => {
     setState({
@@ -61,22 +64,44 @@ export default function ReferendumVoteModal( { id, title } ) {
 
   async function onClickCastVote(aye = true) {
     const balance = parseFloat(state['vote-amount']) * 1000000000000
-    const injector = web3FromSource( connectedAccount?.source );
-    const signer = injector?.signer
+    const wallet = getWalletBySource(connectedAccount.source)
+    await wallet.enable('Proof of Chaos')
+    
 
+    //TODO: message when no wallet is connected OR connect wallet prompt
     try {
       toast.promise(
-        castVote(signer, aye, id, state['wallet-select'], balance, state['vote-lock'])
-          .then( () => { closeModal() } ),
+        castVote(wallet.signer, aye, id, state['wallet-select'], balance, state['vote-lock']).then( () => { closeModal() } ),
         {
-          pending: `Sending your vote for Referendum #${ id }`,
-          success: 'Thank you for voting 🗳️',
-          error: 'Vote not recorded 🤯'
+          pending: `sending your vote for referendum ${ id }`,
+          success: 'Vote successfully recorded 🗳️',
+          error: 'Error recording vote 🤯'
         }
       )
     } catch (err) {
       console.log( '>>> err', err );
     }
+
+    // const signer = connectedWallet.signer
+
+    // async () => {
+    //   const wallet = getWalletBySource(source);
+    //   try {
+    //     const { signature } = await wallet.signer.signRaw({
+    //       type: 'payload',
+    //       data: 'dummy message',
+    //       address: address,
+    //     });
+
+    //     setResult(signature);
+
+    //     console.log(`>>> signature`, signature);
+    //   } catch (err) {
+    //     console.log(`>>> err`, err);
+    //   }
+    // }
+
+
   }
 
   return(

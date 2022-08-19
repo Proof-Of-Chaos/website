@@ -44,6 +44,7 @@ export async function castVote(signer, aye, ref, address, balance, conviction) {
         }
       })
     } catch (err) {
+      console.log( err );
       reject( 'voting cancelled' )
     }
   })
