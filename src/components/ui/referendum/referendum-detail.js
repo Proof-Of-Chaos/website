@@ -7,7 +7,7 @@ import { useModal } from "../../modals/context";
 import { useQuizzes } from "../../../lib/hooks/use-quizzes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { getWallets } from '@talisman-connect/wallets';
+import ReactMarkdown from 'react-markdown'
 import useAppStore from "../../../zustand";
 import WalletConnect from "../../nft/wallet-connect";
 
@@ -64,8 +64,10 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                   <div className="order-1">
                     <div
                       className="dynamic-html grid gap-2 leading-relaxed text-gray-600 dark:text-gray-400 pr-8"
-                      dangerouslySetInnerHTML={{ __html: referendum.description }}
-                    />
+                      // dangerouslySetInnerHTML={{ __html: referendum.description }}
+                    >
+                      <ReactMarkdown>{ referendum.description }</ReactMarkdown>
+                    </div>
                   </div>
                   <Button
                     onClick={() => setIsExpanded(!isExpanded)}

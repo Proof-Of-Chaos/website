@@ -1,5 +1,6 @@
 export const websiteConfig = {
-    singular_graphql_endpoint: "https://gql-rmrk2-prod.graphcdn.app/",
+    singular_graphql_endpoint: "https://gql-rmrk2-prod.graphcdn.app",
+    polkassembly_graphql_endpoint: "https://kusama.polkassembly.io/v1/graphql",
     singular_referendum_collections: [
         "3208723ec6f65df810-ITEM",
         "3208723ec6f65df810-ITEMXEVRLOOT",
