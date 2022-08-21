@@ -96,6 +96,11 @@ export default function ReferendumDetail({ referendum, listIndex }) {
               Voting ends in
             </h3>
             <ReferendumCountdown date={referendum.executed_at} />
+            {referendum.castVote &&
+              <div>
+                Voted { referendum.castVote.aye ? 'aye' : 'nay' } with { referendum.castVote.balance } KSM and { referendum.castVote.conviction } conviction
+              </div>
+            }
               { connectedAccount ?
                 <>
                 { !loading && ! error && questions &&

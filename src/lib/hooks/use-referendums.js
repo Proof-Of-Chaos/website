@@ -5,10 +5,11 @@ import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
 import { request, gql } from "graphql-request";
 import {websiteConfig} from "../../data/website-config";
 import { useQuery } from "@tanstack/react-query";
+import useAppStore from "../../zustand";
 
 const BLOCK_DURATION = 6000;  
 
-export const referendumFetcher = async () => {
+export const referendumFetcher = async (ksmAddress) => {
   const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
   const api = await ApiPromise.create({ provider: wsProvider });
 
@@ -21,7 +22,7 @@ export const referendumFetcher = async () => {
   for (const referendum of activeReferendums) {
     const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
     const PAData = await getPADataForRef(referendum.index.toString());
-    referendums.push(referendumObject(referendum, endDate, PAData));
+    referendums.push(referendumObject(referendum, endDate, PAData, ksmAddress));
   }
 
   return referendums.sort((a,b)=>parseInt(b.id)-parseInt(a.id));
@@ -71,12 +72,28 @@ const microToKSMFormatted = (microKSM) => {
   return parseFloat((microToKSM(microKSM) / 1000).toFixed(2)) + 'K KSM';
 }
 
-const referendumObject = (referendum, endDate, PAData) => {
+const parseCastVote = (vote) => {
+  if (!vote) {
+    return null
+  }
+
+  return {
+    aye: vote.vote.aye,
+    balance: parseInt(vote.balance.toString()) / 1000000000000,
+    conviction: vote.vote.conviction.toString(),
+  }
+}
+
+const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
   let title = PAData?.title
 
   if (!title) {
     title = referendum.image.proposal.section.toString() + '.' + referendum.image.proposal.method.toString()
   }
+
+  const vote = referendum.votes.find((account) => {
+    return account.accountId.toString() === ksmAddress;
+  })
 
   return {
     id: referendum.index.toString(),
@@ -101,14 +118,18 @@ const referendumObject = (referendum, endDate, PAData) => {
     votes: [],
     actions: [],
     description: PAData?.content   ?? "-",
+    castVote: parseCastVote(vote),
   }
 }
 
 export const useReferendums = () => {
-  const { data, mutate, error } = useSWR( 'referendumData', referendumFetcher )
+  const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
+  const { data, mutate, error } = useSWR( 'referendumData', referendumFetcher(ksmAddress) )
   const loading = !data && !error;
 
-  return useQuery([ "referendumData" ], referendumFetcher )
+  return useQuery([ "referendumData", ksmAddress ], async () => {
+    return referendumFetcher(ksmAddress)
+  })
 
   return {
     loading,
