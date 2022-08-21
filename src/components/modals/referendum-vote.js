@@ -113,7 +113,7 @@ export default function ReferendumVoteModal( { id, title } ) {
         { title }
       </div>
 
-      <form className="mt-8">
+      <form className="mt-4">
         <Input
           id="wallet-select"
           label="Select Wallet"

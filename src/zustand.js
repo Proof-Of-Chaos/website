@@ -65,7 +65,7 @@ const useAppStore = create(
           }
         }))
       },
-      updateQuiz: ( referendumId, answer ) =>
+      updateQuizAnswers: ( referendumId, answer ) =>
         set((state) => ({
           user: {
             ...state.user,

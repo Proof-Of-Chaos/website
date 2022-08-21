@@ -59,7 +59,7 @@ export default function Input( props ) {
       }
       {
         type === 'radio' && <>
-        { options.map( ({ value, label }) =>
+        { options.map( ({ value, label, checked }) =>
           <div
             key={ `${value}-${id}` }
             className="px-0 py-1"
@@ -71,6 +71,7 @@ export default function Input( props ) {
               id={ `${id}-${value}` }
               name={ name ? name : id }
               value={ value }
+              checked={ checked }
             />
             <label
               htmlFor={ `${id}-${value}` }
@@ -84,7 +85,7 @@ export default function Input( props ) {
       }
       {
         type === 'checkbox' && <>
-        { options.map( ({ value, label }) =>
+        { options.map( ({ value, label, checked }) =>
           <div
             key={ `${value}-${id}` }
             className="px-0 py-1"
@@ -96,6 +97,7 @@ export default function Input( props ) {
               id={ `${id}-${value}` }
               name={ name ? name : id }
               value={ value }
+              checked={ checked }
             />
             <label
               htmlFor={ `${id}-${value}` }

@@ -13,19 +13,13 @@ import { validate } from "graphql";
 
 export default function ReferendumQuizModal( { id, title } ) {
   const { closeModal } = useModal();
-  const fieldsetRef = useRef();
-  const validationRef = useRef();
-  const { data: initialAnswers } = useSWR( 'answers', async () => getQuizAnswers() );
-  // const { data: questions, error } = useSWR( 'questions', async () => getQuizById( id ) );
-  const [ userAnswers, setUserAnswers ] = useState({});
-
   const { quizzes } = useQuizzes();
   const questions = quizzes?.[id];
 
-  const updateQuiz = useAppStore( ( state ) => state.updateQuiz );
-  const currentQuiz = useAppStore(( ( state ) => state.user.quizAnswers[id] ) )
+  const updateQuizAnswers = useAppStore( ( state ) => state.updateQuizAnswers )
+  const userAnswers = useAppStore( ( ( state ) => state.user.quizAnswers[id] ) )
 
-  const isFormFilled = currentQuiz?.answers && Object.keys(currentQuiz.answers).length === questions.length
+  const isFormFilled = userAnswers?.answers && Object.keys(userAnswers.answers).length === questions.length
 
   async function onSend() {
     if ( ! isFormFilled ) {
@@ -42,14 +36,6 @@ export default function ReferendumQuizModal( { id, title } ) {
     ).then( () => { closeModal() } );
   }
 
-  useEffect( () => {
-    if ( initialAnswers ) {
-      console.log( 'retrieved answers from storage', initialAnswers )
-      setUserAnswers( initialAnswers )
-      onLoadAnswers()
-    }
-  }, [ initialAnswers ] )
-
   function onLoadAnswers( loadedAnswers ){
     console.log( 'onloadanswers' );
     loadedAnswers?.map( (a) => {
@@ -59,24 +45,19 @@ export default function ReferendumQuizModal( { id, title } ) {
 
   function onChangeInputs( e, questionIndex, multiple ) {
     let qAnswer = null;
-    if ( multiple ) {
-      const checkboxes = document.querySelectorAll(`[name=ref${id}question${questionIndex}]`)
-      qAnswer = [ ...checkboxes ].reduce(
-        ( prev, cur, idx ) => {
-        return [ ...prev, cur.checked ];
-       },
-       []
-      )
-    } else {
-      qAnswer = e.target.value
-    }
+    const checkboxes = document.querySelectorAll(`[name=ref${id}question${questionIndex}]`)
+    qAnswer = [ ...checkboxes ].reduce(
+      ( prev, cur, idx ) => {
+      return [ ...prev, cur.checked ];
+      },
+      []
+    )
 
     const newUserAnswers = {
       [`${ questionIndex }`]: qAnswer,
     }
     console.log( `user changed answer for ref ${ id } question ${ questionIndex } to ${ qAnswer }` )
-    // setUserAnswers( newUserAnswers );
-    updateQuiz( id, newUserAnswers );
+    updateQuizAnswers( id, newUserAnswers );
   }
 
   return(
@@ -93,12 +74,15 @@ export default function ReferendumQuizModal( { id, title } ) {
         <>
           <form className="mt-4 pr-4 overflow-y-scroll flex-1">
             { questions.map( ( { question, answers, multiple }, i) => {
-              const selectOptions = answers.map( (a, j) => {
+              const selectOptions = answers.map( (a,j) => {
                 return {
                   value: j,
                   label: a,
+                  checked: userAnswers?.answers?.[i] && userAnswers?.answers?.[i][j],
                 }
               })
+
+              console.log( 'ua', userAnswers.answers[i] )
               return (
                 <fieldset
                   key={ `quiz-${i}`}
