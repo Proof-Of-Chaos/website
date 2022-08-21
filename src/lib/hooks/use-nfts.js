@@ -146,7 +146,7 @@ export function useNFTs( queryOptions ) {
         url: 'https://singular.app/collections/' + item.collectionId + '?search=' + encodeURIComponent(item.metadata_name),
       }
     }));
-    return [ ...transformedNFTs, ...websiteConfig.classic_referenduma ]
+    return [ ...transformedNFTs, ...websiteConfig.classic_referendums ]
   }, queryOptions)
 }
 

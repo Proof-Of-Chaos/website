@@ -10,7 +10,7 @@ import objectHash from 'object-hash'
 import Loader from '../components/ui/loader';
 
 export async function getStaticProps() {
-  const nfts = websiteConfig.classic_referenduma
+  const nfts = websiteConfig.classic_referendums
   return { props: { nfts } }
 }
 

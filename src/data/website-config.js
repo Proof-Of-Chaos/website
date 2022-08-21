@@ -14,7 +14,7 @@ export const websiteConfig = {
         "epic",
         "legendary",
     ],
-    classic_referenduma: [
+    classic_referendums: [
         // {
         //     "ref":"Referendum 215",
         //     "thumb":"bafybeifmcl3iksfr3q25cd25pnogvqn6oisa2yjgj6r2fywdjd5ri2hp7q",
