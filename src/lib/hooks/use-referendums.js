@@ -78,7 +78,7 @@ const parseCastVote = (vote) => {
   }
 
   return {
-    aye: vote.vote.aye,
+    aye: vote.vote.isAye,
     balance: parseInt(vote.balance.toString()) / 1000000000000,
     conviction: vote.vote.conviction.toString(),
   }
