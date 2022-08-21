@@ -24,11 +24,13 @@ export function ReferendumList( { voteStatus } ) {
     setReferendums( referendums )
   }
 
+  const showLoader = isLoading || typeof cachedReferendums === 'undefined' 
+
   console.log( 'cachedreferendums', cachedReferendums )
 
   return (
     <>
-      { (isLoading || typeof cachedReferendums === 'undefined') && <Loader /> }
+      { showLoader && <Loader /> }
       { totalVotes > 0 ? (
         referendums?.map( (referendum, idx) => (
           <div

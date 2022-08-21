@@ -22,15 +22,15 @@ export default function ReferendumDetail({ referendum }) {
   return (
     <div
       className={cn(
-        'mb-6 bg-white p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-100 border-b-gray-200',
+        'mb-6 bg-white p-2 md:p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-100 border-b-gray-200',
         {
           'shadow-lg': isExpanded,
           'shadow-card hover:shadow-lg': !isExpanded,
         }
       )}
     >
-      <div className="flex w-full flex-col justify-between md:grid md:grid-cols-3">
-        <div className="self-start md:col-span-2 p-2">
+      <div className="flex flex-wrap w-full flex-row justify-between">
+        <div className="self-start p-2 w-full md:w-2/3">
           <h3
             onClick={() => setIsExpanded(!isExpanded)}
             className="cursor-pointer text-xl leading-normal dark:text-gray-100"
@@ -44,15 +44,13 @@ export default function ReferendumDetail({ referendum }) {
             <>
               { ! isExpanded ? (
                 <>
-                  <div className="order-1">
-                    <div
-                      className="dynamic-html grid gap-2 leading-relaxed text-gray-600 dark:text-gray-400 pr-8 truncate max-h-60"
-                      // dangerouslySetInnerHTML={{ __html: referendum.description }}
-                    >
-                      <ReactMarkdown>{ referendum.description }</ReactMarkdown>
-                    </div>
+                  <div
+                    className="order-1 dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-8 max-h-60 overflow-hidden"
+                    // dangerouslySetInnerHTML={{ __html: referendum.description }}
+                  >
+                    <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                   </div>
-                  <Button
+´                  <Button
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="mt-4 mr-4 w-full xs:w-auto"
                     variant="black"
@@ -65,7 +63,7 @@ export default function ReferendumDetail({ referendum }) {
                 <>
                   <div className="order-1">
                     <div
-                      className="dynamic-html grid gap-2 leading-relaxed text-gray-600 dark:text-gray-400 pr-8"
+                      className="dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-8"
                     >
                       <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                     </div>
@@ -84,8 +82,8 @@ export default function ReferendumDetail({ referendum }) {
           )}
         </div>
         {['active'].indexOf(referendum.status) !== -1 && (
-          <div className="before:content-[' '] border-t-2 border-dashed border-gray-100 md:border-none text-center md:text-left mt-4 pt-4 md:pt-0 md:mt-0 content-start relative mb-5 grid h-full gap-2 pb-5 before:absolute before:bottom-0 before:h-[1px] before:w-full before:border-b before:border-r before:border-dashed before:border-gray-200 ltr:before:left-0 rtl:before:right-0 dark:border-gray-700 dark:before:border-gray-700 xs:gap-2.5 md:mb-0 md:pb-0 md:before:h-full md:before:w-[1px] ltr:md:pl-8 rtl:md:pr-8">
-            <h3 className="text-gray-900 dark:md:text-gray-100 text-lg ">
+          <div className="before:content-[' '] w-full md:w-1/3 border-t-2 border-dashed border-gray-100 md:border-none text-center md:text-left mt-4 pt-2 md:mt-0 content-start relative mb-5 h-full gap-2 pb-5 before:absolute before:bottom-0 before:h-[1px] before:w-full before:border-b before:border-r before:border-dashed before:border-gray-200 ltr:before:left-0 rtl:before:right-0 dark:border-gray-700 dark:before:border-gray-700 md:mb-0 md:pb-0 md:before:h-full md:before:w-[1px] ltr:md:pl-8 rtl:md:pr-8">
+            <h3 className="text-gray-900 dark:md:text-gray-100 text-xl">
               Voting ends in
             </h3>
             <ReferendumCountdown date={referendum.executed_at} />
@@ -99,7 +97,7 @@ export default function ReferendumDetail({ referendum }) {
                 { !loading && ! error && questions &&
                   <Button
                     onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
-                    className="mt-4 w-full xs:w-auto"
+                    className="mt-4 w-full"
                     variant="primary"
                   >
                     Take Quiz + Vote
@@ -107,7 +105,7 @@ export default function ReferendumDetail({ referendum }) {
                 }
                 <Button
                   onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
-                  className="mt-0 w-full xs:w-auto"
+                  className="mt-2 w-full"
                   variant={ !loading && ! error && questions ? 'calm' : 'primary' }
                 >
                   Vote Now

@@ -16,7 +16,7 @@ module.exports = {
       xl: '1280px',
       '2xl': '1440px',
       '3xl': '1780px',
-      '4xl': '2160px', // only need to control product grid mode in ultra 4k device
+      '4xl': '2160px',
     },
     container: {
       center: true,

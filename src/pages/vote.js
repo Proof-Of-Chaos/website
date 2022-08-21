@@ -30,10 +30,10 @@ function Vote() {
                 Boost Your Luck
               </h2>
               <p className="w-full max-w-lg mt-5 text-base leading-8 text-white md:w-3/4" data-primary="pink-600">
-                Take a quiz before voting in referenda and your chances of receiving <span className="nft-rare">rare</span> and <span className="nft-epic">epic</span> NFTs will increase when all answers are correct.
+                Take a quiz before voting in referenda and your chances of receiving <span className="nft-rare">rare</span> and <span className="nft-epic">epic</span> NFTs will increase by ~50% when all answers are correct.
               </p>
             </div>
-            <div
+            { false && <div
               className="relative flex flex-col items-center w-full px-6 space-y-5 md:space-x-5 md:space-y-0 md:flex-row md:w-auto lg:flex-shrink-0 md:px-0">
               <Button href="#_"
                 className="block w-full px-5 py-3 text-base font-medium leading-6 text-center text-indigo-900 transition duration-150 ease-in-out bg-purple-100 border-2 border-gray-100 rounded-md md:inline-flex md:shadow md:w-auto hover:bg-white focus:outline-none focus:shadow-outline"
@@ -48,7 +48,7 @@ function Vote() {
               >
                 I know
               </Button>
-            </div>
+            </div> }
           </div>
         </div>
       </section> }
