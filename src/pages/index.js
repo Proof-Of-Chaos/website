@@ -12,7 +12,7 @@ import FAQ from '../components/ui/faq'
 import { websiteConfig } from '../data/website-config'
 
 export async function getStaticProps() {
-  const nfts = websiteConfig.classic_referenduma
+  const nfts = websiteConfig.classic_referendums
   return { props: { nfts } }
 }
 function Home({ nfts }) {
