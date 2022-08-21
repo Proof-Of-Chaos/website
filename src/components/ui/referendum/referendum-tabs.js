@@ -2,7 +2,8 @@ import {useEffect, useState} from "react";
 import { Tab } from "@headlessui/react";
 import { getVotesByStatus } from "../../../data/vote-data";
 import ReferendumDetail from "./referendum-detail";
-import { referendumFetcher } from '../../../lib/hooks/use-referendums'
+import { useReferendums } from '../../../lib/hooks/use-referendums'
+import Loader from '../loader'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -10,19 +11,14 @@ function classNames(...classes) {
 
 export function ReferendumList( { voteStatus } ) {
 
-  const [ referendums, setReferendums ] = useState([]);
+  const { data: referendums, isLoading } = useReferendums()
   const { votes, totalVotes } = getVotesByStatus(voteStatus);
-
-  useEffect(() => {
-    referendumFetcher().then((referendums) => {
-      setReferendums(referendums)
-    })
-  }, [])
 
   return (
     <>
+      { isLoading && <Loader /> }
       { totalVotes > 0 ? (
-        referendums.map( (referendum, idx) => (
+        referendums?.map( (referendum, idx) => (
           <div
             key={`${referendum.title}-key-${referendum.id}`}
           >

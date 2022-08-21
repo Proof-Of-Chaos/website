@@ -70,7 +70,7 @@ export default function ReferendumQuizModal( { id, title } ) {
                 return {
                   value: j,
                   label: a,
-                  // bin the checked value of the inputs to state values
+                  // bind the checked value of the inputs to state values
                   checked: userAnswers?.answers?.[i] && userAnswers?.answers?.[i][j],
                 }
               })

@@ -4,8 +4,9 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
 import { request, gql } from "graphql-request";
 import {websiteConfig} from "../../data/website-config";
+import { useQuery } from "@tanstack/react-query";
 
-const BLOCK_DURATION = 6000;
+const BLOCK_DURATION = 6000;  
 
 export const referendumFetcher = async () => {
   const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
@@ -107,6 +108,8 @@ export const useReferendums = () => {
   const { data, mutate, error } = useSWR( 'referendumData', referendumFetcher )
   const loading = !data && !error;
 
+  return useQuery([ "referendumData" ], referendumFetcher )
+
   return {
     loading,
     referendumData: data,
@@ -114,3 +117,11 @@ export const useReferendums = () => {
     error,
   };
 };
+
+export const useUserNfts = () => {
+  const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
+  return useQuery(["userNFTs", ksmAddress ], async () => {
+    const data = await fetchNFTsForUser( ksmAddress );
+    return data.nfts
+  })
+}
