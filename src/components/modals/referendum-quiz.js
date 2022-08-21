@@ -12,6 +12,7 @@ import { every } from "lodash";
 import { validate } from "graphql";
 
 export default function ReferendumQuizModal( { id, title } ) {
+  const { openModal } = useModal();
   const { closeModal } = useModal();
   const { quizzes } = useQuizzes();
   const questions = quizzes?.[id];
@@ -37,6 +38,7 @@ export default function ReferendumQuizModal( { id, title } ) {
     ).then( () => {
       submitQuiz( id )
       closeModal()
+      openModal('VIEW_REFERENDUM_VOTE', {id, title, userAnswers})
     } );
   }
 

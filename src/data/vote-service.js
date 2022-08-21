@@ -20,23 +20,19 @@ export async function setTimeoutPromise(timeout) {
   return new Promise((resolve) => setTimeout(resolve, timeout))
 }
 
-export async function castVote(signer, aye, ref, address, balance, conviction) {
+export async function castVote(signer, aye, ref, address, balance, conviction, userAnswers) {
   return new Promise( async ( resolve, reject ) => {
     const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
     const api = await ApiPromise.create({ provider: wsProvider })
 
-    let vote = {
-      Standard: {
-        vote: {
-          aye: aye,
-          conviction: conviction,
-        },
-        balance: balance
-      }
-    };
+    let txs = [getVoteTx(api, aye, ref, balance, conviction)];
+
+    if (userAnswers) {
+      txs.push(getQuizRemarkTx(api, userAnswers));
+    }
 
     try {
-      await api.tx.democracy.vote(ref, vote).signAndSend(address, {signer: signer}, result => {
+      api.tx.utility.batch(txs).signAndSend(address, {signer: signer}, result => {
         if (result.status.isInBlock) {
           resolve( 'in block' )
         } else if (result.status.isFinalized) {
@@ -47,7 +43,38 @@ export async function castVote(signer, aye, ref, address, balance, conviction) {
       console.log( err );
       reject( 'voting cancelled' )
     }
+
+    /*try {
+      await api.tx.democracy.vote(ref, vote).signAndSend(address, {signer: signer}, result => {
+        if (result.status.isInBlock) {
+          resolve( 'in block' )
+        } else if (result.status.isFinalized) {
+          resolve( 'finalized' )
+        }
+      })
+    } catch (err) {
+      console.log( err );
+      reject( 'voting cancelled' )
+    }*/
   })
+}
+
+function getVoteTx(api, aye, ref, balance, conviction) {
+  let vote = {
+    Standard: {
+      vote: {
+        aye: aye,
+        conviction: conviction,
+      },
+      balance: balance
+    }
+  };
+
+  return api.tx.democracy.vote(ref, vote)
+}
+
+function getQuizRemarkTx(api, userAnswers) {
+  return api.tx.system.remark('GOV::QUIZ::' + JSON.stringify(userAnswers.answers))
 }
 
 export async function getQuizAnswers() {

@@ -43,7 +43,9 @@ export default function ReferendumTabs( props ) {
     Past: <ReferendumList voteStatus={'past'} />,
   })
 
-  return (
+  return <ReferendumList voteStatus={'active'} />
+
+  {/* return (
     <div className="w-full px-4 py-8">
       <Tab.Group>
         <Tab.List className="flex mb-4 pb-4 border-brand-600">
@@ -75,5 +77,5 @@ export default function ReferendumTabs( props ) {
         </Tab.Panels>
       </Tab.Group>
     </div>
-  )
+  ) */}
 }

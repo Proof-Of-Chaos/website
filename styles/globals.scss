@@ -11,6 +11,11 @@
   right: 0;
 }
 
+.dynamic-html img {
+  max-width: 100%;
+  height: auto;
+}
+
 .bg-dark {
   @apply bg-gradient-to-br from-gray-800 to-black;
 }

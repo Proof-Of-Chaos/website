@@ -59,7 +59,7 @@ function Vote() {
   )
 }
 
-Vote.getLayout = function getLayout(page) {
+Vote.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
 }
 

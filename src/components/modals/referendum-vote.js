@@ -9,7 +9,8 @@ import {getWalletBySource, getWallets} from "@talisman-connect/wallets";
 import useAppStore from "../../zustand";
 import { web3FromSource } from "@talisman-connect/components";
 
-export default function ReferendumVoteModal( { id, title } ) {
+export default function ReferendumVoteModal( { id, title, userAnswers } ) {
+
   const { closeModal } = useModal();
   const VOTE_LOCK_OPTIONS = [
     {
@@ -51,9 +52,8 @@ export default function ReferendumVoteModal( { id, title } ) {
     'wallet-select': connectedAccount?.address,
     'vote-amount': 1,
     'vote-lock': VOTE_LOCK_OPTIONS[0].value,
+    userAnswers: userAnswers,
   })
-
-  console.log( connectedWallet, connectedAccount, accounts )
 
   const setFormFieldValue = (e) => {
     setState({
@@ -68,10 +68,9 @@ export default function ReferendumVoteModal( { id, title } ) {
     await wallet.enable('Proof of Chaos')
     
 
-    //TODO: message when no wallet is connected OR connect wallet prompt
     try {
       toast.promise(
-        castVote(wallet.signer, aye, id, state['wallet-select'], balance, state['vote-lock']).then( () => { closeModal() } ),
+        castVote(wallet.signer, aye, id, state['wallet-select'], balance, state['vote-lock'], state['userAnswers']).then( () => { closeModal() } ),
         {
           pending: `sending your vote for referendum ${ id }`,
           success: 'Vote successfully recorded 🗳️',
@@ -81,27 +80,6 @@ export default function ReferendumVoteModal( { id, title } ) {
     } catch (err) {
       console.log( '>>> err', err );
     }
-
-    // const signer = connectedWallet.signer
-
-    // async () => {
-    //   const wallet = getWalletBySource(source);
-    //   try {
-    //     const { signature } = await wallet.signer.signRaw({
-    //       type: 'payload',
-    //       data: 'dummy message',
-    //       address: address,
-    //     });
-
-    //     setResult(signature);
-
-    //     console.log(`>>> signature`, signature);
-    //   } catch (err) {
-    //     console.log(`>>> err`, err);
-    //   }
-    // }
-
-
   }
 
   return(

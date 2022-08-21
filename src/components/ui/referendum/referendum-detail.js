@@ -11,16 +11,10 @@ import ReactMarkdown from 'react-markdown'
 import useAppStore from "../../../zustand";
 import WalletConnect from "../../nft/wallet-connect";
 
-export default function ReferendumDetail({ referendum, listIndex }) {
+export default function ReferendumDetail({ referendum }) {
   let [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModal();
   const connectedAccount = useAppStore((state) => state.user.connectedAccount)
-
-  useEffect( () => {
-    if (listIndex === 0 ) {
-      setIsExpanded(true);
-    }
-  }, [listIndex])
 
   const { quizzes, loading, error } = useQuizzes();
   const questions = quizzes?.[referendum.id];
@@ -72,7 +66,6 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                   <div className="order-1">
                     <div
                       className="dynamic-html grid gap-2 leading-relaxed text-gray-600 dark:text-gray-400 pr-8"
-                      // dangerouslySetInnerHTML={{ __html: referendum.description }}
                     >
                       <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                     </div>
@@ -96,6 +89,11 @@ export default function ReferendumDetail({ referendum, listIndex }) {
               Voting ends in
             </h3>
             <ReferendumCountdown date={referendum.executed_at} />
+            {referendum.castVote &&
+              <div>
+                Voted { referendum.castVote.aye ? 'aye' : 'nay' } with { referendum.castVote.balance } KSM and { referendum.castVote.conviction } conviction
+              </div>
+            }
               { connectedAccount ?
                 <>
                 { !loading && ! error && questions &&
