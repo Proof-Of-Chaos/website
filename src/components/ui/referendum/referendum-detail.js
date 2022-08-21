@@ -46,11 +46,10 @@ export default function ReferendumDetail({ referendum }) {
                 <>
                   <div
                     className="order-1 dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8 max-h-60 overflow-hidden"
-                    // dangerouslySetInnerHTML={{ __html: referendum.description }}
                   >
                     <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                   </div>
-´                  <Button
+                  <Button
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="mt-4 mr-4 w-full xs:w-auto"
                     variant="black"
