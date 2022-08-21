@@ -46,7 +46,7 @@ async function getPADataForRef(referendumID) {
             ...referendumPost
           }
         }
-        
+
         fragment referendumPost on posts {
           content
           created_at

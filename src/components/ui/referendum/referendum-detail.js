@@ -48,15 +48,23 @@ export default function ReferendumDetail({ referendum, listIndex }) {
           </p>
           {referendum.status === 'active' && (
             <>
-              {!isExpanded ? (
+              { ! isExpanded ? (
                 <>
+                  <div className="order-1">
+                    <div
+                      className="dynamic-html grid gap-2 leading-relaxed text-gray-600 dark:text-gray-400 pr-8 truncate max-h-60"
+                      // dangerouslySetInnerHTML={{ __html: referendum.description }}
+                    >
+                      <ReactMarkdown>{ referendum.description }</ReactMarkdown>
+                    </div>
+                  </div>
                   <Button
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="mt-2 mr-4 w-full xs:mt-2 xs:w-auto md:mt-2"
                     variant="calm"
                     size="mini"
                   >
-                    Referendum Details <FontAwesomeIcon className="pl-3" icon={ faChevronDown } />
+                    Show More <FontAwesomeIcon className="pl-3" icon={ faChevronDown } />
                   </Button>
                 </>
               ) : (

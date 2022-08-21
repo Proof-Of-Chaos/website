@@ -81,7 +81,7 @@ export default function ReferendumQuizModal( { id, title } ) {
         <div className="min-h-[200px] flex justify-center items-center">Loading...</div>
       :
         <>
-          <form className="mt-4">
+          <form className="mt-4 pr-4 overflow-y-scroll flex-1">
             { questions.map( ( { question, answers, multiple }, i) => {
               const selectOptions = answers.map( (a, j) => {
                 return {

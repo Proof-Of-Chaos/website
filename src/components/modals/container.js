@@ -47,7 +47,7 @@ export default function ModalsContainer() {
               leave="ease-in duration-200"
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
-              className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              className="w-full max-w-2xl flex flex-col max-h-[calc(100vh-4rem)] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
             >
               { view && renderModalContent(view, props) }
             </Transition.Child>
