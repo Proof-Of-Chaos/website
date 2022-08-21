@@ -37,7 +37,7 @@ export default function ReferendumDetail({ referendum }) {
           >
             {referendum.title}
           </h3>
-          <p className="mt-2 text-gray-600 dark:text-gray-400 border-b border-gray-200 pb-4 mb-4 mr-8 border-dashed">
+          <p className="text-xl mt-1 text-gray-600 dark:text-gray-400 border-b border-gray-200 pb-4 mb-4 mr-8 border-dashed">
             Referendum #{referendum.id}
           </p>
           {referendum.status === 'active' && (
@@ -45,7 +45,7 @@ export default function ReferendumDetail({ referendum }) {
               { ! isExpanded ? (
                 <>
                   <div
-                    className="order-1 dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-8 max-h-60 overflow-hidden"
+                    className="order-1 dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8 max-h-60 overflow-hidden"
                     // dangerouslySetInnerHTML={{ __html: referendum.description }}
                   >
                     <ReactMarkdown>{ referendum.description }</ReactMarkdown>
@@ -63,7 +63,7 @@ export default function ReferendumDetail({ referendum }) {
                 <>
                   <div className="order-1">
                     <div
-                      className="dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-8"
+                      className="dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8"
                     >
                       <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                     </div>
