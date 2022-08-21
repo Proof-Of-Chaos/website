@@ -60,8 +60,8 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                   </div>
                   <Button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="mt-2 mr-4 w-full xs:mt-2 xs:w-auto md:mt-2"
-                    variant="calm"
+                    className="mt-4 mr-4 w-full xs:w-auto"
+                    variant="black"
                     size="mini"
                   >
                     Show More <FontAwesomeIcon className="pl-3" icon={ faChevronDown } />
@@ -80,7 +80,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                   <Button
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="mt-3 mr-4 w-full xs:w-auto text-sm"
-                    variant="calm"
+                    variant="black"
                     size="mini"
                   >
                     Hide Details <FontAwesomeIcon className="pl-3" icon={ faChevronUp } />
@@ -96,48 +96,44 @@ export default function ReferendumDetail({ referendum, listIndex }) {
               Voting ends in
             </h3>
             <ReferendumCountdown date={referendum.executed_at} />
-            { isExpanded &&
-              <>
-                { connectedAccount ?
-                  <>
-                  { !loading && ! error && questions &&
-                    <Button
-                      onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
-                      className="mt-4 w-full xs:w-auto"
-                      variant="primary"
-                    >
-                      Take Quiz + Vote
-                    </Button>
-                  }
+              { connectedAccount ?
+                <>
+                { !loading && ! error && questions &&
                   <Button
-                    onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
-                    className="mt-0 w-full xs:w-auto"
-                    variant="calm"
+                    onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
+                    className="mt-4 w-full xs:w-auto"
+                    variant="primary"
                   >
-                    Vote Now
+                    Take Quiz + Vote
                   </Button>
-                  <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
-                </>
-              :
-              <>
-                <WalletConnect
+                }
+                <Button
+                  onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
+                  className="mt-0 w-full xs:w-auto"
+                  variant="calm"
+                >
+                  Vote Now
+                </Button>
+                <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
+              </>
+            :
+            <>
+              <WalletConnect
+                className="w-full"
+                title="Vote Now"
+                onAccountSelected={ ( ) => { 
+                  openModal( 'VIEW_REFERENDUM_VOTE', referendum )
+                } }
+              />
+              { !loading && ! error && questions && <WalletConnect
                   className="w-full"
-                  title="Vote Now"
+                  variant="primary"
+                  title="Take Quiz + Vote"
                   onAccountSelected={ ( ) => { 
-                    openModal( 'VIEW_REFERENDUM_VOTE', referendum )
+                    openModal( 'VIEW_REFERENDUM_QUIZ', referendum )
                   } }
                 />
-                { !loading && ! error && questions && <WalletConnect
-                    className="w-full"
-                    variant="primary"
-                    title="Take Quiz + Vote"
-                    onAccountSelected={ ( ) => { 
-                      openModal( 'VIEW_REFERENDUM_QUIZ', referendum )
-                    } }
-                  />
-                }
-              </>
-            }
+              }
             </>
           }
           </div>

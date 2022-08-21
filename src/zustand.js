@@ -72,9 +72,11 @@ const useAppStore = create(
             quizAnswers: {
               ...state.user.quizAnswers,
               [`${referendumId}`]: {
-                ...state.user.quizAnswers[`${referendumId}`],
+                answers: {
+                  ...state.user.quizAnswers[`${referendumId}`]?.answers,
+                  ...answer,
+                },
                 timestamp: Date.now(),
-                ...answer,
               },
             }
           }

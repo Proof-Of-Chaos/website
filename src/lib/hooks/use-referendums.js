@@ -23,7 +23,7 @@ export const referendumFetcher = async () => {
     referendums.push(referendumObject(referendum, endDate, PAData));
   }
 
-  return referendums;
+  return referendums.sort((a,b)=>parseInt(b.id)-parseInt(a.id));
 };
 
 const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {

@@ -17,6 +17,7 @@ const classes = {
     mini: ['px-3 h-8'],
   },
   variant: {
+    disabled: ['bg-gray-100 text-gray-400'],
     black: ['bg-gray-900 text-white'],
     calm: ['text-gray-800 dark:text-white bg-white border-2 border-gray-300 dark:border-white'],
     primary: ['text-white', 'bg-gradient-to-r from-blue-400 to-purple-400', 'hover:bg-brand-500', 'hover:ring-brand-800'],

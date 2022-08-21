@@ -8,10 +8,13 @@ import { useModal } from "./context";
 import { toast } from 'react-toastify';
 import useAppStore from "../../zustand";
 import { useQuizzes } from "../../lib/hooks/use-quizzes";
+import { every } from "lodash";
+import { validate } from "graphql";
 
 export default function ReferendumQuizModal( { id, title } ) {
   const { closeModal } = useModal();
   const fieldsetRef = useRef();
+  const validationRef = useRef();
   const { data: initialAnswers } = useSWR( 'answers', async () => getQuizAnswers() );
   // const { data: questions, error } = useSWR( 'questions', async () => getQuizById( id ) );
   const [ userAnswers, setUserAnswers ] = useState({});
@@ -20,8 +23,15 @@ export default function ReferendumQuizModal( { id, title } ) {
   const questions = quizzes?.[id];
 
   const updateQuiz = useAppStore( ( state ) => state.updateQuiz );
+  const currentQuiz = useAppStore(( ( state ) => state.user.quizAnswers[id] ) )
+
+  const isFormFilled = currentQuiz?.answers && Object.keys(currentQuiz.answers).length === questions.length
 
   async function onSend() {
+    if ( ! isFormFilled ) {
+      return
+    }
+
     toast.promise(
       storeQuizAnswers( userAnswers ),
       {
@@ -108,11 +118,13 @@ export default function ReferendumQuizModal( { id, title } ) {
           }
           </form>
 
-            <div className="mt-6">
+            <div className="mt-4">
               <Button
                 className="mr-2"
-                variant="primary"
-                onClick={ onSend }>
+                variant={ isFormFilled ? 'primary' : 'disabled' }
+                disabled={ ! isFormFilled }
+                onClick={ onSend }
+              >
                 Submit
               </Button>
               <Button
@@ -120,7 +132,7 @@ export default function ReferendumQuizModal( { id, title } ) {
                 onClick={ closeModal }>
                 Cancel
               </Button>
-            </div> 
+            </div>
         </>
       }
     </>
