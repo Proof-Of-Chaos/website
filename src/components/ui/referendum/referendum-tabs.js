@@ -4,6 +4,7 @@ import { getVotesByStatus } from "../../../data/vote-data";
 import ReferendumDetail from "./referendum-detail";
 import { useReferendums } from '../../../lib/hooks/use-referendums'
 import Loader from '../loader'
+import useAppStore from "../../../zustand";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -11,12 +12,23 @@ function classNames(...classes) {
 
 export function ReferendumList( { voteStatus } ) {
 
-  const { data: referendums, isLoading } = useReferendums()
-  const { votes, totalVotes } = getVotesByStatus(voteStatus);
+  const setReferendums = useAppStore((state)=>state.setReferendums)
+  const cachedReferendums = useAppStore((state)=>state.referendums)
+
+  const { data: referendums, isLoading, error } = useReferendums( {
+    placeholderData: cachedReferendums,
+  })
+  const { votes, totalVotes } = getVotesByStatus(voteStatus)
+
+  if ( ! isLoading && ! error && referendums ) {
+    setReferendums( referendums )
+  }
+
+  console.log( 'cachedreferendums', cachedReferendums )
 
   return (
     <>
-      { isLoading && <Loader /> }
+      { (isLoading || typeof cachedReferendums === 'undefined') && <Loader /> }
       { totalVotes > 0 ? (
         referendums?.map( (referendum, idx) => (
           <div

@@ -122,14 +122,18 @@ const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
   }
 }
 
-export const useReferendums = () => {
+export const useReferendums = ( config ) => {
   const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
   const { data, mutate, error } = useSWR( 'referendumData', referendumFetcher(ksmAddress) )
   const loading = !data && !error;
 
-  return useQuery([ "referendumData", ksmAddress ], async () => {
-    return referendumFetcher(ksmAddress)
-  })
+  return useQuery(
+    [ "referendumData", ksmAddress ],
+    async () => {
+      return referendumFetcher(ksmAddress)
+    },
+    config
+  )
 
   return {
     loading,

@@ -25,6 +25,11 @@ const useAppStore = create(
         connectedAccount: null,
         nfts: [],
       },
+      setReferendums: ( referendums ) => {
+        set(()=>({
+          referendums,
+        }))
+      },
       updateUserNfts: ( nfts ) => {
         set((state)=>({
           user: {
