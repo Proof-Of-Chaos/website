@@ -61,7 +61,7 @@ export async function storeQuizAnswers( answers ) {
 //helper for demo - mock data storage with localstorage
 
 async function persistToStorage( key, data ){
-  await setTimeoutPromise(500)
+  await setTimeoutPromise(1000)
   localStorage.setItem( key, JSON.stringify(data) )
   console.log( 'persisting', data, 'to', key );
   return Promise.resolve( data )

@@ -16,6 +16,7 @@ export default function ReferendumQuizModal( { id, title } ) {
   const { quizzes } = useQuizzes();
   const questions = quizzes?.[id];
 
+  const submitQuiz = useAppStore( ( state ) => state.submitQuiz )
   const updateQuizAnswers = useAppStore( ( state ) => state.updateQuizAnswers )
   const userAnswers = useAppStore( ( ( state ) => state.user.quizAnswers[id] ) )
 
@@ -33,7 +34,10 @@ export default function ReferendumQuizModal( { id, title } ) {
         success: 'answers successfully recorded 🗳️',
         error: 'error recording answers 🤯'
       }
-    ).then( () => { closeModal() } );
+    ).then( () => {
+      submitQuiz( id )
+      closeModal()
+    } );
   }
 
   function onChangeInputs( e, questionIndex, multiple ) {

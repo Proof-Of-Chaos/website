@@ -65,6 +65,21 @@ const useAppStore = create(
           }
         }))
       },
+      submitQuiz: ( referendumId ) => {
+        set((state)=>({
+          user: {
+            ...state.user,
+            quizAnswers: {
+              ...state.user.quizAnswers,
+              [`${referendumId}`]: {
+                ...state.user.quizAnswers[`${referendumId}`],
+                submitted: true,
+                submittedOn: Date.now(),
+              },
+            }
+          }
+        }))
+      },
       updateQuizAnswers: ( referendumId, answer ) =>
         set((state) => ({
           user: {
@@ -76,7 +91,7 @@ const useAppStore = create(
                   ...state.user.quizAnswers[`${referendumId}`]?.answers,
                   ...answer,
                 },
-                timestamp: Date.now(),
+                lastChange: Date.now(),
               },
             }
           }
