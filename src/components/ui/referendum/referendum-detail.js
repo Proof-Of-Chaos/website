@@ -110,7 +110,7 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                 <Button
                   onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
                   className="mt-0 w-full xs:w-auto"
-                  variant="calm"
+                  variant={ !loading && ! error && questions ? 'calm' : 'primary' }
                 >
                   Vote Now
                 </Button>

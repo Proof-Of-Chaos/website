@@ -36,13 +36,6 @@ export default function ReferendumQuizModal( { id, title } ) {
     ).then( () => { closeModal() } );
   }
 
-  function onLoadAnswers( loadedAnswers ){
-    console.log( 'onloadanswers' );
-    loadedAnswers?.map( (a) => {
-      console.log( a );
-    })
-  }
-
   function onChangeInputs( e, questionIndex, multiple ) {
     let qAnswer = null;
     const checkboxes = document.querySelectorAll(`[name=ref${id}question${questionIndex}]`)
@@ -56,7 +49,6 @@ export default function ReferendumQuizModal( { id, title } ) {
     const newUserAnswers = {
       [`${ questionIndex }`]: qAnswer,
     }
-    console.log( `user changed answer for ref ${ id } question ${ questionIndex } to ${ qAnswer }` )
     updateQuizAnswers( id, newUserAnswers );
   }
 
@@ -78,11 +70,11 @@ export default function ReferendumQuizModal( { id, title } ) {
                 return {
                   value: j,
                   label: a,
+                  // bin the checked value of the inputs to state values
                   checked: userAnswers?.answers?.[i] && userAnswers?.answers?.[i][j],
                 }
               })
 
-              console.log( 'ua', userAnswers.answers[i] )
               return (
                 <fieldset
                   key={ `quiz-${i}`}
