@@ -12,6 +12,7 @@ import { every } from "lodash";
 import { validate } from "graphql";
 
 export default function ReferendumQuizModal( { id, title } ) {
+  const { openModal } = useModal();
   const { closeModal } = useModal();
   const { quizzes } = useQuizzes();
   const questions = quizzes?.[id];
@@ -33,7 +34,10 @@ export default function ReferendumQuizModal( { id, title } ) {
         success: 'answers successfully recorded 🗳️',
         error: 'error recording answers 🤯'
       }
-    ).then( () => { closeModal() } );
+    ).then( () => {
+      closeModal();
+      openModal('VIEW_REFERENDUM_VOTE', {id, title, userAnswers})
+    });
   }
 
   function onChangeInputs( e, questionIndex, multiple ) {

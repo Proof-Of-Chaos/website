@@ -72,7 +72,6 @@ export default function ReferendumDetail({ referendum, listIndex }) {
                   <div className="order-1">
                     <div
                       className="dynamic-html grid gap-2 leading-relaxed text-gray-600 dark:text-gray-400 pr-8"
-                      // dangerouslySetInnerHTML={{ __html: referendum.description }}
                     >
                       <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                     </div>
