@@ -26,8 +26,6 @@ export function ReferendumList( { voteStatus } ) {
 
   const showLoader = isLoading || typeof cachedReferendums === 'undefined' 
 
-  console.log( 'cachedreferendums', cachedReferendums )
-
   return (
     <>
       { showLoader && <Loader /> }

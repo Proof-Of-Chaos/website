@@ -45,6 +45,8 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
 
   const connectedAccount = useAppStore((state) => state.user.connectedAccount)
   const connectedWallet = useAppStore((state) => state.user.connectedWallet)
+  const hasUserSubmittedAnswers = useAppStore((state) => state.user.quizAnswers?.[id]?.submitted )
+  
   const { address } = connectedAccount
   const { accounts } = connectedWallet
 
@@ -90,7 +92,12 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
       <div className="mt-4">
         { title }
       </div>
-
+      {
+        hasUserSubmittedAnswers &&
+        <div className="bg-emerald-600 text-white p-3 mt-2 rounded-lg">
+          Cool, you submitted answers for the quiz of this referendum and will gain a luck boost of ~50%
+        </div>
+      }
       <form className="mt-4">
         <Input
           id="wallet-select"

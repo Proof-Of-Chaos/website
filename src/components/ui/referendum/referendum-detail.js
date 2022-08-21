@@ -14,10 +14,12 @@ import WalletConnect from "../../nft/wallet-connect";
 export default function ReferendumDetail({ referendum }) {
   let [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModal();
+
   const connectedAccount = useAppStore((state) => state.user.connectedAccount)
 
   const { quizzes, loading, error } = useQuizzes();
   const questions = quizzes?.[referendum.id];
+  const hasUserSubmittedQuiz = useAppStore((state) => state.user?.quizAnswers?.[ referendum.id ]?.submitted )
 
   return (
     <div
@@ -97,31 +99,24 @@ export default function ReferendumDetail({ referendum }) {
                   <Button
                     onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
                     className="mt-4 w-full"
-                    variant="primary"
+                    variant={ hasUserSubmittedQuiz ? 'calm' : 'primary' }
                   >
-                    Take Quiz + Vote
+                    { hasUserSubmittedQuiz ? 'Submit Quiz Again' : 'Take Quiz + Vote' }
                   </Button>
                 }
                 <Button
                   onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
                   className="mt-2 w-full"
-                  variant={ !loading && ! error && questions ? 'calm' : 'primary' }
+                  variant={ ((!loading && !error && questions) || referendum.castVote ) ? 'calm' : 'primary' }
                 >
-                  Vote Now
+                  { referendum.castVote ? 'Vote Again' : 'Vote Now' }
                 </Button>
                 <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
               </>
             :
             <>
-              <WalletConnect
-                className="w-full"
-                title="Vote Now"
-                onAccountSelected={ ( ) => { 
-                  openModal( 'VIEW_REFERENDUM_VOTE', referendum )
-                } }
-              />
-              { !loading && ! error && questions && <WalletConnect
-                  className="w-full"
+            { !loading && ! error && questions && <WalletConnect
+                  className="w-full mt-4"
                   variant="primary"
                   title="Take Quiz + Vote"
                   onAccountSelected={ ( ) => { 
@@ -129,6 +124,13 @@ export default function ReferendumDetail({ referendum }) {
                   } }
                 />
               }
+              <WalletConnect
+                className="w-full mt-2"
+                title={ referendum.castVote ? 'Vote Again' : 'Vote Now' }
+                onAccountSelected={ ( ) => { 
+                  openModal( 'VIEW_REFERENDUM_VOTE', referendum )
+                } }
+              />
             </>
           }
           </div>
