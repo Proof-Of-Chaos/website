@@ -25,7 +25,7 @@ export const referendumFetcher = async (ksmAddress) => {
     referendums.push(referendumObject(referendum, endDate, PAData, ksmAddress));
   }
 
-  return referendums.sort((a,b)=>parseInt(b.id)-parseInt(a.id));
+  return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
 };
 
 const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {
