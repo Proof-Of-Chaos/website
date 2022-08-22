@@ -122,6 +122,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers, castVote 
           label="Value"
           type="number"
           step="0.1"
+          min="0"
           value={ state["vote-amount"] }
           className="text-base"
           placeholder={ castVote.balance ?? '' }

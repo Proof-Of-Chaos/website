@@ -9,9 +9,7 @@ import Button from "../ui/button";
 function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
   const { data: userNFTs } = useUserNfts()
   const userNFTSymbols = userNFTs?.map( ( { symbol } ) => symbol )
-
-  console.log( 'userNFTs', userNFTSymbols )
-
+  
   return (
     <div className="single-nft relative p-4 transform transition duration-200 hover:scale-105 flex justify-center flex-col items-center">
       <div>
