@@ -26,19 +26,19 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
       label: '2x - locked for 2 enactment periods (16 days)',
     },
     {
-      value: 'Locked4x',
+      value: 'Locked3x',
       label: '3x - locked for 4 enactment periods (32 days)',
     },
     {
-      value: 'Locked8x',
+      value: 'Locked4x',
       label: '4x - locked for 8 enactment periods (64 days)',
     },
     {
-      value: 'Locked1x6',
+      value: 'Locked5x',
       label: '5x - locked for 16 enactment periods (128 days)',
     },
     {
-      value: 'Locked3x2',
+      value: 'Locked6x',
       label: '6x - locked for 32 enactment periods (256 days)',
     },
   ]
