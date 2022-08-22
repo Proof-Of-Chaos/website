@@ -16,6 +16,11 @@
   height: auto;
 }
 
+pre {
+  overflow: scroll;
+  max-width: 100%;
+}
+
 .bg-dark {
   @apply bg-gradient-to-br from-gray-800 to-black;
 }
