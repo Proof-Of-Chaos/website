@@ -9,7 +9,7 @@ import {getWalletBySource, getWallets} from "@talisman-connect/wallets";
 import useAppStore from "../../zustand";
 import { web3FromSource } from "@talisman-connect/components";
 
-export default function ReferendumVoteModal( { id, title, userAnswers } ) {
+export default function ReferendumVoteModal( { id, title, userAnswers, castVote } ) {
 
   const { closeModal } = useModal();
   const VOTE_LOCK_OPTIONS = [
@@ -52,8 +52,8 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
 
   const [ state, setState ] = useState({
     'wallet-select': connectedAccount?.address,
-    'vote-amount': 1,
-    'vote-lock': VOTE_LOCK_OPTIONS[0].value,
+    'vote-amount': '',
+    'vote-lock': '',
     userAnswers: userAnswers,
   })
 
@@ -69,7 +69,6 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
     const wallet = getWalletBySource(connectedAccount.source)
     await wallet.enable('Proof of Chaos')
     
-
     try {
       toast.promise(
         castVote(wallet.signer, aye, id, state['wallet-select'], balance, state['vote-lock'], state['userAnswers']).then( () => { closeModal() } ),
@@ -94,10 +93,15 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
       </div>
       {
         hasUserSubmittedAnswers &&
-        <div className="bg-emerald-600 text-white p-3 mt-2 rounded-lg">
+        <div className="bg-emerald-600 text-white p-3 mt-4 rounded-lg text-sm">
           Cool, you submitted answers for the quiz of this referendum and will gain a luck boost of ~50%
         </div>
       }
+      {castVote &&
+          <div className="bg-amber-300 p-3 rounded-lg text-sm mt-4">
+            You already voted <b>{ castVote.aye ? 'Aye' : 'Nay' }</b> on this referendum with <b>{ castVote.balance } KSM</b> and <b>{ castVote.conviction.substring(6) }</b> conviction. <br /> Voting again will replace your current vote.
+          </div>
+        }
       <form className="mt-4">
         <Input
           id="wallet-select"
@@ -120,6 +124,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           step="0.1"
           value={ state["vote-amount"] }
           className="text-base"
+          placeholder={ castVote.balance ?? '' }
           tooltip="The value is locked for the selected time below"
           onChange={setFormFieldValue.bind(this)}
         />
@@ -129,6 +134,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           type="select"
           className="text-xs sm:text-sm md:text-base"
           options={ VOTE_LOCK_OPTIONS }
+          value={ castVote.conviction ?? '' }
           tooltip="How long your value is locked - increases voting power"
           onChange={setFormFieldValue.bind(this)}
         />
