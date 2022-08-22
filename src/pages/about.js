@@ -53,7 +53,7 @@ function About() {
           </div>
           <div className="w-full mt-5 md:mt-0 md:w-4/5 md:pl-2">
             <p className="text-base font-normal text-gray-700">
-            These NFTs are a visual representation of a wallets on-chain participation in Kusama governance. It would not be surprising to see Kusama projects and parachains integrate special rewards for NFT recipients. For more information on how to integrate the NFTs into your project and the associated benefits, please read <a href="#">here</a>. We are soon launching a soul-bound collection that should make integration even easier for projects wishing to further reward voters.
+            These NFTs are a visual representation of a wallets on-chain participation in Kusama governance. It would not be surprising to see Kusama projects and parachains integrate special rewards for NFT recipients. For more information on how to integrate the NFTs into your project and the associated benefits, please read <a href="https://docs.google.com/document/d/1KYYT1owxbUnUZq2aO1IxYyLxbTOnGZ2Vj_P2i-zVsFA/edit?usp=sharing">here</a>. We are soon launching a soul-bound collection that should make integration even easier for projects wishing to further reward voters.
             </p>
           </div>
         </div>
