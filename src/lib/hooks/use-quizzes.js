@@ -1,10 +1,11 @@
 import useSWR from "swr";
-import { quizzes } from "../../data/vote-quiz";
+//import { quizzes } from "../../data/vote-quiz";
 
 // mock the quizzes api
 const quizzesFetcher = async () => {
-  await new Promise(res => setTimeout(res, 1000));
-  return quizzes
+  const data = await fetch('https://gateway.ipfs.io/ipns/k2k4r8l0pjhpwtaaia4zch6tr1d2lvplkd0wn46xkob6mw93qniyh8c5')
+  const config = await data.json()
+  return config?.quizzes ?? {}
 };
 
 export const useQuizzes = () => {

@@ -1,44 +1,58 @@
 export const websiteConfig = {
-    singular_graphql_endpoint: "https://gql-rmrk2-prod.graphcdn.app",
-    polkassembly_graphql_endpoint: "https://kusama.polkassembly.io/v1/graphql",
-    singular_referendum_collections: [
+    "singular_graphql_endpoint": "https://gql-rmrk2-prod.graphcdn.app",
+    "polkassembly_graphql_endpoint": "https://kusama.polkassembly.io/v1/graphql",
+    "singular_referendum_collections": [
         "3208723ec6f65df810-ITEM",
         "3208723ec6f65df810-ITEMXEVRLOOT",
         "3208723ec6f65df810-ITEMXRMRK",
         "3208723ec6f65df810-ITEMXMT",
-        "3208723ec6f65df810-ITEMXPUNKS",
+        "3208723ec6f65df810-ITEMXPUNKS"
     ],
-    referendum_rarities: [
+    "referendum_rarities": [
         "common",
         "rare",
         "epic",
-        "legendary",
+        "legendary"
     ],
-    classic_referendums: [
-        // {
-        //     "ref":"Referendum 215",
-        //     "thumb":"bafybeifmcl3iksfr3q25cd25pnogvqn6oisa2yjgj6r2fywdjd5ri2hp7q",
-        //     "amount":"1128",
-        //     "artist":"LokiKot(@LokiPages)",
-        //     "rarity":"common",
-        //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+215"
-        // },
-        // {
-        //     "ref":"Referendum 215",
-        //     "thumb":"bafybeib2ozu2ugygo2ujob4fkplgj63tapjbcnkqdhumf37luw47wq3a2u",
-        //     "amount":"220",
-        //     "artist":"@kseniashikh",
-        //     "rarity":"rare",
-        //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+215"
-        // },
-        // {
-        //     "ref":"Referendum 215",
-        //     "thumb":"bafybeiavzja42z6viqfokvtlb7g4onz2md36jkmos3b7j6gdbehxra7wee",
-        //     "amount":"127",
-        //     "artist":"LokiKot(@LokiPages)",
-        //     "rarity":"epic",
-        //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+215"
-        // },
+    "quizzes": {
+        "223": [
+            {
+                "question": "What is the name of ref 223 parachain?",
+                "answers": [
+                    "Polkadot",
+                    "Kusama",
+                    "Gavin Wood",
+                    "Fourth Answer"
+                ],
+                "multiple": "true"
+            },
+            {
+                "question": "What is the name of Polkadot's founder?",
+                "answers": [
+                    "Wavin Good",
+                    "Mavin Wood",
+                    "Gavin Wood"
+                ]
+            },
+            {
+                "question": "3What is the name of Polkadot's founder?",
+                "answers": [
+                    "3Wavin Good",
+                    "3Mavin Wood",
+                    "3Gavin Wood"
+                ]
+            },
+            {
+                "question": "4What is the name of Polkadot's founder?",
+                "answers": [
+                    "4Wavin Good",
+                    "4Mavin Wood",
+                    "4Gavin Wood"
+                ]
+            }
+        ]
+    },
+    "classic_referendums": [
         {
             "ref":"Referendum 214",
             "thumb":"bafybeifamwhsxcospc3dd36bzmwl7ju7wvcbm5zduuwozrwduiiaxclssq",
@@ -46,7 +60,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
-            "symbol": "214QCC",
+            "symbol": "214QCC"
         },
         {
             "ref":"Referendum 214",
@@ -55,7 +69,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
-            "symbol": "214PQ",
+            "symbol": "214PQ"
         },
         {
             "ref":"Referendum 214",
@@ -64,7 +78,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
-            "symbol": "214MQ",
+            "symbol": "214MQ"
         },
         {
             "ref":"Referendum 213",
@@ -73,7 +87,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213",
-            "symbol": "213MBB",
+            "symbol": "213MBB"
         },
         {
             "ref":"Referendum 213",
@@ -82,7 +96,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213",
-            "symbol":"213HBB",
+            "symbol":"213HBB"
         },
         {
             "ref":"Referendum 213",
@@ -93,30 +107,6 @@ export const websiteConfig = {
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213",
             "symbol": "213CBBX"
         },
-        // {
-        //     "ref":"Referendum 212",
-        //     "thumb":"bafybeih47yyz3m4ltvpit7pkaq7uwd7o6otzp226t4dzqofquahsptkgui",
-        //     "amount":"1292",
-        //     "artist":"@kseniashikh",
-        //     "rarity":"common",
-        //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+212"
-        // },
-        // {
-        //     "ref":"Referendum 212",
-        //     "thumb":"bafybeibjt62lhiddwj2ldmlcb7e5cfblrki4kks2rr42yntjrha4egmrxe",
-        //     "amount":"195",
-        //     "artist":"@kseniashikh",
-        //     "rarity":"rare",
-        //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+212"
-        // },
-        // {
-        //     "ref":"Referendum 212",
-        //     "thumb":"bafybeibf2bwzlfvs4oszxw7djzjkxaeq3q5yswxiqfqfblacfnbnppku5y",
-        //     "amount":"121",
-        //     "artist":"LokiKot(@LokiPages)",
-        //     "rarity":"epic",
-        //     "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+212"
-        // },
         {
             "ref":"Referendum 211",
             "thumb":"bafybeif42ddtapmdh6zv6ncofxp57dzipbciuopiewsdzygkkpk42mpd3e",
@@ -124,7 +114,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+211",
-            "symbol":"211TSP",
+            "symbol":"211TSP"
         },
         {
             "ref":"Referendum 211",
@@ -133,7 +123,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+211",
-            "symbol":"211TGM",
+            "symbol":"211TGM"
         },
         {
             "ref":"Referendum 211",
@@ -142,7 +132,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+211",
-            "symbol":"211TBM",
+            "symbol":"211TBM"
         },
         {
             "ref":"Referendum 210",
@@ -151,7 +141,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+210",
-            "symbol":"210EB",
+            "symbol":"210EB"
         },
         {
             "ref":"Referendum 210",
@@ -160,7 +150,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+210",
-            "symbol":"210CH",
+            "symbol":"210CH"
         },
         {
             "ref":"Referendum 210",
@@ -169,7 +159,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+210",
-            "symbol":"210CA",
+            "symbol":"210CA"
         },
         {
             "ref":"Referendum 209",
@@ -178,7 +168,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+209",
-            "symbol":"209ST",
+            "symbol":"209ST"
         },
         {
             "ref":"Referendum 209",
@@ -187,7 +177,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+209",
-            "symbol":"209PT",
+            "symbol":"209PT"
         },
         {
             "ref":"Referendum 209",
@@ -196,7 +186,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+209",
-            "symbol":"209CP",
+            "symbol":"209CP"
         },
         {
             "ref":"Referendum 208",
@@ -232,7 +222,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
-            "symbol":"207VR",
+            "symbol":"207VR"
         },
         {
             "ref":"Referendum 207",
@@ -241,7 +231,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
-            "symbol":"207FR",
+            "symbol":"207FR"
         },
         {
             "ref":"Referendum 207",
@@ -250,7 +240,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
-            "symbol":"207CR",
+            "symbol":"207CR"
         },
         {
             "ref":"Referendum 206",
@@ -259,7 +249,7 @@ export const websiteConfig = {
             "artist":"Ruben from MushroomTopia",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXMT?search=Referendum+206",
-            "symbol":"206SB",
+            "symbol":"206SB"
         },
         {
             "ref":"Referendum 206",
@@ -268,7 +258,7 @@ export const websiteConfig = {
             "artist":"Ruben from MushroomTopia",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXMT?search=Referendum+206",
-            "symbol":"206RB",
+            "symbol":"206RB"
         },
         {
             "ref":"Referendum 206",
@@ -277,7 +267,7 @@ export const websiteConfig = {
             "artist":"Ruben from MushroomTopia",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXMT?search=Referendum+206",
-            "symbol":"206BB",
+            "symbol":"206BB"
         },
         {
             "ref":"Referendum 205",
@@ -286,7 +276,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+205",
-            "symbol":"205SW",
+            "symbol":"205SW"
         },
         {
             "ref":"Referendum 205",
@@ -295,7 +285,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+205",
-            "symbol":"205SP",
+            "symbol":"205SP"
         },
         {
             "ref":"Referendum 205",
@@ -304,7 +294,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+205",
-            "symbol":"205SG",
+            "symbol":"205SG"
         },
         {
             "ref":"Referendum 204",
@@ -313,7 +303,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+204",
-            "symbol":"204RL", 
+            "symbol":"204RL"
         },
         {
             "ref":"Referendum 204",
@@ -340,7 +330,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+203",
-            "symbol":"203LCAT",
+            "symbol":"203LCAT"
         },
         {
             "ref":"Referendum 203",
@@ -349,7 +339,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+203",
-            "symbol":"203HS",
+            "symbol":"203HS"
         },
         {
             "ref":"Referendum 203",
@@ -367,7 +357,7 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+202",
-            "symbol":"202RING",
+            "symbol":"202RING"
         },
         {
             "ref":"Referendum 202",
@@ -403,7 +393,7 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+201",
-            "symbol":"201SJ",
+            "symbol":"201SJ"
         },
         {
             "ref":"Referendum 201",
@@ -583,7 +573,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+194",
-            "symbol":"194TMTR",
+            "symbol":"194TMTR"
         },
         {
             "ref":"Referendum 194",
@@ -592,7 +582,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+194",
-            "symbol":"194HGLASS",
+            "symbol":"194HGLASS"
         },
         {
             "ref":"Referendum 194",
@@ -601,7 +591,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+194",
-            "symbol":"194CARD",
+            "symbol":"194CARD"
         },
         {
             "ref":"Referendum 193",
@@ -610,7 +600,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
-            "symbol":"193RMRKTS",
+            "symbol":"193RMRKTS"
         },
         {
             "ref":"Referendum 193",
@@ -619,7 +609,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
-            "symbol":"193RMRKTG",
+            "symbol":"193RMRKTG"
         },
         {
             "ref":"Referendum 193",
@@ -628,7 +618,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
-           "symbol":"193RMRKTB",
+           "symbol":"193RMRKTB"
         },
         {
             "ref":"Referendum 193",
@@ -637,7 +627,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"legendary",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
-            "symbol":"193BABD",
+            "symbol":"193BABD"
         },
         {
             "ref":"Referendum 192",
@@ -646,7 +636,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
-            "symbol":"192PHX",
+            "symbol":"192PHX"
         },
         {
             "ref":"Referendum 192",
@@ -655,7 +645,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
-            "symbol":"192HEGG",
+            "symbol":"192HEGG"
         },
         {
             "ref":"Referendum 192",
@@ -664,7 +654,7 @@ export const websiteConfig = {
             "artist":"?",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
-            "symbol":"192EGG",
+            "symbol":"192EGG"
         },
         {
             "ref":"Referendum 191",
@@ -858,5 +848,5 @@ export const websiteConfig = {
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+181"
         }
-    ],
+    ]
 }
