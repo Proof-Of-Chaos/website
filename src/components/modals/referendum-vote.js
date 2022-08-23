@@ -105,7 +105,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
             </div>
           }
         <form className="mt-4">
-          <Input
+          {/* <Input
             id="wallet-select"
             label="Select Wallet"
             type="select"
@@ -118,7 +118,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
             })}
             tooltip="Select the wallet for voting"
             onChange={setFormFieldValue.bind(this)}
-          />
+          /> */}
           <Input
             id="vote-amount"
             label="Value"
