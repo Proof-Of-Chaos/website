@@ -15,9 +15,7 @@ export function ReferendumList( { voteStatus } ) {
   const setReferendums = useAppStore((state)=>state.setReferendums)
   const cachedReferendums = useAppStore((state)=>state.referendums)
 
-  const { data: referendums, isLoading, error } = useReferendums( {
-    placeholderData: cachedReferendums,
-  })
+  const { data: referendums, isLoading, error } = useReferendums()
   const { votes, totalVotes } = getVotesByStatus(voteStatus)
 
   if ( ! isLoading && ! error && referendums ) {

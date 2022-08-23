@@ -8,9 +8,10 @@ import {useEffect, useState} from "react";
 import {getWalletBySource, getWallets} from "@talisman-connect/wallets";
 import useAppStore from "../../zustand";
 import { web3FromSource } from "@talisman-connect/components";
+import { useAccountVote } from "../../lib/hooks/use-referendums";
 
-export default function ReferendumVoteModal( { id, title, userAnswers, castVote } ) {
-
+export default function ReferendumVoteModal( { id, title, userAnswers } ) {
+  const { data:userVote } = useAccountVote( id );
   const { closeModal } = useModal();
   const VOTE_LOCK_OPTIONS = [
     {
@@ -85,78 +86,79 @@ export default function ReferendumVoteModal( { id, title, userAnswers, castVote 
 
   return(
     <>
-      <Dialog.Title as="h3" className="text-2xl font-medium leading-6 text-gray-900">
+      <Dialog.Title as="h3" className="text-2xl font-medium leading-6 text-gray-900 pb-2">
         Vote on Referendum { id }
       </Dialog.Title>
-      <div className="mt-4">
-        { title }
-      </div>
-      {
-        hasUserSubmittedAnswers &&
-        <div className="bg-emerald-600 text-white p-3 mt-4 rounded-lg text-sm">
-          Cool, you submitted answers for the quiz of this referendum and will gain a luck boost of ~50%
+      <div className="pr-4 overflow-y-scroll flex-1">
+        <div className="mt-4">
+          { title }
         </div>
-      }
-      {castVote &&
-          <div className="bg-amber-300 p-3 rounded-lg text-sm mt-4">
-            You already voted <b>{ castVote.aye ? 'Aye' : 'Nay' }</b> on this referendum with <b>{ castVote.balance } KSM</b> and <b>{ castVote.conviction.substring(6) }</b> conviction. <br /> Voting again will replace your current vote.
+        {
+          hasUserSubmittedAnswers &&
+          <div className="bg-emerald-600 text-white p-3 mt-4 rounded-lg text-sm">
+            Cool, you submitted answers for the quiz of this referendum and will gain a luck boost of ~50%
           </div>
         }
-      <form className="mt-4">
-        <Input
-          id="wallet-select"
-          label="Select Wallet"
-          type="select"
-          value={ state["wallet-select"] }
-          options={ accounts.map( (account) => {
-            return {
-              label: account.name,
-              value: account.address,
-            };
-          })}
-          tooltip="Select the wallet for voting"
-          onChange={setFormFieldValue.bind(this)}
-        />
-        <Input
-          id="vote-amount"
-          label="Value"
-          type="number"
-          step="0.1"
-          min="0"
-          value={ state["vote-amount"] }
-          className="text-base"
-          placeholder={ castVote.balance ?? '' }
-          tooltip="The value is locked for the selected time below"
-          onChange={setFormFieldValue.bind(this)}
-        />
-        <Input
-          id="vote-lock"
-          label="Vote Lock"
-          type="select"
-          className="text-xs sm:text-sm md:text-base"
-          options={ VOTE_LOCK_OPTIONS }
-          value={ castVote.conviction ?? '' }
-          tooltip="How long your value is locked - increases voting power"
-          onChange={setFormFieldValue.bind(this)}
-        />
-      </form>
-
-      <div className="mt-6">
-        <Button
-          className="mr-2 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white"
-          onClick={ async () => onClickCastVote(true) }>
-          Aye
-        </Button>
-        <Button
-          className="mr-2 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white text-4xl"
-          onClick={ async () => onClickCastVote(false) }>
-          Nay
-        </Button>
-        <Button
-          variant="calm"
-          onClick={closeModal}>
-          Cancel
-        </Button>
+        { userVote &&
+            <div className="bg-amber-300 p-3 rounded-lg text-sm mt-4">
+              You already voted <b>{ userVote.aye ? 'Aye' : 'Nay' }</b> on this referendum with <b>{ userVote.balance } KSM</b> and <b>{ userVote.conviction?.substring(6) }</b> conviction. <br /> Voting again will replace your current vote.
+            </div>
+          }
+        <form className="mt-4">
+          <Input
+            id="wallet-select"
+            label="Select Wallet"
+            type="select"
+            value={ state["wallet-select"] }
+            options={ accounts.map( (account) => {
+              return {
+                label: account.name,
+                value: account.address,
+              };
+            })}
+            tooltip="Select the wallet for voting"
+            onChange={setFormFieldValue.bind(this)}
+          />
+          <Input
+            id="vote-amount"
+            label="Value"
+            type="number"
+            step="0.1"
+            min="0"
+            value={ state["vote-amount"] }
+            className="text-base"
+            placeholder={ userVote?.balance ?? '' }
+            tooltip="The value is locked for the selected time below"
+            onChange={setFormFieldValue.bind(this)}
+          />
+          <Input
+            id="vote-lock"
+            label="Vote Lock"
+            type="select"
+            className="text-xs sm:text-sm md:text-base"
+            options={ VOTE_LOCK_OPTIONS }
+            value={ userVote?.conviction ?? '' }
+            tooltip="How long your value is locked - increases voting power"
+            onChange={setFormFieldValue.bind(this)}
+          />
+        </form>
+        <div className="mt-6">
+          <Button
+            className="mr-2 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white"
+            onClick={ async () => onClickCastVote(true) }>
+            Aye
+          </Button>
+          <Button
+            className="mr-2 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white text-4xl"
+            onClick={ async () => onClickCastVote(false) }>
+            Nay
+          </Button>
+          <Button
+            variant="calm"
+            onClick={closeModal}>
+            Cancel
+          </Button>
+        </div>
       </div>
     </>
   )

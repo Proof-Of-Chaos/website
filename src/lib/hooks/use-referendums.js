@@ -79,8 +79,8 @@ const parseCastVote = (vote) => {
 
   return {
     aye: vote.vote.isAye,
-    balance: parseInt(vote.balance.toString()) / 1000000000000,
-    conviction: vote.vote.conviction.toString(),
+    balance: parseInt(vote.balance?.toString()) / 1000000000000,
+    conviction: vote.vote.conviction?.toString(),
   }
 }
 
@@ -91,56 +91,64 @@ const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
     title = referendum.image.proposal.section.toString() + '.' + referendum.image.proposal.method.toString()
   }
 
-  const vote = referendum.votes.find((account) => {
-    return account.accountId.toString() === ksmAddress;
-  })
-
   return {
     id: referendum.index.toString(),
-      title: title,
-      voteVolume: microToKSM(referendum.votedTotal.toString()),
-      aye: {
-        vote: referendum.voteCountAye,
-          percentage: Math.round(referendum.voteCountAye / referendum.voteCount * 100),
-          voteVolume: microToKSMFormatted(referendum.votedAye.toString()),
-      },
-      nay: {
-        vote: referendum.voteCountNay,
-          percentage: Math.round(referendum.voteCountNay / referendum.voteCount * 100),
-          voteVolume: microToKSMFormatted(referendum.votedNay.toString()),
-      },
-      executed_at: endDate,
-        proposed_by: {
-        id: referendum.image.proposer.toString(),
-        link: '#',
+    title: title,
+    voteVolume: microToKSM(referendum.votedTotal.toString()),
+    aye: {
+      vote: referendum.voteCountAye,
+      percentage: Math.round(referendum.voteCountAye / referendum.voteCount * 100),
+      voteVolume: microToKSMFormatted(referendum.votedAye.toString()),
+    },
+    nay: {
+      vote: referendum.voteCountNay,
+      percentage: Math.round(referendum.voteCountNay / referendum.voteCount * 100),
+      voteVolume: microToKSMFormatted(referendum.votedNay.toString()),
+    },
+    executed_at: endDate,
+    proposed_by: {
+      id: referendum.image.proposer.toString(),
+      link: '#',
     },
     status: 'active',
-    votes: [],
+    votes: referendum.votes,
     actions: [],
-    description: PAData?.content   ?? "-",
-    castVote: parseCastVote(vote),
+    description: PAData?.content ?? "-",
   }
 }
 
+/**
+ * Return a dependent query, that depends on the ksmAdress (user) and the fetched referendums
+ * @param {*} referendumId
+ * @returns Promise
+ */
+export function useAccountVote( referendumId ) {
+  const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
+  const { data:referendums } = useReferendums()
+  return useQuery( ['userVote', ksmAddress, referendumId ], async () => {
+    let userVote = {}
+    const referendum = referendums.find( ( ref ) => ref.id === referendumId )
+    userVote = referendum && referendum?.votes?.find((account) => {
+      return account.accountId.toString() === ksmAddress;
+    })
+    return userVote ? parseCastVote( userVote ) : false
+  }, {
+    enabled: !!referendums
+  })
+}
+
 export const useReferendums = ( config ) => {
+  const cachedReferendums = useAppStore((state)=>state.referendums)
   const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
   const { data, mutate, error } = useSWR( 'referendumData', referendumFetcher(ksmAddress) )
-  const loading = !data && !error;
 
   return useQuery(
     [ "referendumData", ksmAddress ],
     async () => {
       return referendumFetcher(ksmAddress)
     },
-    config
+    { placeholderData: cachedReferendums },
   )
-
-  return {
-    loading,
-    referendumData: data,
-    mutate,
-    error,
-  };
 };
 
 export const useUserNfts = () => {

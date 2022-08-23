@@ -10,6 +10,7 @@ import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from 'react-markdown'
 import useAppStore from "../../../zustand";
 import WalletConnect from "../../nft/wallet-connect";
+import { useAccountVote } from "../../../lib/hooks/use-referendums";
 
 export default function ReferendumDetail({ referendum }) {
   let [isExpanded, setIsExpanded] = useState(false);
@@ -17,7 +18,9 @@ export default function ReferendumDetail({ referendum }) {
 
   const connectedAccount = useAppStore((state) => state.user.connectedAccount)
 
-  const { quizzes, loading, error } = useQuizzes();
+  const { data: userVote } = useAccountVote( referendum.id )
+  const { data: quizzes, isLoading, error } = useQuizzes();
+  console.log( 'quizzes', quizzes );
   const questions = quizzes?.[referendum.id];
   const hasUserSubmittedQuiz = useAppStore((state) => state.user?.quizAnswers?.[ referendum.id ]?.submitted )
 
@@ -93,7 +96,7 @@ export default function ReferendumDetail({ referendum }) {
             <ReferendumCountdown date={referendum.executed_at} />
               { connectedAccount ?
                 <>
-                { !loading && ! error && questions &&
+                { !isLoading && ! error && questions &&
                   <Button
                     onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
                     className="mt-4 w-full"
@@ -105,15 +108,15 @@ export default function ReferendumDetail({ referendum }) {
                 <Button
                   onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
                   className="mt-2 w-full"
-                  variant={ ((!loading && !error && questions) || referendum.castVote ) ? 'calm' : 'primary' }
+                  variant={ ((!isLoading && !error && questions) || userVote ) ? 'calm' : 'primary' }
                 >
-                  { referendum.castVote ? 'Vote Again' : 'Vote Now' }
+                  { userVote ? 'Vote Again' : 'Vote Now' }
                 </Button>
                 <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
               </>
             :
             <>
-            { !loading && ! error && questions && <WalletConnect
+            { !isLoading && ! error && questions && <WalletConnect
                   className="w-full mt-4"
                   variant="primary"
                   title="Take Quiz + Vote"
@@ -124,7 +127,7 @@ export default function ReferendumDetail({ referendum }) {
               }
               <WalletConnect
                 className="w-full mt-2"
-                title={ referendum.castVote ? 'Vote Again' : 'Vote Now' }
+                title={ userVote ? 'Vote Again' : 'Vote Now' }
                 onAccountSelected={ ( ) => { 
                   openModal( 'VIEW_REFERENDUM_VOTE', referendum )
                 } }
