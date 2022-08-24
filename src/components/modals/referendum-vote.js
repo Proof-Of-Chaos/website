@@ -12,7 +12,6 @@ import { useAccountVote } from "../../lib/hooks/use-referendums";
 
 export default function ReferendumVoteModal( { id, title, userAnswers } ) {
   const { data:userVote } = useAccountVote( id );
-  console.log( 'userVot', userVote );
   const { closeModal } = useModal();
   const VOTE_LOCK_OPTIONS = [
     {
