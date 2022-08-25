@@ -137,7 +137,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
             type="select"
             className="text-xs sm:text-sm md:text-base"
             options={ VOTE_LOCK_OPTIONS }
-            value={ userVote?.conviction ?? '' }
+            value={ userVote?.conviction }
             tooltip="How long your value is locked - increases voting power"
             onChange={setFormFieldValue.bind(this)}
           />
