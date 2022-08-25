@@ -93,7 +93,7 @@ const parseCastVote = (vote) => {
 const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
   let title = PAData?.title
 
-  if (!title) {
+  if (!title && referendum.image) {
     title = referendum.image.proposal.section.toString() + '.' + referendum.image.proposal.method.toString()
   }
 
@@ -113,7 +113,7 @@ const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
     },
     executed_at: endDate,
     proposed_by: {
-      id: referendum.image?.proposer?.toString(),
+      id: referendum.image?.proposer?.toString() ?? '-',
       link: '#',
     },
     status: 'active',
