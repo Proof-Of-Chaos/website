@@ -145,7 +145,6 @@ export function useAccountVote( referendumId ) {
 export const useReferendums = ( config ) => {
   const cachedReferendums = useAppStore((state)=>state.referendums)
   const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
-  const { data, mutate, error } = useSWR( 'referendumData', referendumFetcher(ksmAddress) )
 
   return useQuery(
     [ "referendumData", ksmAddress ],
