@@ -77,10 +77,16 @@ const parseCastVote = (vote) => {
     return null
   }
 
-  return {
+  console.log( 'parseCastVote', vote, {
     aye: vote.isAye,
     balance: parseInt(vote.balance?.toString()) / 1000000000000,
     conviction: vote.conviction?.toString(),
+  })
+
+  return {
+    aye: vote.vote?.isAye,
+    balance: parseInt(vote.balance?.toString()) / 1000000000000,
+    conviction: vote.vote?.conviction?.toString(),
   }
 }
 
@@ -107,7 +113,7 @@ const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
     },
     executed_at: endDate,
     proposed_by: {
-      id: referendum.image.proposer.toString(),
+      id: referendum.image?.proposer?.toString(),
       link: '#',
     },
     status: 'active',
@@ -126,9 +132,8 @@ export function useAccountVote( referendumId ) {
   const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
   const { data:referendums } = useReferendums()
   return useQuery( ['userVote', ksmAddress, referendumId ], async () => {
-    let userVote = {}
     const referendum = referendums.find( ( ref ) => ref.id === referendumId )
-    userVote = referendum && referendum?.votes?.find((account) => {
+    const userVote = referendum && referendum?.votes?.find((account) => {
       return account.accountId.toString() === ksmAddress;
     })
     return userVote ? parseCastVote( userVote ) : false
