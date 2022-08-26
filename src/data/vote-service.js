@@ -25,14 +25,14 @@ export async function castVote(signer, aye, ref, address, balance, conviction, u
     const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
     const api = await ApiPromise.create({ provider: wsProvider })
 
-    let txs = [getVoteTx(api, aye, ref, balance, conviction)];
-
-    if (userAnswers) {
-      txs.push(getQuizRemarkTx(api, userAnswers));
-    }
-
     try {
-      api.tx.utility.batch(txs).signAndSend(address, {signer: signer}, result => {
+      let txs = [getVoteTx(api, aye, ref, balance, conviction)];
+
+      if (userAnswers) {
+        txs.push(getQuizRemarkTx(api, userAnswers));
+      }
+
+      api.tx.utility.batchAll(txs).signAndSend(address, {signer: signer}, result => {
         if (result.status.isInBlock) {
           resolve( 'in block' )
         } else if (result.status.isFinalized) {

@@ -7,15 +7,12 @@ import Input from "../ui/input";
 import { useModal } from "./context";
 import { toast } from 'react-toastify';
 import useAppStore from "../../zustand";
-import { useQuizzes } from "../../lib/hooks/use-quizzes";
 import { every } from "lodash";
 import { validate } from "graphql";
 
-export default function ReferendumQuizModal( { id, title } ) {
+export default function ReferendumQuizModal( { id, title, questions } ) {
   const { openModal } = useModal();
   const { closeModal } = useModal();
-  const { quizzes } = useQuizzes();
-  const questions = quizzes?.[id];
 
   const submitQuiz = useAppStore( ( state ) => state.submitQuiz )
   const updateQuizAnswers = useAppStore( ( state ) => state.updateQuizAnswers )

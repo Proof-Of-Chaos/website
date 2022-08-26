@@ -118,7 +118,7 @@ const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
     },
     status: 'active',
     votes: referendum.votes,
-    actions: [],
+    questions: {},
     description: PAData?.content ?? "-",
   }
 }

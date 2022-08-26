@@ -20,9 +20,10 @@ export default function ReferendumDetail({ referendum }) {
 
   const { data: userVote } = useAccountVote( referendum.id )
   const { data: quizzes, isLoading, error } = useQuizzes();
-  console.log( 'quizzes', quizzes );
   const questions = quizzes?.[referendum.id];
   const hasUserSubmittedQuiz = useAppStore((state) => state.user?.quizAnswers?.[ referendum.id ]?.submitted )
+
+  referendum.questions = quizzes?.[referendum.id];
 
   return (
     <div
