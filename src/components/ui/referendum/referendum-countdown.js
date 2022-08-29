@@ -6,7 +6,7 @@ const renderer = ({ days, hours, minutes, seconds, completed }) => {
     return null;
   } else {
     return (
-      <div className="flex items-center gap-3 text-base justify-center md:justify-start font-medium -tracking-wider text-gray-900 dark:text-gray-100 xs:text-lg md:gap-5 md:text-xl xl:text-2xl">
+      <div className="flex items-center gap-3 text-base justify-center font-medium -tracking-wider text-gray-900 dark:text-gray-100 xs:text-lg md:gap-5 md:text-xl xl:text-2xl">
         {!!days && (
           <div className="shrink-0 3xl:w-20">
             {zeroPad(days)}

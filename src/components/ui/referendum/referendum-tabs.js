@@ -20,6 +20,8 @@ export function ReferendumList( { voteStatus } ) {
   const { data: referendums, isLoading, error } = useReferendums()
   const { votes, totalVotes } = getVotesByStatus(voteStatus)
 
+  console.log( 'referendums', referendums )
+
   if ( ! isLoading && ! error && referendums ) {
     setReferendums( referendums )
   }

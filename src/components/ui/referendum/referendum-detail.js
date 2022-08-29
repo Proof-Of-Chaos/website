@@ -27,10 +27,14 @@ export default function ReferendumDetail({ referendum }) {
 
   referendum.questions = quizzes?.[referendum.id];
 
+  const referendumBadges = referendum?.isPassing ?
+    <span className="is-passing">is currently passing</span> :
+    <span className="is-failing">is currently failing</span>
+
   return (
     <div
       className={cn(
-        'mb-6 bg-white p-2 md:p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-100 border-b-gray-200',
+        'mb-10 bg-white p-2 relative md:p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-100 border-b-gray-200',
         {
           'shadow-lg': isExpanded,
           'shadow-card hover:shadow-lg': !isExpanded,
@@ -74,7 +78,8 @@ export default function ReferendumDetail({ referendum }) {
                     >
                       <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                       <div className="referendum-meta border-dashed border-t pt-2 mt-2">
-                        <a href={ `https://kusama.polkassembly.io/referendum/${ referendum.id }` }>View on Polkassembly ⤻</a>
+                        <a className="pr-3" href={ `https://kusama.polkassembly.io/referendum/${ referendum.id }` }>View on Polkassembly ⤻</a>
+                        <a href={ `https://kusama.subscan.io/referenda/${ referendum.id }` }>View on Subscan ⤻</a>
                       </div>
                     </div>
                   </div>
@@ -92,7 +97,7 @@ export default function ReferendumDetail({ referendum }) {
           )}
         </div>
         {['active'].indexOf(referendum.status) !== -1 && (
-          <div className="before:content-[' '] w-full md:w-1/3 border-t-2 border-dashed border-gray-100 md:border-none text-center md:text-left mt-4 pt-2 md:mt-0 content-start relative mb-5 h-full gap-2 pb-5 before:absolute before:bottom-0 before:h-[1px] before:w-full before:border-b before:border-r before:border-dashed before:border-gray-200 ltr:before:left-0 rtl:before:right-0 dark:border-gray-700 dark:before:border-gray-700 md:mb-0 md:pb-0 md:before:h-full md:before:w-[1px] ltr:md:pl-8 rtl:md:pr-8">
+          <div className="w-full md:w-1/3 border-t-2 border-dashed border-gray-100 md:border-none text-center mt-4 pt-2 md:mt-0 content-start relative mb-5 h-full gap-2 pb-5 before:absolute before:bottom-0 before:h-[1px] before:w-full before:border-b before:border-r before:border-dashed before:border-gray-200 ltr:before:left-0 rtl:before:right-0 dark:border-gray-700 dark:before:border-gray-700 md:mb-0 md:pb-0 md:before:h-full md:before:w-[1px] ltr:md:pl-8 rtl:md:pr-8">
             <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-xl">
               Voting ends in
             </h3>
@@ -116,6 +121,7 @@ export default function ReferendumDetail({ referendum }) {
                     { userVote ? 'Vote Again' : 'Vote Now' }
                   </Button>
                   <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
+                  { referendumBadges }
                 </>
               :
               <>
