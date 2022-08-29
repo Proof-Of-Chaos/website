@@ -1,8 +1,6 @@
-import useSWR from "swr";
 import { referendumData } from "../../data/vote-data";
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
-import { request, gql } from "graphql-request";
 import {websiteConfig} from "../../data/website-config";
 import { useQuery } from "@tanstack/react-query";
 import useAppStore from "../../zustand";
@@ -72,8 +70,8 @@ const microToKSMFormatted = (microKSM) => {
   return parseFloat((microToKSM(microKSM) / 1000).toFixed(2)) + 'K KSM';
 }
 
-const percentage = (part, whole) => {
-  return Math.round(parseFloat(part) / parseFloat(whole) * 100)
+const toPercentage = (part, whole) => {
+  return Math.round(parseInt(part) / parseInt(whole) * 100)
 }
 
 const parseCastVote = (vote) => {
@@ -107,12 +105,12 @@ const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
     voteVolume: microToKSM(referendum.votedTotal.toString()),
     aye: {
       vote: referendum.voteCountAye,
-      percentage: percentage(referendum.votedAye.toString(), referendum.voted.toString()),
+      percentage: toPercentage(referendum.votedAye.toString(), referendum.votedTotal.toString()),
       voteVolume: microToKSMFormatted(referendum.votedAye.toString()),
     },
     nay: {
       vote: referendum.voteCountNay,
-      percentage: percentage(referendum.votedNay.toString(), referendum.voted.toString()),
+      percentage: toPercentage(referendum.votedNay.toString(), referendum.votedTotal.toString()),
       voteVolume: microToKSMFormatted(referendum.votedNay.toString()),
     },
     executed_at: endDate,
