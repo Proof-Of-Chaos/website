@@ -16,19 +16,19 @@ export default function ReferendumStats( { aye, nay } ) {
       <div className="flex items-start justify-between">
         <div className="text-green-500 ltr:text-left rtl:text-right">
           <h5 className="mb-1 font-medium uppercase sm:mb-2 sm:text-base">
-            Aye
+            Aye ({aye?.percentage}%)
           </h5>
           <p>
-            {aye?.vote} ({aye?.percentage}%)
+            {aye?.vote}
           </p>
           <p>{aye?.voteVolume}</p>
         </div>
         <div className="text-red-500 ltr:text-right rtl:text-left">
           <h5 className="mb-1 font-medium uppercase sm:mb-2 sm:text-base">
-            Nay
+            Nay ({nay?.percentage}%)
           </h5>
           <p>
-            {nay?.vote} ({nay?.percentage}%)
+            {nay?.vote}
           </p>
           <p>{nay?.voteVolume}</p>
         </div>
