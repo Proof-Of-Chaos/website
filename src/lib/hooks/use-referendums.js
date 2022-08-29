@@ -72,6 +72,10 @@ const microToKSMFormatted = (microKSM) => {
   return parseFloat((microToKSM(microKSM) / 1000).toFixed(2)) + 'K KSM';
 }
 
+const percentage = (part, whole) => {
+  return Math.round(parseFloat(part) / parseFloat(whole) * 100)
+}
+
 const parseCastVote = (vote) => {
   if (!vote) {
     return null
@@ -103,12 +107,12 @@ const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
     voteVolume: microToKSM(referendum.votedTotal.toString()),
     aye: {
       vote: referendum.voteCountAye,
-      percentage: Math.round(referendum.voteCountAye / referendum.voteCount * 100),
+      percentage: percentage(referendum.votedAye.toString(), referendum.voted.toString()),
       voteVolume: microToKSMFormatted(referendum.votedAye.toString()),
     },
     nay: {
       vote: referendum.voteCountNay,
-      percentage: Math.round(referendum.voteCountNay / referendum.voteCount * 100),
+      percentage: percentage(referendum.votedNay.toString(), referendum.voted.toString()),
       voteVolume: microToKSMFormatted(referendum.votedNay.toString()),
     },
     executed_at: endDate,
@@ -120,6 +124,7 @@ const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
     votes: referendum.votes,
     questions: {},
     description: PAData?.content ?? "-",
+    isPassing: referendum.isPassing,
   }
 }
 
