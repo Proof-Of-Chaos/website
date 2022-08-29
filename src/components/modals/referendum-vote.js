@@ -141,7 +141,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
             id="vote-amount"
             label={ isNumber( state.availableBalance ) ? `Value (available: ${ state.availableBalance.toFixed( 2 ) } KSM)` : 'Value' }
             type="number"
-            step="1"
+            step="0.1"
             max={ state.availableBalance }
             value={ state["vote-amount"] }
             className="text-base"
