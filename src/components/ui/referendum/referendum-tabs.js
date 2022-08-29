@@ -20,11 +20,9 @@ export function ReferendumList( { voteStatus } ) {
   const { data: referendums, isLoading, error } = useReferendums()
   const { votes, totalVotes } = getVotesByStatus(voteStatus)
 
-  useEffect( () => {
-    if ( ! isLoading && ! error && referendums ) {
-      setReferendums( referendums )
-    }
-  }, [])
+  if ( ! isLoading && ! error && referendums ) {
+    setReferendums( referendums )
+  }
 
   const showLoader = isLoading || typeof cachedReferendums === 'undefined'
 

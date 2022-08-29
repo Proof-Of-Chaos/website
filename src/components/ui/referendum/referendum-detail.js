@@ -41,7 +41,7 @@ export default function ReferendumDetail({ referendum }) {
         <div className="self-start p-2 w-full md:w-2/3">
           <h3
             onClick={() => setIsExpanded(!isExpanded)}
-            className="cursor-pointer text-xl leading-normal dark:text-gray-100"
+            className="cursor-pointer text-xl leading-normal dark:text-gray-100 pr-2"
           >
             {referendum.title}
           </h3>

@@ -10,7 +10,7 @@ import useAppStore from "../../zustand";
 import { web3FromSource } from "@talisman-connect/components";
 import { useAccountVote } from "../../lib/hooks/use-referendums";
 import useAccountBalance from "../../lib/hooks/use-account-balance";
-import { valueToKSM } from '../../lib/utils'
+import { microToKSM } from '../../lib/utils'
 import { isNumber } from "lodash";
 
 export default function ReferendumVoteModal( { id, title, userAnswers } ) {
@@ -72,7 +72,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
   useEffect( () => {
     setState( {
       ...state,
-      'availableBalance': valueToKSM( accountBalance?.data?.free ),
+      'availableBalance': microToKSM( accountBalance?.data?.free ),
     })
   }, [ accountBalance ])
 
@@ -139,7 +139,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           /> */}
           <Input
             id="vote-amount"
-            label={ isNumber( state.availableBalance ) ? `Value (available: ${ state.availableBalance.toFixed( 2 ) } KSM)` : 'Value' }
+            label={ ( isNumber( state.availableBalance ) && ! isNaN( state.availableBalance ) ) ? `Value (available: ${ state.availableBalance.toFixed( 2 ) } KSM)` : 'Value' }
             type="number"
             step="0.1"
             max={ state.availableBalance }
