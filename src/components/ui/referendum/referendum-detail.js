@@ -42,7 +42,7 @@ export default function ReferendumDetail({ referendum }) {
       )}
     >
       <div className="flex flex-wrap w-full flex-row justify-between">
-        <div className="self-start p-2 w-full md:w-2/3">
+        <div className="self-start p-2 w-full md:w-2/3 border-gray-200 border-r border-dashed">
           <h3
             onClick={() => setIsExpanded(!isExpanded)}
             className="cursor-pointer text-xl leading-normal dark:text-gray-100 pr-2"
@@ -77,7 +77,7 @@ export default function ReferendumDetail({ referendum }) {
                       className="dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8"
                     >
                       <ReactMarkdown>{ referendum.description }</ReactMarkdown>
-                      <div className="referendum-meta border-dashed border-t pt-2 mt-2">
+                      <div className="referendum-meta pt-2 mt-2">
                         <a className="pr-3" href={ `https://kusama.polkassembly.io/referendum/${ referendum.id }` }>View on Polkassembly ⤻</a>
                         <a href={ `https://kusama.subscan.io/referenda/${ referendum.id }` }>View on Subscan ⤻</a>
                       </div>
@@ -97,7 +97,7 @@ export default function ReferendumDetail({ referendum }) {
           )}
         </div>
         {['active'].indexOf(referendum.status) !== -1 && (
-          <div className="w-full md:w-1/3 border-t-2 border-dashed border-gray-100 md:border-none text-center mt-4 pt-2 md:mt-0 content-start relative mb-5 h-full gap-2 pb-5 before:absolute before:bottom-0 before:h-[1px] before:w-full before:border-b before:border-r before:border-dashed before:border-gray-200 ltr:before:left-0 rtl:before:right-0 dark:border-gray-700 dark:before:border-gray-700 md:mb-0 md:pb-0 md:before:h-full md:before:w-[1px] ltr:md:pl-8 rtl:md:pr-8">
+          <div className="before:content-[' '] text-center w-full md:w-1/3 mt-4 pt-2 md:mt-0 content-start relative mb-5 h-full gap-2 pb-5 before:absolute before:bottom-0 before:h-[1px] before:w-full ltr:before:left-0 rtl:before:right-0 dark:border-gray-700 dark:before:border-gray-700 md:mb-0 md:pb-0 md:before:h-full md:before:w-[1px] ltr:md:pl-8 rtl:md:pr-8">
             <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-xl">
               Voting ends in
             </h3>
