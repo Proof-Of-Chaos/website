@@ -62,11 +62,11 @@ const useAppStore = create(
           }
         }))
       },
-      updateConnectedAccount: ( account ) => {
+      updateConnectedAccount: ( index ) => {
         set((state)=>({
           user: {
             ...state.user,
-            connectedAccount: account,
+            connectedAccount: index,
           }
         }))
       },

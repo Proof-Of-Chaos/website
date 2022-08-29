@@ -151,7 +151,9 @@ export function useNFTs( queryOptions ) {
 }
 
 export const useUserNfts = () => {
-  const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
+  const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
+  const connectedAccount = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex] )
+  const ksmAddress = connectedAccount?.ksmAddress
 
   return useQuery(["userNFTs", ksmAddress ], async () => {
     if ( typeof ksmAddress === 'undefined') {

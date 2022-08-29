@@ -129,12 +129,13 @@ const referendumObject = (referendum, endDate, PAData, ksmAddress) => {
  * @returns Promise
  */
 export function useAccountVote( referendumId ) {
-  const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
+  const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
+  const ksmAddress = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex]?.ksmAddress )
   const { data:referendums } = useReferendums()
   return useQuery( ['userVote', ksmAddress, referendumId ], async () => {
     const referendum = referendums.find( ( ref ) => ref.id === referendumId )
-    const userVote = referendum && referendum?.votes?.find((account) => {
-      return account.accountId.toString() === ksmAddress;
+    const userVote = referendum && referendum?.votes?.find((vote) => {
+      return vote.accountId.toString() === ksmAddress;
     })
     return userVote ? parseCastVote( userVote ) : false
   }, {

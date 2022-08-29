@@ -14,9 +14,10 @@ import { useIsMounted } from "../../lib/hooks/use-is-mounted"
 export default function WalletConnect ( { className, title, onAccountSelected, variant = 'calm' } ) {
   const { openModal } = useModal();
   const isMounted = useIsMounted();
-  // const [ connectedWallet, setSelectedWallet ] = useState(null)
-  const connectedWallet = useAppStore((state) => state.user.connectedWallet)
-  const connectedAccount = useAppStore((state) => state.user.connectedAccount)
+  // const [ connectedAccounts, setSelectedWallet ] = useState(null)
+  const connectedAccounts = useAppStore((state) => state.user.connectedAccounts )
+  const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
+  const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
   const updateConnectedAccounts = useAppStore( ( state ) => state.updateConnectedAccounts );
   const updateConnectedAccount = useAppStore( ( state ) => state.updateConnectedAccount );
 
@@ -32,19 +33,24 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
           } )
         }}
 
-        onUpdatedAccounts={(accounts) => {
-          updateConnectedAccounts( {
-            ...connectedWallet,
-            accounts,
-          } )
+        onUpdatedAccounts={( accounts ) => {
+          console.log( 'onUpdatedAccounts', accounts )
+          const transformedAccounts = accounts.map( acc => {
+            return {
+              ...acc,
+              ksmAddress: encodeAddress( acc?.address, 2 ),
+            }
+          })
+          updateConnectedAccounts( transformedAccounts )
         }}
 
-        onAccountSelected={ (account) => {
-          typeof onAccountSelected === 'function' ? onAccountSelected() : () => {}
-          updateConnectedAccount( {
-            ...account,
-            ksmAddress: encodeAddress( account?.address, 2 )
-          } )
+        onAccountSelected={ (newAccount) => {
+          
+          if ( connectedAccounts?.length ) {
+            const connectedAccountIndex = connectedAccounts.findIndex( acc => acc.address === newAccount.address )
+            console.log( 'onAccountSelected', newAccount, connectedAccounts, connectedAccountIndex )
+            updateConnectedAccount( connectedAccountIndex )
+          }
         }}
 
         triggerComponent={

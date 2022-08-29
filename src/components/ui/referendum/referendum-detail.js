@@ -16,9 +16,11 @@ export default function ReferendumDetail({ referendum }) {
   let [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModal();
 
-  const connectedAccount = useAppStore((state) => state.user.connectedAccount)
+  const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
+  const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
 
   const { data: userVote } = useAccountVote( referendum.id )
+
   const { data: quizzes, isLoading, error } = useQuizzes();
   const questions = quizzes?.[referendum.id];
   const hasUserSubmittedQuiz = useAppStore((state) => state.user?.quizAnswers?.[ referendum.id ]?.submitted )
@@ -108,7 +110,7 @@ export default function ReferendumDetail({ referendum }) {
                   }
                   <Button
                     onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
-                    className="mt-2 w-full"
+                    className="mt-4 w-full"
                     variant={ ((!isLoading && !error && questions) || userVote ) ? 'calm' : 'primary' }
                   >
                     { userVote ? 'Vote Again' : 'Vote Now' }

@@ -9,9 +9,14 @@ import {getWalletBySource, getWallets} from "@talisman-connect/wallets";
 import useAppStore from "../../zustand";
 import { web3FromSource } from "@talisman-connect/components";
 import { useAccountVote } from "../../lib/hooks/use-referendums";
+import useAccountBalance from "../../lib/hooks/use-account-balance";
+import { valueToKSM } from '../../lib/utils'
+import { isNumber } from "lodash";
 
 export default function ReferendumVoteModal( { id, title, userAnswers } ) {
-  const { data:userVote } = useAccountVote( id );
+  const { data: userVote } = useAccountVote( id );
+  const { data: accountBalance } = useAccountBalance()
+
   const { closeModal } = useModal();
   const VOTE_LOCK_OPTIONS = [
     {
@@ -44,19 +49,32 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
     },
   ]
 
-  const connectedAccount = useAppStore((state) => state.user.connectedAccount)
-  const connectedWallet = useAppStore((state) => state.user.connectedWallet)
+  const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
+  const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
   const hasUserSubmittedAnswers = useAppStore((state) => state.user.quizAnswers?.[id]?.submitted )
-  
-  const { address } = connectedAccount
-  const { accounts } = connectedWallet
 
   const [ state, setState ] = useState({
     'wallet-select': connectedAccount?.address,
     'vote-amount': '',
     'vote-lock': '',
-    userAnswers: userAnswers,
+    'availableBalance': '',
+    userAnswers,
   })
+
+  useEffect( () => {
+    setState( {
+      ...state,
+      'vote-amount': userVote.balance,
+      'vote-lock': userVote.conviction,
+    })
+  }, [ userVote ])
+
+  useEffect( () => {
+    setState( {
+      ...state,
+      'availableBalance': valueToKSM( accountBalance?.data?.free ),
+    })
+  }, [ accountBalance ])
 
   const setFormFieldValue = (e) => {
     setState({
@@ -121,10 +139,10 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           /> */}
           <Input
             id="vote-amount"
-            label="Value"
+            label={ isNumber( state.availableBalance ) ? `Value (available: ${ state.availableBalance.toFixed( 2 ) } KSM)` : 'Value' }
             type="number"
-            step="0.1"
-            min="0"
+            step="1"
+            max={ state.availableBalance }
             value={ state["vote-amount"] }
             className="text-base"
             placeholder={ userVote?.balance ?? '' }
@@ -137,7 +155,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
             type="select"
             className="text-xs sm:text-sm md:text-base"
             options={ VOTE_LOCK_OPTIONS }
-            value={ userVote?.conviction }
+            value={ state["vote-lock"] }
             tooltip="How long your value is locked - increases voting power"
             onChange={setFormFieldValue.bind(this)}
           />

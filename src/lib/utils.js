@@ -8,7 +8,12 @@ function getRandomIntBetween(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function valueToKSM( val ) {
+  return parseFloat(val?.toString()) / 1000000000000
+}
+
 export {
   getRandomInt,
   getRandomIntBetween,
+  valueToKSM,
 }

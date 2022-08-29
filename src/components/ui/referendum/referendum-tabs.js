@@ -10,6 +10,7 @@ import { useIsMounted } from '../../../lib/hooks/use-is-mounted'
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
+
 export function ReferendumList( { voteStatus } ) {
 
   const isMounted = useIsMounted();
