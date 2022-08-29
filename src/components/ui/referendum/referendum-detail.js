@@ -27,9 +27,15 @@ export default function ReferendumDetail({ referendum }) {
 
   referendum.questions = quizzes?.[referendum.id];
 
-  const referendumBadges = referendum?.isPassing ?
-    <span className="is-passing">is currently passing</span> :
-    <span className="is-failing">is currently failing</span>
+  const referendumBadges = () => {
+    const ret = '';
+    if ( referendum?.isPassing ) {
+      ret = <span className="is-passing">is currently passing</span>
+    } else {
+      ret = <span className="is-failing">is currently failing</span>
+    }
+    return ret
+  }
 
   return (
     <div
@@ -120,8 +126,6 @@ export default function ReferendumDetail({ referendum }) {
                   >
                     { userVote ? 'Vote Again' : 'Vote Now' }
                   </Button>
-                  <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
-                  { referendumBadges }
                 </>
               :
               <>
@@ -143,6 +147,8 @@ export default function ReferendumDetail({ referendum }) {
               />
             </>
           }
+          <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
+          { referendumBadges() }
           </div>
         )}
       </div>
