@@ -8,30 +8,32 @@ import Identicon from "../ui/identicon"
 import classNames from "classnames"
 import { WalletSelect } from '@talisman-connect/components';
 import { encodeAddress } from '@polkadot/keyring'
+import { useIsMounted } from "../../lib/hooks/use-is-mounted"
 
 
 export default function WalletConnect ( { className, title, onAccountSelected, variant = 'calm' } ) {
   const { openModal } = useModal();
+  const isMounted = useIsMounted();
   // const [ connectedWallet, setSelectedWallet ] = useState(null)
   const connectedWallet = useAppStore((state) => state.user.connectedWallet)
   const connectedAccount = useAppStore((state) => state.user.connectedAccount)
-  const updateConnectedWallet = useAppStore( ( state ) => state.updateConnectedWallet );
+  const updateConnectedAccounts = useAppStore( ( state ) => state.updateConnectedAccounts );
   const updateConnectedAccount = useAppStore( ( state ) => state.updateConnectedAccount );
 
   return(
-    <>
+    isMounted && <>
       <WalletSelect
         dappName="Proof of Chaos Governance"
         open={false}
 
-        onWalletSelected={(wallet) => {
-          updateConnectedWallet( {
-            ...wallet,
+        onWalletSelected={(accounts) => {
+          updateConnectedAccounts( {
+            ...accounts,
           } )
         }}
 
         onUpdatedAccounts={(accounts) => {
-          updateConnectedWallet( {
+          updateConnectedAccounts( {
             ...connectedWallet,
             accounts,
           } )

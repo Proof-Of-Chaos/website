@@ -5,27 +5,30 @@ import ReferendumDetail from "./referendum-detail";
 import { useReferendums } from '../../../lib/hooks/use-referendums'
 import Loader from '../loader'
 import useAppStore from "../../../zustand";
+import { useIsMounted } from '../../../lib/hooks/use-is-mounted'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
-
 export function ReferendumList( { voteStatus } ) {
 
+  const isMounted = useIsMounted();
   const setReferendums = useAppStore((state)=>state.setReferendums)
   const cachedReferendums = useAppStore((state)=>state.referendums)
 
   const { data: referendums, isLoading, error } = useReferendums()
   const { votes, totalVotes } = getVotesByStatus(voteStatus)
 
-  if ( ! isLoading && ! error && referendums ) {
-    setReferendums( referendums )
-  }
+  useEffect( () => {
+    if ( ! isLoading && ! error && referendums ) {
+      setReferendums( referendums )
+    }
+  }, [])
 
   const showLoader = isLoading || typeof cachedReferendums === 'undefined'
 
   return (
-    <>
+    isMounted && <>
       { showLoader && <Loader /> }
       { totalVotes > 0 ? (
         referendums?.map( (referendum, idx) => (

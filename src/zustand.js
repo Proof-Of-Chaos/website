@@ -54,11 +54,11 @@ const useAppStore = create(
           }
         }))
       },
-      updateConnectedWallet: ( wallet ) => {
+      updateConnectedAccounts: ( accounts ) => {
         set((state)=>({
           user: {
             ...state.user,
-            connectedWallet: wallet,
+            connectedAccounts: accounts,
           }
         }))
       },

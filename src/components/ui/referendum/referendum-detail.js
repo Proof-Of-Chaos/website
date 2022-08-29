@@ -97,27 +97,27 @@ export default function ReferendumDetail({ referendum }) {
             <ReferendumCountdown date={referendum.executed_at} />
               { connectedAccount ?
                 <>
-                { !isLoading && ! error && questions &&
+                  { !isLoading && ! error && questions &&
+                    <Button
+                      onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
+                      className="mt-4 w-full"
+                      variant={ hasUserSubmittedQuiz ? 'calm' : 'primary' }
+                    >
+                      { hasUserSubmittedQuiz ? 'Submit Quiz Again' : 'Take Quiz + Vote' }
+                    </Button>
+                  }
                   <Button
-                    onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
-                    className="mt-4 w-full"
-                    variant={ hasUserSubmittedQuiz ? 'calm' : 'primary' }
+                    onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
+                    className="mt-2 w-full"
+                    variant={ ((!isLoading && !error && questions) || userVote ) ? 'calm' : 'primary' }
                   >
-                    { hasUserSubmittedQuiz ? 'Submit Quiz Again' : 'Take Quiz + Vote' }
+                    { userVote ? 'Vote Again' : 'Vote Now' }
                   </Button>
-                }
-                <Button
-                  onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
-                  className="mt-2 w-full"
-                  variant={ ((!isLoading && !error && questions) || userVote ) ? 'calm' : 'primary' }
-                >
-                  { userVote ? 'Vote Again' : 'Vote Now' }
-                </Button>
-                <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
-              </>
-            :
-            <>
-            { !isLoading && ! error && questions && <WalletConnect
+                  <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
+                </>
+              :
+              <>
+              { !isLoading && ! error && questions && <WalletConnect
                   className="w-full mt-4"
                   variant="primary"
                   title="Take Quiz + Vote"
