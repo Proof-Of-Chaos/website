@@ -104,7 +104,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
               You already voted <b>{ userVote.aye ? 'Aye' : 'Nay' }</b> on this referendum with <b>{ userVote.balance } KSM</b> and <b>{ userVote.conviction?.substring(6) }</b> conviction. <br /> Voting again will replace your current vote.
             </div>
           }
-        <form className="mt-4">
+        <form className="mt-4 pl-1">
           {/* <Input
             id="wallet-select"
             label="Select Wallet"
@@ -146,12 +146,12 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           <Button
             className="mr-2 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white"
             onClick={ async () => onClickCastVote(true) }>
-            Aye
+            Vote Aye
           </Button>
           <Button
             className="mr-2 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white text-4xl"
             onClick={ async () => onClickCastVote(false) }>
-            Nay
+            Vote Nay
           </Button>
           <Button
             variant="calm"

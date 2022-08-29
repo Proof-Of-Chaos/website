@@ -72,7 +72,7 @@ export default function ReferendumDetail({ referendum }) {
                     >
                       <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                       <div className="referendum-meta border-dashed border-t pt-2 mt-2">
-                        <a href={ `https://kusama.polkassembly.io/referendum/${ referendum.id }` }>View on Polkassembly</a>
+                        <a href={ `https://kusama.polkassembly.io/referendum/${ referendum.id }` }>View on Polkassembly ⤻</a>
                       </div>
                     </div>
                   </div>
