@@ -1,26 +1,6 @@
-import { quizzes } from "./vote-quiz";
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import useAppStore from "../zustand";
 
-export async function voteOnReferendum( refId, amount, lockup ) {
-  return Promise.resolve('fake data')
-}
-
-export async function getQuizzes() {
-  await setTimeoutPromise(2000)
-  return quizzes
-}
-
-export async function getQuizById( referendumId ) {
-  await setTimeoutPromise(2000)
-  return quizzes[ referendumId ]
-}
-
-export async function setTimeoutPromise(timeout) {
-  return new Promise((resolve) => setTimeout(resolve, timeout))
-}
-
-export async function castVote(signer, aye, ref, address, balance, conviction, userAnswers) {
+export async function castVote(signer, aye, ref, address, balance, conviction, userAnswers, onSuccess) {
   return new Promise( async ( resolve, reject ) => {
     const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
     const api = await ApiPromise.create({ provider: wsProvider })
@@ -32,30 +12,39 @@ export async function castVote(signer, aye, ref, address, balance, conviction, u
         txs.push(getQuizRemarkTx(api, userAnswers));
       }
 
-      api.tx.utility.batchAll(txs).signAndSend(address, {signer: signer}, result => {
-        if (result.status.isInBlock) {
-          resolve( 'in block' )
-        } else if (result.status.isFinalized) {
-          resolve( 'finalized' )
+      const unsub = await api.tx.utility
+        .batchAll(txs)
+        .signAndSend(
+          address, { signer: signer }, ({ status, dispatchError }) => {
+        if (status.isInBlock) {
+          // console.log( 'transaction in block waiting for finalization' )
+        } else if (status.isFinalized) {
+          // console.log(`Transaction included at blockHash ${status.asFinalized}`);
+          // console.log(`Transaction hash ${txHash.toHex()}`);
+
+          // Loop through Vec<EventRecord> to display all events
+          if (dispatchError) {
+            if (dispatchError.isModule) {
+              // for module errors, we have the section indexed, lookup
+              const decoded = api.registry.findMetaError(dispatchError.asModule);
+              const { docs, name, section } = decoded;
+
+              reject( docs.join(' ') )
+            } else {
+              // Other, CannotLookup, BadOrigin, no extra info
+              reject( dispatchError.toString() )
+            }
+          } else {
+            //store the user quiz answers locally
+            onSuccess()
+            resolve( 'Vote recorded' )
+          }
+          unsub()
         }
       })
     } catch (err) {
-      console.log( err );
       reject( 'voting cancelled' )
     }
-
-    /*try {
-      await api.tx.democracy.vote(ref, vote).signAndSend(address, {signer: signer}, result => {
-        if (result.status.isInBlock) {
-          resolve( 'in block' )
-        } else if (result.status.isFinalized) {
-          resolve( 'finalized' )
-        }
-      })
-    } catch (err) {
-      console.log( err );
-      reject( 'voting cancelled' )
-    }*/
   })
 }
 
@@ -75,26 +64,4 @@ function getVoteTx(api, aye, ref, balance, conviction) {
 
 function getQuizRemarkTx(api, userAnswers) {
   return api.tx.system.remark('GOV::QUIZ::' + JSON.stringify(userAnswers.answers))
-}
-
-export async function getQuizAnswers() {
-  return getFromStorage( 'quiz' );
-}
-
-export async function storeQuizAnswers( answers ) {
-  return persistToStorage( 'quiz', answers )
-}
-
-//helper for demo - mock data storage with localstorage
-
-async function persistToStorage( key, data ){
-  await setTimeoutPromise(1000)
-  localStorage.setItem( key, JSON.stringify(data) )
-  console.log( 'persisting', data, 'to', key );
-  return Promise.resolve( data )
-}
-
-async function getFromStorage( key ) {
-  await setTimeoutPromise(500)
-  return Promise.resolve(JSON.parse(localStorage.getItem( key )))
 }
