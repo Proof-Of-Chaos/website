@@ -107,7 +107,8 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
               // When the promise reject, data will contains the error
               return `Error recording vote 🤯: ${data}`
             }
-          }
+          },
+          pauseOnFocusLoss: false
         }
       )
     } catch (err) {
