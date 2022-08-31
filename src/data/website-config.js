@@ -597,7 +597,7 @@ export const websiteConfig = {
             "ref":"Referendum 193",
             "thumb":"bafybeif7pz6c5tkzbwivcxqhhto52vvxdbwnubloup3ieqhdf6ukconqwa",
             "amount":"174",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
             "symbol":"193RMRKTS"
@@ -606,7 +606,7 @@ export const websiteConfig = {
             "ref":"Referendum 193",
             "thumb":"bafybeibzfdbwbrsmspqtsr4hffylp7qu6biujlwwrtav4xvp5i24dlasjq",
             "amount":"159",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
             "symbol":"193RMRKTG"
@@ -615,7 +615,7 @@ export const websiteConfig = {
             "ref":"Referendum 193",
             "thumb":"bafybeiarj5oqgb6zfvnbxir6hk5msun3ice5uhizhfnmevncsignmh4vom",
             "amount":"1118",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
            "symbol":"193RMRKTB"
@@ -711,7 +711,7 @@ export const websiteConfig = {
             "ref":"Referendum 190",
             "thumb":"bafybeievujt5ablv3pgpruyf75k3gttqh2yrsey2qxz32eoo4omoqoscze",
             "amount":"225",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
             "resources": [
