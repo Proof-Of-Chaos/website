@@ -760,6 +760,7 @@ export const websiteConfig = {
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
             "resources": [
+              "ipfs://ipfs/bafkreihsinemgxkykkatgjs5k5mf4ffrvkyhzoojunm7knll6pr3sobik4",
               "ipfs://ipfs/bafkreiee25xtptpye64cmdix4e6eji7g7illctfjn6dfhkigdfh4g5qz3u",
               "ipfs://ipfs/bafkreihs6xwrqai47ejgurdmkzmq3pkll34axfqxftpcxfo6fumbewepey"
             ]
@@ -785,7 +786,6 @@ export const websiteConfig = {
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
             "resources": [
               "ipfs://ipfs/bafkreic4xgewxed3m3umaiyjvfga37jo4dpdqh7iedimbsnarns6n5n2ce",
-              "ipfs://ipfs/bafkreihsinemgxkykkatgjs5k5mf4ffrvkyhzoojunm7knll6pr3sobik4"
             ]
         },
         {
