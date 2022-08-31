@@ -15,7 +15,10 @@ async function fetchNFTsForUser( address ) {
       query UserNFTsQuery($where: nfts_bool_exp, $limit: Int) {
         nfts(where: $where, limit: $limit) {
           symbol,
-          metadata
+          metadata,
+          resources {
+            thumb
+          }
         }
       }
     `,

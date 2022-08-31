@@ -15,11 +15,19 @@ function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
   let isOwned
   if (refIndex >= 192) {
     isOwned = userNFTSymbols?.includes(symbol)
-  } else {
-    const userNFTResources = userNFTs?.map( ( { metadata } ) => metadata ) ?? []
+  } else if (refIndex === 188) {
     const referendumConfig = websiteConfig.classic_referendums.find(referendum => referendum.ref === ref && referendum.rarity === rarity)
-    isOwned = referendumConfig.resources ? referendumConfig.resources.some(r => userNFTResources.includes(r)) : false
-
+    const userNFTResources = [];
+    userNFTs?.forEach((n) => {
+      n.resources.forEach((r) => {
+        userNFTResources.push(r.thumb)
+      })
+    })
+    isOwned = referendumConfig.thumbs ? referendumConfig.thumbs.some(r => userNFTResources.includes(r)) : false
+  } else {
+    const userNFTMetadata = userNFTs?.map( ( { metadata } ) => metadata ) ?? []
+    const referendumConfig = websiteConfig.classic_referendums.find(referendum => referendum.ref === ref && referendum.rarity === rarity)
+    isOwned = referendumConfig.resources ? referendumConfig.resources.some(r => userNFTMetadata.includes(r)) : false
   }
 
   return (
