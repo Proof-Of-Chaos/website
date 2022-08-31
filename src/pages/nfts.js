@@ -1,11 +1,8 @@
 import Layout from '../layouts/layout'
 import NFTDetail from '../components/nft/ref-nfts'
-import { nftsFetcher, useNFTs, useNfts, useQueryNFTs, userNftsFetcher } from '../lib/hooks/use-nfts'
+import { useNFTs } from '../lib/hooks/use-nfts'
 import { groupBy } from 'lodash';
-import { useEffect, useState } from 'react'
 import { websiteConfig } from "../data/website-config"
-import useAppStore from '../zustand';
-import useSWR, { SWRConfig } from 'swr';
 import objectHash from 'object-hash'
 import Loader from '../components/ui/loader';
 

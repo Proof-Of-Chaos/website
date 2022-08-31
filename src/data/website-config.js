@@ -830,7 +830,11 @@ export const websiteConfig = {
             "amount":"",
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+182"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+182",
+            "resources": [
+                "ipfs://ipfs/bafkreiate4dnegpkmxs654r7b3fn4xnhuujneo63qq4d2zchivnfxxdrsy",
+                "ipfs://ipfs/bafkreidkbr4jfyptdmvoolleq2jmgxc34hyrwgtgc6gxnz2vmcz22xzr7u"
+            ]
         },
         {
             "ref":"Referendum 182",
@@ -838,7 +842,11 @@ export const websiteConfig = {
             "amount":"135",
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+182"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+182",
+            "resources": [
+              "ipfs://ipfs/bafkreiawrf4e4goywwzdvv4xcjhg2hwgfga6jnsusbucamjgoxzdwop2yq",
+              "ipfs://ipfs/bafkreidrgq4lbe5sfws3hdjto766btptuhwowaeniktjzmgigxyziv6m7u"
+            ]
         },
         {
             "ref":"Referendum 181",
@@ -846,7 +854,11 @@ export const websiteConfig = {
             "amount":"476",
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+181"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+181",
+            "resources": [
+              "ipfs://ipfs/bafkreif2lkmgjftunw22o4hrtmurw4mn7yfkoh62k7ifhmino5fwwhpysi",
+              "ipfs://ipfs/bafkreighma3o3hbjhya2otemmptldvq46zhmfk6z2wry2xceqxyw6pf7we"
+            ]
         }
     ]
 }

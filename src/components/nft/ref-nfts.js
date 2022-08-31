@@ -5,15 +5,27 @@ import { uniqBy, every } from "lodash";
 import Image from "../ui/image-fade"
 import { useUserNfts } from "../../lib/hooks/use-nfts";
 import Button from "../ui/button";
+import {websiteConfig} from "../../data/website-config";
 
 function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
   const { data: userNFTs } = useUserNfts()
   const userNFTSymbols = userNFTs?.map( ( { symbol } ) => symbol )
+  const refIndex = parseInt(ref.match(/Referendum ([0-9]+)/)[1])
+
+  let isOwned
+  if (refIndex >= 192) {
+    isOwned = userNFTSymbols?.includes(symbol)
+  } else {
+    const userNFTResources = userNFTs?.map( ( { metadata } ) => metadata ) ?? []
+    const referendumConfig = websiteConfig.classic_referendums.find(referendum => referendum.ref === ref && referendum.rarity === rarity)
+    isOwned = referendumConfig.resources ? referendumConfig.resources.some(r => userNFTResources.includes(r)) : false
+
+  }
 
   return (
     <div className="single-nft relative p-4 transform transition duration-200 hover:scale-105 flex justify-center flex-col items-center">
       <div>
-        { userNFTSymbols?.includes( symbol ) && <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }><FontAwesomeIcon icon={ faWallet } size={"sm"} /> owned</span>}
+        { isOwned && <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }><FontAwesomeIcon icon={ faWallet } size={"sm"} /> owned</span>}
         <span className={ `absolute z-10 -ml-4 -mt-3 px-2 nft-${rarity}` }>{ rarity }</span>
         { thumb && thumb !== '' ?
           <Image
