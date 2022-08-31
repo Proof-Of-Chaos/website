@@ -695,37 +695,46 @@ export const websiteConfig = {
         {
             "ref":"Referendum 190",
             "thumb":"bafybeici2z3xdzbt6rjuxfobbcye6nujjgxz4vq5d2sxclxygjsc4hxqqi",
-            "amount":"632",
+            "amount":"634",
             "artist":"?",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
             "resources": [
               "ipfs://ipfs/bafkreia5hjaag5uyld4xbsteuqp6bk4stazzce4gkybjs23lt4ywhyfmue",
               "ipfs://ipfs/bafkreigybqlvu5cvu7p636f74hcprbkead6unqzdmppkoe25yby4p4vh7q"
+            ],
+            "thumbs": [
+                "ipfs://ipfs/bafybeici2z3xdzbt6rjuxfobbcye6nujjgxz4vq5d2sxclxygjsc4hxqqi",
             ]
         },
         {
             "ref":"Referendum 190",
             "thumb":"bafybeievujt5ablv3pgpruyf75k3gttqh2yrsey2qxz32eoo4omoqoscze",
-            "amount":"230",
+            "amount":"225",
             "artist":"?",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
             "resources": [
               "ipfs://ipfs/bafkreiadsqfadkevsteflmnurbcgjj3kxjwveeddmoftvnzb2hdsjiubdu",
               "ipfs://ipfs/bafkreiee2cex65ir2uxi7d2xosypy54m5e4yd7khuk3p6a3avcb63trlcq"
+            ],
+            "thumbs": [
+                "ipfs://ipfs/bafybeievujt5ablv3pgpruyf75k3gttqh2yrsey2qxz32eoo4omoqoscze"
             ]
         },
         {
             "ref":"Referendum 190",
             "thumb":"bafybeiamkgjzmou654kbakdvvw6vrmgqwqcts45fryqyjeuz3glt3o2lre",
-            "amount":"104",
+            "amount":"107",
             "artist":"?",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
             "resources": [
               "ipfs://ipfs/bafkreicjzflbx6uxhnvviaztj4zkubs6b46dj7j3ohsm2gncip6klruaja",
               "ipfs://ipfs/bafkreidwtopquqnch2lfo3wrburtlzpxx7vql2m66ksqjhfuuzznob7pdu"
+            ],
+            "thumbs": [
+              "ipfs://ipfs/bafybeiamkgjzmou654kbakdvvw6vrmgqwqcts45fryqyjeuz3glt3o2lre"
             ]
         },
         {
@@ -921,7 +930,7 @@ export const websiteConfig = {
         {
             "ref":"Referendum 182",
             "thumb":"bafybeibmbknwfm4gnsnc6qud2p35djzmwspm2ytd3x22pyjvl3cc6umpzq",
-            "amount":"800",
+            "amount":"500",
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+182",
@@ -933,7 +942,7 @@ export const websiteConfig = {
         {
             "ref":"Referendum 182",
             "thumb":"bafybeiabqlwschsszffrku6t5x7rk4cd2ldil7ryywnybb5zneoeqqr32q",
-            "amount":"270",
+            "amount":"170",
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+182",

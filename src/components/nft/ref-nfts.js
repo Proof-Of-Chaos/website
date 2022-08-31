@@ -15,7 +15,7 @@ function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
   let isOwned
   if (refIndex >= 192) {
     isOwned = userNFTSymbols?.includes(symbol)
-  } else if (refIndex === 188) {
+  } else if ([188, 190].includes(refIndex)) {
     const referendumConfig = websiteConfig.classic_referendums.find(referendum => referendum.ref === ref && referendum.rarity === rarity)
     const userNFTResources = [];
     userNFTs?.forEach((n) => {
