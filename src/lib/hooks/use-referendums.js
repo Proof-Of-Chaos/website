@@ -4,6 +4,7 @@ import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
 import {websiteConfig} from "../../data/website-config";
 import { useQuery } from "@tanstack/react-query";
 import useAppStore from "../../zustand";
+import { microToKSM, microToKSMFormatted } from "../utils";
 
 const BLOCK_DURATION = 6000;  
 
@@ -62,14 +63,6 @@ async function getPADataForRef(referendumID) {
   })
 }
 
-const microToKSM = (microKSM) => {
-  return parseInt(microKSM) / 1000000000000;
-}
-
-const microToKSMFormatted = (microKSM) => {
-  return parseFloat((microToKSM(microKSM) / 1000).toFixed(2)) + 'K KSM';
-}
-
 const toPercentage = (part, whole) => {
   return Math.round(parseInt(part) / parseInt(whole) * 100)
 }
@@ -78,12 +71,6 @@ const parseCastVote = (vote) => {
   if (!vote) {
     return null
   }
-
-  console.log( 'parseCastVote', vote, {
-    aye: vote.isAye,
-    balance: parseInt(vote.balance?.toString()) / 1000000000000,
-    conviction: vote.conviction?.toString(),
-  })
 
   return {
     aye: vote.vote?.isAye,

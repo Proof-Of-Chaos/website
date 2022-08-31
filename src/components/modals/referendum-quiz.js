@@ -1,14 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import useSWR from 'swr';
 import { Dialog } from "@headlessui/react";
-import { getQuizAnswers, getQuizById, storeQuizAnswers } from "../../data/vote-service";
 import Button from "../ui/button";
 import Input from "../ui/input";
 import { useModal } from "./context";
 import { toast } from 'react-toastify';
 import useAppStore from "../../zustand";
-import { every } from "lodash";
-import { validate } from "graphql";
 
 export default function ReferendumQuizModal( { id, title, questions } ) {
   const { openModal } = useModal();
@@ -24,19 +19,20 @@ export default function ReferendumQuizModal( { id, title, questions } ) {
     if ( ! isFormFilled ) {
       return
     }
+    submitQuiz( id )
+    toast( 'quiz answers stored, now submit your vote')
 
-    toast.promise(
-      storeQuizAnswers( userAnswers ),
-      {
-        pending: `sending your quiz answers for referendum ${ id }`,
-        success: 'answers successfully recorded 🗳️',
-        error: 'error recording answers 🤯'
-      }
-    ).then( () => {
-      submitQuiz( id )
+    // toast.promise(
+    //   submitQuiz( id ),
+    //   {
+    //     pending: `sending your quiz answers for referendum ${ id }`,
+    //     success: 'answers successfully recorded 🗳️',
+    //     error: 'error recording answers 🤯'
+    //   }
+    // ).then( () => {
       closeModal()
       openModal('VIEW_REFERENDUM_VOTE', {id, title, userAnswers})
-    } );
+    // } );
   }
 
   function onChangeInputs( e, questionIndex, multiple ) {

@@ -49,6 +49,14 @@ pre {
   @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded text-black;
 }
 
+.is-passing {
+  @apply rounded-lg text-sm bg-green-400 px-2 py-1 mt-4 inline-block text-center;
+}
+
+.is-failing {
+  @apply rounded-lg text-sm bg-red-400 px-2 py-1 mt-4 inline-block text-center;
+}
+
 .background-animate {
   background-size: 300%;
 
@@ -113,6 +121,8 @@ pre {
 
     --talisman-connect-modal-header-font-size: 1.5rem;
     --modal-max-width: 600px;
+
+    --toastify-spinner-color: #000 !important;
   }
 
   div[class^='Modal-module_modal-content'] {

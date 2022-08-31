@@ -71,6 +71,8 @@ const useAppStore = create(
         }))
       },
       submitQuiz: ( referendumId ) => {
+        // store in state that user submitted quiz answers,
+        // should only be called in the signAndSend
         set((state)=>({
           user: {
             ...state.user,

@@ -8,12 +8,17 @@ function getRandomIntBetween(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function valueToKSM( val ) {
-  return parseFloat(val?.toString()) / 1000000000000
+const microToKSM = (microKSM) => {
+  return parseInt(microKSM) / 1000000000000;
+}
+
+const microToKSMFormatted = (microKSM) => {
+  return parseFloat((microToKSM(microKSM) / 1000).toFixed(2)) + 'K KSM';
 }
 
 export {
   getRandomInt,
   getRandomIntBetween,
-  valueToKSM,
+  microToKSM,
+  microToKSMFormatted,
 }

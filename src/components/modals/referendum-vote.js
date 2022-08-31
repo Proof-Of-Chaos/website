@@ -4,19 +4,18 @@ import Button from "../ui/button";
 import Input from "../ui/input";
 import { useModal } from "./context";
 import { toast } from 'react-toastify';
-import {useEffect, useState} from "react";
-import {getWalletBySource, getWallets} from "@talisman-connect/wallets";
+import { useEffect, useState } from "react";
+import { getWalletBySource} from "@talisman-connect/wallets";
 import useAppStore from "../../zustand";
-import { web3FromSource } from "@talisman-connect/components";
 import { useAccountVote } from "../../lib/hooks/use-referendums";
 import useAccountBalance from "../../lib/hooks/use-account-balance";
-import { valueToKSM } from '../../lib/utils'
+import { microToKSM } from '../../lib/utils'
 import { isNumber } from "lodash";
 
 export default function ReferendumVoteModal( { id, title, userAnswers } ) {
   const { data: userVote } = useAccountVote( id );
   const { data: accountBalance } = useAccountBalance()
-
+  const submitQuiz = useAppStore((state)=>state.submitQuiz)
   const { closeModal } = useModal();
   const VOTE_LOCK_OPTIONS = [
     {
@@ -72,7 +71,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
   useEffect( () => {
     setState( {
       ...state,
-      'availableBalance': valueToKSM( accountBalance?.data?.free ),
+      'availableBalance': microToKSM( accountBalance?.data?.free ),
     })
   }, [ accountBalance ])
 
@@ -86,15 +85,30 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
   async function onClickCastVote(aye = true) {
     const balance = parseFloat(state['vote-amount']) * 1000000000000
     const wallet = getWalletBySource(connectedAccount.source)
-    await wallet.enable('Proof of Chaos')
     
+    await wallet.enable('Proof of Chaos')
     try {
       toast.promise(
-        castVote(wallet.signer, aye, id, state['wallet-select'], balance, state['vote-lock'], state['userAnswers']).then( () => { closeModal() } ),
+        castVote(
+          wallet.signer,
+          aye,
+          id,
+          state['wallet-select'],
+          balance,
+          state['vote-lock'],
+          state['userAnswers'],
+          () => { submitQuiz(id); console.log( 'quiz submitted', id ) }
+        ).then( () => { closeModal() } ),
         {
           pending: `sending your vote for referendum ${ id }`,
           success: 'Vote successfully recorded 🗳️',
-          error: 'Error recording vote 🤯'
+          error: {
+            render({data}){
+              // When the promise reject, data will contains the error
+              return `Error recording vote 🤯: ${data}`
+            }
+          },
+          pauseOnFocusLoss: false
         }
       )
     } catch (err) {
@@ -123,23 +137,9 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
             </div>
           }
         <form className="mt-4 pl-1">
-          {/* <Input
-            id="wallet-select"
-            label="Select Wallet"
-            type="select"
-            value={ state["wallet-select"] }
-            options={ accounts.map( (account) => {
-              return {
-                label: account.name,
-                value: account.address,
-              };
-            })}
-            tooltip="Select the wallet for voting"
-            onChange={setFormFieldValue.bind(this)}
-          /> */}
           <Input
             id="vote-amount"
-            label={ isNumber( state.availableBalance ) ? `Value (available: ${ state.availableBalance.toFixed( 2 ) } KSM)` : 'Value' }
+            label={ ( isNumber( state.availableBalance ) && ! isNaN( state.availableBalance ) ) ? `Value (available: ${ state.availableBalance.toFixed( 2 ) } KSM)` : 'Value' }
             type="number"
             step="0.1"
             max={ state.availableBalance }
@@ -173,7 +173,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           </Button>
           <Button
             variant="calm"
-            onClick={closeModal}>
+            onClick={ closeModal }>
             Cancel
           </Button>
         </div>
