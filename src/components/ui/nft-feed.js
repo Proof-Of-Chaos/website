@@ -1,10 +1,8 @@
 import { ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { useBreakpoint } from '../../lib/hooks/use-breakpoint'
 import { useIsMounted } from '../../lib/hooks/use-is-mounted';
-import useSWR from 'swr';
+import { useCollectionData } from '../../lib/hooks/use-collection-data';
 import {nftFeedData} from "../../data/nft-feed-data";
-
-const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 export function NftFeed({
   id,
@@ -39,14 +37,22 @@ export default function PriceFeedSlider({ priceFeeds }) {
   const isMounted = useIsMounted();
   const breakpoint = useBreakpoint();
 
-  const { data, error } = useSWR('https://singular.app/api/stats/collection/3208723ec6f65df810-ITEM?rmrk2Only=false', fetcher)
+  const { data, error } = useCollectionData()
 
   if (error) return <div>Failed to load</div>
-  if (!data) return <div>Loading Quiz...</div>
+  if (!data) return <div>Loading statistics...</div>
 
-  nftFeedData[0]['balance'] = data.totalNFTs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  nftFeedData[1]['balance'] = data.owners.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  nftFeedData[2]['balance'] = data.volume.all.toFixed(1) + ' KSM';
+  let [ totalNFTs, owners, volume ] = [0, 0, 0]
+
+  data.forEach((collectionData) => {
+    totalNFTs += collectionData.totalNFTs
+    owners = Math.max(owners, collectionData.owners)
+    volume += collectionData.volume.all
+  })
+
+  nftFeedData[0]['balance'] = totalNFTs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  nftFeedData[1]['balance'] = owners.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  nftFeedData[2]['balance'] = volume.toFixed(1) + ' KSM';
 
   const sliderBreakPoints = {
     500: {

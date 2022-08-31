@@ -29,7 +29,7 @@ export async function castVote(signer, aye, ref, address, balance, conviction, u
       let txs = [getVoteTx(api, aye, ref, balance, conviction)];
 
       if (userAnswers) {
-        txs.push(getQuizRemarkTx(api, userAnswers));
+        txs.push(getQuizRemarkTx(api, ref, userAnswers));
       }
 
       api.tx.utility.batchAll(txs).signAndSend(address, {signer: signer}, result => {
@@ -73,8 +73,8 @@ function getVoteTx(api, aye, ref, balance, conviction) {
   return api.tx.democracy.vote(ref, vote)
 }
 
-function getQuizRemarkTx(api, userAnswers) {
-  return api.tx.system.remark('GOV::QUIZ::' + JSON.stringify(userAnswers.answers))
+function getQuizRemarkTx(api, ref, userAnswers) {
+  return api.tx.system.remark('GOV::' + ref + '::QUIZ::' + JSON.stringify(userAnswers.answers))
 }
 
 export async function getQuizAnswers() {
