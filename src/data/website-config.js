@@ -210,7 +210,7 @@ export const websiteConfig = {
             "ref":"Referendum 208",
             "thumb":"bafybeigjstdvrfngiirw3jpja2yppg5mfxzzqsnqugh5teaq3z4bew5zri",
             "amount":"188",
-            "artist":"LokiKot(@LokiPages)",
+            "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXPUNKS?search=Referendum+208",
             "symbol":"208ES"
@@ -219,7 +219,7 @@ export const websiteConfig = {
             "ref":"Referendum 207",
             "thumb":"bafybeidl2pefllitmxdregvcxg3pzo7oqrh7v2a75flg4ojty5ukuh27si",
             "amount":"1119",
-            "artist":"@kseniashikh",
+            "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
             "symbol":"207VR"
