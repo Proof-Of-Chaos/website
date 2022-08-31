@@ -662,7 +662,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191",
+            "resources": [
+              "ipfs://ipfs/bafkreidhokvlvgwdb6dylr7xssivtiwifoqzfa2hwvezgzzg5p2uztzx6y",
+              "ipfs://ipfs/bafkreidjtxqzmytnwrcskpetzomjx3ytsaopr72ybq3coqgngp2ywqliou"
+            ]
         },
         {
             "ref":"Referendum 191",
@@ -670,7 +674,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"rare",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191",
+            "resources": [
+              "ipfs://ipfs/bafkreicwvwkivw7telv7rtovi64fyiip7sx32m56kgsf6sj7xdqpvipa7i",
+              "ipfs://ipfs/bafkreig45zyz22eydwdeq3ybsrmvbl3gqriksalcfhbawi5pc25fb5w7yy"
+            ]
         },
         {
             "ref":"Referendum 191",
@@ -678,7 +686,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191",
+            "resources": [
+              "ipfs://ipfs/bafkreib6l27ggi5gmi4lddbqmq2w7k25f4vsijmvb4zld5ueh4u3h2e3ue",
+              "ipfs://ipfs/bafkreigp7mjbbg53dzvzetx7wr2b3hwwx4rm53hfipuaanht3cb5fi4vsm"
+            ]
         },
         {
             "ref":"Referendum 190",
@@ -686,7 +698,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
+            "resources": [
+              "ipfs://ipfs/bafkreia5hjaag5uyld4xbsteuqp6bk4stazzce4gkybjs23lt4ywhyfmue",
+              "ipfs://ipfs/bafkreigybqlvu5cvu7p636f74hcprbkead6unqzdmppkoe25yby4p4vh7q"
+            ]
         },
         {
             "ref":"Referendum 190",
@@ -694,7 +710,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"rare",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
+            "resources": [
+              "ipfs://ipfs/bafkreiadsqfadkevsteflmnurbcgjj3kxjwveeddmoftvnzb2hdsjiubdu",
+              "ipfs://ipfs/bafkreiee2cex65ir2uxi7d2xosypy54m5e4yd7khuk3p6a3avcb63trlcq"
+            ]
         },
         {
             "ref":"Referendum 190",
@@ -702,7 +722,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
+            "resources": [
+              "ipfs://ipfs/bafkreicjzflbx6uxhnvviaztj4zkubs6b46dj7j3ohsm2gncip6klruaja",
+              "ipfs://ipfs/bafkreidwtopquqnch2lfo3wrburtlzpxx7vql2m66ksqjhfuuzznob7pdu"
+            ]
         },
         {
             "ref":"Referendum 189",
@@ -710,7 +734,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+189"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+189",
+            "resources": [
+              "ipfs://ipfs/bafkreicqvb26fajmlq23gsnmee7lkd2g62ovf3l5ugws3hhargqpjaxag4",
+              "ipfs://ipfs/bafkreifh5lfpe4mizthtgwlsqw6v4ad2srvti5s6wzflweo6gf34qccjum"
+            ]
         },
         {
             "ref":"Referendum 189",
@@ -718,7 +746,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+189"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+189",
+            "resources": [
+              "ipfs://ipfs/bafkreib7ea6lsjepebgkfnyjebkze4nwcqn2vhy3ytzfepsxhluyhjdkla",
+              "ipfs://ipfs/bafkreiey5rntu7snlzqkxphxlb4pacpuvqkvbmos6v7z7rgg62zn6zhwui"
+            ]
         },
         {
             "ref":"Referendum 188",
@@ -726,7 +758,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
+            "resources": [
+              "ipfs://ipfs/bafkreiee25xtptpye64cmdix4e6eji7g7illctfjn6dfhkigdfh4g5qz3u",
+              "ipfs://ipfs/bafkreihs6xwrqai47ejgurdmkzmq3pkll34axfqxftpcxfo6fumbewepey"
+            ]
         },
         {
             "ref":"Referendum 188",
@@ -734,7 +770,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"rare",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
+            "resources": [
+              "ipfs://ipfs/bafkreiaod2gf4udm2gkuxxwft6uix4euquhosahisajsioxo6zl2aqtnnu",
+              "ipfs://ipfs/bafkreic6qryohs6zhketwmyt5i5dquohcn5fuzqs4a4jpusozelof4smqq"
+            ]
         },
         {
             "ref":"Referendum 188",
@@ -742,7 +782,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
+            "resources": [
+              "ipfs://ipfs/bafkreic4xgewxed3m3umaiyjvfga37jo4dpdqh7iedimbsnarns6n5n2ce",
+              "ipfs://ipfs/bafkreihsinemgxkykkatgjs5k5mf4ffrvkyhzoojunm7knll6pr3sobik4"
+            ]
         },
         {
             "ref":"Referendum 187",
@@ -750,7 +794,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXEVRLOOT?search=Referendum+187"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXEVRLOOT?search=Referendum+187",
+            "resources": [
+              "ipfs://ipfs/bafkreigg23xc5ojlaih4xwpj6owszpsviyc77zkdkhzzolbqn3o2bnq3aq",
+              "ipfs://ipfs/bafkreigjpgbtqcnp3dd2mik63hhckzl4j7shfho4ljzfarqbi3ko33qc5u"
+            ]
         },
         {
             "ref":"Referendum 187",
@@ -758,7 +806,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXEVRLOOT?search=Referendum+187"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXEVRLOOT?search=Referendum+187",
+            "resources": [
+              "ipfs://ipfs/bafkreib6bu3js2h74zoppue7ntymprvy2vjtiugjbq4ijvvprfzfaihecy",
+              "ipfs://ipfs/bafkreiepfo5zhobcyxkfqzx42lzoabmzh6qqo63bqxdeqzzknrtt2ra3oy"
+            ]
         },
         {
             "ref":"Referendum 186",
@@ -766,7 +818,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+186"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+186",
+            "resources": [
+              "ipfs://ipfs/bafkreigmne26i3jgev5pompsbfq5nnxoi5m2g3ep6rrrnpkxblucjbo6ea",
+              "ipfs://ipfs/bafkreih25d6eode7qhif623qsecuwgm4xf7ydwrtslicqeno3mdflikwie"
+            ]
         },
         {
             "ref":"Referendum 186",
@@ -774,7 +830,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+186"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+186",
+            "resources": [
+              "ipfs://ipfs/bafkreidybo5cnqpaswftxtirexiau6u7hzkuqiwbcjunw3mvmjtn276amq",
+              "ipfs://ipfs/bafkreihjwlk5z2b2wuirmg4k6k6d3gpehzyf7pdebphtmelygrsu5x6bgu"
+            ]
         },
         {
             "ref":"Referendum 185",
@@ -782,7 +842,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+185"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+185",
+            "resources": [
+              "ipfs://ipfs/bafkreib4h2ua3jyqt5qied5tt6usqfcnozpjygexd4hnzx4cpn6glebqza",
+              "ipfs://ipfs/bafkreibg2avnv6mxzrwvwwqxfwftxgfyggna2s5deahaul7gel4p4rt4oe"
+            ]
         },
         {
             "ref":"Referendum 185",
@@ -790,7 +854,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+185"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+185",
+            "resources": [
+              "ipfs://ipfs/bafkreicw4wipplacu4jl2d3apx2jqnc6ti5um3g2mxqld47oci6atbxzxq",
+              "ipfs://ipfs/bafkreievc5py655bueag4na37czvbyhkb4a7ic3wxfhmeu4xh3qvcb7w5m"
+            ]
         },
         {
             "ref":"Referendum 184",
@@ -798,7 +866,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+184"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+184",
+            "resources": [
+              "ipfs://ipfs/bafkreibwkdk5qkamjuvq35mnkiq2caatznzxbq42gnygjls43h6iyld7gm",
+              "ipfs://ipfs/bafkreihgtdpg3fgvwhwwsdzpewtv2hu3mqek2bk2bmnwsbo3ufgpjiyr3i"
+            ]
         },
         {
             "ref":"Referendum 184",
@@ -806,7 +878,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+184"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+184",
+            "resources": [
+              "ipfs://ipfs/bafkreigfhhe4yphpcclz2udcml3wbplypdv5vsq67f2uyflodvxirvqbw4",
+              "ipfs://ipfs/bafkreihmcqxe4hxqdxme3hbumf6e4nchjl5axnb2thizxayrc3ugpawcju"
+            ]
         },
         {
             "ref":"Referendum 183",
@@ -814,7 +890,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"common",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+183"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+183",
+            "resources": [
+                "ipfs://ipfs/bafkreiffyg5ideshujr7jr7stpy3ihzlm6pxsuwtdbjg5p5amcgs3n32em",
+                "ipfs://ipfs/bafkreifxtcbea5j4u7gojh4jmoceby6sf2iugavetrrjjxrmhpmqi6cjb4"
+            ]
         },
         {
             "ref":"Referendum 183",
@@ -822,7 +902,11 @@ export const websiteConfig = {
             "amount":"?",
             "artist":"?",
             "rarity":"epic",
-            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+183"
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+183",
+            "resources": [
+                "ipfs://ipfs/bafkreiha3roq5pudz2wtwpwnu6kgkfkr2k2jfgucqkuxmhduv3lghugdh4",
+                "ipfs://ipfs/bafkreihu6j2snww2p23x5syi72g564rofmqvnr57hryo2nuh2s6ph36vqe"
+            ]
         },
         {
             "ref":"Referendum 182",
