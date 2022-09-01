@@ -218,8 +218,8 @@ export const websiteConfig = {
         {
             "ref":"Referendum 207",
             "thumb":"bafybeidl2pefllitmxdregvcxg3pzo7oqrh7v2a75flg4ojty5ukuh27si",
-            "amount":"1119",
-            "artist":"@kseniashikh",
+            "amount":"209",
+            "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
             "symbol":"207VR"
@@ -236,8 +236,8 @@ export const websiteConfig = {
         {
             "ref":"Referendum 207",
             "thumb":"bafybeidseydteahwveuv2q4m5dbuci6avv7fvnpuk24zlvr45zher63rai",
-            "amount":"209",
-            "artist":"LokiKot(@LokiPages)",
+            "amount":"1119",
+            "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
             "symbol":"207CR"
@@ -435,7 +435,7 @@ export const websiteConfig = {
             "ref":"Referendum 199",
             "thumb":"bafybeibvlrfhjwc3hkcjplgid666yezfamekdeeo7dq5rt3rqyztdvud54",
             "amount":"528",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+199",
             "symbol": "199SN"
@@ -444,7 +444,7 @@ export const websiteConfig = {
             "ref":"Referendum 199",
             "thumb":"bafybeiatgxchtgkdgr26rswbsirwuqyxqtlj4rrqmz5ifjrem4txaf3jfq",
             "amount":"107",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+199",
             "symbol": "199PN"
@@ -453,7 +453,7 @@ export const websiteConfig = {
             "ref":"Referendum 199",
             "thumb":"bafybeigjh7tgvtcldwqmr6h3vw3yqq2joliygswsr2fnxwpod4m6x77lui",
             "amount":"86",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+199",
             "symbol": "199MPN"
@@ -462,7 +462,7 @@ export const websiteConfig = {
             "ref":"Referendum 198",
             "thumb":"bafybeihmtzzpj637n336wst5fwweaeewjdhpn75guaf4xm37u5w4ddtb64",
             "amount":"172",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+198",
             "symbol": "198STF"
@@ -471,7 +471,7 @@ export const websiteConfig = {
             "ref":"Referendum 198",
             "thumb":"bafybeicc3qgbjk45kwr744x6742o6proozhj4we2laha7c2g724eio67ce",
             "amount":"1010",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+198",
             "symbol": "198SF"
@@ -480,7 +480,7 @@ export const websiteConfig = {
             "ref":"Referendum 198",
             "thumb":"bafybeiaiaoxheqetoylv7pej442jnn5taw3uew4akmppwsbxteztpfcwmy",
             "amount":"117",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+198",
             "symbol": "198BF"
@@ -489,7 +489,7 @@ export const websiteConfig = {
             "ref":"Referendum 197",
             "thumb":"bafybeidmdla2iq4emdnrt5wttkmbdz6lep3x6uvgqlbr5d6lk6p7sqb7s4",
             "amount":"173",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+197",
             "symbol": "197MBAG"
@@ -498,7 +498,7 @@ export const websiteConfig = {
             "ref":"Referendum 197",
             "thumb":"bafybeiflirzbgimydggvzpchyfujjbdi4wiskcyd2onghaw7qymjdq2cyi",
             "amount":"945",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+197",
             "symbol": "197COIN"
@@ -507,7 +507,7 @@ export const websiteConfig = {
             "ref":"Referendum 197",
             "thumb":"bafybeidekf3hzxhpbb3fhmaqabzm57t7eogkoqisdp66y37uqvbatxjedi",
             "amount":"116",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+197",
             "symbol": "197CHEST"
@@ -516,7 +516,7 @@ export const websiteConfig = {
             "ref":"Referendum 196",
             "thumb":"bafybeigalmspsvcb3lxva2a3oqmkit2jb6h3ehujljyw75mgvsxdvt3dpy",
             "amount":"120",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+196",
             "symbol": "196TPOLE"
@@ -525,7 +525,7 @@ export const websiteConfig = {
             "ref":"Referendum 196",
             "thumb":"bafybeid7m5xxtcln5d7zcvn73arkgw3lw4ye5j4rqnaeonmtkwsayagjk4",
             "amount":"927",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+196",
             "symbol": "196SPTEL"
@@ -534,7 +534,7 @@ export const websiteConfig = {
             "ref":"Referendum 196",
             "thumb":"bafybeidvniwmvx7uqffivxqygdmpcnie27pbg7uunldb2s7ret43dc32w4",
             "amount":"151",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+196",
             "symbol": "196CBSW"
@@ -543,7 +543,7 @@ export const websiteConfig = {
             "ref":"Referendum 195",
             "thumb":"bafybeihszt4thy36teqkorurn2f4kj64hf2os57spflny3o2ztilfxzew4",
             "amount":"98",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+195",
             "symbol": "195RBIRD"
@@ -552,7 +552,7 @@ export const websiteConfig = {
             "ref":"Referendum 195",
             "thumb":"bafkreihuakdytsejju3ktfix3kji2wxfrk7xmaerjpmncxy6deajqcsnle",
             "amount":"133",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+195",
             "symbol": "195BRBIRD"
@@ -561,7 +561,7 @@ export const websiteConfig = {
             "ref":"Referendum 195",
             "thumb":"bafybeievk3cfedhomlqv4yov6lei345ai4zlyfchlh2q2gnwatpav7z5va",
             "amount":"929",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+195",
             "symbol": "195BBIRD"
@@ -570,7 +570,7 @@ export const websiteConfig = {
             "ref":"Referendum 194",
             "thumb":"bafkreiepehhxo7lgy4aie7xnwm6j3x3u5tt5zfg54jkis7z66guextau4y",
             "amount":"104",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+194",
             "symbol":"194TMTR"
@@ -579,7 +579,7 @@ export const websiteConfig = {
             "ref":"Referendum 194",
             "thumb":"bafybeic5jg4ubggtxv6c25gppda7h4gkivkvy2k5ezlz7k2blgr645lj4a",
             "amount":"153",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+194",
             "symbol":"194HGLASS"
@@ -588,7 +588,7 @@ export const websiteConfig = {
             "ref":"Referendum 194",
             "thumb":"bafkreifehtxivpxxia5d2aqnhoxh3kbx6vb43xfgg73cgvfynnw2nkfre4",
             "amount":"932",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+194",
             "symbol":"194CARD"
@@ -597,7 +597,7 @@ export const websiteConfig = {
             "ref":"Referendum 193",
             "thumb":"bafybeif7pz6c5tkzbwivcxqhhto52vvxdbwnubloup3ieqhdf6ukconqwa",
             "amount":"174",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
             "symbol":"193RMRKTS"
@@ -606,7 +606,7 @@ export const websiteConfig = {
             "ref":"Referendum 193",
             "thumb":"bafybeibzfdbwbrsmspqtsr4hffylp7qu6biujlwwrtav4xvp5i24dlasjq",
             "amount":"159",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
             "symbol":"193RMRKTG"
@@ -615,7 +615,7 @@ export const websiteConfig = {
             "ref":"Referendum 193",
             "thumb":"bafybeiarj5oqgb6zfvnbxir6hk5msun3ice5uhizhfnmevncsignmh4vom",
             "amount":"1118",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
            "symbol":"193RMRKTB"
@@ -624,7 +624,7 @@ export const websiteConfig = {
             "ref":"Referendum 193",
             "thumb":"bafybeics4c24rh5bxtuglo36pejb77cwyw2oyqkrv2wd5nqop7jzjfnchy",
             "amount":"111",
-            "artist":"?",
+            "artist":"RMRK Art Team",
             "rarity":"legendary",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
             "symbol":"193BABD"
@@ -633,7 +633,7 @@ export const websiteConfig = {
             "ref":"Referendum 192",
             "thumb":"bafybeihi75mlqiglhoc5eczmjotk2nw7c5ve6eimjalrmf2egdqfjd6xp4",
             "amount":"112",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
             "symbol":"192PHX"
@@ -642,7 +642,7 @@ export const websiteConfig = {
             "ref":"Referendum 192",
             "thumb":"bafybeifxy657n53cn5tzxynawdpb6su336riibatvhm2kgqpnstxduicxq",
             "amount":"152",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
             "symbol":"192HEGG"
@@ -651,7 +651,7 @@ export const websiteConfig = {
             "ref":"Referendum 192",
             "thumb":"bafkreiguo4jnn2l3zmlscbmk3ogwho2ldx6rmvge76pospoay25xa44m2e",
             "amount":"1066",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
             "symbol":"192EGG"
@@ -660,7 +660,7 @@ export const websiteConfig = {
             "ref":"Referendum 191",
             "thumb":"bafybeigfhpkiltenly7y27db5fhiecldwf4qcqwf4jjbhlv4s3dbjbdl24",
             "amount":"1057",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191",
             "resources": [
@@ -672,7 +672,7 @@ export const websiteConfig = {
             "ref":"Referendum 191",
             "thumb":"bafybeic6gx7d3p46l5ia7qkqffb5vwm25ilhdsf5zttbzcbg25kme3g5ty",
             "amount":"190",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191",
             "resources": [
@@ -684,7 +684,7 @@ export const websiteConfig = {
             "ref":"Referendum 191",
             "thumb":"bafybeihntv3fsu2bbhie5z5k2r25ebcvsmsuku23rz2ijezpbyyingkq6i",
             "amount":"116",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191",
             "resources": [
@@ -696,7 +696,7 @@ export const websiteConfig = {
             "ref":"Referendum 190",
             "thumb":"bafybeici2z3xdzbt6rjuxfobbcye6nujjgxz4vq5d2sxclxygjsc4hxqqi",
             "amount":"634",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
             "resources": [
@@ -711,7 +711,7 @@ export const websiteConfig = {
             "ref":"Referendum 190",
             "thumb":"bafybeievujt5ablv3pgpruyf75k3gttqh2yrsey2qxz32eoo4omoqoscze",
             "amount":"225",
-            "artist":"?",
+            "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
             "resources": [
@@ -726,7 +726,7 @@ export const websiteConfig = {
             "ref":"Referendum 190",
             "thumb":"bafybeiamkgjzmou654kbakdvvw6vrmgqwqcts45fryqyjeuz3glt3o2lre",
             "amount":"107",
-            "artist":"?",
+            "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
             "resources": [
@@ -741,7 +741,7 @@ export const websiteConfig = {
             "ref":"Referendum 189",
             "thumb":"bafybeidzrofjbzolluwkf5px3wa4zq3ol5arpkeyfjwddyyuicopkwmrp4",
             "amount":"759",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+189",
             "resources": [
@@ -753,7 +753,7 @@ export const websiteConfig = {
             "ref":"Referendum 189",
             "thumb":"bafybeih27n7uacw4tu75ipddg22iqmdl7enu446bzzvnl24lci3ehw6dwq",
             "amount":"130",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+189",
             "resources": [
@@ -765,7 +765,7 @@ export const websiteConfig = {
             "ref":"Referendum 188",
             "thumb":"bafybeibh42ljkqxrdktn6ix5afmdajvpnfkrjdsc4wriv7v7hgwdvaznqi",
             "amount":"583",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
             "resources": [
@@ -781,7 +781,7 @@ export const websiteConfig = {
             "ref":"Referendum 188",
             "thumb":"bafybeidzcbwwsoue6zdmkyliieskwhvlokrfqf5mk2esabspolmzaweqnm",
             "amount":"214",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
             "resources": [
@@ -796,7 +796,7 @@ export const websiteConfig = {
             "ref":"Referendum 188",
             "thumb":"bafybeif6viqhk7n5mqvhjqv4hude2lxfvqudrw6dmrfp5sd3obo3v2lr54",
             "amount":"123",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
             "resources": [
@@ -811,7 +811,7 @@ export const websiteConfig = {
             "ref":"Referendum 187",
             "thumb":"bafybeiaeetqjklrdpcq2dudk6ut5h6rmy2mqx5vosxwawzgxz2avelzw4y",
             "amount":"784",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXEVRLOOT?search=Referendum+187",
             "resources": [
@@ -823,7 +823,7 @@ export const websiteConfig = {
             "ref":"Referendum 187",
             "thumb":"bafybeiaxgs6vos3ik7ckrjkd6ory5v2zat6mz56taplfldozv644uq2f4q",
             "amount":"101",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXEVRLOOT?search=Referendum+187",
             "resources": [
@@ -835,7 +835,7 @@ export const websiteConfig = {
             "ref":"Referendum 186",
             "thumb":"bafybeihmyylrlxqwrjo4v6bwd25ll7ue54nvg4mlifwqlqr7y2h6zwtbty",
             "amount":"778",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+186",
             "resources": [
@@ -847,7 +847,7 @@ export const websiteConfig = {
             "ref":"Referendum 186",
             "thumb":"bafybeifpbj34mk267t5b4pez2dzuzzuuqigfmwa7pcvw6si4h63n3iy63u",
             "amount":"119",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+186",
             "resources": [
@@ -859,7 +859,7 @@ export const websiteConfig = {
             "ref":"Referendum 185",
             "thumb":"bafybeibjeuesqwtazypxgz57mngn7eoueqwx44ygg7bsdmjqiynvi2eroy",
             "amount":"741",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+185",
             "resources": [
@@ -871,7 +871,7 @@ export const websiteConfig = {
             "ref":"Referendum 185",
             "thumb":"bafybeie7mjp6mjcnuqf22oe53er6puj2disgiyl2orgsccdu4udtal2wxu",
             "amount":"145",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+185",
             "resources": [
@@ -883,7 +883,7 @@ export const websiteConfig = {
             "ref":"Referendum 184",
             "thumb":"bafybeifzec7ukrspyriej3vswmr3h5pxjsdtdthnfrb5rqua3vs7irhuba",
             "amount":"662",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+184",
             "resources": [
@@ -895,7 +895,7 @@ export const websiteConfig = {
             "ref":"Referendum 184",
             "thumb":"bafybeiareevlsfclespslg6if6u2xkew4zq34mdperxj2yhprzxxbp6yae",
             "amount":"141",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+184",
             "resources": [
@@ -907,7 +907,7 @@ export const websiteConfig = {
             "ref":"Referendum 183",
             "thumb":"bafybeicotw5kj3swhghoog2y6of4ppayrmenyxacqjrs3boczyw4qndcl4",
             "amount":"519",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+183",
             "resources": [
@@ -919,7 +919,7 @@ export const websiteConfig = {
             "ref":"Referendum 183",
             "thumb":"bafybeibidsw5kvf2zzdmnk5vctadizay7om6u4q6hv3uhmeem74huakp6q",
             "amount":"164",
-            "artist":"?",
+            "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+183",
             "resources": [
