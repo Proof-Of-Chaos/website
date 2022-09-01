@@ -1,6 +1,3 @@
-import useSWR from "swr";
-import { groupBy, uniqBy } from 'lodash';
-import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
 import { websiteConfig } from "../../data/website-config"
 import useAppStore from "../../zustand";
 import {
@@ -12,8 +9,8 @@ async function fetchNFTsForUser( address ) {
   return request(
     websiteConfig.singular_graphql_endpoint,
     gql`
-      query UserNFTsQuery($where: nfts_bool_exp, $limit: Int) {
-        nfts(where: $where, limit: $limit) {
+      query UserNFTsQuery($where: nfts_bool_exp) {
+        nfts(where: $where) {
           symbol,
           metadata,
           resources {
@@ -36,8 +33,7 @@ async function fetchNFTsForUser( address ) {
             "3208723ec6f65df810-ITEMXPUNKS",
         ],
         }
-      },
-      "limit": 1000
+      }
     }
   )
 }
@@ -45,15 +41,11 @@ async function fetchNFTsForUser( address ) {
 const GET_REFERENDUM_NFTS = gql`
 query PaginatedNFTQuery(
     $where: nfts_bool_exp, 
-    $limit: Int, 
-    $offset: Int, 
     $orderBy: [nfts_order_by!], 
     $distinctNftsDistinctOn2: [nfts_select_column!]
 ) {
     nfts(
         where: $where, 
-        limit: $limit, 
-        offset: $offset, 
         order_by: $orderBy, 
         distinct_on: $distinctNftsDistinctOn2
     ) {
@@ -97,8 +89,6 @@ async function fetchReferendumNFTsDistinct() {
         }
       }
     },
-    "limit": 1000,
-    "offset": 0,
     "orderBy": [
       {
         "metadata": "desc",
