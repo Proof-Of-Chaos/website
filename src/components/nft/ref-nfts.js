@@ -11,10 +11,10 @@ const isOwned = (ref, userNFTs, symbol, rarity) => {
   const refIndex = parseInt(ref.match(/Referendum ([0-9]+)/)[1])
   const userNFTSymbols = userNFTs?.map( ( { symbol } ) => symbol )
 
-  if (refIndex >= 192) {
+  if (refIndex > 192) { // symbol based
 
     return userNFTSymbols?.includes(symbol)
-  } else if ([188, 190].includes(refIndex)) {
+  } else if ([188, 190, 192].includes(refIndex)) { // thumb based
 
     const referendumConfig = websiteConfig.classic_referendums.find(referendum => referendum.ref === ref && referendum.rarity === rarity)
     const userNFTResources = [];
@@ -24,7 +24,7 @@ const isOwned = (ref, userNFTs, symbol, rarity) => {
       })
     })
     return referendumConfig.thumbs ? referendumConfig.thumbs.some(r => userNFTResources.includes(r)) : false
-  } else {
+  } else { // resource based (deprecated)
 
     const userNFTMetadata = userNFTs?.map( ( { metadata } ) => metadata ) ?? []
     const referendumConfig = websiteConfig.classic_referendums.find(referendum => referendum.ref === ref && referendum.rarity === rarity)

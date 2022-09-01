@@ -636,7 +636,11 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
-            "symbol":"192PHX"
+            "symbol":"192PHX",
+            "thumbs": [
+              "ipfs://ipfs/bafybeihi75mlqiglhoc5eczmjotk2nw7c5ve6eimjalrmf2egdqfjd6xp4",
+              "ipfs://ipfs/bafybeidos56y3jdg5e2fcvvsndwqnljowg3hjmr4uruc2uqo4isrsvbzeq"
+            ]
         },
         {
             "ref":"Referendum 192",
@@ -645,7 +649,11 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
-            "symbol":"192HEGG"
+            "symbol":"192HEGG",
+            "thumbs": [
+                "ipfs://ipfs/bafybeigigf2h6yykkpw4jhjwxe5u2doyfx3hfymtmekp6naxoc4ltqjvgm",
+                "ipfs://ipfs/bafybeifxy657n53cn5tzxynawdpb6su336riibatvhm2kgqpnstxduicxq",
+            ]
         },
         {
             "ref":"Referendum 192",
@@ -654,7 +662,28 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
-            "symbol":"192EGG"
+            "symbol":"192EGG",
+            "thumbs": [
+              "ipfs://ipfs/bafkreiguo4jnn2l3zmlscbmk3ogwho2ldx6rmvge76pospoay25xa44m2e",
+              "ipfs://ipfs/bafkreifwnvlkgzx43qgs57ydu255ezk2koajmp5r5l6syj46tsvozqy5uq"
+            ]
+        },
+        {
+            "ref":"Referendum 192",
+            "thumb":"bafybeibs3rz2o4bidw5uuz6ljgurknobheeycdwaszmpnpypuaewhuiesq",
+            "amount":"100",
+            "artist":"@kseniashikh",
+            "rarity":"legendary",
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
+            "symbol":"192EGG",
+            "thumbs": [
+                "ipfs://ipfs/bafybeiel3v7hvpgjjwmanbyd35e3lqq4znwfgfdhvyobrxpw6ikvdgebne",
+                "ipfs://ipfs/bafybeid55ev7qfoqp2umyy6kwfhtsckvhdncp6gwctmubfouvv6x7ju3b4",
+                "ipfs://ipfs/bafybeihqlsluf2vx7jjc5rvsmjjn5jiwidcfw3ktg6orv4dvhqfhdtofgm",
+                "ipfs://ipfs/bafybeialnxxdqnyvl6lr3mr7ftkj5w7lfdrkeqze6txcd5dfhfbqkbtiyy",
+                "ipfs://ipfs/bafybeibs3rz2o4bidw5uuz6ljgurknobheeycdwaszmpnpypuaewhuiesq",
+                "ipfs://ipfs/bafybeidlvs7ddbt3oco5apldq5iasy74bwukry2zbyma65bdvzikokkaiu"
+            ]
         },
         {
             "ref":"Referendum 191",
