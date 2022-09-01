@@ -57,7 +57,6 @@ query PaginatedNFTQuery(
       collectionId
       metadata_name
       metadata_properties
-      priority
       symbol
       resources {
         thumb
