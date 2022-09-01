@@ -67,6 +67,9 @@ query PaginatedNFTQuery(
       metadata_properties
       priority
       symbol
+      resources {
+        thumb
+      }
   }
 `
 
@@ -110,40 +113,16 @@ async function fetchReferendumNFTsDistinct() {
   )
 }
 
-async function fetchThumb(firstResource) {
-  const client = new ApolloClient({
-    uri: websiteConfig.singular_graphql_endpoint,
-    cache: new InMemoryCache()
-  });
-
-  let data = await client.query({
-    operationName: "fetchResourceById",
-    query: agql` 
-        query fetchResourceById($resourceId: String!) {
-          resources(where: {id: {_eq: $resourceId}, pending: {_eq: false}}, limit: 1) {
-            thumb
-          }
-        }
-    `,
-    variables: {
-      "resourceId": firstResource
-    }
-  });
-
-  return data.data.resources[0].thumb.replace('ipfs://ipfs/', '');
-}
-
 export function useNFTs( queryOptions ) {
   return useQuery(["NFTs"], async () => {
     const { nfts } = await fetchReferendumNFTsDistinct()
     const transformedNFTs = await Promise.all(nfts.map( async ( item ) => {
-      const thumb = await fetchThumb(item.priority[0]);
       let attr = item.metadata_properties;
       return {
         ref: item.metadata_name,
         symbol: item.symbol,
         rmrkId: item.id,
-        thumb,
+        thumb: item.resources[0].thumb.replace('ipfs://ipfs/', ''),
         amount: attr.total_supply?.value,
         artist: attr.artist?.value,
         rarity: attr.rarity?.value,
