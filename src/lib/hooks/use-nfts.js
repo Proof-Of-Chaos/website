@@ -57,6 +57,7 @@ query PaginatedNFTQuery(
       collectionId
       metadata_name
       metadata_properties
+      metadata_description
       symbol
       resources {
         thumb
@@ -95,7 +96,7 @@ async function fetchReferendumNFTsDistinct() {
       }
     ],
     "distinctNftsDistinctOn2": [
-      "metadata", 
+      "metadata",
       "symbol"
     ],
   }
@@ -105,6 +106,7 @@ async function fetchReferendumNFTsDistinct() {
 export function useNFTs( queryOptions ) {
   return useQuery(["NFTs"], async () => {
     const { nfts } = await fetchReferendumNFTsDistinct()
+
     const transformedNFTs = await Promise.all(nfts.map( async ( item ) => {
       let attr = item.metadata_properties;
       return {
@@ -115,6 +117,7 @@ export function useNFTs( queryOptions ) {
         amount: attr.total_supply?.value,
         artist: attr.artist?.value,
         rarity: attr.rarity?.value,
+        description: item.metadata_description,
         url: 'https://singular.app/collections/' + item.collectionId + '?search=' + encodeURIComponent(item.metadata_name),
       }
     }));

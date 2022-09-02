@@ -60,7 +60,6 @@ function About() {
       </section>
       <Roadmap />
       <FAQ />
-      <Team/>
     </>
   )
 }

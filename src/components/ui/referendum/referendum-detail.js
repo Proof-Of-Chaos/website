@@ -140,6 +140,7 @@ export default function ReferendumDetail({ referendum }) {
               }
               <WalletConnect
                 className="w-full mt-2"
+                variant="primary"
                 title={ userVote ? 'Vote Again' : 'Vote Now' }
                 onAccountSelected={ ( ) => { 
                   openModal( 'VIEW_REFERENDUM_VOTE', referendum )

@@ -68,9 +68,16 @@ export default function NFTDetail( { nfts } ) {
     return ret
   }, 0)
 
+  // regex extracts the item name + artist from the description
+  const regexp = /('(.*?)')(.*?)/s
+  const allDescription = nfts[0]?.description?.replace(regexp, "$3");
+
+  // console.log( nfts[0].ref, 'allDescription:', allDescription )
+
   return (
     <div className="nft-detail mx-4 mb-4 p-6 pb-10 border-b-2 transition-shadow duration-200 dark:bg-light-dark">
       <h3 className="text-4xl font-bold pb-4">{ nfts[0].ref }</h3>
+      { allDescription && <p className="pb-5 max-w-3xl">{ allDescription }</p> }
       <div className="flex flex-wrap justify-between">
         { [ 'common', 'rare', 'epic', 'legendary' ].map( (rarity, idx) => {
           let nftByRarity = distinctUserNFTs.find( nft => nft?.rarity === rarity )
@@ -116,7 +123,7 @@ export default function NFTDetail( { nfts } ) {
                 className="no-underline"
             >
               <Button
-                className="border-2 text-gray-800 w-full no-underline"
+                className="border-2 text-gray-800 w-full no-underline mt-4"
               >
                 Get on
                 <svg className="pl-3 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 693.24 169.09">

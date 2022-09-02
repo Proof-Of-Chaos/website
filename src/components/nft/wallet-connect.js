@@ -34,7 +34,6 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
         }}
 
         onUpdatedAccounts={( accounts ) => {
-          console.log( 'onUpdatedAccounts', accounts )
           const transformedAccounts = accounts.map( acc => {
             return {
               ...acc,
@@ -48,7 +47,6 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
           
           if ( connectedAccounts?.length ) {
             const connectedAccountIndex = connectedAccounts.findIndex( acc => acc.address === newAccount.address )
-            console.log( 'onAccountSelected', newAccount, connectedAccounts, connectedAccountIndex )
             updateConnectedAccount( connectedAccountIndex )
           }
         }}
