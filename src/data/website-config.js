@@ -60,7 +60,8 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
-            "symbol": "214QCC"
+            "symbol": "214QCC",
+            "description": "'Quartz Crystal Cluster'\n\nIn Referendum 214 the community voted on whether to force-update the Quartz runtime. It had gotten stuck during a runtime upgrade and stopped producing blocks.\n\nArtist: @kseniashikh\n\n"
         },
         {
             "ref":"Referendum 214",
@@ -69,7 +70,8 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
-            "symbol": "214PQ"
+            "symbol": "214PQ",
+            "description": "'Pure Quartz'\n\nIn Referendum 214 the community voted on whether to force-update the Quartz runtime. It had gotten stuck during a runtime upgrade and stopped producing blocks.\n\nArtist: LokiKot(@LokiPages)\n\n"
         },
         {
             "ref":"Referendum 214",
@@ -78,7 +80,8 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+214",
-            "symbol": "214MQ"
+            "symbol": "214MQ",
+            "description": "'Milky Quartz'\n\nIn Referendum 214 the community voted on whether to force-update the Quartz runtime. It had gotten stuck during a runtime upgrade and stopped producing blocks.\n\nArtist: @kseniashikh\n\n"
         },
         {
             "ref":"Referendum 213",
@@ -87,7 +90,8 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213",
-            "symbol": "213MBB"
+            "symbol": "213MBB",
+            "description": "'Modern Ballot Box'\n\nIn Referendum 213 the community voted on whether to upgrade the Kusama runtime to version 0.9.25. The upgrade includes several changes in preparation for Governance 2.0.\n\nArtist: LokiKot(@LokiPages)\n\n"
         },
         {
             "ref":"Referendum 213",
@@ -96,7 +100,8 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213",
-            "symbol":"213HBB"
+            "symbol":"213HBB",
+            "description": "'Historic Ballot Box'\n\nIn Referendum 213 the community voted on whether to upgrade the Kusama runtime to version 0.9.25. The upgrade includes several changes in preparation for Governance 2.0.\n\nArtist: @kseniashikh\n\n"
         },
         {
             "ref":"Referendum 213",
@@ -105,7 +110,8 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+213",
-            "symbol": "213CBBX"
+            "symbol": "213CBBX",
+            "description": "'Cardboard Ballot Box'\n\nIn Referendum 213 the community voted on whether to upgrade the Kusama runtime to version 0.9.25. The upgrade includes several changes in preparation for Governance 2.0.\n\nArtist: LokiKot(@LokiPages)\n\n"
         },
         {
             "ref":"Referendum 211",
@@ -114,7 +120,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+211",
-            "symbol":"211TSP"
+            "symbol":"211TSP",
+            "description": "In Referendum 211 the community voted on whether to reset the Pichiu Parachain in order to fix bugs. The underlying proposal of this Referendum has also been replaced by Referendum 205. Since Referendum 205 has passed community vote already, this Referendum (like Referendum 209) was superfluous too.",
+            "title": "Trilogy Silver Piglets",
         },
         {
             "ref":"Referendum 211",
@@ -123,7 +131,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+211",
-            "symbol":"211TGM"
+            "symbol":"211TGM",
+            "description": "In Referendum 211 the community voted on whether to reset the Pichiu Parachain in order to fix bugs. The underlying proposal of this Referendum has also been replaced by Referendum 205. Since Referendum 205 has passed community vote already, this Referendum (like Referendum 209) was superfluous too.",
+            "title": "Trilogy Gold Monkeys",
         },
         {
             "ref":"Referendum 211",
@@ -132,7 +142,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+211",
-            "symbol":"211TBM"
+            "symbol":"211TBM",
+            "description": "In Referendum 211 the community voted on whether to reset the Pichiu Parachain in order to fix bugs. The underlying proposal of this Referendum has also been replaced by Referendum 205. Since Referendum 205 has passed community vote already, this Referendum (like Referendum 209) was superfluous too.",
+            "title": "Trilogy Bronze Mice",
         },
         {
             "ref":"Referendum 210",
@@ -141,7 +153,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+210",
-            "symbol":"210EB"
+            "symbol":"210EB",
+            "description": "In Referendum 210 the community voted on whether to upgrade the Kusama runtime to version 0.9.23. The updated code brings about several NFT related changes.",
+            "title": "Enchanted Book",
         },
         {
             "ref":"Referendum 210",
@@ -150,7 +164,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+210",
-            "symbol":"210CH"
+            "symbol":"210CH",
+            "description": "In Referendum 210 the community voted on whether to upgrade the Kusama runtime to version 0.9.23. The updated code brings about several NFT related changes.",
+            "title": "Card Holder",
         },
         {
             "ref":"Referendum 210",
@@ -159,7 +175,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+210",
-            "symbol":"210CA"
+            "symbol":"210CA",
+            "description": "In Referendum 210 the community voted on whether to upgrade the Kusama runtime to version 0.9.23. The updated code brings about several NFT related changes.",
+            "title": "Collection Album",
         },
         {
             "ref":"Referendum 209",
@@ -168,7 +186,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+209",
-            "symbol":"209ST"
+            "symbol":"209ST",
+            "description": "In Referendum 209 the community voted on whether to reset the Pichiu Parachain in order to fix bugs. The underlying proposal of this Referendum has been replaced by Referendum 205. Since Referendum 205 has passed community vote already, this Referendum was superfluous.",
+            "title": "Stamp",
         },
         {
             "ref":"Referendum 209",
@@ -177,7 +197,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+209",
-            "symbol":"209PT"
+            "symbol":"209PT",
+            "description": "In Referendum 209 the community voted on whether to reset the Pichiu Parachain in order to fix bugs. The underlying proposal of this Referendum has been replaced by Referendum 205. Since Referendum 205 has passed community vote already, this Referendum was superfluous.",
+            "title": "Parrot",
         },
         {
             "ref":"Referendum 209",
@@ -186,7 +208,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+209",
-            "symbol":"209CP"
+            "symbol":"209CP",
+            "description": "In Referendum 209 the community voted on whether to reset the Pichiu Parachain in order to fix bugs. The underlying proposal of this Referendum has been replaced by Referendum 205. Since Referendum 205 has passed community vote already, this Referendum was superfluous.",
+            "title": "Cassette Player",
         },
         {
             "ref":"Referendum 208",
@@ -195,7 +219,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXPUNKS?search=Referendum+208",
-            "symbol":"208MSM"
+            "symbol":"208MSM",
+            "description": "In Referendum 208 the community voted on whether to lower the number of nomination pools to 64 and the members per pool to 16.\n\nThis NFT can be equipped onto both the [Shelf](https://singular.app/collections/3208723ec6f65df810-SHELF) and [RMRK Punks](https://singular.app/collections/3629a3ff458d113e25-PUNK).",
+            "title": "Madagascan Sunset Moth",
         },
         {
             "ref":"Referendum 208",
@@ -204,7 +230,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXPUNKS?search=Referendum+208",
-            "symbol":"208MBM"
+            "symbol":"208MBM",
+            "description": "In Referendum 208 the community voted on whether to lower the number of nomination pools to 64 and the members per pool to 16.\n\nThis NFT can be equipped onto both the [Shelf](https://singular.app/collections/3208723ec6f65df810-SHELF) and [RMRK Punks](https://singular.app/collections/3629a3ff458d113e25-PUNK).",
+            "title": "Menelaus Blue Morpho",
         },
         {
             "ref":"Referendum 208",
@@ -213,7 +241,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXPUNKS?search=Referendum+208",
-            "symbol":"208ES"
+            "symbol":"208ES",
+            "description": "In Referendum 208 the community voted on whether to lower the number of nomination pools to 64 and the members per pool to 16.\n\nThis NFT can be equipped onto both the [Shelf](https://singular.app/collections/3208723ec6f65df810-SHELF) and [RMRK Punks](https://singular.app/collections/3629a3ff458d113e25-PUNK).",
+            "title": "Emerald Swallowtail",
         },
         {
             "ref":"Referendum 207",
@@ -222,7 +252,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
-            "symbol":"207VR"
+            "symbol":"207VR",
+            "description": "In Referendum 207 the community voted on whether to open a HRMP channel between Robonomics and Statemine.",
+            "title": "Vintage Robot",
         },
         {
             "ref":"Referendum 207",
@@ -231,7 +263,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
-            "symbol":"207FR"
+            "symbol":"207FR",
+            "description": "In Referendum 207 the community voted on whether to open a HRMP channel between Robonomics and Statemine.",
+            "title": "Futuristic Robot",
         },
         {
             "ref":"Referendum 207",
@@ -240,7 +274,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
-            "symbol":"207CR"
+            "symbol":"207CR",
+            "description": "In Referendum 207 the community voted on whether to open a HRMP channel between Robonomics and Statemine.",
+            "title": "Cute Robot",
         },
         {
             "ref":"Referendum 206",
@@ -249,7 +285,9 @@ export const websiteConfig = {
             "artist":"Ruben from MushroomTopia",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXMT?search=Referendum+206",
-            "symbol":"206SB"
+            "symbol":"206SB",
+            "description": "In Referendum 206 the community voted on whether to upgrade the Kusama runtime to version 0.9.23.\n\nThis NFT can be equipped onto both the [Shelf](https://singular.app/collections/3208723ec6f65df810-SHELF) and [Mirrors of Mushroom Topia](https://singular.app/collections/c8d5ea648c93514667-MTPIAMRRS).",
+            "title": "Starberry",
         },
         {
             "ref":"Referendum 206",
@@ -258,7 +296,9 @@ export const websiteConfig = {
             "artist":"Ruben from MushroomTopia",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXMT?search=Referendum+206",
-            "symbol":"206RB"
+            "symbol":"206RB",
+            "description": "In Referendum 206 the community voted on whether to upgrade the Kusama runtime to version 0.9.23.\n\nThis NFT can be equipped onto both the [Shelf](https://singular.app/collections/3208723ec6f65df810-SHELF) and [Mirrors of Mushroom Topia](https://singular.app/collections/c8d5ea648c93514667-MTPIAMRRS).",
+            "title": "Ripeberry",
         },
         {
             "ref":"Referendum 206",
@@ -267,7 +307,9 @@ export const websiteConfig = {
             "artist":"Ruben from MushroomTopia",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXMT?search=Referendum+206",
-            "symbol":"206BB"
+            "symbol":"206BB",
+            "description": "In Referendum 206 the community voted on whether to upgrade the Kusama runtime to version 0.9.23.\n\nThis NFT can be equipped onto both the [Shelf](https://singular.app/collections/3208723ec6f65df810-SHELF) and [Mirrors of Mushroom Topia](https://singular.app/collections/c8d5ea648c93514667-MTPIAMRRS).",
+            "title": "Brightberry",
         },
         {
             "ref":"Referendum 205",
@@ -276,7 +318,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+205",
-            "symbol":"205SW"
+            "symbol":"205SW",
+            "description": "In Referendum 205 the community voted on whether to reset the Pichiu Parachain in order to fix bugs.",
+            "title": "Sun Warrior",
         },
         {
             "ref":"Referendum 205",
@@ -285,7 +329,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+205",
-            "symbol":"205SP"
+            "symbol":"205SP",
+            "description": "In Referendum 205 the community voted on whether to reset the Pichiu Parachain in order to fix bugs.",
+            "title": "Sun Priest",
         },
         {
             "ref":"Referendum 205",
@@ -294,7 +340,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+205",
-            "symbol":"205SG"
+            "symbol":"205SG",
+            "description": "In Referendum 205 the community voted on whether to reset the Pichiu Parachain in order to fix bugs.",
+            "title": "Sun God",
         },
         {
             "ref":"Referendum 204",
@@ -303,7 +351,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+204",
-            "symbol":"204RL"
+            "symbol":"204RL",
+            "description": "In Referendum 204 the community voted on whether to open a HRMP channel between Statemine and Shiden Network.",
+            "title": "Railroad Lamp",
         },
         {
             "ref":"Referendum 204",
@@ -312,7 +362,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+204",
-            "symbol":"204PB"
+            "symbol":"204PB",
+            "description": "In Referendum 204 the community voted on whether to open a HRMP channel between Statemine and Shiden Network.",
+            "title": "Plasma Ball",
         },
         {
             "ref":"Referendum 204",
@@ -321,7 +373,8 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+204",
-            "symbol":"204JL"
+            "symbol":"204JL",
+            "description": "'Jacob's Ladder'\n\nIn Referendum 204 the community voted on whether to open a HRMP channel between Statemine and Shiden Network.\n\nArtist: LokiKot(@LokiPages)\n\n",
         },
         {
             "ref":"Referendum 203",
@@ -330,7 +383,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+203",
-            "symbol":"203LCAT"
+            "symbol":"203LCAT",
+            "description": "In Referendum 203 the community voted (again) on whether to give the RMRK token suffiency on Statemine. The last 2 motions on the topic did not execute correctly. The third time is the charm.",
+            "title": "Lucky Cat",
         },
         {
             "ref":"Referendum 203",
@@ -339,7 +394,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+203",
-            "symbol":"203HS"
+            "symbol":"203HS",
+            "description": "In Referendum 203 the community voted (again) on whether to give the RMRK token suffiency on Statemine. The last 2 motions on the topic did not execute correctly. The third time is the charm.",
+            "title": "Horseshoe",
         },
         {
             "ref":"Referendum 203",
@@ -348,7 +405,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+203",
-            "symbol":"203CLVR"
+            "symbol":"203CLVR",
+            "description": "In Referendum 203 the community voted (again) on whether to give the RMRK token suffiency on Statemine. The last 2 motions on the topic did not execute correctly. The third time is the charm.",
+            "title": "Clover Leaf",
         },
         {
             "ref":"Referendum 202",
@@ -357,7 +416,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+202",
-            "symbol":"202RING"
+            "symbol":"202RING",
+            "description": "In Referendum 202 the community voted on whether to upgrade the Kusama runtime to version 0.9.22. Among other things, the new release also adds nomination pools to the Kusama Network.",
+            "title": "Ring",
         },
         {
             "ref":"Referendum 202",
@@ -366,7 +427,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+202",
-            "symbol":"202FLGO"
+            "symbol":"202FLGO",
+            "description": "In Referendum 202 the community voted on whether to upgrade the Kusama runtime to version 0.9.22. Among other things, the new release also adds nomination pools to the Kusama Network.",
+            "title": "Flamingo",
         },
         {
             "ref":"Referendum 202",
@@ -375,7 +438,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+202",
-            "symbol":"202BALL"
+            "symbol":"202BALL",
+            "description": "In Referendum 202 the community voted on whether to upgrade the Kusama runtime to version 0.9.22. Among other things, the new release also adds nomination pools to the Kusama Network.",
+            "title": "Ball",
         },
         {
             "ref":"Referendum 201",
@@ -384,7 +449,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+201",
-            "symbol":"201SSC"
+            "symbol":"201SSC",
+            "description": "In Referendum 201 the community voted on whether to make the 'Expect Chaos' on-chain remark.",
+            "title": "Scorpion Spider Conch",
         },
         {
             "ref":"Referendum 201",
@@ -393,7 +460,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+201",
-            "symbol":"201SJ"
+            "symbol":"201SJ",
+            "description": "In Referendum 201 the community voted on whether to make the 'Expect Chaos' on-chain remark.",
+            "title": "Shell Jar",
         },
         {
             "ref":"Referendum 201",
@@ -402,7 +471,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+201",
-            "symbol":"201SB"
+            "symbol":"201SB",
+            "description": "In Referendum 201 the community voted on whether to make the 'Expect Chaos' on-chain remark.",
+            "title": "Scotch Bonnet",
         },
         {
             "ref":"Referendum 200",
@@ -411,7 +482,9 @@ export const websiteConfig = {
             "artist":"LokiKot(@LokiPages)",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+200",
-            "symbol":"200FB"
+            "symbol":"200FB",
+            "description": "In Referendum 200 the community voted on whether to update Dora Factory's parachain in order to fix some bugs.",
+            "title": "Futuristic Bike",
         },
         {
             "ref":"Referendum 200",
@@ -420,7 +493,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+200",
-            "symbol":"200DB"
+            "symbol":"200DB",
+            "description": "In Referendum 200 the community voted on whether to update Dora Factory's parachain in order to fix some bugs.",
+            "title": "Dirt Bike",
         },
         {
             "ref":"Referendum 200",
@@ -429,7 +504,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+200",
-            "symbol":"200CHOP"
+            "symbol":"200CHOP",
+            "description": "In Referendum 200 the community voted on whether to update Dora Factory's parachain in order to fix some bugs.",
+            "title": "Chopper",
         },
         {
             "ref":"Referendum 199",
@@ -438,7 +515,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+199",
-            "symbol": "199SN"
+            "symbol": "199SN",
+            "description": "In Referendum 199 the community voted on whether to let Shiden swap their lease from parachain ID 2007 to ID 2120.",
+            "title": "Simple Necklace",
         },
         {
             "ref":"Referendum 199",
@@ -447,7 +526,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+199",
-            "symbol": "199PN"
+            "symbol": "199PN",
+            "description": "In Referendum 199 the community voted on whether to let Shiden swap their lease from parachain ID 2007 to ID 2120.",
+            "title": "Pendant Necklace",
         },
         {
             "ref":"Referendum 199",
@@ -456,7 +537,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+199",
-            "symbol": "199MPN"
+            "symbol": "199MPN",
+            "description": "In Referendum 199 the community voted on whether to let Shiden swap their lease from parachain ID 2007 to ID 2120.",
+            "title": "Multi-Pendant Necklace",
         },
         {
             "ref":"Referendum 198",
@@ -465,7 +548,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+198",
-            "symbol": "198STF"
+            "symbol": "198STF",
+            "description": "In Referendum 198 the community voted on whether to give Karura a 22k KSM subsidy to improve liquidity on their DeFi Platform.",
+            "title": "Stone Fountain",
         },
         {
             "ref":"Referendum 198",
@@ -474,7 +559,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+198",
-            "symbol": "198SF"
+            "symbol": "198SF",
+            "description": "In Referendum 198 the community voted on whether to give Karura a 22k KSM subsidy to improve liquidity on their DeFi Platform.",
+            "title": "Simple Fountain",
         },
         {
             "ref":"Referendum 198",
@@ -483,7 +570,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+198",
-            "symbol": "198BF"
+            "symbol": "198BF",
+            "description": "In Referendum 198 the community voted on whether to give Karura a 22k KSM subsidy to improve liquidity on their DeFi Platform.",
+            "title": "Bird Fountain",
         },
         {
             "ref":"Referendum 197",
@@ -492,7 +581,9 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+197",
-            "symbol": "197MBAG"
+            "symbol": "197MBAG",
+            "description": "In Referendum 197 the community voted on whether to give the USDT token suffiency on Statemine.",
+            "title": "Money Bag",
         },
         {
             "ref":"Referendum 197",
@@ -501,7 +592,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+197",
-            "symbol": "197COIN"
+            "symbol": "197COIN",
+            "description": "In Referendum 197 the community voted on whether to give the USDT token suffiency on Statemine.",
+            "title": "Coins",
         },
         {
             "ref":"Referendum 197",
@@ -510,7 +603,9 @@ export const websiteConfig = {
             "artist":"@LokiPages",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+197",
-            "symbol": "197CHEST"
+            "symbol": "197CHEST",
+            "description": "In Referendum 197 the community voted on whether to give the USDT token suffiency on Statemine.",
+            "title": "Chest",
         },
         {
             "ref":"Referendum 196",
@@ -519,7 +614,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+196",
-            "symbol": "196TPOLE"
+            "symbol": "196TPOLE",
+            "description": "In Referendum 196 the community voted on whether to open a HRMP channel between Parallel Heiko and Statemine (2nd attempt after Referendum 188 did not pass). This would allow the two parachains to communicate with one another.",
+            "title": "Telegraph Pole",
         },
         {
             "ref":"Referendum 196",
@@ -528,7 +625,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+196",
-            "symbol": "196SPTEL"
+            "symbol": "196SPTEL",
+            "description": "In Referendum 196 the community voted on whether to open a HRMP channel between Parallel Heiko and Statemine (2nd attempt after Referendum 188 did not pass). This would allow the two parachains to communicate with one another.",
+            "title": "Sound-Powered Telephone",
         },
         {
             "ref":"Referendum 196",
@@ -537,7 +636,9 @@ export const websiteConfig = {
             "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+196",
-            "symbol": "196CBSW"
+            "symbol": "196CBSW",
+            "description": "In Referendum 196 the community voted on whether to open a HRMP channel between Parallel Heiko and Statemine (2nd attempt after Referendum 188 did not pass). This would allow the two parachains to communicate with one another.",
+            "title": "Crossbar Switch",
         },
         {
             "ref":"Referendum 195",
@@ -546,7 +647,9 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+195",
-            "symbol": "195RBIRD"
+            "symbol": "195RBIRD",
+            "description": "In Referendum 195 the community voted on whether to upgrade the Kusama runtime to version 0.9.20. Among other things the new code also improves parachain block times.\n\nArtist: Elizaveta Sokolova",
+            "title": "Robot Bird",
         },
         {
             "ref":"Referendum 195",
@@ -555,7 +658,9 @@ export const websiteConfig = {
             "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+195",
-            "symbol": "195BRBIRD"
+            "symbol": "195BRBIRD",
+            "description": "In Referendum 195 the community voted on whether to upgrade the Kusama runtime to version 0.9.20. Among other things the new code also improves parachain block times.\n\nArtist: LokiKot(@LokiPages)",
+            "title": "Brick Bird",
         },
         {
             "ref":"Referendum 195",
@@ -564,7 +669,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+195",
-            "symbol": "195BBIRD"
+            "symbol": "195BBIRD",
+            "description": "In Referendum 195 the community voted on whether to upgrade the Kusama runtime to version 0.9.20. Among other things the new code also improves parachain block times.\n\nArtist: @kseniashikh",
+            "title": "Block Bird",
         },
         {
             "ref":"Referendum 194",
@@ -573,7 +680,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+194",
-            "symbol":"194TMTR"
+            "symbol":"194TMTR",
+            "description": "In Referendum 194 the community voted on whether to let Moonriver and Khala extend their leases by swapping parachain 2112 with 2023 and 2111 with 2004 respectively.\n\nArtist: @kseniashikh",
+            "title": "Time-Turner",
         },
         {
             "ref":"Referendum 194",
@@ -582,7 +691,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+194",
-            "symbol":"194HGLASS"
+            "symbol":"194HGLASS",
+            "description": "In Referendum 194 the community voted on whether to let Moonriver and Khala extend their leases by swapping parachain 2112 with 2023 and 2111 with 2004 respectively.\n\nArtist: @kseniashikh",
+            "title": "Hourglass",
         },
         {
             "ref":"Referendum 194",
@@ -591,7 +702,9 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+194",
-            "symbol":"194CARD"
+            "symbol":"194CARD",
+            "description": "In Referendum 194 the community voted on whether to let Moonriver and Khala extend their leases by swapping parachain 2112 with 2023 and 2111 with 2004 respectively.\n\nArtist: @kseniashikh",
+            "title": "Card",
         },
         {
             "ref":"Referendum 193",
@@ -600,7 +713,9 @@ export const websiteConfig = {
             "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
-            "symbol":"193RMRKTS"
+            "symbol":"193RMRKTS",
+            "description": "In Referendum 193 the community voted on whether to give the RMRK token suffiency on Statemine.\n\nArtist: LokiKot(@LokiPages)",
+            "title": "RMRK Token Silver",
         },
         {
             "ref":"Referendum 193",
@@ -609,7 +724,9 @@ export const websiteConfig = {
             "artist":"@LokiPages",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
-            "symbol":"193RMRKTG"
+            "symbol":"193RMRKTG",
+            "description": "In Referendum 193 the community voted on whether to give the RMRK token suffiency on Statemine.\n\nArtist: LokiKot(@LokiPages)",
+            "title": "RMRK Token Gold",
         },
         {
             "ref":"Referendum 193",
@@ -618,7 +735,9 @@ export const websiteConfig = {
             "artist":"@LokiPages",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
-           "symbol":"193RMRKTB"
+           "symbol":"193RMRKTB",
+            "description": "In Referendum 193 the community voted on whether to give the RMRK token suffiency on Statemine.\n\nArtist: LokiKot(@LokiPages)",
+            "title": "RMRK Token Bronze",
         },
         {
             "ref":"Referendum 193",
@@ -627,7 +746,9 @@ export const websiteConfig = {
             "artist":"RMRK Art Team",
             "rarity":"legendary",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXRMRK?search=Referendum+193",
-            "symbol":"193BABD"
+            "symbol":"193BABD",
+            "description": "In Referendum 193 the community voted on whether to give the RMRK token suffiency on Statemine.\n\nArtist: RMRK Art Team",
+            "title": "Babushka Doll",
         },
         {
             "ref":"Referendum 192",
@@ -637,6 +758,8 @@ export const websiteConfig = {
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
             "symbol":"192PHX",
+            "description": "In Referendum 192 the community voted on whether to let Karura extend its lease by swapping parachain 2003 with parachain 2000.\n\nArtist: @kseniashikh",
+            "title": "Phoenix",
             "thumbs": [
               "ipfs://ipfs/bafybeihi75mlqiglhoc5eczmjotk2nw7c5ve6eimjalrmf2egdqfjd6xp4",
               "ipfs://ipfs/bafybeidos56y3jdg5e2fcvvsndwqnljowg3hjmr4uruc2uqo4isrsvbzeq"
@@ -650,6 +773,8 @@ export const websiteConfig = {
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
             "symbol":"192HEGG",
+            "description": "In Referendum 192 the community voted on whether to let Karura extend its lease by swapping parachain 2003 with parachain 2000.\n\nArtist: @kseniashikh",
+            "title": "Hatched Egg",
             "thumbs": [
                 "ipfs://ipfs/bafybeigigf2h6yykkpw4jhjwxe5u2doyfx3hfymtmekp6naxoc4ltqjvgm",
                 "ipfs://ipfs/bafybeifxy657n53cn5tzxynawdpb6su336riibatvhm2kgqpnstxduicxq",
@@ -663,6 +788,8 @@ export const websiteConfig = {
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
             "symbol":"192EGG",
+            "description": "In Referendum 192 the community voted on whether to let Karura extend its lease by swapping parachain 2003 with parachain 2000.",
+            "title": "Egg",
             "thumbs": [
               "ipfs://ipfs/bafkreiguo4jnn2l3zmlscbmk3ogwho2ldx6rmvge76pospoay25xa44m2e",
               "ipfs://ipfs/bafkreifwnvlkgzx43qgs57ydu255ezk2koajmp5r5l6syj46tsvozqy5uq"
@@ -676,6 +803,8 @@ export const websiteConfig = {
             "rarity":"legendary",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+192",
             "symbol":"192EGG",
+            "description": "Take good care of your adolescent dragon to make it grow big and strong.",
+            "title": "Adolescent Dragon: Equippable on Shelf",
             "thumbs": [
                 "ipfs://ipfs/bafybeiel3v7hvpgjjwmanbyd35e3lqq4znwfgfdhvyobrxpw6ikvdgebne",
                 "ipfs://ipfs/bafybeid55ev7qfoqp2umyy6kwfhtsckvhdncp6gwctmubfouvv6x7ju3b4",
@@ -692,6 +821,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191",
+            "description": "In Referendum 191 the community voted on whether to upgrade the Statemine Runtime to v900.\n\nArtist: Elizaveta Sokolova",
+            "title": "Gerbera",
             "resources": [
               "ipfs://ipfs/bafkreidhokvlvgwdb6dylr7xssivtiwifoqzfa2hwvezgzzg5p2uztzx6y",
               "ipfs://ipfs/bafkreidjtxqzmytnwrcskpetzomjx3ytsaopr72ybq3coqgngp2ywqliou"
@@ -704,6 +835,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191",
+            "description": "In Referendum 191 the community voted on whether to upgrade the Statemine Runtime to v900.",
+            "title": "Lemon Tree",
             "resources": [
               "ipfs://ipfs/bafkreicwvwkivw7telv7rtovi64fyiip7sx32m56kgsf6sj7xdqpvipa7i",
               "ipfs://ipfs/bafkreig45zyz22eydwdeq3ybsrmvbl3gqriksalcfhbawi5pc25fb5w7yy"
@@ -716,6 +849,8 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+191",
+            "description": "In Referendum 191 the community voted on whether to upgrade the Statemine Runtime to v900.",
+            "title": "Bamboo",
             "resources": [
               "ipfs://ipfs/bafkreib6l27ggi5gmi4lddbqmq2w7k25f4vsijmvb4zld5ueh4u3h2e3ue",
               "ipfs://ipfs/bafkreigp7mjbbg53dzvzetx7wr2b3hwwx4rm53hfipuaanht3cb5fi4vsm"
@@ -728,6 +863,8 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
+            "description": "In Referendum 190 the community voted on whether Parallel Heiko would be reimbursed the 63 KSM they have lost.",
+            "title": "Sign",
             "resources": [
               "ipfs://ipfs/bafkreia5hjaag5uyld4xbsteuqp6bk4stazzce4gkybjs23lt4ywhyfmue",
               "ipfs://ipfs/bafkreigybqlvu5cvu7p636f74hcprbkead6unqzdmppkoe25yby4p4vh7q"
@@ -743,6 +880,8 @@ export const websiteConfig = {
             "artist":"@LokiPages",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
+            "description": "In Referendum 190 the community voted on whether Parallel Heiko would be reimbursed the 63 KSM they have lost.",
+            "title": "Piggy Bank",
             "resources": [
               "ipfs://ipfs/bafkreiadsqfadkevsteflmnurbcgjj3kxjwveeddmoftvnzb2hdsjiubdu",
               "ipfs://ipfs/bafkreiee2cex65ir2uxi7d2xosypy54m5e4yd7khuk3p6a3avcb63trlcq"
@@ -758,6 +897,8 @@ export const websiteConfig = {
             "artist":"@kseniashikh",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+190",
+            "description": "In Referendum 190 the community voted on whether Parallel Heiko would be reimbursed the 63 KSM they have lost.",
+            "title": "Voucher",
             "resources": [
               "ipfs://ipfs/bafkreicjzflbx6uxhnvviaztj4zkubs6b46dj7j3ohsm2gncip6klruaja",
               "ipfs://ipfs/bafkreidwtopquqnch2lfo3wrburtlzpxx7vql2m66ksqjhfuuzznob7pdu"
@@ -773,6 +914,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+189",
+            "description": "In Referendum 189 the community voted on whether to upgrade the Kusama runtime to version 0.9.19.",
+            "title": "Squeaky Chaos #189",
             "resources": [
               "ipfs://ipfs/bafkreicqvb26fajmlq23gsnmee7lkd2g62ovf3l5ugws3hhargqpjaxag4",
               "ipfs://ipfs/bafkreifh5lfpe4mizthtgwlsqw6v4ad2srvti5s6wzflweo6gf34qccjum"
@@ -785,6 +928,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+189",
+            "description": "In Referendum 189 the community voted on whether to upgrade the Kusama runtime to version 0.9.19.",
+            "title": "Chaos #189",
             "resources": [
               "ipfs://ipfs/bafkreib7ea6lsjepebgkfnyjebkze4nwcqn2vhy3ytzfepsxhluyhjdkla",
               "ipfs://ipfs/bafkreiey5rntu7snlzqkxphxlb4pacpuvqkvbmos6v7z7rgg62zn6zhwui"
@@ -797,6 +942,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
+            "description": "In Referendum 188 the community voted on whether to open a HRMP channel between Parallel Heiko and Statemine. This would allow the two parachains to communicate with one another.",
+            "title": "Tin Can Telephone",
             "resources": [
               "ipfs://ipfs/bafkreihsinemgxkykkatgjs5k5mf4ffrvkyhzoojunm7knll6pr3sobik4",
               "ipfs://ipfs/bafkreiee25xtptpye64cmdix4e6eji7g7illctfjn6dfhkigdfh4g5qz3u",
@@ -813,6 +960,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"rare",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
+            "description": "In Referendum 188 the community voted on whether to open a HRMP channel between Parallel Heiko and Statemine. This would allow the two parachains to communicate with one another.",
+            "title": "Telephone",
             "resources": [
               "ipfs://ipfs/bafkreiaod2gf4udm2gkuxxwft6uix4euquhosahisajsioxo6zl2aqtnnu",
               "ipfs://ipfs/bafkreic6qryohs6zhketwmyt5i5dquohcn5fuzqs4a4jpusozelof4smqq"
@@ -828,6 +977,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+188",
+            "description": "In Referendum 188 the community voted on whether to open a HRMP channel between Parallel Heiko and Statemine. This would allow the two parachains to communicate with one another.",
+            "title": "Tin Can Telephone Statue",
             "resources": [
               "ipfs://ipfs/bafkreic4xgewxed3m3umaiyjvfga37jo4dpdqh7iedimbsnarns6n5n2ce",
               "ipfs://ipfs/bafkreihs6xwrqai47ejgurdmkzmq3pkll34axfqxftpcxfo6fumbewepey"
@@ -843,6 +994,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXEVRLOOT?search=Referendum+187",
+            "description": "In Referendum 187 the community voted on whether to upgrade the Encointer runtime to full functionality. As a common good parachain Encointer stands for promoting fairness and economic growth for everyone.",
+            "title": "Vase",
             "resources": [
               "ipfs://ipfs/bafkreigg23xc5ojlaih4xwpj6owszpsviyc77zkdkhzzolbqn3o2bnq3aq",
               "ipfs://ipfs/bafkreigjpgbtqcnp3dd2mik63hhckzl4j7shfho4ljzfarqbi3ko33qc5u"
@@ -855,6 +1008,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEMXEVRLOOT?search=Referendum+187",
+            "description": "In Referendum 187 the community voted on whether to upgrade the Encointer runtime to full functionality. As a common good parachain Encointer stands for promoting fairness and economic growth for everyone.",
+            "title": "Fist",
             "resources": [
               "ipfs://ipfs/bafkreib6bu3js2h74zoppue7ntymprvy2vjtiugjbq4ijvvprfzfaihecy",
               "ipfs://ipfs/bafkreiepfo5zhobcyxkfqzx42lzoabmzh6qqo63bqxdeqzzknrtt2ra3oy"
@@ -867,6 +1022,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+186",
+            "description": "In Referendum 186 the community voted on whether Zug (German: train) will be leaving the Council Station.",
+            "title": "Toy Train",
             "resources": [
               "ipfs://ipfs/bafkreigmne26i3jgev5pompsbfq5nnxoi5m2g3ep6rrrnpkxblucjbo6ea",
               "ipfs://ipfs/bafkreih25d6eode7qhif623qsecuwgm4xf7ydwrtslicqeno3mdflikwie"
@@ -879,6 +1036,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+186",
+            "description": "In Referendum 186 the community voted on whether Zug (German: train) will be leaving the Council Station.",
+            "title": "Model Train",
             "resources": [
               "ipfs://ipfs/bafkreidybo5cnqpaswftxtirexiau6u7hzkuqiwbcjunw3mvmjtn276amq",
               "ipfs://ipfs/bafkreihjwlk5z2b2wuirmg4k6k6d3gpehzyf7pdebphtmelygrsu5x6bgu"
@@ -891,6 +1050,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+185",
+            "description": "In Referendum 185 the community voted on whether to update the genesis state of the Mangata X chain.",
+            "title": "Themis",
             "resources": [
               "ipfs://ipfs/bafkreib4h2ua3jyqt5qied5tt6usqfcnozpjygexd4hnzx4cpn6glebqza",
               "ipfs://ipfs/bafkreibg2avnv6mxzrwvwwqxfwftxgfyggna2s5deahaul7gel4p4rt4oe"
@@ -903,6 +1064,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+185",
+            "description": "In Referendum 185 the community voted on whether to update the genesis state of the Mangata X chain.",
+            "title": "Airwhale",
             "resources": [
               "ipfs://ipfs/bafkreicw4wipplacu4jl2d3apx2jqnc6ti5um3g2mxqld47oci6atbxzxq",
               "ipfs://ipfs/bafkreievc5py655bueag4na37czvbyhkb4a7ic3wxfhmeu4xh3qvcb7w5m"
@@ -915,6 +1078,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+184",
+            "description": "The Statemine parachain is well rooted within the Kusama ecosystem. In Referendum 184 the community voted on whether to upgrade its runtime to v800, fixing a bug on the chain.",
+            "title": "Cactus v800",
             "resources": [
               "ipfs://ipfs/bafkreibwkdk5qkamjuvq35mnkiq2caatznzxbq42gnygjls43h6iyld7gm",
               "ipfs://ipfs/bafkreihgtdpg3fgvwhwwsdzpewtv2hu3mqek2bk2bmnwsbo3ufgpjiyr3i"
@@ -927,6 +1092,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+184",
+            "description": "The Statemine parachain is well rooted within the Kusama ecosystem. In Referendum 184 the community voted on whether to upgrade its runtime to v800, fixing a bug on the chain.",
+            "title": "Bonsai v800",
             "resources": [
               "ipfs://ipfs/bafkreigfhhe4yphpcclz2udcml3wbplypdv5vsq67f2uyflodvxirvqbw4",
               "ipfs://ipfs/bafkreihmcqxe4hxqdxme3hbumf6e4nchjl5axnb2thizxayrc3ugpawcju"
@@ -939,6 +1106,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+183",
+            "description": "The duck comes floating around for runtime upgrades.",
+            "title": "Squeaky Chaos #183",
             "resources": [
                 "ipfs://ipfs/bafkreiffyg5ideshujr7jr7stpy3ihzlm6pxsuwtdbjg5p5amcgs3n32em",
                 "ipfs://ipfs/bafkreifxtcbea5j4u7gojh4jmoceby6sf2iugavetrrjjxrmhpmqi6cjb4"
@@ -951,6 +1120,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+183",
+            "description": "The canary comes flying in for runtime upgrades.",
+            "title": "Chaos #183",
             "resources": [
                 "ipfs://ipfs/bafkreiha3roq5pudz2wtwpwnu6kgkfkr2k2jfgucqkuxmhduv3lghugdh4",
                 "ipfs://ipfs/bafkreihu6j2snww2p23x5syi72g564rofmqvnr57hryo2nuh2s6ph36vqe"
@@ -963,6 +1134,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"common",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+182",
+            "description": "A memory of the time when the whole community voted on giving council member Jam a verified identity.",
+            "title": "Photo Frame",
             "resources": [
                 "ipfs://ipfs/bafkreiate4dnegpkmxs654r7b3fn4xnhuujneo63qq4d2zchivnfxxdrsy",
                 "ipfs://ipfs/bafkreidkbr4jfyptdmvoolleq2jmgxc34hyrwgtgc6gxnz2vmcz22xzr7u"
@@ -975,6 +1148,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+182",
+            "description": "A memory of the time when the whole community voted on giving council member Jam a verified identity.",
+            "title": "Jam Jar",
             "resources": [
               "ipfs://ipfs/bafkreiawrf4e4goywwzdvv4xcjhg2hwgfga6jnsusbucamjgoxzdwop2yq",
               "ipfs://ipfs/bafkreidrgq4lbe5sfws3hdjto766btptuhwowaeniktjzmgigxyziv6m7u"
@@ -987,6 +1162,8 @@ export const websiteConfig = {
             "artist":"Elizaveta Sokolova",
             "rarity":"epic",
             "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+181",
+            "description": "The very first item to add to your shelf.",
+            "title": "Trophy",
             "resources": [
               "ipfs://ipfs/bafkreif2lkmgjftunw22o4hrtmurw4mn7yfkoh62k7ifhmino5fwwhpysi",
               "ipfs://ipfs/bafkreighma3o3hbjhya2otemmptldvq46zhmfk6z2wry2xceqxyw6pf7we"

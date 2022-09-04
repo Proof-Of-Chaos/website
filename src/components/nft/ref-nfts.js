@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { uniqBy, every } from "lodash";
 import Image from "../ui/image-fade"
+import ReactMarkdown from 'react-markdown'
 import { useUserNfts } from "../../lib/hooks/use-nfts";
 import Button from "../ui/button";
 import {websiteConfig} from "../../data/website-config";
@@ -32,7 +33,7 @@ const isOwned = (ref, userNFTs, symbol, rarity) => {
   }
 }
 
-function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
+function SingleNFT( { nft: { ref, rarity, thumb, title, artist, amount, symbol } } ) {
   const { data: userNFTs } = useUserNfts()
 
   return (
@@ -50,7 +51,8 @@ function SingleNFT( { nft: { ref, rarity, thumb, artist, amount, symbol } } ) {
           <div className="error">No image found</div>
         }
       </div>
-      <div className="nft-artist break-all pt-2">artist: { artist }</div>
+      <div className="nft-title break-all pt-2 font-bold">{ title }</div>
+      <div className="nft-artist">artist: { artist }</div>
       <div className="nft-amount">amount: { amount }</div>
     </div>
   )
@@ -69,15 +71,13 @@ export default function NFTDetail( { nfts } ) {
   }, 0)
 
   // regex extracts the item name + artist from the description
-  const regexp = /('(.*?)')(.*?)/s
-  const allDescription = nfts[0]?.description?.replace(regexp, "$3");
-
-  // console.log( nfts[0].ref, 'allDescription:', allDescription )
+  const regexp = /Artist: [^(]+\([^)]+\)/s
+  const allDescription = nfts[0]?.description?.replace(regexp, "");
 
   return (
     <div className="nft-detail mx-4 mb-4 p-6 pb-10 border-b-2 transition-shadow duration-200 dark:bg-light-dark">
       <h3 className="text-4xl font-bold pb-4">{ nfts[0].ref }</h3>
-      { allDescription && <p className="pb-5 max-w-3xl">{ allDescription }</p> }
+      { allDescription && <p className="pb-5 max-w-3xl"><ReactMarkdown>{ allDescription }</ReactMarkdown></p> }
       <div className="flex flex-wrap justify-between">
         { [ 'common', 'rare', 'epic', 'legendary' ].map( (rarity, idx) => {
           let nftByRarity = distinctUserNFTs.find( nft => nft?.rarity === rarity )

@@ -106,9 +106,12 @@ async function fetchReferendumNFTsDistinct() {
 export function useNFTs( queryOptions ) {
   return useQuery(["NFTs"], async () => {
     const { nfts } = await fetchReferendumNFTsDistinct()
-
     const transformedNFTs = await Promise.all(nfts.map( async ( item ) => {
       let attr = item.metadata_properties;
+
+      const regex = /\n+/;
+      const descriptionSegments = item.metadata_description.split(regex);
+
       return {
         ref: item.metadata_name,
         symbol: item.symbol,
@@ -117,7 +120,8 @@ export function useNFTs( queryOptions ) {
         amount: attr.total_supply?.value,
         artist: attr.artist?.value,
         rarity: attr.rarity?.value,
-        description: item.metadata_description,
+        title: descriptionSegments[0].replace(/'/g, ""),
+        description: descriptionSegments[1] ?? item.metadata_description,
         url: 'https://singular.app/collections/' + item.collectionId + '?search=' + encodeURIComponent(item.metadata_name),
       }
     }));
