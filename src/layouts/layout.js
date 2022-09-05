@@ -8,6 +8,7 @@ import Logo from "../components/ui/logo";
 import Footer from "../components/ui/footer"
 import { useState } from "react"
 import { useDrawer } from "../components/drawer/context"
+import { NextSeo } from "next-seo"
 
 function HeaderRight() {
   const { openDrawer, isOpen } = useDrawer();
