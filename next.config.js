@@ -8,6 +8,11 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self' ipfs.rmrk.link; script-src 'none'; sandbox;",
   },
   trailingSlash: true,
+  experimental: {
+        images: {
+            unoptimized: true
+        }
+    }
 }
 
 module.exports = nextConfig
