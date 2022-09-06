@@ -6,13 +6,10 @@ const nextConfig = {
     domains: ['gateway.ipfs.io', 'ipfs.rmrk.link'],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self' ipfs.rmrk.link; script-src 'none'; sandbox;",
+    loader: 'akamai',
+    path: '',
   },
   trailingSlash: true,
-  experimental: {
-        images: {
-            unoptimized: true
-        }
-    }
 }
 
 module.exports = nextConfig
