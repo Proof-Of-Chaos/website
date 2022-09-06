@@ -7,7 +7,7 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self' ipfs.rmrk.link; script-src 'none'; sandbox;",
   },
-  exportTrailingSlash: true,
+  trailingSlash: true,
 }
 
 module.exports = nextConfig
