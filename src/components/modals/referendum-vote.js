@@ -116,6 +116,8 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
     }
   }
 
+  const convictionString = userVote.conviction === 'None' ? 'no' : userVote.conviction?.substring(6);
+
   return(
     <>
       <Dialog.Title as="h3" className="text-2xl font-medium leading-6 text-gray-900 pb-2">
@@ -126,14 +128,14 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           { title }
         </div>
         {
-          hasUserSubmittedAnswers &&
+          hasUserSubmittedAnswers && state.userAnswers && !userVote &&
           <div className="bg-emerald-600 text-white p-3 mt-4 rounded-lg text-sm">
-            Cool, you submitted answers for the quiz of this Referendum and now have a much higher chance of receiving an epic or rare Item for this Referendum
+            Thanks for answering those questions, your answers will be sent to the Kusama blockchain in one transaction together with your vote. Be sure to also vote now to write them to the chain.
           </div>
         }
         { userVote &&
             <div className="bg-amber-300 p-3 rounded-lg text-sm mt-4">
-              You already voted <b>{ userVote.aye ? 'Aye' : 'Nay' }</b> on this referendum with <b>{ userVote.balance } KSM</b> and <b>{ userVote.conviction?.substring(6) }</b> conviction. <br /> Voting again will replace your current vote.
+              You already voted <b>{ userVote.aye ? 'Aye' : 'Nay' }</b> on this referendum with <b>{ userVote.balance } KSM</b> and <b>{ convictionString }</b> conviction. <br /> Voting again will replace your current vote.
             </div>
           }
         <form className="mt-4 pl-1">
