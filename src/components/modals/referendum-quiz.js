@@ -20,7 +20,7 @@ export default function ReferendumQuizModal( { id, title, questions } ) {
       return
     }
     submitQuiz( id )
-    toast( 'quiz answers stored, now submit your vote')
+    toast( 'Quiz answers stored, please submit your vote to complete the process')
 
     // toast.promise(
     //   submitQuiz( id ),
@@ -65,6 +65,7 @@ export default function ReferendumQuizModal( { id, title, questions } ) {
         <>
           <form className="mt-4 pr-4 overflow-y-scroll flex-1">
             { questions.map( ( { question, answers, multiple }, i) => {
+              multiple = multiple === "true" || multiple === true
               const selectOptions = answers.map( (a,j) => {
                 return {
                   value: j,
