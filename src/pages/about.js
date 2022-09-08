@@ -8,6 +8,14 @@ import Roadmap from '../components/ui/roadmap'
 function About() {
   return (
     <>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1 maximum-scale=1"
+        />
+        <title>About - Proof of Chaos — Free NFTs for Voting on Kusama</title>
+
+      </Head>
       <section className="w-full px-8 py-8 pt-16 xl:px-0">
         <div className="flex flex-col max-w-6xl mx-auto md:flex-row">
           <div className="w-full pr-5 md:w-3/12 xl:pr-12">

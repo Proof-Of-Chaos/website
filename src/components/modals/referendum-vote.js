@@ -128,7 +128,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
         {
           hasUserSubmittedAnswers &&
           <div className="bg-emerald-600 text-white p-3 mt-4 rounded-lg text-sm">
-            Cool, you submitted answers for the quiz of this referendum and will gain a luck boost of ~50%
+            Cool, you submitted answers for the quiz of this Referendum and now have a much higher chance of receiving an epic or rare Item for this Referendum
           </div>
         }
         { userVote &&

@@ -1,4 +1,3 @@
-import { ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { useBreakpoint } from '../../lib/hooks/use-breakpoint'
 import { useIsMounted } from '../../lib/hooks/use-is-mounted';
 import { useCollectionData } from '../../lib/hooks/use-collection-data';

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "export": "next export",
     "lint": "next lint"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
     "classnames": "^2.3.1",
     "daisyui": "^2.19.1",
     "fs": "^0.0.1-security",
+    "expect": "^29.0.2",
     "graphql": "^16.5.0",
     "hamburger-react": "^2.5.0",
     "immer": "^9.0.15",
@@ -31,7 +33,7 @@
     "lodash": "^4.17.21",
     "next": "12.2.2",
     "next-pwa": "^5.5.4",
-    "next-seo": "^5.4.0",
+    "next-seo": "^5.5.0",
     "next-themes": "^0.2.0",
     "node-fetch": "~2.6.1",
     "react": "^18.2.0",
@@ -40,7 +42,6 @@
     "react-markdown": "^8.0.3",
     "react-toastify": "^9.0.7",
     "react-use": "^17.4.0",
-    "recharts": "^2.1.12",
     "styled": "^1.0.0",
     "styled-components": "^5.3.5",
     "swr": "^1.3.0",

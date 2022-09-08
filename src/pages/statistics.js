@@ -7,7 +7,7 @@ function Home() {
     <>
       <section className="h-screen">
         <h1 className="text-4xl uppercase font-bold">statistics</h1>
-        <iframe src="https://app.web3go.xyz/#/NftDetail?id=3208723ec6f65df810-ITEM&embedId=chart1" width="600" height="400" frameBorder="0" allowtransparency="true"></iframe>
+        <iframe src="https://app.web3go.xyz/#/NftDetail?id=3208723ec6f65df810-ITEM&embedId=chart1" width="600" height="400" frameBorder="0"></iframe>
       </section>
     </>
   )
