@@ -34,6 +34,26 @@ export async function castVote(signer, aye, ref, address, balance, conviction, u
   }
 }
 
+export async function submitQuizAnswers(signer, ref, address, userAnswers, onSuccess) {
+  const api = await getApi();
+  let transaction = await getQuizAnswersRemarkTx(ref, userAnswers);
+  try {
+    const { block, hash, success } = await sendAndFinalize(transaction, signer, address);
+    if (success) {
+      //do something?
+    }
+    else {
+      //handle error?
+    }
+    return;
+  }
+  catch (error) {
+    console.error(error)
+    //handle error
+    return;
+  }
+}
+
 export const sendAndFinalize = async (
   tx,
   signer,
@@ -211,4 +231,9 @@ async function getVoteTx(aye, ref, balance, conviction) {
   };
 
   return api.tx.democracy.vote(ref, vote)
+}
+
+function getQuizAnswersRemarkTx(ref, userAnswers) {
+  const api = await getApi();
+  return api.tx.system.remark('GOV::' + ref + '::QUIZ::' + JSON.stringify(userAnswers.answers))
 }
