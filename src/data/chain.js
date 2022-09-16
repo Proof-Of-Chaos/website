@@ -107,7 +107,7 @@ export const sendAndFinalize = async (
       if (retry < MAX_RETRIES) {
         console.log(`sendAndFinalize Retry #${retry} of ${MAX_RETRIES}`);
         await sleep(RETRY_DELAY_SECONDS * 1000);
-        const result = await sendAndFinalize(tx, signer, address, account, resolvedOnFinalizedOnly, retry + 1);
+        const result = await sendAndFinalize(tx, signer, address, resolvedOnFinalizedOnly, retry + 1);
         resolve(result);
       } else {
         console.error(`Error initiating tx signAndSend`, error);
