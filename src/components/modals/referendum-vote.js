@@ -124,7 +124,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
         {
           hasUserSubmittedAnswers &&
           <div className="bg-emerald-600 text-white p-3 mt-4 rounded-lg text-sm">
-            Thanks for answering those questions, your answers were successfully recorded. If you answered correctly, your chance of getting rarer NFTs will increase.
+          Thanks for answering those questions, your answers were successfully recorded. If you answered correctly, you will have a higher chance of receiving Rare and Epic Items for this Referendum.
           </div>
         }
         { userVote &&
