@@ -117,7 +117,7 @@ export default function ReferendumDetail({ referendum }) {
                       className="mt-4 w-full"
                       variant={ hasUserSubmittedQuiz ? 'calm' : 'primary' }
                     >
-                      { hasUserSubmittedQuiz ? 'Submit Quiz Again' : 'Take Quiz + Vote' }
+                      { hasUserSubmittedQuiz ? 'Submit Quiz Again' : 'Take Quiz' }
                     </Button>
                   }
                   <Button

@@ -1,9 +1,17 @@
 import { getApi, sendAndFinalize } from './chain';
 
 export async function castVote(signer, aye, ref, address, balance, conviction) {
-  const api = await getApi()
-  let transaction = await getVoteTx(api, aye, ref, balance, conviction);
-  return sendAndFinalize(transaction, signer, address);
+  return new Promise( async (resolve, reject ) => {
+    try {
+      const api = await getApi()
+      let transaction = await getVoteTx(api, aye, ref, balance, conviction);
+      const { success } = await sendAndFinalize(transaction, signer, address);
+      resolve( success );
+    } catch( error ) {
+      //TODO here should be some error specification
+      reject( 'something went wrong' )
+    }
+  })
 }
 
 function getVoteTx(api, aye, ref, balance, conviction) {
