@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import {websiteConfig} from "../../data/website-config";
+import {websiteConfig} from "../data/website-config";
 
 const getAllCollectionData = async () => {
   const collectionCalls = websiteConfig.singular_referendum_collections.map((collection) => {

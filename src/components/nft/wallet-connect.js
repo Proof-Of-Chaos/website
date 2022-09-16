@@ -8,7 +8,7 @@ import Identicon from "../ui/identicon"
 import classNames from "classnames"
 import { WalletSelect } from '@talisman-connect/components';
 import { encodeAddress } from '@polkadot/keyring'
-import { useIsMounted } from "../../lib/hooks/use-is-mounted"
+import { useIsMounted } from "../../hooks/use-is-mounted"
 
 
 export default function WalletConnect ( { className, title, onAccountSelected, variant = 'calm' } ) {

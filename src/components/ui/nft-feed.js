@@ -1,6 +1,6 @@
-import { useBreakpoint } from '../../lib/hooks/use-breakpoint'
-import { useIsMounted } from '../../lib/hooks/use-is-mounted';
-import { useCollectionData } from '../../lib/hooks/use-collection-data';
+import { useBreakpoint } from '../../hooks/use-breakpoint'
+import { useIsMounted } from '../../hooks/use-is-mounted';
+import { useCollectionData } from '../../hooks/use-collection-data';
 import {nftFeedData} from "../../data/nft-feed-data";
 
 export function NftFeed({

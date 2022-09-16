@@ -1,6 +1,6 @@
 
 import Layout from '../layouts/layout'
-import { useUserNfts } from '../lib/hooks/use-nfts'
+import { useUserNfts } from '../hooks/use-nfts'
 
 function Test() {
   return (

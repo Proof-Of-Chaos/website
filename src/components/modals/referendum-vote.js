@@ -7,9 +7,9 @@ import { toast } from 'react-toastify';
 import { useEffect, useState } from "react";
 import { getWalletBySource} from "@talisman-connect/wallets";
 import useAppStore from "../../zustand";
-import { useAccountVote } from "../../lib/hooks/use-referendums";
-import useAccountBalance from "../../lib/hooks/use-account-balance";
-import { microToKSM } from '../../lib/utils'
+import { useAccountVote } from "../../hooks/use-referendums";
+import useAccountBalance from "../../hooks/use-account-balance";
+import { microToKSM } from '../../utils'
 import { isNumber } from "lodash";
 
 export default function ReferendumVoteModal( { id, title, userAnswers } ) {

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { uniqBy, every } from "lodash";
 import Image from "../ui/image-fade"
 import ReactMarkdown from 'react-markdown'
-import { useUserNfts } from "../../lib/hooks/use-nfts";
+import { useUserNfts } from "../../hooks/use-nfts";
 import Button from "../ui/button";
 import {websiteConfig} from "../../data/website-config";
 

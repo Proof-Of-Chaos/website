@@ -1,5 +1,5 @@
-import { websiteConfig } from "../../data/website-config"
-import useAppStore from "../../zustand";
+import { websiteConfig } from "../data/website-config"
+import useAppStore from "../zustand";
 import {
   useQuery,
 } from "@tanstack/react-query";

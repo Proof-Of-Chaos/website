@@ -1,6 +1,6 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { useQuery } from "@tanstack/react-query";
-import useAppStore from "../../zustand";
+import useAppStore from "../zustand";
 
 export default function useAccountBalance() {
   const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )

@@ -1,8 +1,8 @@
 import Image from "../ui/image-fade"
-import { getRandomIntBetween } from '../../lib/utils'
+import { getRandomIntBetween } from '../../utils'
 import cn from 'classnames';
 import { sampleSize } from 'lodash';
-import { useNFTs } from '../../lib/hooks/use-nfts';
+import { useNFTs } from '../../hooks/use-nfts';
 
 export default function NFTSnippets( { initial } ) {
   const { data: nfts } = useNFTs();

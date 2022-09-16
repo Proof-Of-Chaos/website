@@ -1,6 +1,6 @@
 import Layout from '../layouts/layout'
 import NFTDetail from '../components/nft/ref-nfts'
-import { useNFTs } from '../lib/hooks/use-nfts'
+import { useNFTs } from '../hooks/use-nfts'
 import { groupBy } from 'lodash';
 import { websiteConfig } from "../data/website-config"
 import objectHash from 'object-hash'

@@ -1,10 +1,10 @@
 import {useEffect, useState} from "react";
 import { Tab } from "@headlessui/react";
 import ReferendumDetail from "./referendum-detail";
-import { useReferendums } from '../../../lib/hooks/use-referendums'
+import { useReferendums } from '../../../hooks/use-referendums'
 import Loader from '../loader'
 import useAppStore from "../../../zustand";
-import { useIsMounted } from '../../../lib/hooks/use-is-mounted'
+import { useIsMounted } from '../../../hooks/use-is-mounted'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')

@@ -1,8 +1,8 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
-import {websiteConfig} from "../../data/website-config";
+import {websiteConfig} from "../data/website-config";
 import { useQuery } from "@tanstack/react-query";
-import useAppStore from "../../zustand";
+import useAppStore from "../zustand";
 import { microToKSM, microToKSMFormatted } from "../utils";
 
 const BLOCK_DURATION = 6000;

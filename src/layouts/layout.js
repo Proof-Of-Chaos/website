@@ -1,7 +1,7 @@
 import { useWindowScroll } from "react-use"
 import { MenuItems } from './layout-menu'
-import { useBreakpoint } from '../lib/hooks/use-breakpoint'
-import { isMounted, useIsMounted } from '../lib/hooks/use-is-mounted'
+import { useBreakpoint } from '../hooks/use-breakpoint'
+import { isMounted, useIsMounted } from '../hooks/use-is-mounted'
 import Hamburger from "../components/ui/hamburger"
 import WalletConnect from "../components/nft/wallet-connect"
 import Logo from "../components/ui/logo";

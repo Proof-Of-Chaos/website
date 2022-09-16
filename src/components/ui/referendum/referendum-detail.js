@@ -4,13 +4,13 @@ import Button from "../button"
 import ReferendumCountdown from './referendum-countdown'
 import ReferendumStats from "./referendum-stats";
 import { useModal } from "../../modals/context";
-import { useQuizzes } from "../../../lib/hooks/use-quizzes";
+import { useQuizzes } from "../../../hooks/use-quizzes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from 'react-markdown'
 import useAppStore from "../../../zustand";
 import WalletConnect from "../../nft/wallet-connect";
-import { useAccountVote } from "../../../lib/hooks/use-referendums";
+import { useAccountVote } from "../../../hooks/use-referendums";
 
 export default function ReferendumDetail({ referendum }) {
   let [isExpanded, setIsExpanded] = useState(false);
