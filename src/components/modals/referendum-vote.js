@@ -11,10 +11,11 @@ import { useAccountVote } from "../../hooks/use-referendums";
 import useAccountBalance from "../../hooks/use-account-balance";
 import { microToKSM } from '../../utils'
 import { isNumber } from "lodash";
+import { InlineLoader } from "../ui/loader";
 
 export default function ReferendumVoteModal( { id, title, userAnswers } ) {
   const { data: userVote } = useAccountVote( id );
-  const { data: accountBalance } = useAccountBalance()
+  const { data: accountBalance, isLoading: isBalanceLoading } = useAccountBalance()
   const availableBalance = microToKSM( accountBalance?.data?.free )
   const { closeModal } = useModal();
   const VOTE_LOCK_OPTIONS = [
@@ -108,9 +109,8 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
     }
   }
 
-  console.log( 'maxxxx', isNaN(availableBalance) ? undefined : availableBalance )
-
   const convictionString = userVote.conviction === 'None' ? 'no' : userVote.conviction?.substring(6);
+  const voteAmountLabel = isBalanceLoading ? <>{`Value (available: ` } <InlineLoader /> {`)`} </> : `Value (available: ${ availableBalance?.toFixed( 2 ) } KSM)`
 
   return(
     <>
@@ -122,9 +122,9 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           { title }
         </div>
         {
-          hasUserSubmittedAnswers && state.userAnswers && !userVote &&
+          hasUserSubmittedAnswers &&
           <div className="bg-emerald-600 text-white p-3 mt-4 rounded-lg text-sm">
-            Thanks for answering those questions, your answers will be sent to the Kusama blockchain in one transaction together with your vote. Be sure to also vote now to write them to the chain.
+            Thanks for answering those questions, your answers were successfully recorded. If you answered correctly, your chance of getting rarer NFTs will increase.
           </div>
         }
         { userVote &&
@@ -135,7 +135,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
         <form className="mt-4 pl-1">
           <Input
             id="vote-amount"
-            label={ ( isNumber( state.availableBalance ) && ! isNaN( state.availableBalance ) ) ? `Value (available: ${ state.availableBalance.toFixed( 2 ) } KSM)` : 'Value' }
+            label={ voteAmountLabel }
             type="number"
             step="0.1"
             max={ isNaN(availableBalance) ? undefined : availableBalance }

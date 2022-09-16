@@ -11,3 +11,13 @@ export default function Loader() {
     </div>
   )
 }
+
+export function InlineLoader() {
+  return (
+    <div className="loader inline-flex">
+      <span>.</span>
+      <span>.</span>
+      <span>.</span>
+    </div>
+  )
+}
