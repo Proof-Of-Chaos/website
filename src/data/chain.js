@@ -17,7 +17,6 @@ let healthCheckInProgress = false;
 /**
  * @see https://polkadot.js.org/docs/api/cookbook/tx
  * TODO maybe include a batchall call when multiple tx are passed
- * TODO 
  * @param {*} tx 
  * @param {*} signer 
  * @param {*} address 
