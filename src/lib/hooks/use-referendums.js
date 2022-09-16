@@ -1,4 +1,3 @@
-import { referendumData } from "../../data/vote-data";
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
 import {websiteConfig} from "../../data/website-config";

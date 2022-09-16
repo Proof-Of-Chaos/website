@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import { Tab } from "@headlessui/react";
-import { getVotesByStatus } from "../../../data/vote-data";
 import ReferendumDetail from "./referendum-detail";
 import { useReferendums } from '../../../lib/hooks/use-referendums'
 import Loader from '../loader'
@@ -18,7 +17,6 @@ export function ReferendumList( { voteStatus } ) {
   const cachedReferendums = useAppStore((state)=>state.referendums)
 
   const { data: referendums, isLoading, error } = useReferendums()
-  const { votes, totalVotes } = getVotesByStatus(voteStatus)
 
   if ( ! isLoading && ! error && referendums ) {
     setReferendums( referendums )
@@ -29,7 +27,7 @@ export function ReferendumList( { voteStatus } ) {
   return (
     isMounted && <>
       { showLoader && <Loader /> }
-      { totalVotes > 0 ? (
+      { referendums?.length > 0 ? (
         referendums?.map( (referendum, idx) => (
           <div
             key={`${referendum.title}-key-${referendum.id}`}
@@ -47,13 +45,13 @@ export function ReferendumList( { voteStatus } ) {
 }
 
 export default function ReferendumTabs( props ) {
-  const { totalVotes: totalActiveVotes } = getVotesByStatus('active');
+  {/* const { totalVotes: totalActiveVotes } = getVotesByStatus('active');
   const { totalVotes: totalPastVotes } = getVotesByStatus('past');
 
   let [categories] = useState({
     Active: <ReferendumList voteStatus={'active'} />,
     Past: <ReferendumList voteStatus={'past'} />,
-  })
+  }) */}
 
   return <ReferendumList voteStatus={'active'} />
 
