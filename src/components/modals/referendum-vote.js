@@ -15,6 +15,7 @@ import { isNumber } from "lodash";
 export default function ReferendumVoteModal( { id, title, userAnswers } ) {
   const { data: userVote } = useAccountVote( id );
   const { data: accountBalance } = useAccountBalance()
+  const availableBalance = microToKSM( accountBalance?.data?.free )
   const { closeModal } = useModal();
   const VOTE_LOCK_OPTIONS = [
     {
@@ -67,13 +68,6 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
     })
   }, [ userVote ])
 
-  useEffect( () => {
-    setState( {
-      ...state,
-      'availableBalance': microToKSM( accountBalance?.data?.free ),
-    })
-  }, [ accountBalance ])
-
   const setFormFieldValue = (e) => {
     setState({
       ...state,
@@ -114,6 +108,8 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
     }
   }
 
+  console.log( 'maxxxx', isNaN(availableBalance) ? undefined : availableBalance )
+
   const convictionString = userVote.conviction === 'None' ? 'no' : userVote.conviction?.substring(6);
 
   return(
@@ -142,7 +138,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
             label={ ( isNumber( state.availableBalance ) && ! isNaN( state.availableBalance ) ) ? `Value (available: ${ state.availableBalance.toFixed( 2 ) } KSM)` : 'Value' }
             type="number"
             step="0.1"
-            max={ state.availableBalance }
+            max={ isNaN(availableBalance) ? undefined : availableBalance }
             value={ state["vote-amount"] }
             className="text-base"
             placeholder={ userVote?.balance ?? '' }
