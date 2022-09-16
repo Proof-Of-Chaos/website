@@ -8,7 +8,6 @@ const WS_ENDPOINTS = [
 
 const MAX_RETRIES = 15;
 const WS_DISCONNECT_TIMEOUT_SECONDS = 20;
-const RETRY_DELAY_SECONDS = 20;
 
 let wsProvider;
 let polkadotApi;
@@ -19,102 +18,50 @@ let healthCheckInProgress = false;
  * TODO maybe include a batchall call when multiple tx are passed
  * @param {*} tx 
  * @param {*} signer 
- * @param {*} address 
- * @param {*} resolvedOnFinalizedOnly 
- * @param {*} retry 
+ * @param {*} address
  * @returns 
  */
+
 export const sendAndFinalize = async (
   tx,
   signer,
-  address,
-  resolvedOnFinalizedOnly = true,
-  retry = 0,
+  address
 ) => {
   return new Promise(async (resolve, reject) => {
     const api = await getApi();
-
-    const returnObject = { success: false, hash: undefined, included: [], finalized: [], block: 0 }
-
     try {
-      const unsubscribe = await tx.signAndSend(
-        address, { signer: signer },
-        async ({ events = [], status, dispatchError }) => {
-          returnObject.success = !dispatchError;
-          returnObject.included = [...events];
-          returnObject.hash = status.hash;
+      const unsub = await tx.signAndSend(
+          address, { signer: signer }, ({ status, dispatchError }) => {
+            if (status.isInBlock) {
+              // console.log( 'transaction in block waiting for finalization' )
+            } else if (status.isFinalized) {
+              // console.log(`Transaction included at blockHash ${status.asFinalized}`);
+              // console.log(`Transaction hash ${txHash.toHex()}`);
 
-          const rejectPromise = (error) => {
-            console.error(`Error sending tx`, error);
-            console.log(`tx for the error above`, tx.toHuman());
-            unsubscribe();
-            reject(error);
-          }
+              // Loop through Vec<EventRecord> to display all events
+              if (dispatchError) {
+                if (dispatchError.isModule) {
+                  // for module errors, we have the section indexed, lookup
+                  const decoded = api.registry.findMetaError(dispatchError.asModule);
+                  const { docs, name, section } = decoded;
 
-          if (status.isInBlock) {
-            console.log(
-              `📀 Transaction ${tx.meta.name} included at blockHash ${status.asInBlock} [success = ${!dispatchError}]`,
-            );
-
-            // Get block number that this tx got into, to return back to user
-            const signedBlock = await api.rpc.chain.getBlock(status.asInBlock);
-            returnObject.block = signedBlock.block.header.number.toNumber();
-
-            // If we don't care about waiting for this tx to get into a finalized block, we can return early.
-            if (!resolvedOnFinalizedOnly && !dispatchError) {
-              unsubscribe();
-              resolve(returnObject);
-            }
-          } else if (status.isBroadcast) {
-            console.log(`🚀 Transaction broadcasted.`);
-          } else if (status.isFinalized) {
-            console.log(
-              `💯 Transaction ${tx.meta.name}(..) Finalized at blockHash ${status.asFinalized}`,
-            );
-
-            if ( dispatchError ) {
-              if (dispatchError.isModule) {
-                // for module errors, we have the section indexed, lookup
-                const decoded = api.registry.findMetaError(dispatchError.asModule);
-                const { docs } = decoded;
-  
-                rejectPromise( docs.join(' ') )
+                  reject(docs.join(' '))
+                } else {
+                  // Other, CannotLookup, BadOrigin, no extra info
+                  reject(dispatchError.toString())
+                }
               } else {
-                // Other, CannotLookup, BadOrigin, no extra info
-                rejectPromise( dispatchError.toString() )
+                //store the user quiz answers locally
+                // onSuccess()
+                resolve('Vote recorded')
               }
-            } else {
-              if (returnObject.block === 0) {
-                const signedBlock = await api.rpc.chain.getBlock(status.asFinalized);
-                returnObject.block = signedBlock.block.header.number.toNumber();
-              }
-              resolve(returnObject);
+              unsub()
             }
-            unsubscribe();
-          } else if (status.isReady) {
-            // let's not be too noisy..
-          } else if (status.isInvalid) {
-            rejectPromise(new Error(`Extrinsic isInvalid`))
-          } else {
-            console.log(`🤷 Other status ${status}`);
-          }
-        },
-      );
-    } catch (error) {
-      console.log(
-        `Error sending tx. Error: "${error.message}". TX: ${JSON.stringify(tx.toHuman())}`,
-      );
-      if (retry < MAX_RETRIES) {
-        console.log(`sendAndFinalize Retry #${retry} of ${MAX_RETRIES}`);
-        await sleep(RETRY_DELAY_SECONDS * 1000);
-        const result = await sendAndFinalize(tx, signer, address, resolvedOnFinalizedOnly, retry + 1);
-        resolve(result);
-      } else {
-        console.error(`Error initiating tx signAndSend`, error);
-        reject(error);
-      }
+          })
+    } catch (err) {
+      reject('voting cancelled')
     }
-  });
+  })
 };
 
 async function sleep(ms) {
