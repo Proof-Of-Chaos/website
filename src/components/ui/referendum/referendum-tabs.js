@@ -27,18 +27,17 @@ export function ReferendumList( { voteStatus } ) {
   return (
     isMounted && <>
       { showLoader && <Loader /> }
-      { referendums?.length > 0 ? (
+      { referendums?.length > 0 ?
         referendums?.map( (referendum, idx) => (
           <div
             key={`${referendum.title}-key-${referendum.id}`}
           >
             <ReferendumDetail referendum={ referendum } listIndex={ idx } />
           </div>
-        ))) : (
-          <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
-            There are currently no referendums to vote
-          </h2>
-        )
+        )) :
+        <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
+          There are currently no referendums to vote
+        </h2>
       }
     </>
   )

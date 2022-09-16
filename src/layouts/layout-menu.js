@@ -42,23 +42,21 @@ export function MenuItems() {
     <div className="flex items-center xl:px-10 2xl:px-14 3xl:px-16">
       {MenuLinks.map((item, index) => {
         return (
-          <>
-            <Link
-              key={item.name}
-              href={item.href}
+          <Link
+            key={item.name}
+            href={item.href}
+          >
+            <a
+              className={
+                cn(
+                  "mx-4 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
+                  item.href === pathname ? 'text-brand-600' : 'text-black'
+                )
+              }
             >
-              <a
-                className={
-                  cn(
-                    "mx-4 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
-                    item.href === pathname ? 'text-brand-600' : 'text-black'
-                  )
-                }
-              >
-                {item.name}
-              </a>
-            </Link>
-          </>
+              {item.name}
+            </a>
+          </Link>
         )
       })}
     </div>

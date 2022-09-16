@@ -15,7 +15,6 @@ import { isNumber } from "lodash";
 export default function ReferendumVoteModal( { id, title, userAnswers } ) {
   const { data: userVote } = useAccountVote( id );
   const { data: accountBalance } = useAccountBalance()
-  const submitQuiz = useAppStore((state)=>state.submitQuiz)
   const { closeModal } = useModal();
   const VOTE_LOCK_OPTIONS = [
     {
@@ -96,9 +95,8 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           state['wallet-select'],
           balance,
           state['vote-lock'],
-          state['userAnswers'],
-          () => { submitQuiz(id); console.log( 'quiz submitted', id ) }
-        ).then( () => { closeModal() } ),
+          state['userAnswers']
+        ).then( ( data ) => { console.log( 'castvotedata', data); closeModal() } ),
         {
           pending: `sending your vote for referendum ${ id }`,
           success: 'Vote successfully recorded 🗳️',

@@ -15,7 +15,7 @@ export const websiteConfig = {
         "legendary"
     ],
     "quizzes":{
-        "223":[
+        "229":[
             {
                 "question":"What is the name of ref 223 parachain?",
                 "answers":[

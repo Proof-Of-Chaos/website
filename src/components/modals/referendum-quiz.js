@@ -4,6 +4,8 @@ import Input from "../ui/input";
 import { useModal } from "./context";
 import { toast } from 'react-toastify';
 import useAppStore from "../../zustand";
+import { submitQuizAnswers } from "../../data/quiz-service";
+import { getWalletBySource } from "@talisman-connect/wallets";
 
 export default function ReferendumQuizModal( { id, title, questions } ) {
   const { openModal } = useModal();
@@ -11,6 +13,9 @@ export default function ReferendumQuizModal( { id, title, questions } ) {
 
   const submitQuiz = useAppStore( ( state ) => state.submitQuiz )
   const updateQuizAnswers = useAppStore( ( state ) => state.updateQuizAnswers )
+  const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
+  const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
+  const walletAddress = connectedAccount?.address
   const userAnswers = useAppStore( ( ( state ) => state.user.quizAnswers[id] ) )
 
   const isFormFilled = userAnswers?.answers && Object.keys(userAnswers.answers).length === questions.length
@@ -19,20 +24,27 @@ export default function ReferendumQuizModal( { id, title, questions } ) {
     if ( ! isFormFilled ) {
       return
     }
-    submitQuiz( id )
-    toast( 'Quiz answers stored, please submit your vote to complete the process')
-
-    // toast.promise(
-    //   submitQuiz( id ),
-    //   {
-    //     pending: `sending your quiz answers for referendum ${ id }`,
-    //     success: 'answers successfully recorded 🗳️',
-    //     error: 'error recording answers 🤯'
-    //   }
-    // ).then( () => {
+    
+    const wallet = getWalletBySource(connectedAccount.source)
+    await wallet.enable('Proof of Chaos')
+    toast.promise(
+      submitQuizAnswers(
+        wallet.signer,
+        id,
+        walletAddress,
+        userAnswers,
+      ),
+      {
+        pending: `sending your quiz answers for referendum ${ id }`,
+        success: 'answers successfully recorded 🗳️',
+        error: 'error recording answers 🤯'
+      }
+    ).then( () => {
+      //store quiz answers in app state
+      submitQuiz( id )
       closeModal()
       openModal('VIEW_REFERENDUM_VOTE', {id, title, userAnswers})
-    // } );
+    } );
   }
 
   function onChangeInputs( e, questionIndex, multiple ) {
