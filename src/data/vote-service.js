@@ -8,8 +8,11 @@ export async function castVote(signer, aye, ref, address, balance, conviction) {
       const { success } = await sendAndFinalize(transaction, signer, address);
       resolve( success );
     } catch( error ) {
-      //TODO here should be some error specification
-      reject( 'something went wrong' )
+      if ( error === 'signAndSend cancelled') {
+        reject( 'cancelled' );
+      } else {
+        reject( error )
+      }
     }
   })
 }

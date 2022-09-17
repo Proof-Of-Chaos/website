@@ -53,13 +53,13 @@ export const sendAndFinalize = async (
               } else {
                 //store the user quiz answers locally
                 // onSuccess()
-                resolve('Vote recorded')
+                resolve(`success signAndSend ${ tx.name }` )
               }
               unsub()
             }
           })
     } catch (err) {
-      reject('voting cancelled')
+      reject('signAndSend cancelled')
     }
   })
 };
