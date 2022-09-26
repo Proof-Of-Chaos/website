@@ -39,7 +39,7 @@ export function MenuItems() {
   let { pathname } = useRouter();
 
   return (
-    <div className="flex items-center xl:px-10 2xl:px-14 3xl:px-16">
+    <div className="flex flex-1 justify-end px-8 xl:px-10 2xl:px-14 3xl:px-16">
       {MenuLinks.map((item, index) => {
         return (
           <Link
@@ -49,7 +49,7 @@ export function MenuItems() {
             <a
               className={
                 cn(
-                  "mx-4 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
+                  "mx-4 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-black",
                   item.href === pathname ? 'text-brand-600' : 'text-black'
                 )
               }

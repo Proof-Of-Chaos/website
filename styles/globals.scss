@@ -1,8 +1,22 @@
 @tailwind base;
 @tailwind components;
 
+@font-face {
+  font-family: 'Unbounded';
+  src:  url('../public/unbounded/WOFF/Unbounded-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Unbounded Bold';
+  src:  url('../public/unbounded/WOFF/Unbounded-Bold.woff2') format('woff2');
+}
+
 .tooltip {
   @apply invisible absolute;
+}
+
+.logo {
+  font-family: 'Unbounded Bold', sans-serif;
 }
 
 .has-tooltip:hover .tooltip {
