@@ -20,7 +20,28 @@ const convictionMultiplierMapping = {
   'Locked6x': 6,
 }
 
-export const referendumFetcher = async (ksmAddress) => {
+export const pastReferendumFetcher = async (ksmAddress) => {
+  const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
+  const api = await ApiPromise.create({ provider: wsProvider });
+
+  const { hash, number } = await api.rpc.chain.getHeader();
+  const timestamp = await api.query.timestamp.now.at(hash);
+  const totalIssuance = await api.query.balances.totalIssuance().toString()
+  const pastReferendums = [226,227,228]
+
+  let referendums = [];
+  for (const referendum of pastReferendums) {
+
+    // const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
+    const PAData = await getPADataForRef(referendum);
+    // const threshold = getPassingThreshold(referendum, totalIssuance)
+    referendums.push(PAData);
+  }
+
+  return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
+};
+
+export const activeReferendumFetcher = async (ksmAddress) => {
   const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
   const api = await ApiPromise.create({ provider: wsProvider });
 
@@ -197,9 +218,18 @@ export const useReferendums = ( config ) => {
   return useQuery(
     [ "referendumData", ksmAddress ],
     async () => {
-      return referendumFetcher(ksmAddress)
+      return activeReferendumFetcher(ksmAddress)
     },
     { placeholderData: cachedReferendums },
+  )
+};
+
+export const usePastReferendums = ( ) => {
+  return useQuery(
+    [ "pastReferendumData" ],
+    async () => {
+      return pastReferendumFetcher()
+    },
   )
 };
 
