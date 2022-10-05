@@ -22,10 +22,6 @@ const convictionMultiplierMapping = {
   'Locked6x': 6,
 }
 
-<<<<<<< HEAD
-export const referendumFetcher = async (ksmAddress) => {
-  const api = await getApi();
-=======
 export const pastReferendumFetcher = async (ksmAddress) => {
   const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
   const api = await ApiPromise.create({ provider: wsProvider });
@@ -50,7 +46,6 @@ export const pastReferendumFetcher = async (ksmAddress) => {
 export const activeReferendumFetcher = async (ksmAddress) => {
   const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
   const api = await ApiPromise.create({ provider: wsProvider });
->>>>>>> wip - not finished
 
   const { hash, number } = await api.rpc.chain.getHeader();
 
