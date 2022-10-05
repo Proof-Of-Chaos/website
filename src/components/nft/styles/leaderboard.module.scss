@@ -1,26 +1,33 @@
+.userRank {
+  @apply w-full text-right p-4;
+  
+  span {
+    @apply text-6xl pl-4;
+  }
+}
+
 .list {
 }
 
 .listItem {
-  @apply flex flex-row items-center m-2 bg-slate-100 border-2 border-gray-200 p-4;
+  @apply flex flex-row items-center m-2 bg-slate-100 hover:bg-slate-200 hover:shadow-lg rounded-md border-2 border-gray-200 p-4;
 
   & > * {
     @apply pr-4
   }
 
   &:nth-of-type(1) {
-    @apply bg-amber-300;
+    @apply bg-amber-300 hover:bg-amber-400;
   }
 
   &:nth-of-type(2) {
-    @apply bg-gray-300;
+    @apply bg-gray-300 hover:bg-gray-400;
   }
 
   &:nth-of-type(3) {
-    @apply bg-amber-700;
+    @apply bg-amber-700 hover:bg-amber-800;
   }
 }
-
 
 .score,
 .wallet {
