@@ -33,6 +33,10 @@ const MenuLinks = [
   //   name: 'Statistics',
   //   href: '/statistics',
   // },
+  {
+    name: 'Leaderboard',
+    href: '/leaderboard',
+  },
 ];
 
 export function MenuItems() {

@@ -16,9 +16,14 @@ const microToKSMFormatted = (microKSM) => {
   return parseFloat((microToKSM(microKSM) / 1000).toFixed(2)) + 'K KSM';
 }
 
+const trimAddress = ( address, length = 3 ) => {
+  return `${ address.substring(0,length) }...${ address.substring(address.length - length) }`
+}
+
 export {
   getRandomInt,
   getRandomIntBetween,
   microToKSM,
   microToKSMFormatted,
+  trimAddress,
 }
