@@ -2,6 +2,7 @@ import { encodeAddress } from '@polkadot/keyring'
 import Image from "next/image";
 import { leaderboardShelfThumbnailFetcher, useLeaderboard, useShelfThumbnail } from "../../hooks/use-leaderboard";
 import { trimAddress } from "../../utils";
+import useAppStore from '../../zustand';
 import Loader, { InlineLoader } from "../ui/loader";
 
 import styles from "./styles/leaderboard.module.scss"
@@ -13,7 +14,7 @@ function LeaderRow( props ) {
   const { place, id, score, wallet, thumbnail = '' } = props
   const ksmAddress = encodeAddress( wallet, 2 );
 
-  const imageDimension = place < 3 ? 400 : 200
+  const imageDimension = place < 3 ? 300 : 200
 
   return(
     <li className={ styles.listItem }>
@@ -55,21 +56,31 @@ function LeaderRowWithThumbnail( props ) {
 
 export default function Leaderboard( props ) {
   const { data: leaderboard, isLoading } = useLeaderboard();
+
+  const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
+  const connectedAccount = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex] )
+  const userAddress = connectedAccount?.ksmAddress
   
+  const isInTop50 = leaderboard?.scores?.findIndex( el => el.wallet === userAddress )
+  console.log( 'isintop50', isInTop50 );
 
   return (
     <div className="leaderboard">
       { isLoading && <Loader /> }
-      { ! isLoading &&
-        <ol className={ styles.list }>
-          { leaderboard.scores.slice(0,50).map( (row, place) => {
-            if (place < 10 ) {
-              return <LeaderRowWithThumbnail key={ place } place={ place } {...row} />
-            } else {
-              return <LeaderRow key={ place } place={ place } {...row} />
-            }
-          } ) }
-        </ol>
+      { ! isLoading && <>
+        { isFinite(isInTop50) && 
+          <div className={ styles.userRank }>Your current rank is <span>{ isInTop50 }</span></div>
+        }
+          <ol className={ styles.list }>
+            { leaderboard.scores.slice(0,50).map( (row, place) => {
+              if (place < 10 ) {
+                return <LeaderRowWithThumbnail key={ place } place={ place } {...row} />
+              } else {
+                return <LeaderRow key={ place } place={ place } {...row} />
+              }
+            } ) }
+          </ol>
+        </>
       }
     </div>
   )
