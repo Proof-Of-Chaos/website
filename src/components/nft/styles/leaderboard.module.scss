@@ -1,0 +1,37 @@
+.list {
+}
+
+.listItem {
+  @apply flex flex-row items-center m-2 bg-slate-100 border-2 border-gray-200 p-4;
+
+  & > * {
+    @apply pr-4
+  }
+
+  &:nth-of-type(1) {
+    @apply bg-amber-300;
+  }
+
+  &:nth-of-type(2) {
+    @apply bg-gray-300;
+  }
+
+  &:nth-of-type(3) {
+    @apply bg-amber-700;
+  }
+}
+
+
+.score,
+.wallet {
+  @apply flex flex-col text-xl;
+
+  span {
+    @apply font-bold text-gray-700;
+  }
+}
+
+.rank {
+  @apply text-6xl pr-4;
+  min-width: 100px;
+}
