@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import { Tab } from "@headlessui/react";
 import ReferendumDetail from "./referendum-detail";
-import { useReferendums } from '../../../hooks/use-referendums'
+import { usePastReferendums, useReferendums } from '../../../hooks/use-referendums'
 import Loader from '../loader'
 import useAppStore from "../../../zustand";
 import { useIsMounted } from '../../../hooks/use-is-mounted'
@@ -17,6 +17,9 @@ export function ReferendumList( { voteStatus } ) {
   const cachedReferendums = useAppStore((state)=>state.referendums)
 
   const { data: referendums, isLoading, error } = useReferendums()
+  const { data: pastReferendums, isPastLoading, pastError } = useReferendums()
+
+  console.log( 'pastreferendums', pastReferendums )
 
   if ( ! isLoading && ! error && referendums ) {
     setReferendums( referendums )
@@ -45,16 +48,16 @@ export function ReferendumList( { voteStatus } ) {
 
 export default function ReferendumTabs( props ) {
   {/* const { totalVotes: totalActiveVotes } = getVotesByStatus('active');
-  const { totalVotes: totalPastVotes } = getVotesByStatus('past');
+  const { totalVotes: totalPastVotes } = getVotesByStatus('past'); */}
 
   let [categories] = useState({
     Active: <ReferendumList voteStatus={'active'} />,
     Past: <ReferendumList voteStatus={'past'} />,
-  }) */}
+  })
 
-  return <ReferendumList voteStatus={'active'} />
+  {/* return <ReferendumList voteStatus={'active'} /> */}
 
-  {/* return (
+  return (
     <div className="w-full px-4 py-8">
       <Tab.Group>
         <Tab.List className="flex mb-4 pb-4 border-brand-600">
@@ -86,5 +89,5 @@ export default function ReferendumTabs( props ) {
         </Tab.Panels>
       </Tab.Group>
     </div>
-  ) */}
+  )
 }
