@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import logo from '../../../public/proof-of-chaos-logo.png'
-import logo2 from '../../../public/proof-of-chaos-logo.png'
 
 export default function Logo(props) {
   return (
