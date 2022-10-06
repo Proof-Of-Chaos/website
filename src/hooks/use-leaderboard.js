@@ -3,8 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 const ENDPOINT_RMRK_NFT_UPDATED_PREFIX = 'https://singular.app/api/rmrk2/nft-updated/'
 const ENDPOINT_RMRK_PRERENDER = 'https://prerender.rmrk.link'
 
+const ENDPOINT_SHELF_LEADERBOARD = 'https://scores.proofofchaos.app/shelf/leaderboard'
+const ENDPOINT_DRAGON_LEADERBOARD = 'https://scores.proofofchaos.app/dragon/leaderboard'
+
 const leaderboardFetcher = async () => {
-  const data = await fetch('https://scores.proofofchaos.app/shelf/leaderboard')
+  const data = await fetch( ENDPOINT_SHELF_LEADERBOARD )
   const ranking = await data.json()
   return ranking
 };
@@ -33,5 +36,16 @@ export const leaderboardShelfThumbnailFetcher = async( nftId ) => {
 export const useShelfThumbnail = ( nftId ) => {
   return useQuery( ['shelfThumbnail', nftId ], () => leaderboardShelfThumbnailFetcher( nftId ) )
 }
+
+const dragonLeaderboardFetcher = async () => {
+  const data = await fetch( ENDPOINT_DRAGON_LEADERBOARD )
+  const ranking = await data.json()
+  return ranking
+};
+
+export const useDragonLeaderboard = () => {
+  return useQuery( ['draongLeaderboard'], dragonLeaderboardFetcher )
+};
+
 
 
