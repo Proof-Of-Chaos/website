@@ -1,8 +1,10 @@
 import { encodeAddress } from '@polkadot/keyring'
 import Image from "next/image";
-import { leaderboardShelfThumbnailFetcher, useLeaderboard, useShelfThumbnail } from "../../hooks/use-leaderboard";
+import Link from 'next/link';
+import { useDragonLeaderboard, useLeaderboard, useShelfThumbnail } from "../../hooks/use-leaderboard";
 import { trimAddress } from "../../utils";
 import useAppStore from '../../zustand';
+import Button from '../ui/button';
 import Loader, { InlineLoader } from "../ui/loader";
 
 import styles from "./styles/leaderboard.module.scss"
@@ -11,35 +13,33 @@ const SINGULAR_SHELF_BASE_URL = 'https://singular.app/collectibles/kusama/320872
 const SINGULAR_WALLET_BASE_URL = 'https://singular.app/space/kusama/'
 
 function LeaderRow( props ) {
-  const { place, id, score, wallet, thumbnail = '' } = props
+  const { place, id, score, wallet, thumbnail = '', className=styles.listItem } = props
   const ksmAddress = encodeAddress( wallet, 2 );
 
   const imageDimension = place < 3 ? 300 : 200
 
   return(
-    <li className={ styles.listItem }>
-      <div className={ styles.rank }>{ place + 1}</div>
-      { place < 10 && <div className={ styles.thumb }>
-        { thumbnail === '' && <InlineLoader /> }
-        { thumbnail !== '' && <Image
+    <li className={ className }>
+      <div className={ styles.rank }>{ place + 1 }</div>
+      <div className={ styles.thumb }>
+        { thumbnail && thumbnail !== '' && <Image
           src={ thumbnail }
           alt={ `Shelf for wallet ${ wallet }` }
           width={imageDimension}
           height={imageDimension}
-          className="{ styles.thumb }"
-        />
+        /> }
+        { thumbnail && thumbnail === '' &&
+          <a className={ styles.link } href={ `${ SINGULAR_SHELF_BASE_URL}${id}` }>view shelf<br /> on singular</a>
         }
-        </div>
-      }
-      <div className={ styles.wallet }>
-        <span>owner</span>
-        <a href={ `${ SINGULAR_WALLET_BASE_URL }${ ksmAddress }`}>{ trimAddress( ksmAddress, 4 ) }</a>
       </div>
       <div className={ styles.score }>
         <span>score</span>
         { Number(score).toFixed(2) }
       </div>
-      <a className={ styles.link } href={ `${ SINGULAR_SHELF_BASE_URL}${id}` }>view shelf</a>
+      <div className={ styles.wallet }>
+        <span>owner</span>
+        <a href={ `${ SINGULAR_WALLET_BASE_URL }${ ksmAddress }`}>{ trimAddress( ksmAddress, 4 ) }</a>
+      </div>
     </li>
   )
 }
@@ -61,15 +61,17 @@ export default function Leaderboard( props ) {
   const connectedAccount = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex] )
   const userAddress = connectedAccount?.ksmAddress
   
-  const isInTop50 = leaderboard?.scores?.findIndex( el => el.wallet === userAddress )
-  console.log( 'isintop50', isInTop50 );
+  const userRank = leaderboard?.scores?.findIndex( el => el.wallet === userAddress )
 
   return (
     <div className="leaderboard">
       { isLoading && <Loader /> }
       { ! isLoading && <>
-        { isFinite(isInTop50) && 
-          <div className={ styles.userRank }>Your current rank is <span>{ isInTop50 }</span></div>
+        { isFinite(userRank) && userRank !== -1 &&
+          <div className={ styles.userRank }>
+            <div>Your current shelf rank is <span>{ userRank }</span>/{leaderboard.scores.length}</div>
+            <div>to receive more NFTs <Link href="/vote"><Button variant="primary" className="ml-4">Vote on Referendums</Button></Link></div>
+          </div>
         }
           <ol className={ styles.list }>
             { leaderboard.scores.slice(0,50).map( (row, place) => {
@@ -78,6 +80,53 @@ export default function Leaderboard( props ) {
               } else {
                 return <LeaderRow key={ place } place={ place } {...row} />
               }
+            } ) }
+          </ol>
+        </>
+      }
+    </div>
+  )
+}
+
+export function DragonLeaderboard( props ) {
+  const { data: leaderboard, isLoading } = useDragonLeaderboard();
+
+  const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
+  const connectedAccount = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex] )
+  const userAddress = connectedAccount?.ksmAddress
+  
+  const userRank = leaderboard?.scores?.findIndex( el => el.wallet === userAddress )
+
+  return (
+    <div className="dragon-leaderboard">
+      <div className={styles.intro}>
+        <p>
+          Temporary adult dragon leaderboard. All shelves with adolescent dragons equipped are eligible.
+        </p>
+        <p>
+          <b>Only top 25 shelves</b> with the highest scores at snapshot time will have their dragons evolve to the adult stage.
+        </p>
+      </div>
+      { isLoading && <Loader /> }
+      { ! isLoading && <>
+        { isFinite(userRank) && userRank !== -1 &&
+          <div className={ styles.dragonRank }>
+            <div>Your current adult dragon rank is <span>{ userRank }</span>/{leaderboard.scores.length}</div>
+          </div>
+        }
+          <ol className={ styles.list }>
+            { leaderboard.scores.map( (row, place) => {
+              let theClass = `${ styles.listItem }`
+              if ( place < 25 ) {
+                theClass = `${styles.listItem} ${styles.dragonListItem}`
+              }
+              return <LeaderRow
+                key={ place }
+                thumbnail={ false }
+                place={ place }
+                className={ theClass }
+                {...row}
+              />
             } ) }
           </ol>
         </>

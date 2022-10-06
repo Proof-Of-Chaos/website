@@ -1,35 +1,70 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import Leaderboard from '../components/nft/leaderboard'
+import Leaderboard, { DragonLeaderboard } from '../components/nft/leaderboard'
 import Layout from '../layouts/layout'
-
+import { Tab } from "@headlessui/react";
+import { useState } from 'react';
+import classNames from 'classnames';
 
 
 function PageLeaderboard() {
+  let [ leaderboardTabs ] = useState({
+    Shelves: <Leaderboard />,
+    'Adult Dragons': <DragonLeaderboard />
+   })
+
   return (
     <>
       <Head>
         <title>Leaderboard - Proof of Chaos — Free NFTs for Voting on Kusama</title>
       </Head>
-      <section className="w-full px-8 py-8 pt-16 xl:px-0">
-        <div className="flex flex-col max-w-6xl mx-auto md:flex-row">
-          <div className="w-full pr-5 md:w-3/12 xl:pr-12">
-            <h3 className="text-3xl font-bold leading-7">Leaderboard</h3>
-          </div>
-
-          <div className="w-full mt-5 md:mt-0 md:w-4/5 md:pl-2">
-            <p className="text-base font-normal text-gray-700">
-              Here you can see the top shelves alongside their wallets. If you are connected you can also see your rank.
-            </p>
-            <p className="text-base font-normal text-gray-700">
-              There will certainly be some utility for the top ranked shelves soon 👀
-            </p>
+      <section className="bg-gradient-to-r from-blue-500/80 to-purple-500/80">
+        <div className="mx-auto max-w-6xl px-2 sm:px-4 lg:px-8 xl:px-0">
+          <div
+            className="relative py-12 overflow-hidden rounded-lg g:flex lg:items-center lg:justify-between"
+            data-rounded="rounded-lg" data-rounded-max="rounded-full">
+            <div className="relative p-6 rounded-lg md:p-0 md:pb-4">
+              <h2 className="text-3xl font-extrabold leading-9 tracking-tight text-white sm:text-4xl sm:leading-10">
+                Leaderboards
+              </h2>
+              <p className="w-full max-w-lg mt-5 text-base leading-8 text-white md:w-3/4" data-primary="pink-600">
+                Here you can see the top users for shelves and adult dragons. If you are connected you can also see your rank. There will certainly be some utility for the top ranked wallets soon 👀
+              </p>
+            </div>
           </div>
         </div>
       </section>
-      <section className="w-full px-8 py-8 xl:px-0">
-        <div className="max-w-6xl mx-auto">
-          <Leaderboard />
+      <section className="w-full py-2 md:py-8">
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8 xl:px-0">
+          <Tab.Group>
+            <Tab.List className="flex mb-4 pb-4 border-brand-600">
+              { Object.keys( leaderboardTabs ).map( ( tab, idx ) => (
+                <Tab
+                  key={tab}
+                  className={({ selected }) =>
+                    classNames(
+                      'vote-tab relative w-full py-4 leading-5 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 outline-none uppercase text-base tracking-widest',
+                      selected
+                        ? 'active bg-white border-gray-200 border-b-gray-300'
+                        : 'text-black border-gray-400 hover:bg-white/[0.12] hover:text-gray-600 border-t-0 border-l-0 border-r-0 border-b-0 hover:bg-gray-100',
+                      idx === 0 ? 'mr-2' : 'ml-2',
+                    )
+                  }
+                >
+                  {tab}
+                </Tab>
+              ))}
+            </Tab.List>
+            <Tab.Panels>
+              {Object.values( leaderboardTabs ).map((tab, idx) => (
+                <Tab.Panel
+                  key={idx}
+                >
+                  { tab }
+                </Tab.Panel>
+              ))}
+            </Tab.Panels>
+          </Tab.Group>
         </div>
       </section>
     </>
