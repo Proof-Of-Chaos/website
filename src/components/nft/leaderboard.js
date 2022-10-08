@@ -116,7 +116,7 @@ export function DragonLeaderboard( props ) {
   const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
   const connectedAccount = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex] )
   const userAddress = connectedAccount?.ksmAddress
-  
+
   const userRank = leaderboard?.scores?.findIndex( el => el.wallet === userAddress )
 
   const { data: lastUpdate, isLoading: isLastBlockLoading } =

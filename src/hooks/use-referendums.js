@@ -3,14 +3,15 @@ import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
 import {websiteConfig} from "../data/website-config";
 import { useQuery } from "@tanstack/react-query";
 import useAppStore from "../zustand";
-import { microToKSM, microToKSMFormatted, getEndDateByBlock } from "../utils";
-import { getApi } from '../data/chain';
-import { getQuizDataForRef } from './use-quizzes';
+import { microToKSM, microToKSMFormatted } from "../utils";
+import { QUERY_PAST_REFERENDUMS } from "./queries";
 
 const BLOCK_DURATION = 6000;
 const THRESHOLD_SUPERMAJORITYAPPROVE = 'SuperMajorityApprove'
 const THRESHOLD_SUPERMAJORITYAGAINST = 'SuperMajorityAgainst'
 const THRESHOLD_SIMPLEMAJORITY = 'SimpleMajority'
+
+const ENDPOINT_POC_INDEXER = 'https://squid.subsquid.io/referenda-dashboard/v/0/graphql'
 
 const convictionMultiplierMapping = {
   'None': 0.1,
@@ -22,25 +23,56 @@ const convictionMultiplierMapping = {
   'Locked6x': 6,
 }
 
-export const pastReferendumFetcher = async (ksmAddress) => {
-  const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
-  const api = await ApiPromise.create({ provider: wsProvider });
+export const pastReferendumFetcher = async () => {
+  return new Promise( async ( resolve ) => {
+    const client = new ApolloClient({
+      uri: ENDPOINT_POC_INDEXER,
+      cache: new InMemoryCache(),
+    })
 
-  const { hash, number } = await api.rpc.chain.getHeader();
-  const timestamp = await api.query.timestamp.now.at(hash);
-  const totalIssuance = await api.query.balances.totalIssuance().toString()
-  const pastReferendums = [226,227,228]
+    let result = await client.query({
+      operationName: "PastReferendums",
+      //the query is limited to 20 results
+      query: QUERY_PAST_REFERENDUMS,
+    })
 
-  let referendums = [];
-  for (const referendum of pastReferendums) {
+    const pastReferendums20 = result.data.referendums.map( ref => ref.index )
+    let pastReferendaStats20 = result.data.referendaStats.filter( ref => pastReferendums20.includes( ref.index ) )
+    const pastReferendaPAData20 = await getPADataForRefs( pastReferendums20 )
 
-    // const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
-    const PAData = await getPADataForRef(referendum);
-    // const threshold = getPassingThreshold(referendum, totalIssuance)
-    referendums.push(PAData);
-  }
+    pastReferendaStats20 = pastReferendaStats20.map( (ref, idx) => {
+      return {
+        ...ref,
+        title: pastReferendaPAData20[idx].title,
+        description: pastReferendaPAData20[idx].content,
+        paIdx: pastReferendaPAData20[idx].onchain_link.onchain_referendum_id
+        // title: pastReferendaPAData20.find( el => el.onchain_link.onchain_referendum_id === ref.index).title,
+        // description: pastReferendaPAData20.find( el => el.onchain_link.onchain_referendum_id === ref.index).content,
+        // paIdx: pastReferendaPAData20.find( el => el.onchain_link.onchain_referendum_id === ref.index).onchain_link.onchain_referendum_id
+      }
+    })
 
-  return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
+    const sortedReferendaStats = pastReferendaStats20.sort((a,b)=>parseInt(b.index)-parseInt(a.index))
+    resolve( sortedReferendaStats )
+  })
+  // const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
+  // const api = await ApiPromise.create({ provider: wsProvider });
+
+  // const { hash, number } = await api.rpc.chain.getHeader();
+  // const timestamp = await api.query.timestamp.now.at(hash);
+  // const totalIssuance = await api.query.balances.totalIssuance().toString()
+  // const pastReferendums = [226,227,228]
+
+  // let referendums = [];
+  // for (const referendum of pastReferendums) {
+
+  //   // const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
+  //   const PAData = await getPADataForRefs(referendum);
+  //   // const threshold = getPassingThreshold(referendum, totalIssuance)
+  //   referendums.push(PAData);
+  // }
+
+  // return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
 };
 
 export const activeReferendumFetcher = async (ksmAddress) => {
@@ -71,10 +103,10 @@ export const activeReferendumFetcher = async (ksmAddress) => {
     //console.log("!",referendum.imageHash.toString())
 
     const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
-    const PAData = await getPADataForRef(referendum.index.toString());
-    const quizData = await getQuizDataForRef(referendum.index.toString());
+    const PAData = await getPADataForRefs([referendum.index.toString()]);
+    const PADatum = PAData?.[0]
     const threshold = getPassingThreshold(referendum, totalIssuance)
-    referendums.push(referendumObject(referendum, threshold, endDate, PAData, quizData.quizzes, ksmAddress));
+    referendums.push(referendumObject(referendum, threshold, endDate, PADatum, ksmAddress));
   }
 
   return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
@@ -91,7 +123,12 @@ const getPassingThreshold = (referendum, totalIssuance) => {
   }
 }
 
-async function getPADataForRef(referendumID) {
+const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {
+  let newStamp = parseInt(currentTimestamp.toString()) + ((parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) * BLOCK_DURATION)
+  return new Date(newStamp);
+}
+
+async function getPADataForRefs(referendumIDs) {
   return new Promise( async ( resolve ) => {
     const client = new ApolloClient({
       uri: websiteConfig.polkassembly_graphql_endpoint,
@@ -100,9 +137,15 @@ async function getPADataForRef(referendumID) {
 
     let result = await client.query({
       operationName: "ReferendumPostAndComments",
-      query: agql` 
-        query ReferendumPostAndComments($id: Int!) {
-          posts(where: {onchain_link: {onchain_referendum_id: {_eq: $id}}}) {
+      query: agql`
+        query ReferendumPostAndComments($ids: [Int!]) {
+          posts(
+            where: {
+              onchain_link: {
+                onchain_referendum_id: {_in: $ids}
+              }
+            },
+          ) {
             ...referendumPost
           }
         }
@@ -111,14 +154,17 @@ async function getPADataForRef(referendumID) {
           content
           created_at
           title
+          onchain_link {
+            onchain_referendum_id
+          }
         }
     `,
       variables: {
-        "id": referendumID
+        "ids": [...referendumIDs]
       }
     })
 
-    resolve(result?.data?.posts[0])
+    resolve(result?.data?.posts)
   })
 }
 

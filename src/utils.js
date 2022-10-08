@@ -20,7 +20,11 @@ const microToKSM = (microKSM) => {
 }
 
 const microToKSMFormatted = (microKSM) => {
-  return parseFloat((microToKSM(microKSM) / 1000).toFixed(2)) + 'K KSM';
+  return KSMFormatted( microKSM( microKSM ) )
+}
+
+const KSMFormatted = ( KSM ) => {
+  return `${ parseFloat( KSM / 1000 ).toFixed(2) } K KSM`
 }
 
 const trimAddress = ( address, length = 3 ) => {
@@ -30,6 +34,7 @@ const trimAddress = ( address, length = 3 ) => {
 export {
   getRandomInt,
   getRandomIntBetween,
+  KSMFormatted,
   microToKSM,
   microToKSMFormatted,
   trimAddress,
