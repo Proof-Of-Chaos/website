@@ -58,14 +58,14 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
           >
             { connectedAccount ?
               <>
-                <div className="identicon-wrap">
+                <div className="identicon-wrap hidden sm:block">
                   <Identicon
                     size={32}
                     id={connectedAccount.address}
                     schema="polkadot"
                   />
                 </div>
-                <span className="pl-3">{ connectedAccount.name }</span>
+                <span className="pl-0 sm:pl-3">{ connectedAccount.name }</span>
               </>
               :
               <>
