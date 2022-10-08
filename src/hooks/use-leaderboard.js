@@ -1,4 +1,7 @@
+import { ApiPromise, WsProvider } from "@polkadot/api";
 import { useQuery } from "@tanstack/react-query";
+import { getApi } from "../data/chain";
+import { getEndDateByBlock } from "../utils";
 
 const ENDPOINT_RMRK_NFT_UPDATED_PREFIX = 'https://singular.app/api/rmrk2/nft-updated/'
 const ENDPOINT_RMRK_PRERENDER = 'https://prerender.rmrk.link'
@@ -41,11 +44,29 @@ const dragonLeaderboardFetcher = async () => {
   const data = await fetch( ENDPOINT_DRAGON_LEADERBOARD )
   const ranking = await data.json()
   return ranking
-};
+}
 
 export const useDragonLeaderboard = () => {
   return useQuery( ['draongLeaderboard'], dragonLeaderboardFetcher )
-};
+}
+
+export const useLastLeaderboardUpdate = ( ) => {
+  const { data: leaderboard } = useLeaderboard()
+  const leaderboardBlock = leaderboard?.block
+
+  return useQuery( [ 'leaderboard', leaderboardBlock ], async () => {
+    console.log( 'got block from leaderboard', leaderboardBlock )
+    const api = await getApi()
+    console.log( 'api', api )
+    const { number: currentBlockNumber } = await api.rpc.chain.getHeader()
+    console.log( 'currentBlock', currentBlockNumber.toNumber() )
+
+    const lastUpdate = await getEndDateByBlock( leaderboardBlock, currentBlockNumber, Date.now() )
+    return lastUpdate
+  }, {
+    enabled: !!leaderboardBlock
+  })
+}
 
 
 

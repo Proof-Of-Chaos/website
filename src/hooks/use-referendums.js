@@ -3,7 +3,7 @@ import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
 import {websiteConfig} from "../data/website-config";
 import { useQuery } from "@tanstack/react-query";
 import useAppStore from "../zustand";
-import { microToKSM, microToKSMFormatted } from "../utils";
+import { getEndDateByBlock, microToKSM, microToKSMFormatted } from "../utils";
 
 const BLOCK_DURATION = 6000;
 const THRESHOLD_SUPERMAJORITYAPPROVE = 'SuperMajorityApprove'
@@ -65,11 +65,6 @@ const getPassingThreshold = (referendum, totalIssuance) => {
     default:
       return parseInt(referendum.votedTotal.toString()) / 2
   }
-}
-
-const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {
-  let newStamp = parseInt(currentTimestamp.toString()) + ((parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) * BLOCK_DURATION)
-  return new Date(newStamp);
 }
 
 async function getPADataForRef(referendumID) {
