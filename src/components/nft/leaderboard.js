@@ -1,11 +1,15 @@
 import { encodeAddress } from '@polkadot/keyring'
+import { isNumber } from 'lodash';
 import Image from "next/image";
 import Link from 'next/link';
-import { useDragonLeaderboard, useLeaderboard, useShelfThumbnail } from "../../hooks/use-leaderboard";
+import { useDragonLeaderboard, useLastLeaderboardUpdate, useLeaderboard, useShelfThumbnail } from "../../hooks/use-leaderboard";
 import { trimAddress } from "../../utils";
 import useAppStore from '../../zustand';
 import Button from '../ui/button';
 import Loader, { InlineLoader } from "../ui/loader";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./styles/leaderboard.module.scss"
 
@@ -60,21 +64,32 @@ export default function Leaderboard( props ) {
   const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
   const connectedAccount = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex] )
   const userAddress = connectedAccount?.ksmAddress
-  
+
   const userRank = leaderboard?.scores?.findIndex( el => el.wallet === userAddress )
+  const { data: lastUpdate, isLoading: isLastBlockLoading } =
+    useLastLeaderboardUpdate()
 
   return (
     <div className="leaderboard">
+
       { isLoading && <Loader /> }
       { ! isLoading && <>
         { isFinite(userRank) && userRank !== -1 &&
           <div className={ styles.userRank }>
-            <div>Your current shelf rank is <span>{ userRank }</span>/{leaderboard.scores.length}</div>
+            <div>Your current shelf rank is <span>{ userRank }</span>/{leaderboard?.scores.length}</div>
             <div>to receive more NFTs <Link href="/vote"><Button variant="primary" className="ml-4">Vote on Referendums</Button></Link></div>
           </div>
         }
+        { lastUpdate && <>
+
+            <div className="leaderboard-update text-right text-sm italic">
+              <FontAwesomeIcon icon={ faClock } className="pr-1" />
+              Last Update: { lastUpdate.toUTCString() }
+            </div>
+          </>
+        }
           <ol className={ styles.list }>
-            { leaderboard.scores.slice(0,50).map( (row, place) => {
+            { leaderboard?.scores.slice(0,50).map( (row, place) => {
               if (place < 10 ) {
                 return <LeaderRowWithThumbnail key={ place } place={ place } {...row} />
               } else {
@@ -97,6 +112,9 @@ export function DragonLeaderboard( props ) {
   
   const userRank = leaderboard?.scores?.findIndex( el => el.wallet === userAddress )
 
+  const { data: lastUpdate, isLoading: isLastBlockLoading } =
+    useLastLeaderboardUpdate()
+
   return (
     <div className="dragon-leaderboard">
       <div className={styles.intro}>
@@ -111,11 +129,18 @@ export function DragonLeaderboard( props ) {
       { ! isLoading && <>
         { isFinite(userRank) && userRank !== -1 &&
           <div className={ styles.dragonRank }>
-            <div>Your current adult dragon rank is <span>{ userRank }</span>/{leaderboard.scores.length}</div>
+            <div>Your current adult dragon rank is <span>{ userRank }</span>/{leaderboard?.scores.length}</div>
           </div>
         }
+        { lastUpdate && <>
+          <div className="leaderboard-update text-right text-sm italic">
+            <FontAwesomeIcon icon={ faClock } className="pr-1" />
+            Last Update: { lastUpdate.toUTCString() }
+          </div>
+          </>
+        }
           <ol className={ styles.list }>
-            { leaderboard.scores.map( (row, place) => {
+            { leaderboard?.scores.map( (row, place) => {
               let theClass = `${ styles.listItem }`
               if ( place < 25 ) {
                 theClass = `${styles.listItem} ${styles.dragonListItem}`

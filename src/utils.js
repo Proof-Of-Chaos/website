@@ -1,3 +1,10 @@
+const BLOCK_DURATION = 6000;
+
+const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {
+  let newStamp = parseInt(currentTimestamp.toString()) + ((parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) * BLOCK_DURATION)
+  return new Date(newStamp);
+}
+
 function getRandomInt( max ) {
   return Math.floor( Math.random() * max )
 }
@@ -26,4 +33,5 @@ export {
   microToKSM,
   microToKSMFormatted,
   trimAddress,
+  getEndDateByBlock,
 }
