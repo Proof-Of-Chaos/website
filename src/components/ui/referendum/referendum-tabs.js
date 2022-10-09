@@ -11,23 +11,21 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export function ReferendumList( { referendumStatus, referendums, isLoading, error } ) {
+export function PastReferendumList( ) { 
+  const { data: referendums, isLoading, error } = usePastReferendums()
+  console.log( 'list got refs', referendums, isLoading )
 
   const isMounted = useIsMounted();
 
-  const showLoader = isLoading
-
   return (
     isMounted && <>
-      { showLoader && <Loader /> }
-      { error && <code>{ error }</code> }
-      { ! showLoader && referendums?.length > 0 ?
+    { isLoading && <Loader /> }
+    { ! isLoading && referendums?.length > 0 ?
         referendums?.map( (referendum, idx) => (
           <div
             key={`${referendum.title}-key-${referendum.id}`}
           >
-            { referendumStatus === 'active' && <ReferendumDetail referendum={ referendum } listIndex={ idx } referendumStatus={ referendumStatus } /> }
-            { referendumStatus === 'past' && <ReferendumPastDetail referendum={ referendum } listIndex={ idx } referendumStatus={ referendumStatus } /> }
+            <ReferendumPastDetail referendum={ referendum } listIndex={ idx } />
           </div>
         )) :
         <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
@@ -38,11 +36,21 @@ export function ReferendumList( { referendumStatus, referendums, isLoading, erro
   )
 }
 
-export default function ReferendumTabs( props ) {
+export function ReferendumList() {
   const { data: referendums, isLoading, error } = useReferendums()
-  const { data: pastReferendums, isPastLoading, pastError } = usePastReferendums()
 
-  let [categories] = useState({
+  return (
+    <>
+      hello: { JSON.stringify( referendums ) }
+    </>
+  )
+}
+
+export default function ReferendumTabs( props ) {
+  {/* const { data: referendums, isLoading, error } = useReferendums() */}
+  {/* console.log( 'tabs active', referendums ) */}
+
+  {/* let categories = {
     Active: <ReferendumList
       referendums={ referendums }
       referendumStatus='active'
@@ -55,9 +63,9 @@ export default function ReferendumTabs( props ) {
       isLoading={ isPastLoading }
       error={ pastError }
     />,
-  })
+  } */}
 
-  {/* return <ReferendumList voteStatus={'active'} /> */}
+  return <ReferendumList />
 
   return (
     <div className="w-full px-4 py-8">
