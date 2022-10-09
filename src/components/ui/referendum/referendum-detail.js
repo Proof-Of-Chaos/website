@@ -21,7 +21,7 @@ export default function ReferendumDetail({ referendum }) {
 
   const { data: userVote } = useAccountVote( referendum.id )
 
-  const hasUserSubmittedQuiz = referendum?.submissions.some(e => e.wallet === connectedAccount?.ksmAddress)
+  const hasUserSubmittedQuiz = referendum?.submissions ? referendum?.submissions.some(e => e.wallet === connectedAccount?.ksmAddress) : false
 
   const referendumBadges = () => {
     const ret = '';
