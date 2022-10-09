@@ -7,7 +7,7 @@ import useAppStore from "../../zustand";
 import { submitQuizAnswers } from "../../data/quiz-service";
 import { getWalletBySource } from "@talisman-connect/wallets";
 
-export default function ReferendumQuizModal( { id, title, questions } ) {
+export default function ReferendumQuizModal( { id, title, quiz } ) {
   const { openModal } = useModal();
   const { closeModal } = useModal();
 
@@ -18,7 +18,7 @@ export default function ReferendumQuizModal( { id, title, questions } ) {
   const walletAddress = connectedAccount?.address
   const userAnswers = useAppStore( ( ( state ) => state.user.quizAnswers[id] ) )
 
-  const isFormFilled = userAnswers?.answers && Object.keys(userAnswers.answers).length === questions.length
+  const isFormFilled = userAnswers?.answers && Object.keys(userAnswers.answers).length === quiz?.questions.length
 
   async function onSend() {
     if ( ! isFormFilled ) {
@@ -33,6 +33,7 @@ export default function ReferendumQuizModal( { id, title, questions } ) {
         id,
         walletAddress,
         userAnswers,
+        quiz.version
       ),
       {
         pending: `sending your quiz answers for referendum ${ id }`,
@@ -71,17 +72,17 @@ export default function ReferendumQuizModal( { id, title, questions } ) {
       <div className="mt-1 text-sm">
         { title }
       </div>
-      { ! questions ?
+      { ! quiz?.questions ?
         <div className="min-h-[200px] flex justify-center items-center">Loading...</div>
       :
         <>
           <form className="mt-4 pr-4 overflow-y-scroll flex-1">
-            { questions.map( ( { question, answers, multiple }, i) => {
-              multiple = multiple === "true" || multiple === true
-              const selectOptions = answers.map( (a,j) => {
+            { quiz?.questions.map( ( { text, answerOptions }, i) => {
+              // multiple = multiple === "true" || multiple === true
+              const selectOptions = answerOptions.map( (a,j) => {
                 return {
                   value: j,
-                  label: a,
+                  label: a.text,
                   // bind the checked value of the inputs to state values
                   checked: userAnswers?.answers?.[i] && userAnswers?.answers?.[i][j],
                 }
@@ -92,13 +93,13 @@ export default function ReferendumQuizModal( { id, title, questions } ) {
                   key={ `quiz-${i}`}
                   className="px-4 pt-2 pb-3 font-semibold border-2 border-gray-400 hover:border-gray-500 hover:shadow-lg transition rounded-md my-6"
                 >
-                  <legend className="px-3">{ question }</legend>
+                  <legend className="px-3">{ text }</legend>
                   <Input
-                    type={ multiple ? 'checkbox' : 'radio' }
+                    type={ 'radio' }
                     id={`r${id}q${i}`}
                     name={ `ref${id}question${i}` }
                     options={ selectOptions }
-                    onChange={ (e) => onChangeInputs( e, i, multiple ) }
+                    onChange={ (e) => onChangeInputs( e, i ) }
                   />
                 </fieldset>
               )

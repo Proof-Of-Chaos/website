@@ -1,11 +1,48 @@
-import { useQuery } from "@tanstack/react-query";
+import {websiteConfig} from "../data/website-config";
+import { request, gql } from "graphql-request";
 
-const quizzesFetcher = async () => {
-  const data = await fetch('https://gateway.ipfs.io/ipns/k2k4r8l0pjhpwtaaia4zch6tr1d2lvplkd0wn46xkob6mw93qniyh8c5')
-  const config = await data.json()
-  return config?.quizzes ?? {}
-};
-
-export const useQuizzes = () => {
-  return useQuery( ['quizzes'], quizzesFetcher )
-};
+export async function getQuizDataForRef(referendumIndex) {
+  return request(
+    websiteConfig.proofofchaos_graphql_endpoint,
+    gql`query MyQuery {
+      quizzes(where: {referendumIndex_eq: ${referendumIndex}}) {
+        blockNumber
+        creator
+        id
+        referendumIndex
+        timestamp
+        version
+        questions {
+          id
+          quizId
+          text
+          indexCorrectAnswerHistory {
+            blockNumber
+            correctIndex
+            id
+            questionId
+            submitter
+            timestamp
+            version
+          }
+          answerOptions {
+            id
+            questionId
+            text
+          }
+        }
+        submissions {
+          answers
+          blockNumber
+          id
+          quizId
+          referendumIndex
+          timestamp
+          version
+          wallet
+        }
+      }
+    }    
+    `
+  )
+}
