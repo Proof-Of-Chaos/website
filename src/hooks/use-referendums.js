@@ -191,7 +191,6 @@ const parseCastVote = (vote) => {
 }
 
 const referendumObject = (referendum, threshold, endDate, PAData, ksmAddress) => {
-  try {
   let title = PAData?.title
 
   if (!title && referendum.image) {
@@ -239,9 +238,6 @@ const referendumObject = (referendum, threshold, endDate, PAData, ksmAddress) =>
     description: PAData?.content ?? "-",
     isPassing: referendum.isPassing,
     threshold: threshold,
-  }
-  } catch( e ) {
-    console.log( 'aaarhg', e )
   }
 }
 
