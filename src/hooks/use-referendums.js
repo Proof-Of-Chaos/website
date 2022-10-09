@@ -4,6 +4,8 @@ import {websiteConfig} from "../data/website-config";
 import { useQuery } from "@tanstack/react-query";
 import useAppStore from "../zustand";
 import { microToKSM, microToKSMFormatted } from "../utils";
+import { getApi } from '../data/chain';
+import { getQuizDataForRef } from './use-quizzes';
 
 const BLOCK_DURATION = 6000;
 const THRESHOLD_SUPERMAJORITYAPPROVE = 'SuperMajorityApprove'
@@ -21,14 +23,13 @@ const convictionMultiplierMapping = {
 }
 
 export const referendumFetcher = async (ksmAddress) => {
-  const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
-  const api = await ApiPromise.create({ provider: wsProvider });
+  const api = await getApi();
 
   const { hash, number } = await api.rpc.chain.getHeader();
+
   const timestamp = await api.query.timestamp.now.at(hash);
   const totalIssuance = await api.query.balances.totalIssuance().toString()
   const activeReferendums = await api.derive.democracy.referendums()
-
   let referendums = [];
   for (const referendum of activeReferendums) {
     /* DOODLE LOOKING AT TRESHOLD / finding proposals (probably requires Subsquid API)
@@ -49,8 +50,9 @@ export const referendumFetcher = async (ksmAddress) => {
 
     const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
     const PAData = await getPADataForRef(referendum.index.toString());
+    const quizData = await getQuizDataForRef(referendum.index.toString());
     const threshold = getPassingThreshold(referendum, totalIssuance)
-    referendums.push(referendumObject(referendum, threshold, endDate, PAData, ksmAddress));
+    referendums.push(referendumObject(referendum, threshold, endDate, PAData, quizData.quizzes, ksmAddress));
   }
 
   return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
@@ -119,13 +121,19 @@ const parseCastVote = (vote) => {
   }
 }
 
-const referendumObject = (referendum, threshold, endDate, PAData, ksmAddress) => {
+const referendumObject = (referendum, threshold, endDate, PAData, quizData, ksmAddress) => {
   let title = PAData?.title
 
   if (!title && referendum.image) {
     title = referendum.image.proposal.section.toString() + '.' + referendum.image.proposal.method.toString()
   }
-
+  //getlatestversion
+  let latestQuiz = quizData.sort((a,b)=>parseInt(b.version)-parseInt(a.version))[0]
+  let allSubmissions = []
+  //write submissions from all versions together in one array
+  quizData.forEach(quizVersion => {
+    allSubmissions.push(...quizVersion.submissions)
+  });
   /* DOODLE LOOKING AT CONVICTION
   let ayeTotal = 0;
   let nayTotal = 0;
@@ -163,10 +171,11 @@ const referendumObject = (referendum, threshold, endDate, PAData, ksmAddress) =>
     },
     status: 'active',
     votes: referendum.votes,
-    questions: {},
     description: PAData?.content ?? "-",
     isPassing: referendum.isPassing,
     threshold: threshold,
+    quiz: latestQuiz,
+    submissions: allSubmissions
   }
 }
 

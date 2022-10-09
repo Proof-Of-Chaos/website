@@ -21,12 +21,7 @@ export default function ReferendumDetail({ referendum }) {
 
   const { data: userVote } = useAccountVote( referendum.id )
 
-  const { data: quizzes, isLoading, error } = useQuizzes();
-
-  const questions = quizzes?.[referendum.id];
-  const hasUserSubmittedQuiz = useAppStore((state) => state.user?.quizAnswers?.[ referendum.id ]?.submitted )
-
-  referendum.questions = quizzes?.[referendum.id];
+  const hasUserSubmittedQuiz = referendum?.submissions.some(e => e.wallet === connectedAccount?.ksmAddress)
 
   const referendumBadges = () => {
     const ret = '';
@@ -111,7 +106,7 @@ export default function ReferendumDetail({ referendum }) {
             <ReferendumCountdown date={referendum.executed_at} />
               { connectedAccount ?
                 <>
-                  { !isLoading && ! error && questions &&
+                  { referendum.quiz?.questions &&
                     <Button
                       onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
                       className="mt-4 w-full"
@@ -123,14 +118,14 @@ export default function ReferendumDetail({ referendum }) {
                   <Button
                     onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
                     className="mt-4 w-full"
-                    variant={ ((!isLoading && !error && questions) || userVote ) ? 'calm' : 'primary' }
+                    variant={ ((referendum.quiz?.questions) || userVote ) ? 'calm' : 'primary' }
                   >
                     { userVote ? 'Vote Again' : 'Vote Now' }
                   </Button>
                 </>
               :
               <>
-              { !isLoading && ! error && questions && <WalletConnect
+              {referendum.quiz?.questions && <WalletConnect
                   className="w-full mt-4"
                   variant="primary"
                   title="Take Quiz + Vote"
