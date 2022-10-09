@@ -2,7 +2,7 @@
 
 ![Proof of Chaos Website Screenshot](public/proof-of-chaos.png?raw=true "Proof of Chaos")
 
-The repo of the website [https://proofofchaos.com](https://proofofchaos.com)
+The repo of the website [https://proofofchaos.app](https://proofofchaos.app)
 
 Find us on [discord](https://discord.gg/ugE6Brwj22) | [twitter](https://twitter.com/GovPartRewKSM) | [singular](https://singular.app/collections/3208723ec6f65df810-ITEM?page=1&sortBy=priceDescending)
 ## Contributing
