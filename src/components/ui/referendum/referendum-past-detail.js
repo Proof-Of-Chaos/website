@@ -33,7 +33,6 @@ export default function ReferendumPastDetail({ referendum }) {
     title,
     index,
     description,
-    paIdx
   } = referendum
 
   return (
@@ -55,7 +54,7 @@ export default function ReferendumPastDetail({ referendum }) {
             {title}
           </h3>
           <p className="text-xl mt-1 text-gray-600 dark:text-gray-400 border-b border-gray-200 pb-4 mb-4 mr-8 border-dashed">
-            Referendum #{index} #{paIdx}
+            Referendum #{index}
           </p>
           <>
             { ! isExpanded ? (
