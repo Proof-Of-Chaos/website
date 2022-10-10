@@ -118,7 +118,7 @@ export default function ReferendumDetail({ referendum }) {
                   <Button
                     onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
                     className="mt-4 w-full"
-                    variant={ ((referendum.quiz?.questions) || userVote ) ? 'calm' : 'primary' }
+                    variant={ userVote ? 'calm' : 'primary' }
                   >
                     { userVote ? 'Vote Again' : 'Vote Now' }
                   </Button>

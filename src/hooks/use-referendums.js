@@ -46,8 +46,6 @@ export const pastReferendumFetcher = async () => {
     const pastReferendums20 = result.data.referendums.map( ref => ref.index )
     let pastReferendaStats20 = result.data.referendaStats.filter( ref => pastReferendums20.includes( ref.index ) )
     const pastReferendaPAData20 = await getPADataForRefs( pastReferendums20 )
-
-    console.log( 'padata', pastReferendaPAData20 )
     
     // join the referendums from our indexer with the data from Polkassembly
     pastReferendaStats20 = pastReferendaStats20.map( (ref, idx) => {
@@ -145,8 +143,6 @@ async function getPADataForRefs(referendumIDs) {
       cache: new InMemoryCache(),
     })
 
-    console.log( 'referendum ids queried pa data', referendumIDs )
-
     let result = await client.query({
       operationName: "ReferendumPostAndComments",
       query: agql`
@@ -169,8 +165,6 @@ async function getPADataForRefs(referendumIDs) {
         "ids": [...referendumIDs]
       }
     })
-
-    console.log( 'result of query', result )
 
     resolve(result?.data?.posts)
   })
