@@ -8,13 +8,18 @@ import { useQuizzes } from "../../../hooks/use-quizzes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown, faClock, faCube } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from 'react-markdown'
-import useAppStore from "../../../zustand";
-import WalletConnect from "../../nft/wallet-connect";
-import { useAccountVote, useAccountVotePast } from "../../../hooks/use-referendums";
 import { KSMFormatted, microToKSM, microToKSMFormatted } from "../../../utils";
 import Loader, { InlineLoader } from "../loader";
+import { SingleNFT } from "../../nft/ref-nfts";
+import { useUserNfts } from "../../../hooks/use-nfts";
+import Image from "next/image";
 
-export default function ReferendumPastDetail({ referendum, userVote, isUserVotesLoading }) {
+export default function ReferendumPastDetail( {
+  referendum,
+  userVote,
+  isUserVotesLoading,
+  userNFT,
+} ) {
   let [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModal();
 
@@ -50,11 +55,13 @@ export default function ReferendumPastDetail({ referendum, userVote, isUserVotes
     if ( userVote ) {
       const { decision, balance, lockPeriod } = userVote
       return (
-        <>
+        <div className="flex flex-col justify-center">
         { ! isUserVotesLoading && <>
-          You voted <b>{ decision }</b><br/>with <b>{ microToKSM( balance.value ) } KSM</b><br/>and conviction <b>{ lockPeriod }</b>
+          <span>You voted <b>{ decision }</b></span>
+          <span>with <b>{ microToKSM( balance.value ) } KSM</b></span>
+          <span>and conviction <b>{ lockPeriod }</b></span>
         </>}
-        </>
+        </div>
       )
     }
 
@@ -63,6 +70,23 @@ export default function ReferendumPastDetail({ referendum, userVote, isUserVotes
     }
 
     return <p>{`You did not vote on referendum ${ index }.`}<br/>{ `Vote to receive NFT rewards.` }</p>
+  }
+
+  const UserReward = () => {
+    if ( userNFT ) {
+      const { decision, balance, lockPeriod } = userVote
+      return (
+        <div className="flex flex-col">
+          You received
+          <Image
+            src={`https://ipfs.rmrk.link/ipfs/${ userNFT.resources[0].thumb.replace('ipfs://ipfs/', '') }`}
+            alt={ `GovRewards NFT for Referendum ${ index }` }
+            width={ 100 }
+            height={ 100 }
+          />
+        </div>
+      )
+    }
   }
 
   return (
@@ -154,7 +178,10 @@ export default function ReferendumPastDetail({ referendum, userVote, isUserVotes
             </div>
             <div className="user-vote">
               <h3 className="text-gray-900 mb-2 mt-4 dark:md:text-gray-100 text-xl">Your Vote</h3>
-              <UserVote />
+              <div className="flex justify-evenly">
+                <UserVote />
+                <UserReward />
+              </div>
             </div>
           </div>
       </div>

@@ -7,6 +7,7 @@ import useAppStore from "../../../zustand";
 import { useIsMounted } from '../../../hooks/use-is-mounted'
 import ReferendumPastDetail from "./referendum-past-detail";
 import { useUserVotes } from "../../../hooks/use-votes";
+import { useUserNfts } from "../../../hooks/use-nfts";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -17,6 +18,7 @@ export function PastReferendumList( ) {
   console.log( 'list got refs', referendums, isLoading )
 
   const { data:userVotes, isLoading: isUserVotesLoading } = useUserVotes()
+  const { data: userNfts } = useUserNfts()
 
   console.log( 'userVotes', userVotes, isUserVotesLoading )
   const isMounted = useIsMounted();
@@ -34,6 +36,7 @@ export function PastReferendumList( ) {
               listIndex={ idx }
               userVote={ userVotes ? userVotes.find( vote => vote.referendumIndex === referendum.index ) : null }
               isUserVotesLoading={ isUserVotesLoading }
+              userNFT={ userNfts && userNfts.find( nft => nft.symbol.startsWith( `${referendum.index}` ) ) }
             />
           </div>
         )) :
