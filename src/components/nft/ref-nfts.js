@@ -37,7 +37,7 @@ const isOwned = (ref, userNFTs, symbol, rarity) => {
 
 const NFTScore = ( { score } ) => {
   return(
-    <Tippy content="The leaderboard score you get for this NFT">
+    <Tippy content="The leaderboard score boost you will get when you equip this NFT onto your shelf">
       <span className={ `absolute z-10 -mt-3 px-2 mr-2 right-0 nft-score cursor-default` }>
         <FontAwesomeIcon icon={ faRankingStar } size={"sm"} /> { parseFloat( score ).toFixed(2) }
       </span>
