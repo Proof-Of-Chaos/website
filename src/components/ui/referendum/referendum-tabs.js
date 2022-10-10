@@ -6,15 +6,19 @@ import Loader from '../loader'
 import useAppStore from "../../../zustand";
 import { useIsMounted } from '../../../hooks/use-is-mounted'
 import ReferendumPastDetail from "./referendum-past-detail";
+import { useUserVotes } from "../../../hooks/use-votes";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export function PastReferendumList( ) { 
+export function PastReferendumList( ) {
   const { data: referendums, isLoading, error } = usePastReferendums()
   console.log( 'list got refs', referendums, isLoading )
 
+  const { data:userVotes, isLoading: isUserVotesLoading } = useUserVotes()
+
+  console.log( 'userVotes', userVotes, isUserVotesLoading )
   const isMounted = useIsMounted();
 
   return (
@@ -23,9 +27,14 @@ export function PastReferendumList( ) {
     { ! isLoading && referendums?.length > 0 ?
         referendums?.map( (referendum, idx) => (
           <div
-            key={`${referendum.title}-key-${referendum.id}`}
+            key={`${referendum.title}-key-${referendum.index}`}
           >
-            <ReferendumPastDetail referendum={ referendum } listIndex={ idx } />
+            <ReferendumPastDetail
+              referendum={ referendum }
+              listIndex={ idx }
+              userVote={ userVotes ? userVotes.find( vote => vote.referendumIndex === referendum.index ) : null }
+              isUserVotesLoading={ isUserVotesLoading }
+            />
           </div>
         )) :
         <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
@@ -39,33 +48,47 @@ export function PastReferendumList( ) {
 export function ReferendumList() {
   const { data: referendums, isLoading, error } = useReferendums()
 
+  console.log( 'list got refs', referendums, isLoading )
+
   return (
     <>
-      hello: { JSON.stringify( referendums ) }
+      { isLoading && <Loader /> }
+      { error && <code>{ JSON.stringify( error ) }</code> }
+        { ! isLoading && referendums?.length > 0 ?
+          referendums?.map( (referendum, idx) => (
+            <div
+              key={`${referendum.title}-key-${referendum.id}`}
+            >
+              <ReferendumDetail referendum={ referendum } listIndex={ idx } />
+            </div>
+          )) :
+          <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
+            There are currently no referendums to vote
+          </h2>
+        }
     </>
   )
 }
 
 export default function ReferendumTabs( props ) {
-  {/* const { data: referendums, isLoading, error } = useReferendums() */}
+  const { data: referendums, isLoading, error } = useReferendums()
+  const { data: pastReferendums, isLoading: isPastLoading, error: pastError } = usePastReferendums()
   {/* console.log( 'tabs active', referendums ) */}
 
-  {/* let categories = {
+  let [ categories ] = useState({
     Active: <ReferendumList
       referendums={ referendums }
       referendumStatus='active'
       isLoading={ isLoading }
       error={ error }
     />,
-    Past: <ReferendumList
+    Past: <PastReferendumList
       referendums={ pastReferendums }
       referendumStatus='past'
       isLoading={ isPastLoading }
       error={ pastError }
     />,
-  } */}
-
-  return <ReferendumList />
+  })
 
   return (
     <div className="w-full px-4 py-8">

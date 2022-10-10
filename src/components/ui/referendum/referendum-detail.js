@@ -81,7 +81,7 @@ export default function ReferendumDetail({ referendum }) {
                 <>
                   <div className="order-1">
                     <div
-                      className="dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8"
+                      className="dynamic-html overflow-scroll leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8"
                     >
                       <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                       <div className="referendum-meta pt-2 mt-2">
@@ -149,7 +149,9 @@ export default function ReferendumDetail({ referendum }) {
               />
             </>
           }
-          <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
+          <div className="my-4">
+            <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
+          </div>
           { referendumBadges() }
           </div>
         )}
