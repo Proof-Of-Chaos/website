@@ -1,4 +1,4 @@
-import { faWallet } from "@fortawesome/free-solid-svg-icons";
+import { faRankingStar, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { uniqBy, every } from "lodash";
@@ -33,13 +33,29 @@ const isOwned = (ref, userNFTs, symbol, rarity) => {
   }
 }
 
-export function SingleNFT( { nft: { ref, rarity, thumb, title, artist, amount, symbol } } ) {
+const NFTScore = ( { score } ) => {
+  return(
+    <span className={ `absolute z-10 -mt-3 px-2 mr-2 right-0 nft-score` }>
+      <FontAwesomeIcon icon={ faRankingStar } size={"sm"} /> { parseFloat( score ).toFixed(2) }
+    </span>
+  )
+}
+
+export function SingleNFT( {
+  nft: { ref, rarity, thumb, title, artist, amount, symbol },
+  score
+} ) {
   const { data: userNFTs } = useUserNfts()
 
   return (
     <div className="single-nft relative p-4 transform transition duration-200 hover:scale-105 flex justify-center flex-col items-center">
       <div>
-        { isOwned(ref, userNFTs, symbol, rarity) && <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }><FontAwesomeIcon icon={ faWallet } size={"sm"} /> owned</span>}
+        { isOwned(ref, userNFTs, symbol, rarity) && 
+          <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }>
+            <FontAwesomeIcon icon={ faWallet } size={"sm"} /> owned
+          </span>
+        }
+        { score && <NFTScore score={ score } /> }
         <span className={ `absolute z-10 -ml-4 -mt-3 px-2 nft-${rarity}` }>{ rarity }</span>
         { thumb && thumb !== '' ?
           <Image
@@ -58,8 +74,8 @@ export function SingleNFT( { nft: { ref, rarity, thumb, title, artist, amount, s
   )
 }
 
-export default function NFTDetail( { nfts } ) {
-  //we receive not always 3 nfts, sometimes there are more or less
+export default function NFTDetail( { nfts, scores } ) {
+  //we do not receive always 3 nfts, sometimes there are more or less
   const distinctUserNFTs = uniqBy( nfts, 'rarity' )
 
   const totalAmount =
@@ -95,6 +111,7 @@ export default function NFTDetail( { nfts } ) {
                 <SingleNFT
                   id={ nftByRarity.ref }
                   nft={ nftByRarity }
+                  score={ scores?.[rarity] }
                 />
               </div>
             )
