@@ -8,7 +8,7 @@ export default function Logo(props) {
       { ...props }
     >
     <>
-      <a href="#_" className="text-lg sm:text-xl md:text-2xl upfont-black uppercase leading-none text-gray-900 select-none logo flex items-center font-black">
+      <a className="text-lg sm:text-xl md:text-2xl upfont-black uppercase leading-none text-gray-900 select-none logo flex items-center font-black">
         <div className="logo-wrap h-12 w-12 relative">
           <Image
             className="h-12 w-12 relative"
