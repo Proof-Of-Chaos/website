@@ -3,14 +3,19 @@ import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
 import {websiteConfig} from "../data/website-config";
 import { useQuery } from "@tanstack/react-query";
 import useAppStore from "../zustand";
-import { microToKSM, microToKSMFormatted, getEndDateByBlock } from "../utils";
+import { joinArrays, KSMFormatted, microToKSM, microToKSMFormatted, getEndDateByBlock } from "../utils";
 import { getApi } from '../data/chain';
 import { getQuizDataForRef } from './use-quizzes';
+import { reject } from 'lodash';
+import { QUERY_REFERENDUMS } from "./queries";
+
 
 const BLOCK_DURATION = 6000;
 const THRESHOLD_SUPERMAJORITYAPPROVE = 'SuperMajorityApprove'
 const THRESHOLD_SUPERMAJORITYAGAINST = 'SuperMajorityAgainst'
 const THRESHOLD_SIMPLEMAJORITY = 'SimpleMajority'
+
+const ENDPOINT_POC_INDEXER = 'https://squid.subsquid.io/referenda-dashboard/v/1/graphql'
 
 const convictionMultiplierMapping = {
   'None': 0.1,
@@ -22,8 +27,64 @@ const convictionMultiplierMapping = {
   'Locked6x': 6,
 }
 
-export const referendumFetcher = async (ksmAddress) => {
-  const api = await getApi();
+export const pastReferendumFetcher = async () => {
+  return new Promise( async ( resolve ) => {
+    const client = new ApolloClient({
+      uri: ENDPOINT_POC_INDEXER,
+      cache: new InMemoryCache(),
+    })
+
+    let result = await client.query({
+      query: QUERY_REFERENDUMS,
+      variables: {
+        "where": {
+          "endedAt_isNull": false
+        },
+        "orderBy": "index_DESC",
+        "limit": 20
+      }
+    })
+
+    const pastReferendums20 = result.data.referendums.map( ref => ref.index )
+    let pastReferendaStats20 = result.data.referendaStats.filter( ref => pastReferendums20.includes( ref.index ) )
+    const pastReferendaPAData20 = await getPADataForRefs( pastReferendums20 )
+
+    console.log( 'padata', pastReferendaPAData20 )
+    
+    // join the referendums from our indexer with the data from Polkassembly
+    pastReferendaStats20 = pastReferendaStats20.map( (ref, idx) => {
+      return {
+        ...ref,
+        title: pastReferendaPAData20.find( el => el.onchain_link.onchain_referendum_id === ref.index )?.title,
+        description: pastReferendaPAData20.find( el => el.onchain_link.onchain_referendum_id === ref.index )?.content,
+      }
+    })
+
+    const sortedReferendaStats = pastReferendaStats20.sort((a,b)=>parseInt(b.index)-parseInt(a.index))
+    resolve( sortedReferendaStats )
+  })
+  // const wsProvider = new WsProvider('wss://kusama-rpc.polkadot.io');
+  // const api = await ApiPromise.create({ provider: wsProvider });
+
+  // const { hash, number } = await api.rpc.chain.getHeader();
+  // const timestamp = await api.query.timestamp.now.at(hash);
+  // const totalIssuance = await api.query.balances.totalIssuance().toString()
+  // const pastReferendums = [226,227,228]
+
+  // let referendums = [];
+  // for (const referendum of pastReferendums) {
+
+  //   // const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
+  //   const PAData = await getPADataForRefs(referendum);
+  //   // const threshold = getPassingThreshold(referendum, totalIssuance)
+  //   referendums.push(PAData);
+  // }
+
+  // return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
+};
+
+export const activeReferendumFetcher = async (ksmAddress) => {
+  const api = await getApi()
 
   const { hash, number } = await api.rpc.chain.getHeader();
 
@@ -49,10 +110,11 @@ export const referendumFetcher = async (ksmAddress) => {
     //console.log("!",referendum.imageHash.toString())
 
     const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
-    const PAData = await getPADataForRef(referendum.index.toString());
+    const PAData = await getPADataForRefs([referendum.index.toString()]);
+    const PADatum = PAData?.[0]
     const quizData = await getQuizDataForRef(referendum.index.toString());
     const threshold = getPassingThreshold(referendum, totalIssuance)
-    referendums.push(referendumObject(referendum, threshold, endDate, PAData, quizData.quizzes, ksmAddress));
+    referendums.push(referendumObject(referendum, threshold, endDate, PADatum, quizData.quizzes, ksmAddress));
   }
 
   return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
@@ -69,34 +131,40 @@ const getPassingThreshold = (referendum, totalIssuance) => {
   }
 }
 
-async function getPADataForRef(referendumID) {
+async function getPADataForRefs(referendumIDs) {
   return new Promise( async ( resolve ) => {
     const client = new ApolloClient({
       uri: websiteConfig.polkassembly_graphql_endpoint,
       cache: new InMemoryCache(),
     })
 
+    console.log( 'referendum ids queried pa data', referendumIDs )
+
     let result = await client.query({
       operationName: "ReferendumPostAndComments",
-      query: agql` 
-        query ReferendumPostAndComments($id: Int!) {
-          posts(where: {onchain_link: {onchain_referendum_id: {_eq: $id}}}) {
+      query: agql`
+        query ReferendumPostAndComments($ids: [Int!]) {
+          posts(where: {onchain_link: {onchain_referendum_id: {_in: $ids}}}) {
             ...referendumPost
           }
         }
-
         fragment referendumPost on posts {
           content
           created_at
           title
+          onchain_link {
+            onchain_referendum_id
+          }
         }
     `,
       variables: {
-        "id": referendumID
+        "ids": [...referendumIDs]
       }
     })
 
-    resolve(result?.data?.posts[0])
+    console.log( 'result of query', result )
+
+    resolve(result?.data?.posts)
   })
 }
 
@@ -143,6 +211,7 @@ const referendumObject = (referendum, threshold, endDate, PAData, quizData, ksmA
     }
   });
   console.log(ayeTotal, nayTotal)*/
+
   const votedTotal = parseInt(referendum.votedAye.toString()) + parseInt(referendum.votedNay.toString())
 
   return {
@@ -194,23 +263,59 @@ export function useAccountVote( referendumId ) {
   })
 }
 
-export const useReferendums = ( config ) => {
-  const cachedReferendums = useAppStore((state)=>state.referendums)
-  const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
-
-  return useQuery(
-    [ "referendumData", ksmAddress ],
-    async () => {
-      return referendumFetcher(ksmAddress)
-    },
-    { placeholderData: cachedReferendums },
-  )
-};
-
-export const useUserNfts = () => {
-  const ksmAddress = useAppStore( (state) => state.user.connectedAccount?.ksmAddress )
-  return useQuery(["userNFTs", ksmAddress ], async () => {
-    const data = await fetchNFTsForUser( ksmAddress );
-    return data.nfts
+/**
+ * Return a dependent query, that depends on the ksmAdress (user) and the fetched referendums
+ * @param {*} referendumId
+ * @returns Promise
+ */
+ export function useAccountVotePast( referendumId ) {
+  const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
+  const ksmAddress = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex]?.ksmAddress )
+  const { data:referendums } = usePastReferendums()
+  return useQuery( ['userVote', ksmAddress, referendumId ], async () => {
+    const referendum = referendums.find( ( ref ) => ref.index === referendumId )
+    return referendum
+    // const userVote = referendum && referendum?.votes?.find((vote) => {
+    //   return vote.accountId.toString() === ksmAddress;
+    // })
+    // return userVote
+  }, {
+    enabled: !!referendums
   })
 }
+
+export const testReferendumFetcher = async () => {
+  return new Promise( async ( resolve ) => {
+    const client = new ApolloClient({
+      uri: ENDPOINT_POC_INDEXER,
+      cache: new InMemoryCache(),
+    })
+
+    let result = await client.query({
+      query: QUERY_REFERENDUMS,
+      variables: {
+        "where": {
+          "endedAt_isNull": true
+        },
+        "orderBy": "index_DESC",
+      }
+    })
+
+    resolve( result )
+  })
+}
+
+export const useReferendums = () => {
+  return useQuery( ['activeReferendums'], activeReferendumFetcher )
+}
+
+
+
+export const usePastReferendums = ( ) => {
+  return useQuery(
+    [ "pastReferendumData" ],
+    async () => {
+      return pastReferendumFetcher()
+    },
+  )
+};

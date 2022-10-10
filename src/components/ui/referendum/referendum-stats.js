@@ -1,14 +1,23 @@
-export default function ReferendumStats( { aye, nay } ) {
+export default function ReferendumStats( { aye, nay, status } ) {
+  const StatusBadge = () => {
+    return <span className={ `status-${ status.toLowerCase() } w-full` }>{ status }</span>
+  }
+
   return (
-    <div className="referendum-stats pt-4 align-bottom">
+    <div className="referendum-stats align-bottom">
+      { status &&
+        <div className="past-ref-status mb-4">
+          <StatusBadge />
+        </div>
+        }
       <div className="mb-3">
-        <svg width="100%" height="8">
-          <rect x="0" y="0" width="100%" height="12" fill="#FA606A" />
+        <svg width="100%" height="8" className="rounded-md">
+          <rect x="0" y="0" width="100%" height="12" fill="rgb(248,113,113)" />
           <rect
             x="0"
             y="0"
             height="12"
-            fill="#28D294"
+            fill="rgb(74,222,128)"
             width={`${aye?.percentage}%`}
           />
         </svg>

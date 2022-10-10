@@ -63,13 +63,17 @@ pre {
   @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded text-black;
 }
 
+.status-passed,
+.status-executed,
 .is-passing {
-  @apply rounded-lg text-sm bg-green-400 px-2 py-1 mt-4 inline-block text-center;
+  @apply rounded-md text-sm bg-green-400 px-2 py-1 inline-block text-center;
 }
 
+.status-notpassed,
 .is-failing {
-  @apply rounded-lg text-sm bg-red-400 px-2 py-1 mt-4 inline-block text-center;
+  @apply rounded-md text-sm bg-red-400 px-2 py-1 inline-block text-center;
 }
+
 
 .background-animate {
   background-size: 300%;

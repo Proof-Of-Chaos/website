@@ -15,7 +15,7 @@ function HeaderRight() {
 
   return(
     <div className="order-last flex shrink-0 items-center">
-      <WalletConnect className="hidden sm:block" />
+      <WalletConnect className="hidden sm:block pl-3 pr-3 ml-3" />
       <div className="lg:hidden">
         <Hamburger
           isOpen={isOpen}

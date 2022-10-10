@@ -1,38 +1,43 @@
 import {useEffect, useState} from "react";
 import { Tab } from "@headlessui/react";
 import ReferendumDetail from "./referendum-detail";
-import { useReferendums } from '../../../hooks/use-referendums'
+import { usePastReferendums, useReferendums } from '../../../hooks/use-referendums'
 import Loader from '../loader'
 import useAppStore from "../../../zustand";
 import { useIsMounted } from '../../../hooks/use-is-mounted'
+import ReferendumPastDetail from "./referendum-past-detail";
+import { useUserVotes } from "../../../hooks/use-votes";
+import { useUserNfts } from "../../../hooks/use-nfts";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export function ReferendumList( { voteStatus } ) {
+export function PastReferendumList( ) {
+  const { data: referendums, isLoading, error } = usePastReferendums()
+  console.log( 'list got refs', referendums, isLoading )
 
+  const { data:userVotes, isLoading: isUserVotesLoading } = useUserVotes()
+  const { data: userNfts } = useUserNfts()
+
+  console.log( 'userVotes', userVotes, isUserVotesLoading )
   const isMounted = useIsMounted();
-  const setReferendums = useAppStore((state)=>state.setReferendums)
-  const cachedReferendums = useAppStore((state)=>state.referendums)
-
-  const { data: referendums, isLoading, error } = useReferendums()
-
-  if ( ! isLoading && ! error && referendums ) {
-    setReferendums( referendums )
-  }
-
-  const showLoader = isLoading || typeof cachedReferendums === 'undefined'
 
   return (
     isMounted && <>
-      { showLoader && <Loader /> }
-      { referendums?.length > 0 ?
+    { isLoading && <Loader /> }
+    { ! isLoading && referendums?.length > 0 ?
         referendums?.map( (referendum, idx) => (
           <div
-            key={`${referendum.title}-key-${referendum.id}`}
+            key={`${referendum.title}-key-${referendum.index}`}
           >
-            <ReferendumDetail referendum={ referendum } listIndex={ idx } />
+            <ReferendumPastDetail
+              referendum={ referendum }
+              listIndex={ idx }
+              userVote={ userVotes ? userVotes.find( vote => vote.referendumIndex === referendum.index ) : null }
+              isUserVotesLoading={ isUserVotesLoading }
+              userNFT={ userNfts && userNfts.find( nft => nft.symbol.startsWith( `${referendum.index}` ) ) }
+            />
           </div>
         )) :
         <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
@@ -43,18 +48,52 @@ export function ReferendumList( { voteStatus } ) {
   )
 }
 
+export function ReferendumList() {
+  const { data: referendums, isLoading, error } = useReferendums()
+
+  console.log( 'list got refs', referendums, isLoading )
+
+  return (
+    <>
+      { isLoading && <Loader /> }
+      { error && <code>{ JSON.stringify( error ) }</code> }
+        { ! isLoading && referendums?.length > 0 ?
+          referendums?.map( (referendum, idx) => (
+            <div
+              key={`${referendum.title}-key-${referendum.id}`}
+            >
+              <ReferendumDetail referendum={ referendum } listIndex={ idx } />
+            </div>
+          )) :
+          <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
+            There are currently no referendums to vote
+          </h2>
+        }
+    </>
+  )
+}
+
 export default function ReferendumTabs( props ) {
-  {/* const { totalVotes: totalActiveVotes } = getVotesByStatus('active');
-  const { totalVotes: totalPastVotes } = getVotesByStatus('past');
+  const { data: referendums, isLoading, error } = useReferendums()
+  const { data: pastReferendums, isLoading: isPastLoading, error: pastError } = usePastReferendums()
+  {/* console.log( 'tabs active', referendums ) */}
 
-  let [categories] = useState({
-    Active: <ReferendumList voteStatus={'active'} />,
-    Past: <ReferendumList voteStatus={'past'} />,
-  }) */}
+  let [ categories ] = useState({
+    Active: <ReferendumList
+      referendums={ referendums }
+      referendumStatus='active'
+      isLoading={ isLoading }
+      error={ error }
+    />,
+    Past: <PastReferendumList
+      referendums={ pastReferendums }
+      referendumStatus='past'
+      isLoading={ isPastLoading }
+      error={ pastError }
+    />,
+  })
 
-  return <ReferendumList voteStatus={'active'} />
-
-  {/* return (
+  return (
     <div className="w-full px-4 py-8">
       <Tab.Group>
         <Tab.List className="flex mb-4 pb-4 border-brand-600">
@@ -86,5 +125,5 @@ export default function ReferendumTabs( props ) {
         </Tab.Panels>
       </Tab.Group>
     </div>
-  ) */}
+  )
 }
