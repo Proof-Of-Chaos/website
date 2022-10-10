@@ -9,7 +9,7 @@ import Button from '../ui/button';
 import Loader, { InlineLoader } from "../ui/loader";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faCube } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./styles/leaderboard.module.scss"
 
@@ -89,8 +89,9 @@ export default function Leaderboard( props ) {
         }
         { data && <>
             <div className="leaderboard-update text-right text-sm italic">
-              Last Update:
+              Last Update<br/>
               <FontAwesomeIcon icon={ faClock } className="pr-1" />{ data.lastUpdate.toUTCString() }
+              <br/>
               <FontAwesomeIcon icon={ faCube } className="pr-1" />{ data.leaderboardBlock }
             </div>
           </>
