@@ -118,7 +118,7 @@ export default function ReferendumDetail({ referendum }) {
                   <Button
                     onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
                     className="mt-4 w-full"
-                    variant={ ((referendum.quiz?.questions) || userVote ) ? 'calm' : 'primary' }
+                    variant={ ( userVote ) ? 'calm' : 'primary' }
                   >
                     { userVote ? 'Vote Again' : 'Vote Now' }
                   </Button>
@@ -128,7 +128,7 @@ export default function ReferendumDetail({ referendum }) {
               {referendum.quiz?.questions && <WalletConnect
                   className="w-full mt-4"
                   variant="primary"
-                  title="Take Quiz + Vote"
+                  title='Take Quiz'
                   onAccountSelected={ ( ) => { 
                     openModal( 'VIEW_REFERENDUM_QUIZ', referendum )
                   } }
@@ -137,7 +137,7 @@ export default function ReferendumDetail({ referendum }) {
               <WalletConnect
                 className="w-full mt-2"
                 variant="primary"
-                title={ userVote ? 'Vote Again' : 'Vote Now' }
+                title='Vote Now'
                 onAccountSelected={ ( ) => { 
                   openModal( 'VIEW_REFERENDUM_VOTE', referendum )
                 } }
