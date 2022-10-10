@@ -149,10 +149,12 @@ export function DragonLeaderboard( props ) {
           </div>
         }
         { lastUpdate && <>
-          <div className="leaderboard-update text-right text-sm italic">
-            <FontAwesomeIcon icon={ faClock } className="pr-1" />
-            Last Update: { lastUpdate.toUTCString() }
-          </div>
+            <div className="leaderboard-update text-right text-sm italic">
+              Last Update<br/>
+              <FontAwesomeIcon icon={ faClock } className="pr-1" />{ lastUpdate.lastUpdate.toUTCString() }
+              <br/>
+              <FontAwesomeIcon icon={ faCube } className="pr-1" />{ lastUpdate.leaderboardBlock }
+            </div>
           </>
         }
           <ol className={ styles.list }>
