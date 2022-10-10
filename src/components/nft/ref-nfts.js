@@ -33,7 +33,7 @@ const isOwned = (ref, userNFTs, symbol, rarity) => {
   }
 }
 
-function SingleNFT( { nft: { ref, rarity, thumb, title, artist, amount, symbol } } ) {
+export function SingleNFT( { nft: { ref, rarity, thumb, title, artist, amount, symbol } } ) {
   const { data: userNFTs } = useUserNfts()
 
   return (
