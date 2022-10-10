@@ -15,12 +15,9 @@ function classNames(...classes) {
 
 export function PastReferendumList( ) {
   const { data: referendums, isLoading, error } = usePastReferendums()
-  console.log( 'list got refs', referendums, isLoading )
-
   const { data:userVotes, isLoading: isUserVotesLoading } = useUserVotes()
   const { data: userNfts } = useUserNfts()
 
-  console.log( 'userVotes', userVotes, isUserVotesLoading )
   const isMounted = useIsMounted();
 
   return (
@@ -50,8 +47,6 @@ export function PastReferendumList( ) {
 
 export function ReferendumList() {
   const { data: referendums, isLoading, error } = useReferendums()
-
-  console.log( 'list got refs', referendums, isLoading )
 
   return (
     <>

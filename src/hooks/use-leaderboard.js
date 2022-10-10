@@ -55,11 +55,8 @@ export const useLastLeaderboardUpdate = ( ) => {
   const leaderboardBlock = leaderboard?.block
 
   return useQuery( [ 'leaderboard', leaderboardBlock ], async () => {
-    console.log( 'got block from leaderboard', leaderboardBlock )
     const api = await getApi()
-    console.log( 'api', api )
     const { number: currentBlockNumber } = await api.rpc.chain.getHeader()
-    console.log( 'currentBlock', currentBlockNumber.toNumber() )
 
     const lastUpdate = await getEndDateByBlock( leaderboardBlock, currentBlockNumber, Date.now() )
     return {
