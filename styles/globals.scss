@@ -63,6 +63,10 @@ pre {
   @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded text-black;
 }
 
+.nft-score {
+  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-yellow-300 to-yellow-600 rounded text-black;
+}
+
 .status-passed,
 .status-executed,
 .is-passing {

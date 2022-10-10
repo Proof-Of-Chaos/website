@@ -5,6 +5,8 @@ import {
 } from "@tanstack/react-query";
 import { request, gql } from "graphql-request";
 
+const ENDPOINT_NFT_SCORES = 'https://scores.proofofchaos.app/shelf/nfts'
+
 async function fetchNFTsForUser( address ) {
   return request(
     websiteConfig.singular_graphql_endpoint,
@@ -141,5 +143,13 @@ export const useUserNfts = () => {
 
     const data = await fetchNFTsForUser( ksmAddress );
     return data.nfts
+  })
+}
+
+export const useNFTScores = () => {
+  return useQuery(['NFTScores'], async () => {
+    const data = await fetch( ENDPOINT_NFT_SCORES )
+    const scores = await data.json()
+    return scores
   })
 }
