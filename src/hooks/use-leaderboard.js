@@ -62,7 +62,10 @@ export const useLastLeaderboardUpdate = ( ) => {
     console.log( 'currentBlock', currentBlockNumber.toNumber() )
 
     const lastUpdate = await getEndDateByBlock( leaderboardBlock, currentBlockNumber, Date.now() )
-    return lastUpdate
+    return {
+      lastUpdate,
+      leaderboardBlock,
+    }
   }, {
     enabled: !!leaderboardBlock
   })

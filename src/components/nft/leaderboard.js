@@ -59,15 +59,22 @@ function LeaderRowWithThumbnail( props ) {
 }
 
 export default function Leaderboard( props ) {
-  const { data: leaderboard, isLoading } = useLeaderboard();
+  const { data: leaderboard, isLoading, error } = useLeaderboard();
 
   const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
   const connectedAccount = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex] )
   const userAddress = connectedAccount?.ksmAddress
 
   const userRank = leaderboard?.scores?.findIndex( el => el.wallet === userAddress )
-  const { data: lastUpdate, isLoading: isLastBlockLoading } =
-    useLastLeaderboardUpdate()
+  const { data, isLoading: isLastBlockLoading } = useLastLeaderboardUpdate()
+
+  if ( error ) {
+    return (
+      <div className="leaderboard error text-center text-red-700 py-7">
+        There was an error getting the shelf leaderboard. Please try again later.
+      </div>
+    )
+  }
 
   return (
     <div className="leaderboard">
@@ -80,11 +87,11 @@ export default function Leaderboard( props ) {
             <div>to receive more NFTs <Link href="/vote"><Button variant="primary" className="ml-4">Vote on Referendums</Button></Link></div>
           </div>
         }
-        { lastUpdate && <>
-
+        { data && <>
             <div className="leaderboard-update text-right text-sm italic">
-              <FontAwesomeIcon icon={ faClock } className="pr-1" />
-              Last Update: { lastUpdate.toUTCString() }
+              Last Update:
+              <FontAwesomeIcon icon={ faClock } className="pr-1" />{ data.lastUpdate.toUTCString() }
+              <FontAwesomeIcon icon={ faCube } className="pr-1" />{ data.leaderboardBlock }
             </div>
           </>
         }
@@ -104,7 +111,7 @@ export default function Leaderboard( props ) {
 }
 
 export function DragonLeaderboard( props ) {
-  const { data: leaderboard, isLoading } = useDragonLeaderboard();
+  const { data: leaderboard, isLoading, error } = useDragonLeaderboard();
 
   const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
   const connectedAccount = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex] )
@@ -114,6 +121,14 @@ export function DragonLeaderboard( props ) {
 
   const { data: lastUpdate, isLoading: isLastBlockLoading } =
     useLastLeaderboardUpdate()
+
+  if ( error ) {
+    return (
+      <div className="leaderboard error text-center text-red-700 py-7">
+        There was an error getting the dragon leaderboard. Please try again later.
+      </div>
+    )
+  }
 
   return (
     <div className="dragon-leaderboard">
