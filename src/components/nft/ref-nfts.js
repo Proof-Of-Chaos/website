@@ -4,9 +4,11 @@ import classNames from "classnames";
 import { uniqBy, every } from "lodash";
 import Image from "../ui/image-fade"
 import ReactMarkdown from 'react-markdown'
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 import { useUserNfts } from "../../hooks/use-nfts";
 import Button from "../ui/button";
-import {websiteConfig} from "../../data/website-config";
+import { websiteConfig } from "../../data/website-config";
 
 const isOwned = (ref, userNFTs, symbol, rarity) => {
   const refIndex = parseInt(ref.match(/Referendum ([0-9]+)/)[1])
@@ -35,9 +37,11 @@ const isOwned = (ref, userNFTs, symbol, rarity) => {
 
 const NFTScore = ( { score } ) => {
   return(
-    <span className={ `absolute z-10 -mt-3 px-2 mr-2 right-0 nft-score` }>
-      <FontAwesomeIcon icon={ faRankingStar } size={"sm"} /> { parseFloat( score ).toFixed(2) }
-    </span>
+    <Tippy content="The leaderboard score you get for this NFT">
+      <span className={ `absolute z-10 -mt-3 px-2 mr-2 right-0 nft-score cursor-default` }>
+        <FontAwesomeIcon icon={ faRankingStar } size={"sm"} /> { parseFloat( score ).toFixed(2) }
+      </span>
+    </Tippy>
   )
 }
 
