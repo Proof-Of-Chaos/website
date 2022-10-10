@@ -6,23 +6,17 @@ import ReferendumStats from "./referendum-stats";
 import { useModal } from "../../modals/context";
 import { useQuizzes } from "../../../hooks/use-quizzes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown, faClock, faCube } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from 'react-markdown'
 import useAppStore from "../../../zustand";
 import WalletConnect from "../../nft/wallet-connect";
-import { useAccountVote } from "../../../hooks/use-referendums";
-import { KSMFormatted, microToKSMFormatted } from "../../../utils";
+import { useAccountVote, useAccountVotePast } from "../../../hooks/use-referendums";
+import { KSMFormatted, microToKSM, microToKSMFormatted } from "../../../utils";
+import Loader, { InlineLoader } from "../loader";
 
-export default function ReferendumPastDetail({ referendum }) {
+export default function ReferendumPastDetail({ referendum, userVote, isUserVotesLoading }) {
   let [isExpanded, setIsExpanded] = useState(false);
   const { openModal } = useModal();
-
-  const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
-  const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
-
-  const { data: userVote } = useAccountVote( referendum.id )
-
-  console.log( 'past ref detail', referendum )
 
   const {
     count_aye,
@@ -30,10 +24,46 @@ export default function ReferendumPastDetail({ referendum }) {
     count_total,
     voted_amount_aye,
     voted_amount_nay,
+    voted_amount_total,
     title,
     index,
     description,
+    status,
+    ends_at,
+    ended_at,
   } = referendum
+
+  const EndedAt = () => {
+    return(
+      <div className="ended-at">
+        <span className="end-time block">
+          <FontAwesomeIcon icon={ faClock } className="pr-1 h-3" />{ new Date(ended_at).toUTCString() }
+        </span>
+        <span className="end-block block">
+          <FontAwesomeIcon icon={ faCube } className="pr-1 h-3" />{ ends_at }
+        </span>
+      </div>
+    )
+  }
+
+  const UserVote = () => {
+    if ( userVote ) {
+      const { decision, balance, lockPeriod } = userVote
+      return (
+        <>
+        { ! isUserVotesLoading && <>
+          You voted <b>{ decision }</b><br/>with <b>{ microToKSM( balance.value ) } KSM</b><br/>and conviction <b>{ lockPeriod }</b>
+        </>}
+        </>
+      )
+    }
+
+    if ( isUserVotesLoading ) {
+      return (<InlineLoader />)
+    }
+
+    return <p>{`You did not vote on referendum ${ index }.`}<br/>{ `Vote to receive NFT rewards.` }</p>
+  }
 
   return (
     <div
@@ -46,16 +76,16 @@ export default function ReferendumPastDetail({ referendum }) {
       )}
     >
       <div className="flex flex-wrap w-full flex-row justify-between">
-        <div className="self-start p-2 w-full md:w-2/3 border-gray-200 border-r border-dashed">
+        <div className="self-start p-2 w-full md:w-1/2 border-gray-200 border-r border-dashed">
+          <p className="text-xl mt-1 text-gray-600 dark:text-gray-400 ">
+            Referendum #{index}
+          </p>
           <h3
             onClick={() => setIsExpanded(!isExpanded)}
-            className="cursor-pointer text-xl leading-normal dark:text-gray-100 pr-2"
+            className="cursor-pointer text-xl leading-normal dark:text-gray-100 pr-2 border-b border-gray-200 pb-4 mb-4 mr-8 border-dashed"
           >
             {title}
           </h3>
-          <p className="text-xl mt-1 text-gray-600 dark:text-gray-400 border-b border-gray-200 pb-4 mb-4 mr-8 border-dashed">
-            Referendum #{index}
-          </p>
           <>
             { ! isExpanded ? (
               <>
@@ -77,7 +107,7 @@ export default function ReferendumPastDetail({ referendum }) {
               <>
                 <div className="order-1">
                   <div
-                    className="dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8"
+                    className="dynamic-html overflow-scroll leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8"
                   >
                     <ReactMarkdown>{ referendum.description }</ReactMarkdown>
                     <div className="referendum-meta pt-2 mt-2">
@@ -98,23 +128,34 @@ export default function ReferendumPastDetail({ referendum }) {
             )}
           </>
         </div>
-          <div className="before:content-[' '] text-center w-full md:w-1/3 mt-4 pt-2 md:mt-0 content-start relative mb-5 h-full gap-2 pb-5 before:absolute before:bottom-0 before:h-[1px] before:w-full ltr:before:left-0 rtl:before:right-0 dark:border-gray-700 dark:before:border-gray-700 md:mb-0 md:pb-0 md:before:h-full md:before:w-[1px] ltr:md:pl-8 rtl:md:pr-8">
-            <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-xl">
-              Voting ended at
-            </h3>
+          <div className="before:content-[' '] text-center w-full md:w-1/2 mt-4 pt-2 md:mt-0 content-start relative mb-5 h-full gap-2 pb-5 before:absolute before:bottom-0 before:h-[1px] before:w-full ltr:before:left-0 rtl:before:right-0 dark:border-gray-700 dark:before:border-gray-700 md:mb-0 md:pb-0 md:before:h-full md:before:w-[1px] ltr:md:pl-8 rtl:md:pr-8">
+            <div className="mb-6">
+              <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-xl">
+                Referendum Ended At
+              </h3>
+              <EndedAt />
+            </div>
             <ReferendumCountdown date={referendum.executed_at} />
-            <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-xl">Vote Results</h3>
-            <ReferendumStats 
-              aye={ {
-                vote: count_aye,
-                percentage: toPercentage(count_aye,count_total),
-                voteVolume: KSMFormatted( voted_amount_aye )
-              } }
-              nay={ {
-                vote: count_nay,
-                percentage: toPercentage(count_nay,count_total),
-                voteVolume: KSMFormatted( voted_amount_nay )
-              } } />
+            <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-xl">Referendum Results</h3>
+            <div className="md:px-6 xl:px-10">
+              <ReferendumStats
+                status={ status }
+                aye={ {
+                  vote: count_aye,
+                  percentage: toPercentage( voted_amount_aye, voted_amount_total ),
+                  voteVolume: KSMFormatted( voted_amount_aye )
+                } }
+                nay={ {
+                  vote: count_nay,
+                  percentage: toPercentage( voted_amount_nay, voted_amount_total),
+                  voteVolume: KSMFormatted( voted_amount_nay )
+                } }
+              />
+            </div>
+            <div className="user-vote">
+              <h3 className="text-gray-900 mb-2 mt-4 dark:md:text-gray-100 text-xl">Your Vote</h3>
+              <UserVote />
+            </div>
           </div>
       </div>
     </div>

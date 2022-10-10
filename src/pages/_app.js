@@ -17,7 +17,14 @@ import {
 } from "@tanstack/react-query";
 import { NextSeo } from 'next-seo';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // ✅ globally default to 20 seconds
+      staleTime: 1000 * 30,
+    },
+  },
+})
 
 function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout ?? ((page) => page)
