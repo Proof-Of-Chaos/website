@@ -54,3 +54,59 @@ export const QUERY_VOTES = agql`
     }
   }
 `
+
+/**
+ * query configs, accept where with index
+ * {
+  "where": {
+    "referendumIndex_eq": null
+}
+ */
+export const QUERY_CONFIG = agql`
+  query Configs($where: ConfigWhereInput) {
+    configs(where: $where) {
+      id
+      referendumIndex
+      version
+      blockNumber
+      min
+      max
+      first
+      blockCutOff
+      directOnly
+      createNewCollection
+      newCollectionSymbol
+      newCollectionPath
+      newCollectionFile
+      newCollectionName
+      newCollectionDescription
+      makeEquippable
+      babyBonus
+      toddlerBonus
+      adolescentBonus
+      adultBonus
+      minAmount
+      seed
+      timestamp
+      options {
+        rarity
+        creativeDirector
+        artist
+        text
+        symbol
+        transferable
+        configId
+        id
+        itemName
+        minRoyalty
+        maxRoyalty
+        isDefault
+        resources {
+          thumbCid
+        }
+        metadataCidDirect
+        metadataCidDelegated
+      }
+    }
+  }
+`
