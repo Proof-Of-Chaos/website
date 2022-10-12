@@ -6,7 +6,7 @@ import ReferendumStats from "./referendum-stats";
 import { useModal } from "../../modals/context";
 import { useQuizzes } from "../../../hooks/use-quizzes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown, faClock, faCube } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown, faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from 'react-markdown'
 import { KSMFormatted, microToKSM, microToKSMFormatted } from "../../../utils";
 import Loader, { InlineLoader } from "../loader";
@@ -182,6 +182,13 @@ export default function ReferendumPastDetail( {
                 <UserReward />
               </div>
             </div>
+          </div>
+          <div className="border-gray-200 border-dashed border-t w-full mx-2 mt-4 pt-5">
+            <Button className="w-full" variant="calm">
+              <FontAwesomeIcon icon={ faChartLine } className="pr-2" /> 
+              View Sendout Statistics and Parameters
+              <FontAwesomeIcon icon={ faSliders } className="pl-2" /> 
+            </Button>
           </div>
       </div>
     </div>
