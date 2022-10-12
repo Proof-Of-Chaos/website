@@ -138,9 +138,9 @@ function Test() {
     console.log( 'lucks', lucks )
 
     const newChartData = [
-      { x: `Common ${ lucks['common'] }`, y: lucks['common'] },
-      { x: `Rare ${ lucks['rare'] }`, y: lucks['rare'] },
-      { x: `Epic ${ lucks['epic'] }`, y: lucks['epic'] },
+      { x: `${ parseFloat(lucks['common']).toFixed(2) } Common `, y: lucks['common'] },
+      { x: `${ parseFloat(lucks['rare']).toFixed(2) } Rare`, y: lucks['rare'] },
+      { x: `${ parseFloat(lucks['epic']).toFixed(2) } Epic`, y: lucks['epic'] },
     ]
 
     setChartData( newChartData )
