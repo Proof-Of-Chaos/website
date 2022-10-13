@@ -64,49 +64,53 @@ export const QUERY_VOTES = agql`
  */
 export const QUERY_CONFIG = agql`
   query Configs($where: ConfigWhereInput) {
-    configs(where: $where) {
-      id
+    configs(
+      orderBy: timestamp_DESC,
+      where: $where
+    ) {
       referendumIndex
-      version
       blockNumber
-      min
-      max
-      first
-      blockCutOff
-      directOnly
-      createNewCollection
-      newCollectionSymbol
-      newCollectionPath
-      newCollectionFile
-      newCollectionName
-      newCollectionDescription
-      makeEquippable
+      timestamp
+      minValue
+      minAmount
+      maxValue
+      median
+      seed
       babyBonus
       toddlerBonus
       adolescentBonus
       adultBonus
-      minAmount
-      seed
-      timestamp
       options {
+        minProbability
+        sweetspotProbability
         rarity
-        creativeDirector
-        artist
-        text
-        symbol
-        transferable
         configId
         id
-        itemName
-        minRoyalty
-        maxRoyalty
-        isDefault
-        resources {
-          thumbCid
-        }
-        metadataCidDirect
-        metadataCidDelegated
+        maxProbability
       }
+    }
+  }
+`
+
+/**
+ * expects
+ *     {
+      "where": {
+        "referendumIndex_eq": refIndex,
+        "wallet_eq": wallet
+      }
+    }
+ */
+export const QUERY_DISTRIBUTIONS = agql`
+  query Distributions($where: DistributionWhereInput) {
+    distributions(where: $where) {
+      wallet
+      distributionVersion
+      referendumIndex
+      amountConsidered
+      dragonEquipped
+      chancesAtItems
+      indexItemReceived
     }
   }
 `
