@@ -1,4 +1,3 @@
-
 import Layout from '../layouts/layout'
 import { useConfig } from '../hooks/use-config';
 import { VictoryPie } from 'victory';
@@ -12,9 +11,10 @@ import { Checkbox,
   Slider,
   ThemeProvider
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUserVotes } from '../hooks/use-votes';
 import { useUserDistributions } from '../hooks/use-distributions';
+import { current } from 'tailwindcss/colors';
 
 const EXPONENT_CONSTANTS = [3, 0.4]
 
@@ -27,118 +27,79 @@ const theme = createTheme({
   },
 })
 
-const getLuckMultiplier = ( options ) => {
-  let walletProps = {
-    babyDragon: false,
-    toddlerDragon: false,
-    adolecentDragon: false,
-    adultDragon: false,
-    quizCorrect: false,
-    ...options,
-  }
-
-  return {}
-}
 function Test() {
   const { data: refConfig, isLoading: isRefConfigLoading } = useConfig( 229 )
   const { data: userVotes, isLoading: isLoadingUserVotes } = useUserVotes()
   const { data: userDistributions } = useUserDistributions( 229 )
 
-  const rarityOptions229 = [
-    {
-      "minProbability": 28,
-      "sweetspotProbability": 40,
-      "rarity": "common",
-      "configId": "229-00000001",
-      "id": "229-00000001-00000002",
-      "maxProbability": 67
-    },
-    {
-      "minProbability": 15,
-      "sweetspotProbability": 30,
-      "rarity": "rare",
-      "configId": "229-00000001",
-      "id": "229-00000001-00000001",
-      "maxProbability": 45
-    },
-    {
-      "minProbability": 3,
-      "sweetspotProbability": 16,
-      "rarity": "epic",
-      "configId": "229-00000001",
-      "id": "229-00000001-00000000",
-      "maxProbability": 30
-    }
-  ]
-
-  const ref229Config = {
-    median: 9.4,
-    minValue: 0,
-    minAmount: 0,
-    maxValue: 31.65,
-  }
-
   const [ values, setValues ] = useState({
     ksm: 5,
-    babyDragon: false,
-    toddlerDragon: true,
+    babyEquipped: false,
+    toddlerEquipped: false,
+    adolescentEquipped: false,
+    adultEquipped: false,
     quizCorrect: false,
+    luckMultiplier: 1.0,
   })
-
-  const [ chartData, setChartData ] = useState([
-    { x: "Common", y: 35 },
-    { x: "Rare", y: 40 },
-    { x: "Epic", y: 55 }
-  ])
-
-  const handleCheckBoxChange = ( e ) => {
-    console.log( e.target.name)
-    setValues({
-      ...values,
-      [e.target.name]: e.target.checked,
-    });
-  }
+  //TODO
+  const isWalletSettingsShowing = false
 
   const calculateLuck = (
-      n,
-      minIn,
-      maxIn,
-      minOut,
-      maxOut,
-      exponent,
-      minAmount,
-      luckMultiplier = 1.0,
-    ) => {
-      minOut = parseInt(minOut);
-      maxOut = parseInt(maxOut);
-      if (n > maxIn) {
-          n = maxOut;
-      }
-      else if (n < minAmount) {
-          n = minOut;
-      }
-      else {
-          // unscale input
-          n -= minIn
-          n /= maxIn - minIn
-          n = Math.pow(n, exponent)
-          // scale output
-          n *= maxOut - minOut
-          n += minOut
-      }
-      return n * luckMultiplier
+    n,
+    minIn,
+    maxIn,
+    minOut,
+    maxOut,
+    exponent,
+    minAmount,
+    luckMultiplier,
+  ) => {
+    minOut = parseInt(minOut);
+    maxOut = parseInt(maxOut);
+    if (n > maxIn) {
+        n = maxOut;
+    }
+    else if (n < minAmount) {
+        n = minOut;
+    }
+    else {
+        // unscale input
+        n -= minIn
+        n /= maxIn - minIn
+        n = Math.pow(n, exponent)
+        // scale output
+        n *= maxOut - minOut
+        n += minOut
+    }
+    return n * luckMultiplier
+}
+
+  const getLuckMultiplier = ( options, config ) => {
+    let luckMultiplier = 1.0;
+
+    if ( options.babyEquipped ) {
+      luckMultiplier = (1 + (config.babyBonus / 100))
+    } else if ( options.toddlerEquipped ) {
+      luckMultiplier = (1 + (config.toddlerBonus / 100))
+    } else if ( options.adolescentEquipped ) {
+      luckMultiplier = (1 + (config.adolescentBonus / 100))
+    } else if ( options.adultEquipped ) {
+      luckMultiplier = (1 + (config.adultBonus / 100))
+    }
+
+    return luckMultiplier
   }
 
   /**
    * return the chances array
    */
-  const lucksForConfigAndOptions = ( ksm, refConfig, options ) => {
+   const lucksForConfig = ( ksm, refConfig, luckMultiplier ) => {
     const lucks = {}
     //do not calc luck for the last to items (common, default)
     //will be done below
     //TODO will have to find a filter that will filter the correct items
-    const optionsToConsider = options.filter( opt => opt.rarity !== 'common' )
-    optionsToConsider.forEach( option => {
+    const optionsToConsider = refConfig?.options.filter( opt => opt.rarity !== 'common' )
+    optionsToConsider?.forEach( option => {
       if ( ksm < refConfig.median ) {
         lucks[`${ option.rarity }`] = calculateLuck(
           ksm,
@@ -148,6 +109,7 @@ function Test() {
           option.sweetspotProbability,
           EXPONENT_CONSTANTS[0],
           refConfig.minAmount,
+          luckMultiplier,
         )
       } else {
         lucks[`${ option.rarity }`] = calculateLuck(
@@ -158,6 +120,7 @@ function Test() {
             option.maxProbability,
             EXPONENT_CONSTANTS[1],
             refConfig.minAmount,
+            luckMultiplier,
           )
       }
     })
@@ -166,21 +129,38 @@ function Test() {
     return lucks
   }
 
+  const currentLuckMultiplier = getLuckMultiplier( values, refConfig )
+  const lucks = lucksForConfig( values.ksm, refConfig, currentLuckMultiplier )
+  const chartData = [
+    { x: `${ parseFloat(lucks['common']).toFixed(2) }% Common `, y: lucks['common'] },
+    { x: `${ parseFloat(lucks['rare']).toFixed(2) }% Rare`, y: lucks['rare'] },
+    { x: `${ parseFloat(lucks['epic']).toFixed(2) }% Epic`, y: lucks['epic'] },
+  ]
+
+  const handleCheckBoxChange = ( e ) => {
+    console.log( e.target.name )
+    const clickedDragonBonus = [
+      'babyEquipped',
+      'toddlerEquipped',
+      'adolescentEquipped',
+      'adultEquipped'
+    ].includes(e.target.name)
+    setValues({
+      ...values,
+      babyEquipped: clickedDragonBonus ? false : values.babyEquipped,
+      toddlerEquipped: clickedDragonBonus ? false : values.toddlerEquipped,
+      adolescentEquipped: clickedDragonBonus ? false : values.adolescentEquipped,
+      adultEquipped: clickedDragonBonus ? false : values.adultEquipped,
+      [e.target.name]: e.target.checked,
+    });
+  }
+
   const handleSliderChange = ( e ) => {
-    const luckMultiplier = 1.0
     const voteAmountWithConviction = parseInt( e.target.value )
-
-    const lucks = lucksForConfigAndOptions( voteAmountWithConviction, ref229Config, rarityOptions229 )
-
-    console.log( 'lucks', lucks )
-
-    const newChartData = [
-      { x: `${ parseFloat(lucks['common']).toFixed(2) } Common `, y: lucks['common'] },
-      { x: `${ parseFloat(lucks['rare']).toFixed(2) } Rare`, y: lucks['rare'] },
-      { x: `${ parseFloat(lucks['epic']).toFixed(2) } Epic`, y: lucks['epic'] },
-    ]
-
-    setChartData( newChartData )
+    setValues( {
+      ...values,
+      ksm: voteAmountWithConviction,
+    } )
   }
 
   const marks = [
@@ -193,8 +173,8 @@ function Test() {
       label: 'Your Vote',
     },
     {
-      value: ref229Config.maxValue,
-      label: `${ ref229Config.maxValue } KSM`,
+      value: refConfig?.maxValue,
+      label: `${ refConfig?.maxValue } KSM`,
     },
   ]
 
@@ -206,9 +186,6 @@ function Test() {
             padAngle={2}
             data={ chartData }
             colorScale={["lavender", "turquoise", "gold", "cyan" ]}
-            animate={{
-              duration: 1000
-            }}
             className="overflow-visible px-6"
             innerRadius={60}
           />
@@ -216,7 +193,7 @@ function Test() {
         <div className="flex flex-col">
           <ThemeProvider theme={ theme }>
             <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-              <FormLabel component="legend">Wallet Properties when voting</FormLabel>
+              <FormLabel component="legend">Wallet Properties when voting / sendout</FormLabel>
               <FormGroup>
                 <FormControlLabel
                   control={
@@ -231,29 +208,50 @@ function Test() {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={ values.babyDragon }
+                      checked={ values.babyEquipped }
                       onChange={handleCheckBoxChange}
-                      name="babyDragon"
+                      name="babyEquipped"
                     />
                   }
-                  label="Baby Dragon"
+                  label="Baby Dragon Equipped"
                 />
                 <FormControlLabel
                   control={
                     <Checkbox 
-                      checked={ values.toddlerDragon }
+                      checked={ values.toddlerEquipped }
                       onChange={handleCheckBoxChange}
-                      name="toddlerDragon"
+                      name="toddlerEquipped"
                     />
                   }
-                  label="Toddler Dragon"
+                  label="Toddler Dragon Equipped"
                 />
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={ values.adolescentEquipped }
+                      onChange={handleCheckBoxChange}
+                      name="adolescentEquipped"
+                    />
+                  }
+                  label="Adolescent Dragon Equipped"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={ values.adultEquipped }
+                      onChange={handleCheckBoxChange}
+                      name="adultEquipped"
+                    />
+                  }
+                  label="Adult Dragon Equipped"
+                />
+                <FormHelperText>Your Luck Multiplier is: { currentLuckMultiplier }</FormHelperText>
                 <div className="pt-5">
                   Vote Amount With Conviction
                   <Slider
                     defaultValue={50}
                     min={ 0 }
-                    max={ ref229Config.maxValue }
+                    max={ refConfig?.maxValue }
                     marks={ marks }
                     aria-label="Default"
                     valueLabelDisplay="auto"
