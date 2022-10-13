@@ -87,7 +87,11 @@ const calculateLuck = (
 }
 
 const getLuckMultiplier = ( options, config ) => {
-  let luckMultiplier = 1.0;
+  let luckMultiplier = 1.0
+
+  if ( ! config?.babyBonus || ! config?.adolescentBonus || ! config?.toddlerBonus || ! config?.adultBonus ) {
+    return luckMultiplier
+  }
 
   if ( options.babyEquipped ) {
     luckMultiplier = (1 + (config.babyBonus / 100))

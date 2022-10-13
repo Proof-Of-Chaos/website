@@ -16,6 +16,7 @@ import { useUserVotes } from '../hooks/use-votes';
 import { useUserDistributions } from '../hooks/use-distributions';
 import { current } from 'tailwindcss/colors';
 import { getLuckMultiplier, lucksForConfig, microToKSM } from '../utils';
+import { isNumber } from 'lodash';
 
 const theme = createTheme({
   typography: {
@@ -41,6 +42,34 @@ function Test() {
     quizCorrect: false,
     luckMultiplier: 1.0,
   })
+
+  useEffect(() => {
+    let dragonBools = {}
+    switch (userDistribution?.dragonEquipped) {
+      case "Adult":
+        dragonBools.adultEquipped = true;
+        break;
+      case "Adolescent":
+        dragonBools.adolescentEquipped = true;
+        break;
+      case "Toddler":
+        dragonBools.toddlerEquipped = true;
+        break;
+      case "Baby":
+        dragonBools.babyEquipped = true;
+        break;
+      default:
+    }
+
+    console.log( 'useEffect', userDistribution, microToKSM( userDistribution?.amountConsidered ))
+
+    setValues({
+      ...values,
+      ...dragonBools,
+      ksm: microToKSM( userDistribution?.amountConsidered ),
+    })
+  }, [ userDistribution ])
+
   //TODO the current values are equal to what the user voted / had when voting
   const isWalletSettingsShowing = false
 
@@ -76,6 +105,8 @@ function Test() {
       ksm: voteAmountWithConviction,
     } )
   }
+
+  const sliderValue = values.ksm
 
   const marks = userDistribution ? [
     {
@@ -172,10 +203,10 @@ function Test() {
                 <div className="pt-5">
                   Vote Amount With Conviction
                   <Slider
-                    defaultValue={5}
                     min={ 0 }
-                    max={ refConfig?.maxValue }
+                    max={ refConfig?.maxValue ? refConfig.maxValue + 10 : 50 }
                     marks={ marks }
+                    value={ sliderValue }
                     step={ 0.1 }
                     aria-label="Default"
                     valueLabelDisplay="auto"
