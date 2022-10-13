@@ -103,7 +103,10 @@ export const QUERY_CONFIG = agql`
  */
 export const QUERY_DISTRIBUTIONS = agql`
   query Distributions($where: DistributionWhereInput) {
-    distributions(where: $where) {
+    distributions(
+      where: $where
+      orderBy: distributionVersion_DESC
+    ) {
       wallet
       distributionVersion
       referendumIndex

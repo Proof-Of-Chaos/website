@@ -15,8 +15,7 @@ import { useEffect, useState } from 'react';
 import { useUserVotes } from '../hooks/use-votes';
 import { useUserDistributions } from '../hooks/use-distributions';
 import { current } from 'tailwindcss/colors';
-
-const EXPONENT_CONSTANTS = [3, 0.4]
+import { getLuckMultiplier, lucksForConfig, microToKSM } from '../utils';
 
 const theme = createTheme({
   typography: {
@@ -29,8 +28,9 @@ const theme = createTheme({
 
 function Test() {
   const { data: refConfig, isLoading: isRefConfigLoading } = useConfig( 229 )
-  const { data: userVotes, isLoading: isLoadingUserVotes } = useUserVotes()
   const { data: userDistributions } = useUserDistributions( 229 )
+
+  const userDistribution = userDistributions?.[0]
 
   const [ values, setValues ] = useState({
     ksm: 5,
@@ -41,93 +41,8 @@ function Test() {
     quizCorrect: false,
     luckMultiplier: 1.0,
   })
-  //TODO
+  //TODO the current values are equal to what the user voted / had when voting
   const isWalletSettingsShowing = false
-
-  const calculateLuck = (
-    n,
-    minIn,
-    maxIn,
-    minOut,
-    maxOut,
-    exponent,
-    minAmount,
-    luckMultiplier,
-  ) => {
-    minOut = parseInt(minOut);
-    maxOut = parseInt(maxOut);
-    if (n > maxIn) {
-        n = maxOut;
-    }
-    else if (n < minAmount) {
-        n = minOut;
-    }
-    else {
-        // unscale input
-        n -= minIn
-        n /= maxIn - minIn
-        n = Math.pow(n, exponent)
-        // scale output
-        n *= maxOut - minOut
-        n += minOut
-    }
-    return n * luckMultiplier
-}
-
-  const getLuckMultiplier = ( options, config ) => {
-    let luckMultiplier = 1.0;
-
-    if ( options.babyEquipped ) {
-      luckMultiplier = (1 + (config.babyBonus / 100))
-    } else if ( options.toddlerEquipped ) {
-      luckMultiplier = (1 + (config.toddlerBonus / 100))
-    } else if ( options.adolescentEquipped ) {
-      luckMultiplier = (1 + (config.adolescentBonus / 100))
-    } else if ( options.adultEquipped ) {
-      luckMultiplier = (1 + (config.adultBonus / 100))
-    }
-
-    return luckMultiplier
-  }
-
-  /**
-   * return the chances array
-   */
-   const lucksForConfig = ( ksm, refConfig, luckMultiplier ) => {
-    const lucks = {}
-    //do not calc luck for the last to items (common, default)
-    //will be done below
-    //TODO will have to find a filter that will filter the correct items
-    const optionsToConsider = refConfig?.options.filter( opt => opt.rarity !== 'common' )
-    optionsToConsider?.forEach( option => {
-      if ( ksm < refConfig.median ) {
-        lucks[`${ option.rarity }`] = calculateLuck(
-          ksm,
-          refConfig.minValue,
-          refConfig.median,
-          option.minProbability,
-          option.sweetspotProbability,
-          EXPONENT_CONSTANTS[0],
-          refConfig.minAmount,
-          luckMultiplier,
-        )
-      } else {
-        lucks[`${ option.rarity }`] = calculateLuck(
-            ksm,
-            refConfig.median,
-            refConfig.maxValue,
-            option.sweetspotProbability,
-            option.maxProbability,
-            EXPONENT_CONSTANTS[1],
-            refConfig.minAmount,
-            luckMultiplier,
-          )
-      }
-    })
-    lucks.rare = (100 - lucks.epic) / 100 * lucks.rare
-    lucks.common = 100 - lucks.rare - lucks.epic
-    return lucks
-  }
 
   const currentLuckMultiplier = getLuckMultiplier( values, refConfig )
   const lucks = lucksForConfig( values.ksm, refConfig, currentLuckMultiplier )
@@ -138,7 +53,6 @@ function Test() {
   ]
 
   const handleCheckBoxChange = ( e ) => {
-    console.log( e.target.name )
     const clickedDragonBonus = [
       'babyEquipped',
       'toddlerEquipped',
@@ -163,14 +77,23 @@ function Test() {
     } )
   }
 
-  const marks = [
+  const marks = userDistribution ? [
     {
       value: 0,
       label: '0',
     },
     {
-      value: 5,
+      value: microToKSM( userDistribution.amountConsidered ),
       label: 'Your Vote',
+    },
+    {
+      value: refConfig?.maxValue,
+      label: `${ refConfig?.maxValue } KSM`,
+    },
+  ] : [
+    {
+      value: 0,
+      label: '0',
     },
     {
       value: refConfig?.maxValue,
@@ -249,10 +172,11 @@ function Test() {
                 <div className="pt-5">
                   Vote Amount With Conviction
                   <Slider
-                    defaultValue={50}
+                    defaultValue={5}
                     min={ 0 }
                     max={ refConfig?.maxValue }
                     marks={ marks }
+                    step={ 0.1 }
                     aria-label="Default"
                     valueLabelDisplay="auto"
                     onChange={ handleSliderChange }
@@ -268,13 +192,13 @@ function Test() {
         <pre className="text-xs">{JSON.stringify(refConfig, null, 2) }</pre>
       </div>
       <div>
-        <pre className="text-xs">{JSON.stringify(userDistributions, null, 2) }</pre>
+        <pre className="text-xs">user distribution{JSON.stringify(userDistribution, null, 2) }</pre>
       </div>
     </>
   )
 }
 
-Test.getLayout = function getLayout(page) {
+Test.getLayout = function getLayout(page){
   return <Layout>{page}</Layout>
 }
 

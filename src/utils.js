@@ -1,5 +1,6 @@
 import { merge, values, keyBy } from 'lodash'
 const BLOCK_DURATION = 6000;
+const EXPONENT_CONSTANTS = [3, 0.4]
 
 const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {
   let newStamp = parseInt(currentTimestamp.toString()) + ((parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) * BLOCK_DURATION)
@@ -55,6 +56,91 @@ const joinArrays = (a1, a2, a1key, a2key) => {
   })
 }
 
+const calculateLuck = (
+  n,
+  minIn,
+  maxIn,
+  minOut,
+  maxOut,
+  exponent,
+  minAmount,
+  luckMultiplier,
+) => {
+  minOut = parseInt(minOut);
+  maxOut = parseInt(maxOut);
+  if (n > maxIn) {
+      n = maxOut;
+  }
+  else if (n < minAmount) {
+      n = minOut;
+  }
+  else {
+      // unscale input
+      n -= minIn
+      n /= maxIn - minIn
+      n = Math.pow(n, exponent)
+      // scale output
+      n *= maxOut - minOut
+      n += minOut
+  }
+  return n * luckMultiplier
+}
+
+const getLuckMultiplier = ( options, config ) => {
+  let luckMultiplier = 1.0;
+
+  if ( options.babyEquipped ) {
+    luckMultiplier = (1 + (config.babyBonus / 100))
+  } else if ( options.toddlerEquipped ) {
+    luckMultiplier = (1 + (config.toddlerBonus / 100))
+  } else if ( options.adolescentEquipped ) {
+    luckMultiplier = (1 + (config.adolescentBonus / 100))
+  } else if ( options.adultEquipped ) {
+    luckMultiplier = (1 + (config.adultBonus / 100))
+  }
+
+  return luckMultiplier
+}
+
+/**
+ * return the chances array
+ */
+ const lucksForConfig = ( ksm, refConfig, luckMultiplier ) => {
+  const lucks = {}
+  //do not calc luck for the last to items (common, default)
+  //will be done below
+  //TODO will have to find a filter that will filter the correct items
+  const optionsToConsider = refConfig?.options.filter( opt => opt.rarity !== 'common' )
+  optionsToConsider?.forEach( option => {
+    if ( ksm < refConfig.median ) {
+      lucks[`${ option.rarity }`] = calculateLuck(
+        ksm,
+        refConfig.minValue,
+        refConfig.median,
+        option.minProbability,
+        option.sweetspotProbability,
+        EXPONENT_CONSTANTS[0],
+        refConfig.minAmount,
+        luckMultiplier,
+      )
+    } else {
+      lucks[`${ option.rarity }`] = calculateLuck(
+          ksm,
+          refConfig.median,
+          refConfig.maxValue,
+          option.sweetspotProbability,
+          option.maxProbability,
+          EXPONENT_CONSTANTS[1],
+          refConfig.minAmount,
+          luckMultiplier,
+        )
+    }
+  })
+  lucks.rare = (100 - lucks.epic) / 100 * lucks.rare
+  lucks.common = 100 - lucks.rare - lucks.epic
+  return lucks
+}
+
 export {
   getRandomInt,
   getRandomIntBetween,
@@ -65,4 +151,6 @@ export {
   getEndDateByBlock,
   mergeArrays,
   joinArrays,
+  lucksForConfig,
+  getLuckMultiplier,
 }

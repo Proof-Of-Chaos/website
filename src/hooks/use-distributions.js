@@ -12,7 +12,7 @@ const distributionsFetcher = async ( wallet, refIndex ) => {
     {
       "where": {
         "referendumIndex_eq": refIndex,
-        "wallet_eq": 'wallet'
+        "wallet_eq": wallet,
       }
     }
   );
