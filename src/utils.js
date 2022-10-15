@@ -111,6 +111,14 @@ const getLuckMultiplier = ( options, config ) => {
  */
  const lucksForConfig = ( ksm, refConfig, luckMultiplier ) => {
   const lucks = {}
+
+  if ( ksm < refConfig.minValue ) {
+    return {
+      common: 100,
+      rare: 0,
+      epic: 0,
+    }
+  }
   //do not calc luck for the last to items (common, default)
   //will be done below
   //TODO will have to find a filter that will filter the correct items
