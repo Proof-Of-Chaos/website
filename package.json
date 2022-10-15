@@ -42,7 +42,7 @@
     "react": "^18.2.0",
     "react-countdown": "^2.3.2",
     "react-dom": "^18.2.0",
-    "react-json-to-table": "^0.1.7",
+    "react-json-to-table": "https://github.com/c0ntradicti0n/react-json-to-table#patch-1",
     "react-markdown": "^8.0.3",
     "react-toastify": "^9.0.7",
     "react-use": "^17.4.0",
