@@ -13,7 +13,7 @@ export default function ConfigTable({json}) {
   }
   
   const getTable = () => (
-      <table className="table-auto max-w-xl">
+      <table className="table-auto w-full">
           <tbody>
               {json && Object.keys(json).map((row, index) => {
 
