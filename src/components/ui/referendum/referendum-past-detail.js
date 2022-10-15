@@ -13,6 +13,7 @@ import Loader, { InlineLoader } from "../loader";
 import { SingleNFT } from "../../nft/ref-nfts";
 import { useUserNfts } from "../../../hooks/use-nfts";
 import Image from "next/image";
+import { useConfig } from "../../../hooks/use-config";
 
 export default function ReferendumPastDetail( {
   referendum,
@@ -37,6 +38,10 @@ export default function ReferendumPastDetail( {
     ends_at,
     ended_at,
   } = referendum
+
+  const { data: refConfig, isLoading: isRefConfigLoading } = useConfig( index )
+
+  const hasConfig = refConfig && refConfig.options
 
   const EndedAt = () => {
     return(
@@ -184,13 +189,19 @@ export default function ReferendumPastDetail( {
               </div>
             </div>
           </div>
-          <div className="border-gray-200 border-dashed border-t w-full mx-2 mt-4 pt-5">
-            <Button className="w-full" variant="calm">
-              <FontAwesomeIcon icon={ faChartLine } className="pr-2" /> 
-              View Sendout Statistics and Parameters
-              <FontAwesomeIcon icon={ faSliders } className="pl-2" /> 
-            </Button>
-          </div>
+          { hasConfig && 
+            <div className="border-gray-200 border-dashed border-t w-full mx-2 mt-4 pt-5">
+              <Button
+                className="w-full"
+                variant="calm"
+                onClick={ () => openModal( 'PAST_REFERENDUM_DETAIL', { id: index } ) }
+              >
+                <FontAwesomeIcon icon={ faChartLine } className="pr-2" /> 
+                View Sendout Statistics and Parameters
+                <FontAwesomeIcon icon={ faSliders } className="pl-2" /> 
+              </Button>
+            </div>
+          }
       </div>
     </div>
   )
