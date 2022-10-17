@@ -301,7 +301,7 @@ export default function PastReferendumModal( { id } ) {
             style={{ labels: { fontSize: 18 }, overflow: 'visible', minHeight: '200px' }}
           />
           <div className="nfts flex justify-between pr-2">
-            { refConfig?.options?.reverse().map( opt => {
+            { refConfig?.options?.map( opt => {
               const thumb = opt.resources[0].thumbCid.replace('ipfs://ipfs/', '')
 
               if ( ! isUserNFTsFetching && userNFTs && ! userNFTsError ) {
@@ -320,7 +320,6 @@ export default function PastReferendumModal( { id } ) {
                     } }
                     owned={ userHasNFT }
                     dimensions={ 150 }
-                    score={ 0 }
                   />
                 </div>
               }

@@ -68,7 +68,7 @@
 
 .dragonRank,
 .userRank {
-  @apply p-2 md:p-4 px-2 md:px-8 rounded-lg border-gray-200 flex flex-wrap justify-between items-center align-middle m-2 w-auto;
+  @apply py-6 flex flex-wrap justify-between items-center align-middle w-auto;
 
   > div {
     @apply flex items-center;
