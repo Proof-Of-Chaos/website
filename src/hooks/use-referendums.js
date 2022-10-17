@@ -15,8 +15,6 @@ const THRESHOLD_SUPERMAJORITYAPPROVE = 'SuperMajorityApprove'
 const THRESHOLD_SUPERMAJORITYAGAINST = 'SuperMajorityAgainst'
 const THRESHOLD_SIMPLEMAJORITY = 'SimpleMajority'
 
-const ENDPOINT_POC_INDEXER = 'https://squid.subsquid.io/referenda-dashboard/v/1/graphql'
-
 const convictionMultiplierMapping = {
   'None': 0.1,
   'Locked1x': 1,
@@ -30,7 +28,7 @@ const convictionMultiplierMapping = {
 export const pastReferendumFetcher = async () => {
   return new Promise( async ( resolve ) => {
     const client = new ApolloClient({
-      uri: ENDPOINT_POC_INDEXER,
+      uri: websiteConfig.proofofchaos_graphql_endpoint,
       cache: new InMemoryCache(),
     })
 
@@ -281,7 +279,7 @@ export function useAccountVote( referendumId ) {
 export const testReferendumFetcher = async () => {
   return new Promise( async ( resolve ) => {
     const client = new ApolloClient({
-      uri: ENDPOINT_POC_INDEXER,
+      uri: websiteConfig.proofofchaos_graphql_endpoint,
       cache: new InMemoryCache(),
     })
 

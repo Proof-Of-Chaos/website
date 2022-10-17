@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { request, gql } from "graphql-request";
+import { websiteConfig } from "../data/website-config";
 import useAppStore from "../zustand";
 import { QUERY_VOTES } from "./queries";
 
-const ENDPOINT_POC_INDEXER = 'https://squid.subsquid.io/referenda-dashboard/v/1/graphql'
-
 const voteFetcher = async ( ksmAddress ) => {
   const data = await request(
-    ENDPOINT_POC_INDEXER,
+    websiteConfig.proofofchaos_graphql_endpoint,
     QUERY_VOTES,
     {
       "votesWhere": {
