@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { request } from "graphql-request";
+import { websiteConfig } from "../data/website-config";
 import { QUERY_CONFIG } from "./queries";
-
-const ENDPOINT_POC_INDEXER = 'https://squid.subsquid.io/referenda-dashboard/v/0/graphql'
 
 const configFetcher = async ( refIndex ) => {
   const data = await request(
-    ENDPOINT_POC_INDEXER,
+    websiteConfig.proofofchaos_graphql_endpoint,
     QUERY_CONFIG,
     {
       "where": {

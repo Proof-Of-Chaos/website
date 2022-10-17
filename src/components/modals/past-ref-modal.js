@@ -175,7 +175,7 @@ export default function PastReferendumModal( { id } ) {
   return (
     <div className="overflow-scroll">
       <Dialog.Title as="h3" className="text-2xl font-medium leading-6 text-gray-900 pb-2">
-        Past Referendum Details for #{ id }
+        Past Referendum Sendout Details for #{ id }
       </Dialog.Title>
       <div className="flex flex-wrap justify-center pt-4">
         <div className="form-wrap w-full md:w-1/2">
@@ -273,6 +273,11 @@ export default function PastReferendumModal( { id } ) {
             labelRadius={({ radius }) => radius - 70 }
             style={{ labels: { fontSize: 18 }, overflow: 'visible', minHeight: '200px' }}
           />
+          <div className="nfts">
+            common { parseFloat(lucks['common']).toFixed(2) }
+            rare { parseFloat(lucks['rare']).toFixed(2) }
+            epic { parseFloat(lucks['epic']).toFixed(2) }
+          </div>
         </div>
         </div>
       <div>
