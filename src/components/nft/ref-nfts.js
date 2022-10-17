@@ -46,15 +46,16 @@ const NFTScore = ( { score } ) => {
 }
 
 export function SingleNFT( {
-  nft: { ref, rarity, thumb, title, artist, amount, symbol },
-  score
+  nft: { ref, rarity, thumb, title, artist, amount},
+  score = 0,
+  dimensions = 400,
+  owned
 } ) {
-  const { data: userNFTs } = useUserNfts()
 
   return (
     <div className="single-nft relative p-4 transform transition duration-200 hover:scale-105 flex justify-center flex-col items-center">
       <div>
-        { isOwned(ref, userNFTs, symbol, rarity) &&
+        { owned &&
           <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }>
             <FontAwesomeIcon icon={ faWallet } size={"sm"} /> owned
           </span>
@@ -65,8 +66,8 @@ export function SingleNFT( {
           <Image
             src={`https://ipfs.rmrk.link/ipfs/${ thumb }`}
             alt={ `GovRewards NFT for Referendum ${ ref } of rarity ${ rarity }` }
-            width={ 400 }
-            height={ 400 }
+            width={ dimensions }
+            height={ dimensions }
           /> :
           <div className="error">No image found</div>
         }
@@ -81,7 +82,8 @@ export function SingleNFT( {
 export default function NFTDetail( { nfts, scores } ) {
   //we do not receive always 3 nfts, sometimes there are more or less
   const distinctUserNFTs = uniqBy( nfts, 'rarity' )
-
+  const { data: userNFTs } = useUserNfts()
+  
   const totalAmount =
     every(distinctUserNFTs, (nft)=>isFinite(nft.amount)) &&
     distinctUserNFTs?.reduce((acc,cur) => {
@@ -116,6 +118,7 @@ export default function NFTDetail( { nfts, scores } ) {
                   id={ nftByRarity.ref }
                   nft={ nftByRarity }
                   score={ scores?.[rarity] }
+                  owned={ isOwned(nftByRarity.ref, userNFTs, nftByRarity.symbol, nftByRarity.rarity)}
                 />
               </div>
             )

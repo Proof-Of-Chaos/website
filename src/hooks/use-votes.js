@@ -10,7 +10,8 @@ const voteFetcher = async ( ksmAddress ) => {
     QUERY_VOTES,
     {
       "votesWhere": {
-        "voter_eq": ksmAddress
+        "voter_eq": ksmAddress,
+        "blockNumberRemoved_isNull": true //only latest votes
       },
     }
   );

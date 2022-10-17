@@ -37,7 +37,7 @@ function PageLeaderboard() {
       <section className="w-full py-2 md:py-8">
         <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8 xl:px-0">
           <Tab.Group>
-            <Tab.List className="flex mb-4 pb-4 border-brand-600">
+            <Tab.List className="flex mb-6 pb-4 border-brand-600">
               { Object.keys( leaderboardTabs ).map( ( tab, idx ) => (
                 <Tab
                   key={tab}

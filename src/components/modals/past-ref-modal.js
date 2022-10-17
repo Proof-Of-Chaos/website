@@ -15,11 +15,18 @@ import { Checkbox,
   ThemeProvider
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { isEqual } from 'lodash';
+import { find, isEqual } from 'lodash';
 import Button from '../../components/ui/button';
 import ConfigTable from '../../components/ui/ConfigTable'
 import Loader from '../../components/ui/loader';
 import { Dialog } from '@headlessui/react';
+import useAppStore from '../../zustand';
+import WalletConnect from '../nft/wallet-connect';
+import Image from 'next/image';
+import { useUserNfts } from '../../hooks/use-nfts';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWallet } from '@fortawesome/free-solid-svg-icons';
+import { SingleNFT } from '../nft/ref-nfts';
 
 
 const theme = createTheme({
@@ -31,17 +38,22 @@ const theme = createTheme({
   },
 })
 
-export default function PastReferendumModal( { id } ) {
-  const { openModal } = useModal();
-  const { closeModal } = useModal();
+//the default value the slider shows when nothing is loaded
+const DEFAULT_KSM = 5
 
-  const { data: refConfig, isLoading: isRefConfigLoading } = useConfig( id )
-  const { data: userDistributions, isLoading: isUserDistributionLoading } = useUserDistributions( id )
+export default function PastReferendumModal( { id } ) {
+  const { data: refConfig, isFetching: isRefConfigLoading } = useConfig( id )
+  const { data: userDistributions, isFetching: isUserDistributionLoading } = useUserDistributions( id )
+
+  const { data: userNFTs, isFetching: isUserNFTsFetching, error: userNFTsError } = useUserNfts()
+
+  const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
+  const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
 
   const userDistribution = userDistributions?.[0]
 
   const [ values, setValues ] = useState({
-    ksm: 5,
+    ksm: DEFAULT_KSM,
     dragon: {
       babyEquipped: false,
       toddlerEquipped: false,
@@ -53,7 +65,9 @@ export default function PastReferendumModal( { id } ) {
 
   const resetToUserVote = () => {
     setValues( {
-      ksm: microToKSM( userDistribution?.amountConsidered ),
+      ksm: userDistribution?.amountConsidered ?
+        microToKSM( userDistribution?.amountConsidered ) :
+        DEFAULT_KSM,
       dragon: {
         ...dragonEquippedStringToBools( userDistribution?.dragonEquipped )
       }
@@ -97,7 +111,7 @@ export default function PastReferendumModal( { id } ) {
       dragon: {
         ...dragonBools,
       },
-      ksm: microToKSM( userDistribution?.amountConsidered ),
+      ksm: userDistribution?.amountConsidered ? microToKSM( userDistribution.amountConsidered ) : refConfig.median,
     })
   }, [ userDistribution ])
 
@@ -148,6 +162,10 @@ export default function PastReferendumModal( { id } ) {
 
   const sliderValue = values.ksm
 
+  function sliderValueText(value) {
+    return `${value} KSM`;
+  }
+
   const marks = userDistribution ? [
     {
       value: 0,
@@ -157,10 +175,6 @@ export default function PastReferendumModal( { id } ) {
       value: microToKSM( userDistribution.amountConsidered ),
       label: 'Your Vote',
     },
-    {
-      value: refConfig?.maxValue,
-      label: `${ refConfig?.maxValue } KSM`,
-    },
   ] : [
     {
       value: 0,
@@ -168,7 +182,7 @@ export default function PastReferendumModal( { id } ) {
     },
     {
       value: refConfig?.maxValue,
-      label: `${ refConfig?.maxValue } KSM`,
+      label: refConfig?.maxValue && `${ parseFloat( refConfig.maxValue ).toFixed(2) } KSM`,
     },
   ]
 
@@ -246,23 +260,36 @@ export default function PastReferendumModal( { id } ) {
                     step={0.1}
                     aria-label="Default"
                     valueLabelDisplay="auto"
+                    getAriaValueText={ sliderValueText }
                     onChange={ handleSliderChange }
                   />
                 </div>
               </FormGroup>
-              <Button
-                onClick={ resetToUserVote }
-                variant={ isWalletSettingsShowing ? 'disabled' : 'calm' }
-                size={ 'small' }
-                className={ 'mt-2' }
-                disabled={ isWalletSettingsShowing ? true : false }
-              >
-                Reset to your considered values
-              </Button>
+              { connectedAccount ? <>
+                { userDistribution?.amountConsidered ?
+                      <Button
+                    onClick={ resetToUserVote }
+                    variant={ isWalletSettingsShowing ? 'disabled' : 'calm' }
+                    size={ 'small' }
+                    className={ 'mt-2' }
+                    disabled={ isWalletSettingsShowing ? true : false }
+                  >
+                    Reset to your considered values
+                  </Button> : <></>
+                }
+                </>
+              :
+              <WalletConnect
+                  className="w-full mt-4"
+                  variant={ 'calm' }
+                  title="Connect wallet to see your settings"
+                  onAccountSelected={ resetToUserVote }
+                />
+            }
             </FormControl>
           </ThemeProvider>
         </div>
-        <div className="chart-wrap w-full md:w-1/2">
+        <div className="chart-wrap w-full md:w-1/2 flex flex-col">
           <h3 className="text-xl md:text-right">Your Chances for NFTs</h3>
           <VictoryPie
             padAngle={2}
@@ -273,15 +300,36 @@ export default function PastReferendumModal( { id } ) {
             labelRadius={({ radius }) => radius - 70 }
             style={{ labels: { fontSize: 18 }, overflow: 'visible', minHeight: '200px' }}
           />
-          <div className="nfts">
-            common { parseFloat(lucks['common']).toFixed(2) }
-            rare { parseFloat(lucks['rare']).toFixed(2) }
-            epic { parseFloat(lucks['epic']).toFixed(2) }
+          <div className="nfts flex justify-between pr-2">
+            { refConfig?.options?.reverse().map( opt => {
+              const thumb = opt.resources[0].thumbCid.replace('ipfs://ipfs/', '')
+
+              if ( ! isUserNFTsFetching && userNFTs && ! userNFTsError ) {
+                const userHasNFT = userNFTs.find(
+                  nft =>
+                    nft.metadata === opt.resources[1].metadataCidDirect ||
+                    nft.metadata === opt.resources[1].metadataCidDelegated
+                )
+
+                return <div key={ opt.id } className="flex flex-col relative">
+                  <SingleNFT 
+                    nft={ {
+                      ref: refConfig.referendumIndex,
+                      rarity: opt.rarity,
+                      thumb,
+                    } }
+                    owned={ userHasNFT }
+                    dimensions={ 150 }
+                    score={ 0 }
+                  />
+                </div>
+              }
+            })}
           </div>
         </div>
         </div>
       <div>
-      <h3 className="text-xl mb-4">Config for sendout</h3>
+      <h3 className="text-xl mt-8 mb-4">Config for sendout</h3>
         <ConfigTable json={ refConfig } />
       </div>
     </div>

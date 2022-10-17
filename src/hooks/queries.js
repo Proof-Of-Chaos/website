@@ -87,6 +87,13 @@ export const QUERY_CONFIG = agql`
         configId
         id
         maxProbability
+        resources(orderBy: id_DESC) {
+          id
+          itemName
+          thumbCid
+          metadataCidDirect
+          metadataCidDelegated
+        }
       }
     }
   }

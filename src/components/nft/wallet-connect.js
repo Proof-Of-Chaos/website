@@ -9,6 +9,7 @@ import classNames from "classnames"
 import { WalletSelect } from '@talisman-connect/components';
 import { encodeAddress } from '@polkadot/keyring'
 import { useIsMounted } from "../../hooks/use-is-mounted"
+import { useQueryClient } from "@tanstack/react-query"
 
 
 export default function WalletConnect ( { className, title, onAccountSelected, variant = 'calm' } ) {
@@ -21,6 +22,8 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
   const updateConnectedAccounts = useAppStore( ( state ) => state.updateConnectedAccounts );
   const updateConnectedAccount = useAppStore( ( state ) => state.updateConnectedAccount );
 
+  const queryClient = useQueryClient()
+
   return(
     isMounted && <>
       <WalletSelect
@@ -28,6 +31,7 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
         open={false}
 
         onWalletSelected={(accounts) => {
+          queryClient.invalidateQueries(['distributions']),
           updateConnectedAccounts( {
             ...accounts,
           } )
@@ -44,7 +48,6 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
         }}
 
         onAccountSelected={ (newAccount) => {
-          
           if ( connectedAccounts?.length ) {
             const connectedAccountIndex = connectedAccounts.findIndex( acc => acc.address === newAccount.address )
             updateConnectedAccount( connectedAccountIndex )
