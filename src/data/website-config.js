@@ -7,7 +7,8 @@ export const websiteConfig = {
         "3208723ec6f65df810-ITEMXEVRLOOT",
         "3208723ec6f65df810-ITEMXRMRK",
         "3208723ec6f65df810-ITEMXMT",
-        "3208723ec6f65df810-ITEMXPUNKS"
+        "3208723ec6f65df810-ITEMXPUNKS",
+        "3208723ec6f65df810-ITEMXARCHIVERSE"
     ],
     "referendum_rarities":[
         "common",

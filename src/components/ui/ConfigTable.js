@@ -7,17 +7,11 @@ export default function ConfigTable({json}) {
     return typeof obj === 'object' ||
       Array.isArray(obj)
   }
-
-  const isOptions = ( obj ) => {
-    return obj
-  }
   
   const getTable = () => (
       <table className="table-auto w-full">
           <tbody>
               {json && Object.keys(json).map((row, index) => {
-
-                console.log( index, row )
                   if ( row === 'options' ) {
                     return <tr key={`row${index}`}>
                       <td>options</td>

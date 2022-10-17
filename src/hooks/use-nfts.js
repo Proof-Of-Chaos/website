@@ -33,6 +33,7 @@ async function fetchNFTsForUser( address ) {
             "3208723ec6f65df810-ITEMXRMRK",
             "3208723ec6f65df810-ITEMXMT",
             "3208723ec6f65df810-ITEMXPUNKS",
+            "3208723ec6f65df810-ITEMXARCHIVERSE",
         ],
         }
       }
@@ -81,6 +82,7 @@ async function fetchReferendumNFTsDistinct() {
           "3208723ec6f65df810-ITEMXRMRK",
           "3208723ec6f65df810-ITEMXMT",
           "3208723ec6f65df810-ITEMXPUNKS",
+          "3208723ec6f65df810-ITEMXARCHIVERSE"
         ]
       },
       "metadata_properties": {
