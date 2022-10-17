@@ -153,6 +153,36 @@ const getLuckMultiplier = ( options, config ) => {
   return lucks
 }
 
+/**
+ * Produce an animated svg that can be used as image placeholder
+ * @param {Integer} w
+ * @param {Integer} h
+ * @returns html string
+ */
+const shimmer = (w, h) => `
+  <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+      <linearGradient id="g">
+        <stop stop-color="#fff" offset="20%" />
+        <stop stop-color="#eee" offset="50%" />
+        <stop stop-color="#fff" offset="70%" />
+      </linearGradient>
+    </defs>
+    <rect width="${w}" height="${h}" fill="#fff" />
+    <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+    <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+  </svg>`
+
+/**
+ * Base64 encode string, can be used for inline images
+ * @param {String} str String to encode
+ * @returns String
+ */
+const toBase64 = (str) =>
+  typeof window === 'undefined'
+    ? Buffer.from(str).toString('base64')
+    : window.btoa(str)
+
 export {
   getRandomInt,
   getRandomIntBetween,
@@ -164,4 +194,6 @@ export {
   joinArrays,
   lucksForConfig,
   getLuckMultiplier,
+  shimmer,
+  toBase64,
 }

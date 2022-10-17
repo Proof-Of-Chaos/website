@@ -3,7 +3,7 @@ import { isNumber } from 'lodash';
 import Image from "next/image";
 import Link from 'next/link';
 import { useDragonLeaderboard, useLastLeaderboardUpdate, useLeaderboard, useShelfThumbnail } from "../../hooks/use-leaderboard";
-import { trimAddress } from "../../utils";
+import { shimmer, toBase64, trimAddress } from "../../utils";
 import useAppStore from '../../zustand';
 import Button from '../ui/button';
 import Loader, { InlineLoader } from "../ui/loader";
@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faCube } from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./styles/leaderboard.module.scss"
+import LoadingImage from '../ui/loading-image';
 
 const SINGULAR_SHELF_BASE_URL = 'https://singular.app/collectibles/kusama/3208723ec6f65df810-SHELF/'
 const SINGULAR_WALLET_BASE_URL = 'https://singular.app/space/kusama/'
@@ -26,11 +27,12 @@ function LeaderRow( props ) {
     <li className={ className }>
       <div className={ styles.rank }>{ place + 1 }</div>
       <div className={ styles.thumb }>
-        { thumbnail && thumbnail !== '' && <Image
+        { thumbnail && thumbnail !== '' && <LoadingImage
           src={ thumbnail }
           alt={ `Shelf for wallet ${ wallet }` }
           width={imageDimension}
           height={imageDimension}
+          fallbackImage="https://ipfs.rmrk.link/ipfs/bafybeig3cbuv3vvd4fxgpcxnycqvg64qpgpbpsyrsfcdtshovypuxvsq4q"
         /> }
         { thumbnail && thumbnail === '' &&
           <a className={ styles.link } href={ `${ SINGULAR_SHELF_BASE_URL}${id}` }>view shelf<br /> on singular</a>
