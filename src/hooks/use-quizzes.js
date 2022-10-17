@@ -4,7 +4,7 @@ import { request, gql } from "graphql-request";
 export async function getQuizDataForRef(referendumIndex) {
   return request(
     websiteConfig.proofofchaos_graphql_endpoint,
-    gql`query MyQuery {
+    gql`query QuizzesQuery {
       quizzes(where: {referendumIndex_eq: ${referendumIndex}}) {
         blockNumber
         creator
@@ -32,7 +32,9 @@ export async function getQuizDataForRef(referendumIndex) {
           }
         }
         submissions {
-          answers
+          answers {
+            id
+          }
           blockNumber
           id
           quizId
@@ -42,7 +44,7 @@ export async function getQuizDataForRef(referendumIndex) {
           wallet
         }
       }
-    }    
+    }
     `
   )
 }
