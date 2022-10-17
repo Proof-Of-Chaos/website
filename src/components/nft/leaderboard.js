@@ -97,7 +97,7 @@ export default function Leaderboard( props ) {
           </>
         }
           <ol className={ styles.list }>
-            { leaderboard?.scores.slice(0,50).map( (row, place) => {
+            { leaderboard.scores.map( (row, place) => {
               if (place < 10 ) {
                 return <LeaderRowWithThumbnail key={ place } place={ place } {...row} />
               } else {
