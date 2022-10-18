@@ -85,7 +85,7 @@ export default function Leaderboard( props ) {
       { ! isLoading && <>
         { isFinite(userRank) && userRank !== -1 &&
           <div className={ styles.userRank }>
-            <div>Your current shelf rank is <span>{ userRank }</span>/{leaderboard?.scores.length}</div>
+            <div>Your current shelf rank is <span>{ userRank + 1 }</span>/{leaderboard?.scores.length}</div>
             <div>to receive more NFTs <Link href="/vote"><Button variant="primary" className="ml-4">Vote on Referendums</Button></Link></div>
           </div>
         }
@@ -147,7 +147,7 @@ export function DragonLeaderboard( props ) {
       { ! isLoading && <>
         { isFinite(userRank) && userRank !== -1 &&
           <div className={ styles.dragonRank }>
-            <div>Your current adult dragon rank is <span>{ userRank }</span>/{leaderboard?.scores.length}</div>
+            <div>Your current adult dragon rank is <span>{ userRank + 1 }</span>/{leaderboard?.scores.length}</div>
           </div>
         }
         { lastUpdate && <>
