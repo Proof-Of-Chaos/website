@@ -306,7 +306,7 @@ export default function PastReferendumModal( { id } ) {
 
               if ( ! isUserNFTsFetching && userNFTs && ! userNFTsError ) {
                 const userReceivedNFT =
-                  refConfig.options[ userDistribution.indexItemReceived ].rarity === opt.rarity
+                  refConfig?.options[ userDistribution?.indexItemReceived ]?.rarity === opt.rarity
 
                 return <div key={ opt.id } className="flex flex-col relative">
                   <SingleNFT 

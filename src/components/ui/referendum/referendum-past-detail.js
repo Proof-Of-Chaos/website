@@ -61,7 +61,8 @@ export default function ReferendumPastDetail( {
       const { decision, balance, lockPeriod } = userVote
       return (
         <div className="flex flex-col justify-center">
-        { ! isUserVotesLoading && <>
+          { JSON.stringify.userVote }
+        { ! isUserVotesLoading && userVote && <>
           <span>You voted <b>{ decision }</b></span>
           <span>with <b>{ microToKSM( balance.value ) } KSM</b></span>
           <span>and conviction <b>{ lockPeriod }</b></span>

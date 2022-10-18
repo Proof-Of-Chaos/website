@@ -31,7 +31,6 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
         open={false}
 
         onWalletSelected={(accounts) => {
-          queryClient.invalidateQueries(['distributions']),
           updateConnectedAccounts( {
             ...accounts,
           } )
@@ -48,6 +47,9 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
         }}
 
         onAccountSelected={ (newAccount) => {
+          queryClient.invalidateQueries(['distributions'])
+          queryClient.invalidateQueries(['votes'])
+          console.log( 'new account selected', newAccount)
           if ( connectedAccounts?.length ) {
             const connectedAccountIndex = connectedAccounts.findIndex( acc => acc.address === newAccount.address )
             updateConnectedAccount( connectedAccountIndex )
