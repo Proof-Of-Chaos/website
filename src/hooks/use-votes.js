@@ -20,7 +20,7 @@ const voteFetcher = async ( ksmAddress ) => {
 };
 
 export const useVotes = ( ksmAddress, config = {} ) => {
-  return useQuery( ['votes'], async() => voteFetcher( ksmAddress ), config )
+  return useQuery( [ 'votes', ksmAddress ], async() => voteFetcher( ksmAddress ), config )
 };
 
 export const useUserVotes = () => {

@@ -15,7 +15,7 @@ function classNames(...classes) {
 
 export function PastReferendumList( ) {
   const { data: referendums, isLoading, error } = usePastReferendums()
-  const { data:userVotes, isLoading: isUserVotesLoading } = useUserVotes()
+  const { data:userVotes, isFetching: isUserVotesLoading } = useUserVotes()
   const { data: userNfts } = useUserNfts()
 
   const isMounted = useIsMounted();
