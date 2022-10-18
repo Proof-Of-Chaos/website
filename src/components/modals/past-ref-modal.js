@@ -305,11 +305,8 @@ export default function PastReferendumModal( { id } ) {
               const thumb = opt.resources[0].thumbCid.replace('ipfs://ipfs/', '')
 
               if ( ! isUserNFTsFetching && userNFTs && ! userNFTsError ) {
-                const userHasNFT = userNFTs.find(
-                  nft =>
-                    nft.metadata === opt.resources[1].metadataCidDirect ||
-                    nft.metadata === opt.resources[1].metadataCidDelegated
-                )
+                const userReceivedNFT =
+                  refConfig.options[ userDistribution.indexItemReceived ].rarity === opt.rarity
 
                 return <div key={ opt.id } className="flex flex-col relative">
                   <SingleNFT 
@@ -318,7 +315,8 @@ export default function PastReferendumModal( { id } ) {
                       rarity: opt.rarity,
                       thumb,
                     } }
-                    owned={ userHasNFT }
+                    owned={ userReceivedNFT }
+                    ownedText={ 'received' }
                     dimensions={ 150 }
                   />
                 </div>

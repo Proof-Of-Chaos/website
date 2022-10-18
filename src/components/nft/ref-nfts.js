@@ -49,7 +49,8 @@ export function SingleNFT( {
   nft: { ref, rarity, thumb, title, artist, amount},
   score = 0,
   dimensions = 400,
-  owned
+  owned,
+  ownedText = 'owned'
 } ) {
 
   return (
@@ -57,7 +58,7 @@ export function SingleNFT( {
       <div>
         { owned &&
           <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }>
-            <FontAwesomeIcon icon={ faWallet } size={"sm"} /> owned
+            <FontAwesomeIcon icon={ faWallet } size={"sm"} /> { ownedText }
           </span>
         }
         { isNumber( score ) && score > 0 && <NFTScore score={ score } /> }
