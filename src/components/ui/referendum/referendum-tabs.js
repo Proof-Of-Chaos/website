@@ -48,22 +48,28 @@ export function PastReferendumList( ) {
 export function ReferendumList() {
   const { data: referendums, isLoading, error } = useReferendums()
 
+  if ( isLoading ) {
+    return <Loader />
+  }
+
+  if ( error ) {
+    return <code>{ JSON.stringify( error ) }</code>
+  }
+
   return (
     <>
-      { isLoading && <Loader /> }
-      { error && <code>{ JSON.stringify( error ) }</code> }
-        { ! isLoading && referendums?.length > 0 ?
-          referendums?.map( (referendum, idx) => (
-            <div
-              key={`${referendum.title}-key-${referendum.id}`}
-            >
-              <ReferendumDetail referendum={ referendum } listIndex={ idx } />
-            </div>
-          )) :
-          <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
-            There are currently no referendums to vote
-          </h2>
-        }
+      { referendums && referendums.length > 0 ?
+        referendums.map( (referendum, idx) => (
+          <div
+            key={`${referendum.title}-key-${referendum.id}`}
+          >
+            <ReferendumDetail referendum={ referendum } listIndex={ idx } />
+          </div>
+        )) :
+        <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
+          There are currently no referendums to vote
+        </h2>
+      }
     </>
   )
 }
