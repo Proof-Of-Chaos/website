@@ -79,20 +79,29 @@ export default function ReferendumTabs( props ) {
   const { data: pastReferendums, isLoading: isPastLoading, error: pastError } = usePastReferendums()
   {/* console.log( 'tabs active', referendums ) */}
 
-  let [ categories ] = useState({
-    Active: <ReferendumList
+  const activeTabTitle = referendums?.length > 0 ?
+    `Active (${ referendums.length })`
+    : 'Active'
+
+  let [ categories, setCategories ] = useState({})
+
+  useEffect( () => {
+    setCategories({
+      [ `${activeTabTitle}` ]: <ReferendumList
       referendums={ referendums }
       referendumStatus='active'
       isLoading={ isLoading }
       error={ error }
-    />,
-    Past: <PastReferendumList
-      referendums={ pastReferendums }
-      referendumStatus='past'
-      isLoading={ isPastLoading }
-      error={ pastError }
-    />,
-  })
+      />,
+      Past: <PastReferendumList
+        referendums={ pastReferendums }
+        referendumStatus='past'
+        isLoading={ isPastLoading }
+        error={ pastError }
+      />,
+    })
+  }, [ referendums ])
+
 
   return (
     <div className="w-full px-4 py-8">
@@ -100,7 +109,7 @@ export default function ReferendumTabs( props ) {
         <Tab.List className="flex mb-4 pb-4 border-brand-600">
           {Object.keys(categories).map((category, idx) => (
             <Tab
-              key={category}
+              key={`tab${idx}`}
               className={({ selected }) =>
                 classNames(
                   'vote-tab relative w-full py-4 leading-5 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 outline-none uppercase text-base tracking-widest',
