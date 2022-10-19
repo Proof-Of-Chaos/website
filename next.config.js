@@ -5,7 +5,7 @@ const nextConfig = {
   images: {
     domains: ['proofofchaos.app', 'gateway.ipfs.io', 'ipfs.rmrk.link', 'prerender.rmrk.link'],
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self' ipfs.rmrk.link; script-src 'none'; sandbox;",',
+    contentSecurityPolicy: "default-src 'self' ipfs.rmrk.link; script-src 'none'; sandbox;",
   },
   trailingSlash: true,
 }
