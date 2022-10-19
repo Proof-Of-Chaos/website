@@ -114,7 +114,7 @@ export default function ReferendumTabs( props ) {
                 classNames(
                   'vote-tab relative w-full py-4 leading-5 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 outline-none uppercase text-base tracking-widest',
                   selected
-                    ? 'active bg-white border-gray-200 border-b-gray-300'
+                    ? 'active bg-white border-gray-400'
                     : 'text-black border-gray-400 hover:bg-white/[0.12] hover:text-gray-600 border-t-0 border-l-0 border-r-0 border-b-0 hover:bg-gray-100',
                   idx === 0 ? 'mr-2' : 'ml-2',
                 )

@@ -36,7 +36,7 @@ export default function ReferendumDetail({ referendum }) {
   return (
     <div
       className={cn(
-        'mb-10 bg-white p-2 relative md:p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-100 border-b-gray-200',
+        'mb-10 bg-white p-2 relative md:p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-400 border-b-gray-500',
         {
           'shadow-lg': isExpanded,
           'shadow-card hover:shadow-lg': !isExpanded,

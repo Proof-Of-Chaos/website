@@ -1,6 +1,6 @@
 export const websiteConfig = {
     "singular_graphql_endpoint":"https://gql-rmrk2-prod.graphcdn.app",
-    "proofofchaos_graphql_endpoint":"https://squid.subsquid.io/referenda-dashboard/v/0/graphql",
+    "proofofchaos_graphql_endpoint":"https://squid.subsquid.io/referenda-dashboard/v/1/graphql",
     "polkassembly_graphql_endpoint":"https://kusama.polkassembly.io/v1/graphql",
     "singular_referendum_collections":[
         "3208723ec6f65df810-ITEM",
