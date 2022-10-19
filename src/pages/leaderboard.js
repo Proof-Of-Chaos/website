@@ -5,6 +5,7 @@ import Layout from '../layouts/layout'
 import { Tab } from "@headlessui/react";
 import { useState } from 'react';
 import classNames from 'classnames';
+import { NextSeo } from 'next-seo';
 
 
 function PageLeaderboard() {
@@ -15,9 +16,10 @@ function PageLeaderboard() {
 
   return (
     <>
-      <Head>
-        <title>Leaderboard - Proof of Chaos — Free NFTs for Voting on Kusama</title>
-      </Head>
+      <NextSeo
+        title="Leaderboards"
+        description='See the top collectors of our NFTs that will have benefits'
+      />
       <section className="bg-gradient-to-r from-blue-500/80 to-purple-500/80">
         <div className="mx-auto max-w-6xl px-2 sm:px-4 lg:px-8 xl:px-0">
           <div

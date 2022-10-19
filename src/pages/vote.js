@@ -17,7 +17,7 @@ function Vote() {
   return (
     <>
       <NextSeo
-        title="Vote on Kusama"
+        title="Vote on Referendums"
         description="Get incentive NFTs for voting on Referenda"
       />
       { !knowsAboutLuckBoost && <section className="bg-gradient-to-r from-blue-500/80 to-purple-500/80">

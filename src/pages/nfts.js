@@ -5,6 +5,7 @@ import { groupBy } from 'lodash';
 import { websiteConfig } from "../data/website-config"
 import objectHash from 'object-hash'
 import Loader from '../components/ui/loader';
+import { NextSeo } from 'next-seo';
 
 export async function getStaticProps() {
   const nfts = websiteConfig.classic_referendums
@@ -18,17 +19,23 @@ function PageNFTs({ nfts }) {
   const groupedNFTs = groupBy( data,'ref' )
 
   return (
-    <section className="mx-auto w-full max-w-6xl text-sm sm:pt-10 4xl:pt-14">
-      { isLoading && <Loader />}
-      { data && Object.values( groupedNFTs ).map( nfts => {
-          return <NFTDetail
-            key={ objectHash(nfts) }
-            nfts={ nfts }
-            scores={ nftScores && nftScores.nftScores.find( score => nfts[0].ref?.includes( score.ref ) ) }
-          />
-        })
-      }
-    </section>
+    <>
+      <NextSeo
+        title="NFTs"
+        description='View all NFTs we sent out and see additional statistics'
+      />
+      <section className="mx-auto w-full max-w-6xl text-sm sm:pt-10 4xl:pt-14">
+        { isLoading && <Loader />}
+        { data && Object.values( groupedNFTs ).map( nfts => {
+            return <NFTDetail
+              key={ objectHash(nfts) }
+              nfts={ nfts }
+              scores={ nftScores && nftScores.nftScores.find( score => nfts[0].ref?.includes( score.ref ) ) }
+            />
+          })
+        }
+      </section>
+    </>
   )
 }
 

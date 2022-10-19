@@ -10,6 +10,7 @@ import { faLightbulb } from '@fortawesome/free-solid-svg-icons'
 import NFTSnippets from '../components/ui/nft-snippets'
 import FAQ from '../components/ui/faq'
 import { websiteConfig } from '../data/website-config'
+import { NextSeo } from 'next-seo'
 
 export async function getStaticProps() {
   const nfts = websiteConfig.classic_referendums
@@ -18,6 +19,7 @@ export async function getStaticProps() {
 function Home({ nfts }) {
   return (
     <>
+      <NextSeo title="Home" />
       <section className="h-auto relative">
           <div className="relative px-6 py-20 sm:px-10 mb-10 overflow-visible">
             <div className="relative z-10 mx-auto py-3 text-left md:text-center max-w-screen-xl overflow-hidden pointer-events-none">
