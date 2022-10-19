@@ -19,6 +19,6 @@ export default function Logo(props) {
         </div>
         <span className="pl-1 sm:pl-2 md:pl-4">Proof of Chaos</span>
       </a>
-      </Link>
+    </Link>
   )
 }

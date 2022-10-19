@@ -3,10 +3,12 @@ import { ApolloClient, InMemoryCache, gql as agql } from '@apollo/client';
 import {websiteConfig} from "../data/website-config";
 import { useQuery } from "@tanstack/react-query";
 import useAppStore from "../zustand";
-import { joinArrays, KSMFormatted, microToKSM, microToKSMFormatted } from "../utils";
-import { QUERY_REFERENDUMS } from "./queries";
+import { joinArrays, KSMFormatted, microToKSM, microToKSMFormatted, getEndDateByBlock } from "../utils";
 import { getApi } from '../data/chain';
+import { getQuizDataForRef } from './use-quizzes';
 import { reject } from 'lodash';
+import { QUERY_REFERENDUMS } from "./queries";
+
 
 const BLOCK_DURATION = 6000;
 const THRESHOLD_SUPERMAJORITYAPPROVE = 'SuperMajorityApprove'
@@ -106,14 +108,10 @@ export const activeReferendumFetcher = async (ksmAddress) => {
     const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
     const PAData = await getPADataForRefs([referendum.index.toString()]);
     const PADatum = PAData?.[0]
-    console.log( 'paaaaadata', PAData, endDate, PADatum )
+    const quizData = await getQuizDataForRef(referendum.index.toString());
     const threshold = getPassingThreshold(referendum, totalIssuance)
-    const refObj = referendumObject(referendum, threshold, endDate, PADatum, ksmAddress)
-    console.log( 'ref obj', refObj )
-    referendums.push( refObj );
+    referendums.push(referendumObject(referendum, threshold, endDate, PADatum, quizData.quizzes, ksmAddress));
   }
-
-  console.log( 'aaaaaactive referendums', referendums )
 
   return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
 };
@@ -127,11 +125,6 @@ const getPassingThreshold = (referendum, totalIssuance) => {
     default:
       return parseInt(referendum.votedTotal.toString()) / 2
   }
-}
-
-const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {
-  let newStamp = parseInt(currentTimestamp.toString()) + ((parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) * BLOCK_DURATION)
-  return new Date(newStamp);
 }
 
 async function getPADataForRefs(referendumIDs) {
@@ -149,7 +142,6 @@ async function getPADataForRefs(referendumIDs) {
             ...referendumPost
           }
         }
-
         fragment referendumPost on posts {
           content
           created_at
@@ -184,7 +176,7 @@ const parseCastVote = (vote) => {
   }
 }
 
-const referendumObject = (referendum, threshold, endDate, PAData, ksmAddress) => {
+const referendumObject = (referendum, threshold, endDate, PAData, quizData, ksmAddress) => {
   let title = PAData?.title
 
   if (!title && referendum.image) {

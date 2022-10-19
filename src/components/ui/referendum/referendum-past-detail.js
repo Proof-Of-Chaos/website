@@ -1,17 +1,14 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import cn from 'classnames'
 import Button from "../button"
 import ReferendumCountdown from './referendum-countdown'
 import ReferendumStats from "./referendum-stats";
 import { useModal } from "../../modals/context";
-import { useQuizzes } from "../../../hooks/use-quizzes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown, faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from 'react-markdown'
 import { KSMFormatted, microToKSM, microToKSMFormatted } from "../../../utils";
 import Loader, { InlineLoader } from "../loader";
-import { SingleNFT } from "../../nft/ref-nfts";
-import { useUserNfts } from "../../../hooks/use-nfts";
 import Image from "next/image";
 import { useConfig } from "../../../hooks/use-config";
 
@@ -80,7 +77,6 @@ export default function ReferendumPastDetail( {
 
   const UserReward = () => {
     if ( userNFT ) {
-      const { decision, balance, lockPeriod } = userVote
       return (
         <div className="flex flex-col">
           You received

@@ -158,16 +158,17 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
         </form>
         <div className="mt-6">
           <Button
-            className="mr-2 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white"
+            className="mr-2 w-full sm:w-auto bg-gradient-to-r from-green-500/80 to-green-700/80 text-white"
             onClick={ async () => onClickCastVote(true) }>
             Vote Aye
           </Button>
           <Button
-            className="mr-2 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white text-4xl"
+            className="mr-2 w-full  mt-2 sm:mt-0 sm:w-auto bg-gradient-to-r from-red-500/80 to-red-700/80 text-white text-4xl"
             onClick={ async () => onClickCastVote(false) }>
             Vote Nay
           </Button>
           <Button
+            className="w-full sm:w-auto mt-2 sm:mt-0 "
             variant="calm"
             onClick={ closeModal }>
             Cancel

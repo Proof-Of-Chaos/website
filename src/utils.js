@@ -193,6 +193,7 @@ export {
   microToKSM,
   microToKSMFormatted,
   trimAddress,
+  getEndDateByBlock,
   mergeArrays,
   joinArrays,
   lucksForConfig,
