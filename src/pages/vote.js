@@ -18,7 +18,7 @@ function Vote() {
     <>
       <NextSeo
         title="Vote on Referendums"
-        description="Get incentive NFTs for voting on Referenda"
+        description="Get incentive NFTs for voting on referendums"
       />
       { !knowsAboutLuckBoost && <section className="bg-gradient-to-r from-blue-500/80 to-purple-500/80">
         <div className="px-4 py-8 mx-auto max-w-6xl">
