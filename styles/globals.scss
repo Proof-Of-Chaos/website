@@ -248,3 +248,7 @@ table > tbody > tr:hover {background-color: #ddd;}
 table td {
   @apply p-2
 }
+
+button, a {
+  cursor: pointer;
+}
