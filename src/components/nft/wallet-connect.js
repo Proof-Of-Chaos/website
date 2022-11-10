@@ -4,7 +4,7 @@ import { faWallet } from '@fortawesome/free-solid-svg-icons'
 import { useModal } from "../modals/context"
 import { useEffect, useState } from 'react'
 import useAppStore from "../../zustand"
-import Identicon from "../ui/identicon"
+import Identicon from "../ui/IdenticonWithoutSSR"
 import classNames from "classnames"
 import { WalletSelect } from '@talisman-connect/components';
 import { encodeAddress } from '@polkadot/keyring'
@@ -63,11 +63,11 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
           >
             { connectedAccount ?
               <>
-                <div className="identicon-wrap hidden sm:block">
+                <div className="identicon-wrap hidden sm:block h-[32px]">
                   <Identicon
-                    size={32}
-                    id={connectedAccount.address}
-                    schema="polkadot"
+                    value={ connectedAccount.address }
+                    size={ 32 }
+                    theme={ 'polkadot' }
                   />
                 </div>
                 <span className="pl-0 sm:pl-3">{ connectedAccount.name }</span>
