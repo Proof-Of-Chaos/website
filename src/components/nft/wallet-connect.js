@@ -49,7 +49,6 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
         onAccountSelected={ (newAccount) => {
           queryClient.invalidateQueries(['distributions'])
           queryClient.invalidateQueries(['votes'])
-          console.log( 'new account selected', newAccount)
           if ( connectedAccounts?.length ) {
             const connectedAccountIndex = connectedAccounts.findIndex( acc => acc.address === newAccount.address )
             updateConnectedAccount( connectedAccountIndex )
@@ -63,14 +62,14 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
           >
             { connectedAccount ?
               <>
-                <div className="identicon-wrap hidden sm:block h-[32px]">
+                <div className="identicon-wrap h-[32px]">
                   <Identicon
                     value={ connectedAccount.address }
                     size={ 32 }
                     theme={ 'polkadot' }
                   />
                 </div>
-                <span className="pl-0 sm:pl-3">{ connectedAccount.name }</span>
+                <span className="pl-0 sm:pl-3 hidden sm:block">{ connectedAccount.name }</span>
               </>
               :
               <>
