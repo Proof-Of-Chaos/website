@@ -25,7 +25,7 @@ function PageNFTs({ nfts }) {
         description='View all NFTs we sent out and see additional statistics'
       />
       <section className="mx-auto w-full max-w-6xl text-sm sm:pt-10 4xl:pt-14">
-        { isLoading && <Loader />}
+        { isLoading && <Loader text="loading NFTs"/>}
         { data && Object.values( groupedNFTs ).map( nfts => {
             return <NFTDetail
               key={ objectHash(nfts) }

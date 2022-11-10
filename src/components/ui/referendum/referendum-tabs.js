@@ -22,7 +22,7 @@ export function PastReferendumList( ) {
 
   return (
     isMounted && <>
-    { isLoading && <Loader /> }
+    { isLoading && <Loader text="loading referendums"/> }
     { ! isLoading && referendums?.length > 0 ?
         referendums?.map( (referendum, idx) => (
           <div
@@ -49,7 +49,7 @@ export function ReferendumList() {
   const { data: referendums, isLoading, error } = useReferendums()
 
   if ( isLoading ) {
-    return <Loader />
+    return <Loader text="loading referendums" />
   }
 
   if ( error ) {
