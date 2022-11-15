@@ -91,7 +91,7 @@ export function SingleNFT( {
           </span>
         }
         { isNumber( score ) && score > 0 && <NFTScore score={ score } /> }
-        { isMounted && floorNFTs?.nfts?.length && <FloorPrice nfts={ floorNFTs.nfts } url={ url } /> }
+        { isMounted && parseInt(ref.split(" ")[1]) > 191 && floorNFTs?.nfts?.length > 0 && <FloorPrice nfts={ floorNFTs.nfts } url={ url } /> }
         <span className={ `absolute z-10 -ml-4 -mt-3 px-2 nft-${rarity}` }>{ rarity }</span>
         { thumb && thumb !== '' ?
           <Image
