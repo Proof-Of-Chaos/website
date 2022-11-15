@@ -1,4 +1,43 @@
 import { gql as agql } from '@apollo/client'
+import { websiteConfig } from '../data/website-config'
+
+export const GET_REFERENDUM_NFTS = agql`
+query PaginatedNFTQuery(
+    $where: nfts_bool_exp, 
+    $orderBy: [nfts_order_by!], 
+    $distinctNftsDistinctOn2: [nfts_select_column!]
+) {
+    nfts(
+        where: $where, 
+        order_by: $orderBy, 
+        distinct_on: $distinctNftsDistinctOn2
+    ) {
+      ...NFT
+    }
+}
+  fragment NFT on nfts {
+      id
+      collectionId
+      metadata_name
+      metadata_properties
+      metadata_description
+      symbol
+      resources {
+        thumb
+      }
+  }
+`
+
+export const GET_NFT_FLOOR = agql`
+query Referendums($where: nfts_bool_exp, $orderBy: [nfts_order_by!], $limit: Int) {
+  nfts(where: $where, order_by: $orderBy, limit: $limit) {
+    symbol
+    burned
+    forsale
+    properties
+  }
+}
+`
 
 export const QUERY_REFERENDUMS = agql`
   query Referendums(

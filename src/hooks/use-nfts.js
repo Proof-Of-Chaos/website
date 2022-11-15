@@ -5,7 +5,46 @@ import {
 } from "@tanstack/react-query";
 import { request, gql } from "graphql-request";
 
-const ENDPOINT_NFT_SCORES = 'https://scores.proofofchaos.app/shelf/nfts'
+import { GET_NFT_FLOOR, GET_REFERENDUM_NFTS } from "./queries";
+
+async function fetchFloorNFT( symbol ) {
+  if ( typeof symbol === 'undefined ') {
+    return new Promise.resolve({ data: { nfts: [] } })
+  }
+
+  return request(
+    websiteConfig.singular_graphql_endpoint,
+    GET_NFT_FLOOR,
+    {
+      "where": {
+        "collectionId": {
+          "_in": [
+            "3208723ec6f65df810-ITEM",
+            "3208723ec6f65df810-ITEMXEVRLOOT",
+            "3208723ec6f65df810-ITEMXRMRK",
+            "3208723ec6f65df810-ITEMXMT",
+            "3208723ec6f65df810-ITEMXPUNKS",
+            "3208723ec6f65df810-ITEMXARCHIVERSE"
+          ]
+        },
+        "burned": {
+          "_eq": ""
+        },
+        "symbol": {
+          "_eq": symbol
+        },
+        "forsale": {
+          "_neq": 0
+        }
+      },
+      "orderBy": [
+        {
+          "forsale": "asc"
+        }
+      ],
+    }
+  )
+}
 
 async function fetchNFTsForUser( address ) {
   return request(
@@ -37,33 +76,6 @@ async function fetchNFTsForUser( address ) {
     }
   )
 }
-
-const GET_REFERENDUM_NFTS = gql`
-query PaginatedNFTQuery(
-    $where: nfts_bool_exp, 
-    $orderBy: [nfts_order_by!], 
-    $distinctNftsDistinctOn2: [nfts_select_column!]
-) {
-    nfts(
-        where: $where, 
-        order_by: $orderBy, 
-        distinct_on: $distinctNftsDistinctOn2
-    ) {
-      ...NFT
-    }
-}
-  fragment NFT on nfts {
-      id
-      collectionId
-      metadata_name
-      metadata_properties
-      metadata_description
-      symbol
-      resources {
-        thumb
-      }
-  }
-`
 
 async function fetchReferendumNFTsDistinct() {
   return await request(
@@ -140,8 +152,14 @@ export const useUserNfts = () => {
 
 export const useNFTScores = () => {
   return useQuery(['NFTScores'], async () => {
-    const data = await fetch( ENDPOINT_NFT_SCORES )
+    const data = await fetch( websiteConfig.proofofchaos_scores_endpoint )
     const scores = await data.json()
     return scores
   })
+}
+
+export const useFloorNFT = ( symbol ) => {
+  return useQuery(['FloorNFT', symbol ], async () => {
+    return await fetchFloorNFT( symbol )
+  } )
 }
