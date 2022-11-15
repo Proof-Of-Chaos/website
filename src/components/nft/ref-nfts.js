@@ -91,7 +91,7 @@ export function SingleNFT( {
           </span>
         }
         { isNumber( score ) && score > 0 && <NFTScore score={ score } /> }
-        { isMounted && parseInt(ref.split(" ")[1]) > 191 && floorNFTs?.nfts?.length > 0 && <FloorPrice nfts={ floorNFTs.nfts } url={ url } /> }
+        { isMounted && showFloor && parseInt(ref.split(" ")[1]) > 191 && floorNFTs?.nfts?.length > 0 && <FloorPrice nfts={ floorNFTs.nfts } url={ url } /> }
         <span className={ `absolute z-10 -ml-4 -mt-3 px-2 nft-${rarity}` }>{ rarity }</span>
         { thumb && thumb !== '' ?
           <Image
@@ -150,6 +150,7 @@ export default function NFTDetail( { nfts, scores } ) {
                   nft={ nftByRarity }
                   score={ scores?.[rarity] }
                   owned={ isOwned(nftByRarity.ref, userNFTs, nftByRarity.symbol, nftByRarity.rarity)}
+                  showFloor={ true }
                 />
               </div>
             )

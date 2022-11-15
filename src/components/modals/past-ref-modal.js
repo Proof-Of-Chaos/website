@@ -318,6 +318,7 @@ export default function PastReferendumModal( { id } ) {
                     owned={ userReceivedNFT }
                     ownedText={ 'received' }
                     dimensions={ 150 }
+                    showFloor={ false }
                   />
                 </div>
               }
