@@ -27,14 +27,7 @@ async function fetchNFTsForUser( address ) {
           "_eq": address,
         },
         "collectionId": {
-          "_in": [
-            "3208723ec6f65df810-ITEM",
-            "3208723ec6f65df810-ITEMXEVRLOOT",
-            "3208723ec6f65df810-ITEMXRMRK",
-            "3208723ec6f65df810-ITEMXMT",
-            "3208723ec6f65df810-ITEMXPUNKS",
-            "3208723ec6f65df810-ITEMXARCHIVERSE",
-        ],
+          "_in": websiteConfig.singular_referendum_collections,
         }
       }
     }
@@ -76,14 +69,7 @@ async function fetchReferendumNFTsDistinct() {
         "_eq": ""
       },
       "collectionId": {
-        "_in": [
-          "3208723ec6f65df810-ITEM",
-          "3208723ec6f65df810-ITEMXEVRLOOT",
-          "3208723ec6f65df810-ITEMXRMRK",
-          "3208723ec6f65df810-ITEMXMT",
-          "3208723ec6f65df810-ITEMXPUNKS",
-          "3208723ec6f65df810-ITEMXARCHIVERSE"
-        ]
+        "_in": websiteConfig.singular_referendum_collections
       },
       "metadata_properties": {
         "_contains": {
