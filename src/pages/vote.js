@@ -52,7 +52,7 @@ function Vote() {
           </div>
         </div>
       </section> }
-      <section className="mx-auto w-full max-w-[1160px] text-sm sm:pt-10 4xl:pt-14">
+      <section className="mx-auto w-full max-w-7xl text-sm sm:pt-10 4xl:pt-14">
         <ReferndumTabs />
       </section>
     </>
