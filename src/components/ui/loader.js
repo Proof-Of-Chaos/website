@@ -17,8 +17,14 @@ export default function Loader({
       className="pb-2"
     />
     <span className={ styles.text }>
-      { text.split("").map( 
-        char => <span className={ styles.char } key={ char }>{ char }</span>
+      { text.split("").map(
+        (char, idx) => 
+          <span
+            className={ styles.char }
+            key={ `loader-${char}${idx}` }
+          >
+            { char }
+          </span>
       )}
     </span>
   </div>
@@ -26,7 +32,7 @@ export default function Loader({
 
 export function InlineLoader() {
   return (
-    <div className="loader inline-flex">
+    <div className={ styles.inlineLoader }>
       <span>.</span>
       <span>.</span>
       <span>.</span>

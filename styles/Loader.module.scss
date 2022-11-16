@@ -54,3 +54,17 @@
     }
   }
 }
+
+.inlineLoader {
+  display: inline-flex;
+
+  span {
+    animation: loading01 800ms infinite;
+
+    @for $i from 0 through 3 {
+      &:nth-child(#{$i+1}) {
+        animation-delay: #{$i*.1}s;
+      }
+    }
+  }
+}

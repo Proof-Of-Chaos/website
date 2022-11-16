@@ -9,7 +9,7 @@ const configFetcher = async ( refIndex ) => {
     QUERY_CONFIG,
     {
       "where": {
-        "referendumIndex_eq": refIndex
+        "referendumIndex_eq": parseInt( refIndex )
       }
     }
   );

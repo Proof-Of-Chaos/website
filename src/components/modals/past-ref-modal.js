@@ -1,6 +1,5 @@
 import { useConfig } from '../../hooks/use-config';
 import { useUserDistributions } from '../../hooks/use-distributions';
-import { useUserVotes } from '../../hooks/use-votes';
 import { getLuckMultiplier, lucksForConfig, microToKSM } from '../../utils';
 import { useModal } from "./context";
 import { VictoryPie } from 'victory';

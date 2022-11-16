@@ -7,17 +7,20 @@ import { toast } from 'react-toastify';
 import { useEffect, useState } from "react";
 import { getWalletBySource} from "@talisman-connect/wallets";
 import useAppStore from "../../zustand";
-import { useAccountVote } from "../../hooks/use-referendums";
 import useAccountBalance from "../../hooks/use-account-balance";
 import { microToKSM } from '../../utils'
 import { isNumber } from "lodash";
 import { InlineLoader } from "../ui/loader";
+import { useQueryClient } from "@tanstack/react-query";
+import { useLatestUserVoteForRef } from "../../hooks/use-votes";
 
-export default function ReferendumVoteModal( { id, title, userAnswers } ) {
-  const { data: userVote } = useAccountVote( id );
+export default function ReferendumVoteModal( { index, title, userAnswers } ) {
+  const { data: latestUserVote } = useLatestUserVoteForRef( index )
   const { data: accountBalance, isLoading: isBalanceLoading } = useAccountBalance()
   const availableBalance = microToKSM( accountBalance?.data?.free )
   const { closeModal } = useModal();
+  const queryClient = useQueryClient()
+
   const VOTE_LOCK_OPTIONS = [
     {
       value: 'None',
@@ -51,7 +54,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
 
   const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
   const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
-  const hasUserSubmittedAnswers = useAppStore((state) => state.user.quizAnswers?.[id]?.submitted )
+  const hasUserSubmittedAnswers = useAppStore((state) => state.user.quizAnswers?.[index]?.submitted )
 
   const [ state, setState ] = useState({
     'wallet-select': connectedAccount?.address,
@@ -64,10 +67,10 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
   useEffect( () => {
     setState( {
       ...state,
-      'vote-amount': userVote.balance,
-      'vote-lock': userVote.conviction,
+      'vote-amount': microToKSM(latestUserVote?.balance?.value),
+      'vote-lock': `Locked${latestUserVote.lockPeriod}x`
     })
-  }, [ userVote ])
+  }, [ latestUserVote ])
 
   const setFormFieldValue = (e) => {
     setState({
@@ -86,14 +89,17 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
         castVote(
           wallet.signer,
           aye,
-          id,
+          index,
           state['wallet-select'],
           balance,
           state['vote-lock'],
           state['userAnswers']
-        ).then( ( data ) => { console.log( 'castvotedata', data); closeModal() } ),
+        ).then( ( ) => {
+          queryClient.invalidateQueries({ queryKey: ['vote', connectedAccount?.ksmAddress, index ] })
+          closeModal()
+        } ),
         {
-          pending: `sending your vote for referendum ${ id }`,
+          pending: `sending your vote for referendum ${ index }`,
           success: 'Vote successfully recorded 🗳️',
           error: {
             render({data}){
@@ -109,17 +115,18 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
     }
   }
 
-  const convictionString = userVote.conviction === 'None' ? 'no' : userVote.conviction?.substring(6);
+  const convictionString = latestUserVote?.lockPeriod
+  const latestVoteBalance = microToKSM(latestUserVote?.balance?.value)
   const voteAmountLabel = isBalanceLoading ? <>{`Value (available: ` } <InlineLoader /> {`)`} </> : `Value (available: ${ availableBalance?.toFixed( 2 ) } KSM)`
 
   return(
     <>
       <Dialog.Title as="h3" className="text-2xl font-medium leading-6 text-gray-900 pb-2">
-        Vote on Referendum { id }
+        Vote on Referendum { index }
       </Dialog.Title>
       <div className="pr-4 overflow-y-scroll flex-1">
         <div className="mt-4">
-          { title }
+          { title } { JSON.stringify(state) } { JSON.stringify( latestUserVote ) }
         </div>
         {
           hasUserSubmittedAnswers &&
@@ -127,9 +134,9 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
           Thanks for answering those questions, your answers were successfully recorded. If you answered correctly, you will have a higher chance of receiving Rare and Epic Items for this Referendum.
           </div>
         }
-        { userVote &&
+        { latestUserVote &&
             <div className="bg-amber-300 p-3 rounded-lg text-sm mt-4">
-              You already voted <b>{ userVote.aye ? 'Aye' : 'Nay' }</b> on this referendum with <b>{ userVote.balance } KSM</b> and <b>{ convictionString }</b> conviction. <br /> Voting again will replace your current vote.
+              You already voted <b>{ latestUserVote.decision === 'yes' ? 'Aye' : 'Nay' }</b> on this referendum with <b>{ latestVoteBalance } KSM</b> and <b>{ convictionString }x</b> conviction. <br /> Voting again will replace your current vote.
             </div>
           }
         <form className="mt-4 pl-1">
@@ -141,7 +148,7 @@ export default function ReferendumVoteModal( { id, title, userAnswers } ) {
             max={ isNaN(availableBalance) ? undefined : availableBalance }
             value={ state["vote-amount"] }
             className="text-base"
-            placeholder={ userVote?.balance ?? '' }
+            placeholder={ latestVoteBalance ?? '' }
             tooltip="The value is locked for the selected time below"
             onChange={setFormFieldValue.bind(this)}
           />

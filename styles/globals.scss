@@ -30,9 +30,18 @@
   height: auto;
 }
 
-pre {
-  overflow: scroll;
+pre{
   max-width: 100%;
+  word-break: break-all;
+  overflow: hidden;
+  @apply text-xs px-2 py-3;
+}
+
+code {
+  max-width: 100%;
+  word-break: break-all;
+  overflow: hidden;
+  @apply text-xs py-3;
 }
 
 .bg-dark {
@@ -163,7 +172,7 @@ pre {
   }
 
   a {
-    @apply text-brand-600;
+    @apply text-brand-700;
   }
 
   main a {
@@ -236,4 +245,8 @@ table td {
 
 button, a {
   cursor: pointer;
+}
+
+.referendum-heading {
+  @apply text-3xl mb-4 font-bold;
 }

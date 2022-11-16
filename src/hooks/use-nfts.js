@@ -47,7 +47,8 @@ async function fetchNFTsForUser( address ) {
         nfts(where: $where) {
           symbol,
           metadata,
-          burned
+          burned,
+          metadata_properties,
           resources {
             thumb
           }

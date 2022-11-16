@@ -1,156 +1,230 @@
-import { useEffect, useState } from "react"
-import cn from 'classnames'
+import { useState } from "react"
+import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid-svg-icons";
+import ReactMarkdown from 'react-markdown'
+
 import Button from "../button"
 import ReferendumCountdown from './referendum-countdown'
 import ReferendumStats from "./referendum-stats";
 import { useModal } from "../../modals/context";
-import { useQuizzes } from "../../../hooks/use-quizzes";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import ReactMarkdown from 'react-markdown'
-import useAppStore from "../../../zustand";
-import WalletConnect from "../../nft/wallet-connect";
-import { useAccountVote } from "../../../hooks/use-referendums";
+import { KSMFormatted, microToKSM } from "../../../utils";
+import { InlineLoader } from "../loader";
+import { useConfig } from "../../../hooks/use-config";
+import ReferendumVoteButtons from "./referendum-vote-buttons";
+import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
 
-export default function ReferendumDetail({ referendum }) {
-  let [isExpanded, setIsExpanded] = useState(false);
+const toPercentage = (part, whole) => {
+  return Math.round(parseInt(part) / parseInt(whole) * 100)
+}
+
+export default function ReferendumDetail( {
+  referendum,
+  userVote,
+  isUserVotesLoading,
+  userNFT,
+} ) {
+  const {
+    count_aye,
+    count_nay,
+    voted_amount_aye,
+    voted_amount_nay,
+    voted_amount_total,
+    title,
+    index,
+    description,
+    status,
+    ends_at,
+    ended_at,
+  } = referendum
+
   const { openModal } = useModal();
+  const { data: refConfig } = useConfig( index )
+  const { data: latestUserVote } = useLatestUserVoteForRef( index )
 
-  const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
-  const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
+  const isActive = ended_at === null;
+  const hasConfig = refConfig && refConfig.options
 
-  const { data: userVote } = useAccountVote( referendum.id )
-
-  const hasUserSubmittedQuiz = referendum?.submissions ? referendum?.submissions.some(e => e.wallet === connectedAccount?.ksmAddress) : false
-
-  const referendumBadges = () => {
-    const ret = '';
-    if ( referendum?.isPassing ) {
-      ret = <span className="is-passing">is currently passing</span>
-    } else {
-      ret = <span className="is-failing">is currently failing</span>
-    }
-    return ret
+  const EndedAt = () => {
+    return(
+      <div className="ended-at">
+        <span className="end-time block">
+          <FontAwesomeIcon icon={ faClock } className="pr-1 h-3" />{ new Date(ended_at).toUTCString() }
+        </span>
+        <span className="end-block block">
+          <FontAwesomeIcon icon={ faCube } className="pr-1 h-3" />{ ends_at }
+        </span>
+      </div>
+    )
   }
 
-  return (
-    <div
-      className={cn(
-        'mb-10 bg-white p-2 relative md:p-5 transition-shadow duration-200 dark:bg-light-dark xs:p-6 border-b-4 rounded-md border-t-2 border-l-2 border-r-2 border-gray-400 border-b-gray-500',
-        {
-          'shadow-lg': isExpanded,
-          'shadow-card hover:shadow-lg': !isExpanded,
-        }
-      )}
-    >
-      <div className="flex flex-wrap w-full flex-row justify-between">
-        <div className="self-start p-2 w-full md:w-2/3 border-gray-200 border-r border-dashed">
-          <h3
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="cursor-pointer text-xl leading-normal dark:text-gray-100 pr-2"
-          >
-            {referendum.title}
-          </h3>
-          <p className="text-xl mt-1 text-gray-600 dark:text-gray-400 border-b border-gray-200 pb-4 mb-4 mr-8 border-dashed">
-            Referendum #{referendum.id}
-          </p>
-          {referendum.status === 'active' && (
-            <>
-              { ! isExpanded ? (
-                <>
-                  <div
-                    className="order-1 dynamic-html leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8 max-h-60 overflow-hidden"
-                  >
-                    <ReactMarkdown>{ referendum.description }</ReactMarkdown>
-                  </div>
-                  <Button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="mt-4 mr-4 w-full xs:w-auto"
-                    variant="black"
-                    size="mini"
-                  >
-                    Show More <FontAwesomeIcon className="pl-3" icon={ faChevronDown } />
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <div className="order-1">
-                    <div
-                      className="dynamic-html overflow-scroll leading-relaxed text-gray-600 dark:text-gray-400 pr-0 md:pr-8"
-                    >
-                      <ReactMarkdown>{ referendum.description }</ReactMarkdown>
-                      <div className="referendum-meta pt-2 mt-2">
-                        <a className="pr-3" href={ `https://kusama.polkassembly.io/referendum/${ referendum.id }` }>View on Polkassembly ⤻</a>
-                        <a href={ `https://kusama.subscan.io/referenda/${ referendum.id }` }>View on Subscan ⤻</a>
-                      </div>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="mt-3 mr-4 w-full xs:w-auto text-sm"
-                    variant="black"
-                    size="mini"
-                  >
-                    Hide Details <FontAwesomeIcon className="pl-3" icon={ faChevronUp } />
-                  </Button>
-                </>
-              )}
-            </>
-          )}
-        </div>
-        {['active'].indexOf(referendum.status) !== -1 && (
-          <div className="before:content-[' '] text-center w-full md:w-1/3 mt-4 pt-2 md:mt-0 content-start relative mb-5 h-full gap-2 pb-5 before:absolute before:bottom-0 before:h-[1px] before:w-full ltr:before:left-0 rtl:before:right-0 dark:border-gray-700 dark:before:border-gray-700 md:mb-0 md:pb-0 md:before:h-full md:before:w-[1px] ltr:md:pl-8 rtl:md:pr-8">
-            <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-xl">
-              Voting ends in
-            </h3>
-            <ReferendumCountdown date={referendum.executed_at} />
-              { connectedAccount ?
-                <>
-                  { referendum.quiz?.questions &&
-                    <Button
-                      onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
-                      className="mt-4 w-full"
-                      variant={ hasUserSubmittedQuiz ? 'calm' : 'primary' }
-                    >
-                      { hasUserSubmittedQuiz ? 'Submit Quiz Again' : 'Take Quiz' }
-                    </Button>
-                  }
-                  <Button
-                    onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
-                    className="mt-4 w-full"
-                    variant={ userVote ? 'calm' : 'primary' }
-                  >
-                    { userVote ? 'Vote Again' : 'Vote Now' }
-                  </Button>
-                </>
-              :
-              <>
-              {referendum.quiz?.questions && <WalletConnect
-                  className="w-full mt-4"
-                  variant="primary"
-                  title="Take Quiz"
-                  onAccountSelected={ ( ) => { 
-                    openModal( 'VIEW_REFERENDUM_QUIZ', referendum )
-                  } }
-                />
-              }
-              <WalletConnect
-                className="w-full mt-2"
-                variant="primary"
-                title={ 'Vote Now' }
-                onAccountSelected={ ( ) => { 
-                  openModal( 'VIEW_REFERENDUM_VOTE', referendum )
-                } }
-              />
-            </>
-          }
-          <div className="my-4">
-            <ReferendumStats aye={ referendum.aye } nay={ referendum.nay } />
-          </div>
-          { referendumBadges() }
-          </div>
-        )}
+  const ReferendumBadges = () => {
+    return <>
+      { status === 'Executed' || status === 'Passed' ? 
+        <div
+        className="p-2 bg-green-400 rounded-md mb-4 shadow-sm hover:shadow-md transition-shadow"
+      >
+        { status }
       </div>
+      :
+      <div
+        className="p-2 bg-red-400 rounded-md mb-4 shadow-sm hover:shadow-md transition-shadow"
+      >
+        { status }
+      </div>
+      }
+    </>
+  }
+
+  const UserVote = () => {
+    if ( latestUserVote ) {
+      const { decision, balance, lockPeriod } = latestUserVote
+      return (
+        <div className="flex flex-row mb-4 justify-between rounded-md bg-gray-100 shadow-sm hover:shadow-md transition-shadow px-6 py-4 text-sm flex-wrap">
+        { ! isUserVotesLoading && <>
+          <div className="flex-col w-full text-center">
+            <div className="">
+              You voted
+                <b>
+                  { decision === 'yes' ? 
+                    <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span> :
+                    <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>
+                  }
+                </b>
+            </div>
+            <div className=""><span>with <b>{ microToKSM( balance.value ) } KSM</b></span></div>
+            <div className=""><span>and conviction <b>{ lockPeriod }</b></span></div>
+          </div>
+        </>}
+        </div>
+      )
+    }
+
+    if ( isUserVotesLoading ) {
+      return (<InlineLoader />)
+    }
+
+    if ( isActive ) {
+      return <p className="mb-4 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
+        { JSON.stringify( latestUserVote ) }
+        You did not vote on <br/> referendum { index } yet.<br/>{ `Vote to receive NFT rewards.` }
+      </p>
+    } else {
+      return <p className="mb-4 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
+        { JSON.stringify( latestUserVote ) }
+        You did not vote on <br/> referendum { index }.
+      </p>
+    }
+  }
+
+  const UserReward = () => {
+    const rarity = userNFT?.metadata_properties?.rarity?.value
+    if ( userNFT ) {
+      return (
+        <div className="flex flex-row justify-between p-4 bg-gray-100 rounded-md mb-4 shadow-sm hover:shadow-md transition-shadow items-center">
+          <div >
+            You received
+            { rarity && <span className={ `mt-2 block nft-${ rarity }` }>{ rarity }</span> }
+          </div>
+          <Image
+            src={`https://ipfs.rmrk.link/ipfs/${ userNFT.resources[0].thumb.replace('ipfs://ipfs/', '') }`}
+            alt={ `GovRewards NFT for Referendum ${ index }` }
+            width={ 100 }
+            height={ 100 }
+          />
+        </div>
+      )
+    }
+  }
+
+  const ReferendumLinks = ( { referendumId } ) => (
+    <div className="referendum-more py-2 px-4 mt-2 bg-gray-100 rounded-md">
+      <a className="pr-3" href={ `https://kusama.polkassembly.io/referendum/${ referendumId }` }>View on Polkassembly ⤻</a>
+      <a href={ `https://kusama.subscan.io/referenda/${ referendumId }` }>View on Subscan ⤻</a>
     </div>
+  )
+
+  const refMeta = (
+    <>
+      { isActive &&
+        <>
+          <div className="p-4 bg-gray-100 rounded-md mb-4 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-gray-900 mb-3 dark:md:text-gray-100 text-xl">
+              Referendum {index} ends in
+            </h3>
+            <ReferendumCountdown endBlock={ends_at} />
+          </div>
+          <UserVote />
+          <ReferendumVoteButtons referendum={ referendum } />
+        </>
+      }
+      { ! isActive &&
+        <>
+          <div className="p-4 bg-gray-100 rounded-md mb-4 shadow-sm transition-shadow hover:shadow-md">
+            <h3 className="text-gray-900 mb-3 dark:md:text-gray-100 text-xl">
+              Referendum {index} ended at
+            </h3>
+          <EndedAt />
+          </div>
+          <ReferendumBadges />
+          <UserVote />
+          <UserReward />
+        </>
+      }
+      <div className="p-4 bg-gray-100 rounded-md mt-4 shadow-sm transition-shadow hover:shadow-md">
+        <h3 className="text-gray-900 mb-3 dark:md:text-gray-100 text-xl">
+          Referendum {index} results
+        </h3>
+        <ReferendumStats
+          aye={ {
+            vote: count_aye,
+            percentage: toPercentage( voted_amount_aye, voted_amount_total ),
+            voteVolume: KSMFormatted( voted_amount_aye )
+          } }
+          nay={ {
+            vote: count_nay,
+            percentage: toPercentage( voted_amount_nay, voted_amount_total),
+            voteVolume: KSMFormatted( voted_amount_nay )
+          } }
+        />
+      </div>
+    </>
+  )
+
+  return (
+    <section>
+      <div className="mx-auto w-full max-w-7xl rounded-md border-2 border-gray-400 border-b-gray-500 p-2 sm:p-4 md:p-6 my-4 mb-8">
+        <div className="w-full flex flex-wrap">
+          <div className="left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
+            <div className="referendum-heading">
+              <div>Referendum {index}</div>
+            </div>
+            <h3
+              className="cursor-pointer text-xl mb-4"
+            >
+              {title}
+            </h3>
+            <ReactMarkdown>{ description }</ReactMarkdown>
+            <ReferendumLinks referendumId={ referendum.index } />
+          </div>
+          <div className="right text-center w-full sm:w-5/12 md:w-4/12 pt-6 sm:pt-0 sticky self-start top-24 sm:pl-4 md:pl-6">
+            { refMeta }
+          </div>
+        </div>
+        { hasConfig &&
+            <div className="border-gray-200 border-dashed border-t-2 w-full mx-2 mt-6 pt-6 pl-0 ml-0">
+              <Button
+                className="w-full"
+                variant="calm"
+                onClick={ () => openModal( 'PAST_REFERENDUM_DETAIL', { id: index } ) }
+              >
+                <FontAwesomeIcon icon={ faChartLine } className="pr-2" />
+                View Sendout Statistics and Parameters
+                <FontAwesomeIcon icon={ faSliders } className="pl-2" />
+              </Button>
+            </div>
+          }
+      </div>
+    </section>
   )
 }

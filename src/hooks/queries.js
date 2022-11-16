@@ -94,6 +94,27 @@ export const QUERY_VOTES = agql`
   }
 `
 
+export const QUERY_USER_VOTE_FOR_REF = agql`
+  query Votes($where: VoteWhereInput, $orderBy: [VoteOrderByInput!]) {
+    votes(where: $where, orderBy: $orderBy) {
+      referendumIndex
+      decision
+      lockPeriod
+      voter
+      balance {
+        ... on StandardVoteBalance {
+          value
+        }
+        ... on SplitVoteBalance {
+          aye
+          nay
+        }
+      }
+      timestamp
+    }
+  }
+`
+
 /**
  * query configs, accept where with index
  * {

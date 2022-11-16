@@ -66,7 +66,7 @@ export default function ReferendumQuizModal( { id, title, quiz } ) {
 
   return(
     <>
-      <Dialog.Title as="h3" className="text-xl font-medium leg-6 text-gray-900">
+      <Dialog.Title as="h3" className="text-xl font-medium text-gray-900">
         Quiz for Referendum { id }
       </Dialog.Title>
       <div className="mt-1 text-sm">
