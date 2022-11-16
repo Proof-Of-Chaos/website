@@ -138,9 +138,32 @@ export default function ReferendumDetail( {
   }
 
   const ReferendumLinks = ( { referendumId } ) => (
-    <div className="referendum-more py-2 px-4 mt-2 bg-gray-100 rounded-md">
-      <a className="pr-3" href={ `https://kusama.polkassembly.io/referendum/${ referendumId }` }>View on Polkassembly ⤻</a>
-      <a href={ `https://kusama.subscan.io/referenda/${ referendumId }` }>View on Subscan ⤻</a>
+    <div className="referendum-more py-3 px-4 mt-4 bg-gray-100 rounded-md flex items-center">
+      <span className="pr-4">View on</span>
+      <a className="pr-3 grayscale flex" href={ `https://kusama.polkassembly.io/referendum/${ referendumId }` }>
+        <Image
+          src='/logos/polkassembly.svg'
+          alt="polkassembly logo"
+          height={22}
+          width={ 110 }
+        />
+      </a>
+      <a className="flex grayscale invert pr-4" href={ `https://kusama.subscan.io/referenda/${ referendumId }` }>
+        <Image
+          src='/logos/subscan.webp'
+          alt="subscan logo"
+          height={18}
+          width={100}
+        />
+      </a>
+      <a className="flex grayscale" href={ `https://kusama.subsquare.io/democracy/referendum/${ referendumId }` }>
+        <Image
+          src='/logos/subsquare.svg'
+          alt="subscan logo"
+          height={30}
+          width={120}
+        />
+      </a>
     </div>
   )
 
@@ -193,7 +216,7 @@ export default function ReferendumDetail( {
 
   return (
     <section>
-      <div className="mx-auto w-full max-w-7xl rounded-md border-2 border-gray-400 border-b-gray-500 p-2 sm:p-4 md:p-6 my-4 mb-8">
+      <div className="mx-auto w-full max-w-7xl rounded-md border-2 border-gray-400 border-b-gray-500 p-3 sm:p-4 md:p-6 my-4 mb-8">
         <div className="w-full flex flex-wrap">
           <div className="left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
             <div className="referendum-heading">
