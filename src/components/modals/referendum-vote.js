@@ -126,7 +126,7 @@ export default function ReferendumVoteModal( { index, title, userAnswers } ) {
       </Dialog.Title>
       <div className="pr-4 overflow-y-scroll flex-1">
         <div className="mt-4">
-          { title } { JSON.stringify(state) } { JSON.stringify( latestUserVote ) }
+          { title }
         </div>
         {
           hasUserSubmittedAnswers &&
