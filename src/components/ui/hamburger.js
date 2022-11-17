@@ -4,7 +4,7 @@ export default function Hamburger({ isOpen, ...props }) {
   return (
     <Button
       aria-label="Hamburger"
-      className="relative inline-flex border-primary border-1 bg-slate-200 sm:px-3 xs:px-3 px-3 ml-2 shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm text-brand hover:bg-gray-200 dark:hover:bg-gray-800 focus:bg-gray-100 dark:focus:bg-gray-800  bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full h-10 sm:h-12 dark:text-white text-gray-800"
+      className="relative inline-flex border-primary border-1 bg-slate-200 sm:px-3 xs:px-3 px-3 ml-2 shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm text-brand hover:bg-gray-200 dark:hover:bg-gray-800 dark:focus:bg-gray-800  bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full h-10 sm:h-12 dark:text-white text-gray-800"
       {...props}
     >
       <svg

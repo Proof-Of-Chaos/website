@@ -53,7 +53,7 @@ export function MenuItems() {
             <a
               className={
                 cn(
-                  "mx-4 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-black",
+                  "mx-4 text-xl text-center transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-black",
                   item.href === pathname ? 'text-brand-600' : 'text-black'
                 )
               }
@@ -103,7 +103,7 @@ export default function DrawerMenu() {
                         <a
                           className={
                             cn(
-                              "pb-1 text-lg font-medium transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
+                              "py-3 text-xl font-bold transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
                               item.href === pathname ? 'text-brand-600' : 'text-black'
                             )
                           }

@@ -15,7 +15,9 @@ function HeaderRight() {
 
   return(
     <div className="order-last flex shrink-0 items-center">
-      <WalletConnect className="hidden sm:block pl-3 pr-3 ml-3" />
+      <div className="hidden sm:block">
+        <WalletConnect className="pl-3 pr-3 ml-3" />
+      </div>
       <div className="lg:hidden">
         <Hamburger
           isOpen={isOpen}
@@ -48,7 +50,7 @@ export default function Layout({ children }) {
   return(
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="mb-12 flex flex-grow flex-col pt-16 sm:pt-24">
+      <main className="mb-12 flex flex-grow flex-col pt-16 sm:pt-24 overflow-x-hidden">
         {children}
       </main>
       <Footer />
