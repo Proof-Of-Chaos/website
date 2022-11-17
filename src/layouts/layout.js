@@ -50,7 +50,7 @@ export default function Layout({ children }) {
   return(
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="mb-12 flex flex-grow flex-col pt-16 sm:pt-24 overflow-x-hidden">
+      <main className="mb-12 flex flex-grow flex-col pt-16 sm:pt-24">
         {children}
       </main>
       <Footer />

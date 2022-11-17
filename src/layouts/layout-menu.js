@@ -53,7 +53,7 @@ export function MenuItems() {
             <a
               className={
                 cn(
-                  "mx-4 text-xl text-center transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-black",
+                  "mx-4 text-2xl text-center transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-black",
                   item.href === pathname ? 'text-brand-600' : 'text-black'
                 )
               }
@@ -72,7 +72,7 @@ export default function DrawerMenu() {
   const { closeDrawer } = useDrawer();
   return (
     <div className="relative w-full max-w-full bg-white dark:bg-dark w-80">
-      <div className="flex h-24 items-center justify-between overflow-hidden px-6 py-4">
+      <div className="flex h-24 items-center justify-end overflow-hidden px-6 py-4">
         <div className="md:hidden">
           <Button onClick={ closeDrawer } className="hover:shadow-none px-0 mx-0 pl-1">
             <svg className="w-6 h-6" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +103,7 @@ export default function DrawerMenu() {
                         <a
                           className={
                             cn(
-                              "py-3 text-xl font-bold transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
+                              "py-3 text-2xl text-center font-bold transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
                               item.href === pathname ? 'text-brand-600' : 'text-black'
                             )
                           }
