@@ -1,14 +1,17 @@
 import Logo from "./logo";
 
-export default function Footer( props ) {
+export default function Footer( ) {
   return(
-    <footer className="text-gray-700 bg-gray-50 body-font">
-        <div className="container flex flex-col items-center px-8 py-8 mx-auto max-w-7xl sm:flex-row">
-            <p className="mt-4 text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:mt-0">
-              Proof of Chaos © 2022 
-            </p>
-            <p className="sm:ml-4 text-sm text-gray-500 sm:pl-4 sm:border-l sm:border-gray-200">Website by <a className="text-gray-800" href="https://twitter.com/niftesty">niftesty</a> & <a className="text-gray-800" href="https://twitter.com/tumispro">Tum</a></p>
-            <p className="text-sm text-gray-700 sm:pl-4 sm:border-l sm:border-gray-200 sm:ml-4">supported by the Kusama treasury</p>
+    <footer className="text-gray-500 bg-gray-50 body-font">
+        <div className="container flex flex-col md:flex-row flex-wrap items-center px-8 py-8 mx-auto max-w-7xl">
+          <div className="flex flex-row flex-wrap flex-1 content-center md:content-start">
+              <p className="w-full sm:w-auto text-center sm:ml-4 text-sm text-gray-500 sm:pl-4 sm:border-l sm:border-gray-200">
+                Proof of Chaos © { new Date().getFullYear() }
+              </p>
+              <p className="w-full sm:w-auto text-center sm:ml-4 text-sm text-gray-500 sm:pl-4 sm:border-l sm:border-gray-200">Website by <a className="text-gray-800" href="https://twitter.com/niftesty">niftesty</a> & <a className="text-gray-800" href="https://twitter.com/tumispro">Tum</a></p>
+              <p className="w-full sm:w-auto text-center text-sm text-gray-500 sm:pl-4 sm:border-l sm:border-gray-200 sm:ml-4">supported by the Kusama treasury</p>
+              <p className="w-full sm:w-auto text-center text-sm text-gray-500 sm:pl-4 sm:border-l sm:border-gray-200 sm:ml-4">powered by <a className="text-gray-800" href="https://subsquid.io/">subsquid</a></p>
+            </div>
             <span className="inline-flex justify-center mt-4 space-x-5 sm:ml-auto sm:mt-0 sm:justify-start">
                 <a href="https://discord.gg/ugE6Brwj22" className="text-gray-400 hover:text-gray-500">
                     <span className="sr-only">Discord</span>
