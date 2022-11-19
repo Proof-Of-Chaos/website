@@ -1,7 +1,7 @@
 export default function FAQ( props ) {
   return(
 
-    <section className="py-24">
+    <section className="md:py-24">
         <div className="px-8 mx-auto max-w-7xl lg:px-16">
             <h2 className="mb-4 text-xl font-bold md:text-3xl">Frequently Asked Questions</h2>
             <div className="grid grid-cols-1 gap-0 text-gray-600 md:grid-cols-2 md:gap-16">

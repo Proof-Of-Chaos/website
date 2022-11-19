@@ -53,7 +53,7 @@ export function MenuItems() {
             <a
               className={
                 cn(
-                  "mx-4 text-2xl text-center transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-black",
+                  "mx-4 text-lg text-center transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-black",
                   item.href === pathname ? 'text-brand-600' : 'text-black'
                 )
               }
