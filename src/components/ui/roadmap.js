@@ -18,7 +18,7 @@ export default function Roadmap() {
                       <span className="font-medium">Anyone can propose any changes to the project (Including NFT Rewards).</span>
                     </li>
                     <li className="">
-                      <span className="font-medium">Kusama holders can delegate their vote to "Project Managers" so that their continuous attention is not required.</span>
+                      <span className="font-medium">Kusama holders can delegate their vote to &quot;Project Managers&quot; so that their continuous attention is not required.</span>
                     </li>
                   </ul>
                 </li>
