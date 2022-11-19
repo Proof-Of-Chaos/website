@@ -6,46 +6,21 @@ export default function Roadmap() {
           <div className="w-full px-3 lg:w-1/2">
             <div className="w-full lg:max-w-md">
               <h2 className="mb-4 text-3xl font-bold leading-tight tracking-tight font-heading">Our (vague) Roadmap</h2>
-              <p className="mb-4 font-medium tracking-tight text-gray-400 xl:mb-6">RMRK3.0, Decentralization, Soul-Bound NFTs</p>
+              <p className="mb-4 font-medium tracking-tight text-gray-400 xl:mb-6">Bringing the project on chain: Our path to decentralization</p>
               <ul className="list-inside list-default">
                 <li className="">
-                  <span className="font-medium">Integrating RMRK3.0</span>
-                </li>
-                <li className="">
-                  <span className="font-medium">Launching the living room collection<br/>(next stage after shelf)</span>
-                </li>
-                <li className="">
-                  <span className="font-medium">Launching a parallel soul-bound collection<br/>(non-tradable NTFs)</span>
-                </li>
-                <li className="">
-                  <span className="font-medium">Decentralizing + scaling the project<br/>(semi-decentralisation)</span>
+                  <span className="font-medium">Leverage OpenGov (Gov2) to decentralise the project. For more info read <a href="https://forum.polkadot.network/t/bringing-the-governance-rewards-on-chain/769">here</a>.</span>
                   <ul className="list-inside pl-3 list-default">
                     <li className="">
-                      <span className="font-medium">Building dedicated UIs as tools to decentralise the decision making on the send-outs.</span>
+                      <span className="font-medium">All decisions regarding the project are made on-chain by Kusama holders.</span>
                     </li>
-                    <li>
-                      <span className="font-medium">
-                        A platform where…
-                      </span>
-                      <ul className="list-inside list-none pl-4">
-                        <li className="">
-                          <span className="font-medium">… any artist can submit art for the relevant referenda and users can vote on the favourite submission.</span>
-                        </li>
-                        <li className="">
-                          <span className="font-medium">… users can vote on the minimum requirement, royalties and any other send-out related settings</span>
-                        </li>
-                        <li className="">
-                          <span className="font-medium">… the send out script is automatically executed as all parameters have been fully voted on</span>
-                        </li>
-                        <li className="">
-                          <span className="font-medium">… any parachain can easily launch their own governance participation rewards project</span>
-                        </li>
-                      </ul>
+                    <li className="">
+                      <span className="font-medium">Anyone can propose any changes to the project (Including NFT Rewards).</span>
+                    </li>
+                    <li className="">
+                      <span className="font-medium">Kusama holders can delegate their vote to "Project Managers" so that their continuous attention is not required.</span>
                     </li>
                   </ul>
-                </li>
-                <li className="">
-                  <span className="font-medium">Full decentralisation: dApp</span>
                 </li>
               </ul>
             </div>

@@ -7,20 +7,14 @@ export default function FAQ( props ) {
             <div className="grid grid-cols-1 gap-0 text-gray-600 md:grid-cols-2 md:gap-16">
                 <div>
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">What is this project trying to achieve?</h5>
-                    <p>Through our incentives we are looking to get more people involved in dotsama governance!</p>
+                    <p>Through our incentives we are looking to get more people involved in Kusama governance!</p>
 
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">When was this project started? </h5>
-                    <p>The RMRK1 collection launched in referendum 171. In Referendum 181 the composable (RMRK2) shelf collection was launched. </p>
+                    <p>The RMRK1 collection launched in referendum 171. In Referendum 181 the composable (RMRK2) Shelf collection was launched. In Referendum 232 the Frame collection was launched.</p>
 
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">Are you affiliated with Parity or any other organisation?</h5>
                     <p>
                     No, this project was started by the community. The team behind it has no affiliations with any other organisation. 
-                    </p>
-                    <h5 className="mt-10 mb-3 font-semibold text-gray-900">What happens after the shelf is full? 
-</h5>
-                    <p>
-                    The current plan is to move to a living room into which the shelf and future referenda items will be equippable to.
-
                     </p>
                 </div>
                 <div>
@@ -30,11 +24,11 @@ export default function FAQ( props ) {
 
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">Will you expand to other parachains? 
 </h5>
-                    <p>A major focus is to decentralize the project and through this decentralization also make it scalable. We will soon start working on designated UIs that would allow any parachain team to easily launch their own nft rewards collection. 
+                    <p>A major focus is to decentralize the project and through this decentralization also demonstrate a path for any and all parachains to implement their own incentives programs.
 </p>
                     <h5 className="mt-10 mb-3 font-semibold text-gray-900">How is this project financed?
 </h5>
-                    <p>The project is financed through royalty revenues from secondary sales. Recently we also started to generate income through primary sales of some additional collections. The Kusama treasury has been very supportive and stepped in to help us cover our costs whenever we fell short with our revenues.</p>
+                    <p>The project is financed through royalty revenues from secondary sales. Recently we also started to generate income through primary sales of some additional collections. The Kusama treasury has been very supportive and stepped in to help us cover our costs whenever we fell short with our revenues and to help us build faster.</p>
                 </div>
             </div>
         </div>
