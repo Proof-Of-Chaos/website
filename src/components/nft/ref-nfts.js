@@ -51,8 +51,8 @@ const NFTScore = ( { score } ) => {
 const FloorPrice = ( { nfts, url } ) => {
   const sortedFloorNFTs = nfts?.sort(
     (a,b) =>
-      parseFloat(forsale/(1-a.properties.royaltyInfo.value.royaltyPercentFloat/100))
-      -parseFloat(forsale/(1-b.properties.royaltyInfo.value.royaltyPercentFloat/100))
+      parseFloat(a.forsale/(1-a.properties.royaltyInfo.value.royaltyPercentFloat/100))
+      -parseFloat(b.forsale/(1-b.properties.royaltyInfo.value.royaltyPercentFloat/100))
     )
   const floorNFT = sortedFloorNFTs[0]
   const forsale = floorNFT?.forsale
