@@ -28,6 +28,7 @@
     "@tippyjs/react": "^4.2.6",
     "classnames": "^2.3.1",
     "daisyui": "^2.19.1",
+    "dompurify": "^2.4.1",
     "expect": "^29.0.2",
     "fs": "^0.0.1-security",
     "graphql": "^16.5.0",

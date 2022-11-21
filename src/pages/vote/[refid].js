@@ -18,8 +18,17 @@ const ReferendumView = () => {
   const { data: userVotes, isFetching: isUserVotesLoading } = useUserVotes()
   const { data: userNfts } = useUserNfts()
 
+  if ( ! refid ) {
+    return <></>
+  }
+
   if ( ! refid || ! isFinite( refid ) ) {
-    return 'not a valid referendum'
+    return <div className="px-2 xs:px-4 mx-auto max-w-7xl text-sm py-10">
+        <p className="text-lg text-center">Not a valid referendum</p>
+        <Link href="/vote">
+          <a className='no-underline py-1 sm:py-3 inline-block text-base'>⇽ Go Back Referendum Overview</a>
+        </Link>
+    </div>
   }
 
   if ( isLoading ) {

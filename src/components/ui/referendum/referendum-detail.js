@@ -1,8 +1,8 @@
-import { useState } from "react"
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from 'react-markdown'
+import * as DOMPurify from 'dompurify';
 
 import Button from "../button"
 import ReferendumCountdown from './referendum-countdown'
@@ -228,7 +228,7 @@ export default function ReferendumDetail( {
               {title}
             </h3>
             <div className="referendum-description break-words">
-              <ReactMarkdown>{ description }</ReactMarkdown>
+              <ReactMarkdown>{ description && DOMPurify.sanitize(description, { USE_PROFILES: { html: true } }) }</ReactMarkdown>
             </div>
             <ReferendumLinks referendumId={ referendum.index } />
           </div>
