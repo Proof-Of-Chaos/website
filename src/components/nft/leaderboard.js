@@ -81,7 +81,7 @@ export default function Leaderboard( props ) {
   return (
     <div className="leaderboard">
 
-      { isLoading && <Loader /> }
+      { isLoading && <Loader text="loading shelves"/> }
       { ! isLoading && <>
         { isFinite(userRank) && userRank !== -1 &&
           <div className={ styles.userRank }>
@@ -143,7 +143,7 @@ export function DragonLeaderboard( props ) {
           <b>Only top 25 shelves</b> with the highest scores at snapshot time will have their dragons evolve to the adult stage.
         </p>
       </div>
-      { isLoading && <Loader /> }
+      { isLoading && <Loader text="loading dragons"/> }
       { ! isLoading && <>
         { isFinite(userRank) && userRank !== -1 &&
           <div className={ styles.dragonRank }>

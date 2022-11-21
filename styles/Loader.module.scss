@@ -1,0 +1,70 @@
+.loader {
+  width: auto;
+  display: inline-flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: fit-content;
+  justify-content: center;
+  padding: 3rem 0;
+
+
+  .text {
+    margin-top: 1rem;
+    letter-spacing: 0.3rem;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    max-width: 300px;
+    text-align: center;
+    line-height: 1.5rem;
+    align-self: center;
+  }
+
+  img {
+    transform: rotate(20deg);
+    animation-name: spin;
+    animation-duration: 2500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+  }
+
+  @keyframes spin {
+    from {
+      transform:rotate(0deg) scale(1.0);
+    }
+    to {
+      transform:rotate(360deg) scale(1.0);
+    }
+  }
+
+  .char {
+    animation: loading01 2500ms infinite;
+    @for $i from 0 through 30 {
+      &:nth-child(#{$i+1}) {
+        animation-delay: #{$i*.1}s;
+      }
+    }
+  }
+
+  @keyframes loading01 {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.3;
+    }
+  }
+}
+
+.inlineLoader {
+  display: inline-flex;
+
+  span {
+    animation: loading01 800ms infinite;
+
+    @for $i from 0 through 3 {
+      &:nth-child(#{$i+1}) {
+        animation-delay: #{$i*.1}s;
+      }
+    }
+  }
+}

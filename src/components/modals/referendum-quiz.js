@@ -7,7 +7,7 @@ import useAppStore from "../../zustand";
 import { submitQuizAnswers } from "../../data/quiz-service";
 import { getWalletBySource } from "@talisman-connect/wallets";
 
-export default function ReferendumQuizModal( { id, title, quiz } ) {
+export default function ReferendumQuizModal( { title, quiz, index } ) {
   const { openModal } = useModal();
   const { closeModal } = useModal();
 
@@ -16,7 +16,7 @@ export default function ReferendumQuizModal( { id, title, quiz } ) {
   const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
   const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
   const walletAddress = connectedAccount?.address
-  const userAnswers = useAppStore( ( ( state ) => state.user.quizAnswers[id] ) )
+  const userAnswers = useAppStore( ( ( state ) => state.user.quizAnswers[index] ) )
 
   const isFormFilled = userAnswers?.answers && Object.keys(userAnswers.answers).length === quiz?.questions.length
 
@@ -30,27 +30,27 @@ export default function ReferendumQuizModal( { id, title, quiz } ) {
     toast.promise(
       submitQuizAnswers(
         wallet.signer,
-        id,
+        index,
         walletAddress,
         userAnswers,
         quiz.version
       ),
       {
-        pending: `sending your quiz answers for referendum ${ id }`,
+        pending: `sending your quiz answers for referendum ${ index }`,
         success: 'answers successfully recorded 🗳️',
         error: 'error recording answers 🤯'
       }
     ).then( () => {
       //store quiz answers in app state
-      submitQuiz( id )
+      submitQuiz( index )
       closeModal()
-      openModal('VIEW_REFERENDUM_VOTE', {id, title, userAnswers})
+      openModal('VIEW_REFERENDUM_VOTE', {index, title, userAnswers})
     } );
   }
 
   function onChangeInputs( e, questionIndex, multiple ) {
     let qAnswer = null;
-    const checkboxes = document.querySelectorAll(`[name=ref${id}question${questionIndex}]`)
+    const checkboxes = document.querySelectorAll(`[name=ref${index}question${questionIndex}]`)
     qAnswer = [ ...checkboxes ].reduce(
       ( prev, cur, idx ) => {
       return [ ...prev, cur.checked ];
@@ -61,13 +61,13 @@ export default function ReferendumQuizModal( { id, title, quiz } ) {
     const newUserAnswers = {
       [`${ questionIndex }`]: qAnswer,
     }
-    updateQuizAnswers( id, newUserAnswers );
+    updateQuizAnswers( index, newUserAnswers );
   }
 
   return(
     <>
-      <Dialog.Title as="h3" className="text-xl font-medium leg-6 text-gray-900">
-        Quiz for Referendum { id }
+      <Dialog.Title as="h3" className="text-xl font-medium text-gray-900">
+        Quiz for Referendum { index }
       </Dialog.Title>
       <div className="mt-1 text-sm">
         { title }
@@ -96,8 +96,8 @@ export default function ReferendumQuizModal( { id, title, quiz } ) {
                   <legend className="px-3">{ text }</legend>
                   <Input
                     type={ 'radio' }
-                    id={`r${id}q${i}`}
-                    name={ `ref${id}question${i}` }
+                    id={`r${index}q${i}`}
+                    name={ `ref${index}question${i}` }
                     options={ selectOptions }
                     onChange={ (e) => onChangeInputs( e, i ) }
                   />

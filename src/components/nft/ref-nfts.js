@@ -1,4 +1,5 @@
-import { faRankingStar, faWallet } from "@fortawesome/free-solid-svg-icons";
+import { formatBalance } from '@polkadot/util'
+import { faBroom, faRankingStar, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { uniqBy, every, isNumber } from "lodash";
@@ -6,9 +7,11 @@ import Image from "../ui/image-fade"
 import ReactMarkdown from 'react-markdown'
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { useUserNfts } from "../../hooks/use-nfts";
+import { useFloorNFT, useUserNfts } from "../../hooks/use-nfts";
 import Button from "../ui/button";
 import { websiteConfig } from "../../data/website-config";
+import { microToKSMFormatted } from "../../utils";
+import { useIsMounted } from '../../hooks/use-is-mounted';
 
 const isOwned = (ref, userNFTs, symbol, rarity) => {
   const refIndex = parseInt(ref.match(/Referendum ([0-9]+)/)[1])
@@ -38,30 +41,57 @@ const isOwned = (ref, userNFTs, symbol, rarity) => {
 const NFTScore = ( { score } ) => {
   return(
     <Tippy content="The leaderboard score boost you will get when you equip this NFT onto your shelf">
-      <span className={ `absolute z-10 -mt-3 px-2 mr-2 right-0 nft-score cursor-default` }>
+      <span className={ `absolute z-10 -mt-3 px-2 -mr-2 right-0 nft-score cursor-default` }>
         <FontAwesomeIcon icon={ faRankingStar } size={"sm"} /> { parseFloat( score ).toFixed(2) }
       </span>
     </Tippy>
   )
 }
 
+const FloorPrice = ( { nfts, url } ) => {
+  const sortedFloorNFTs = nfts?.sort(
+    (a,b) =>
+      parseFloat(a.forsale/(1-a.properties.royaltyInfo.value.royaltyPercentFloat/100))
+      -parseFloat(b.forsale/(1-b.properties.royaltyInfo.value.royaltyPercentFloat/100))
+    )
+  const floorNFT = sortedFloorNFTs[0]
+  const forsale = floorNFT?.forsale
+  const royaltyPercentFloat = floorNFT?.properties?.royaltyInfo?.value?.royaltyPercentFloat
+  const realPrice = forsale / (1 - websiteConfig.singular_fee - (royaltyPercentFloat/100) )
+  return (
+    <Tippy content="The floor price of this NFT on singular.app">
+      <span className={ `absolute z-10 cursor-default px-2 -mr-2 right-0 bottom-0 -mb-2 nft-floor no-underline`}>
+        <FontAwesomeIcon icon={ faBroom } size={"sm"} /> { formatBalance( realPrice, { decimals: 12, forceUnit: '-', withSi: true, withUnit: 'KSM' }) }
+      </span>
+    </Tippy>
+  )
+}
+
 export function SingleNFT( {
-  nft: { ref, rarity, thumb, title, artist, amount},
+  nft: { ref, rarity, thumb, title, artist, amount, symbol, url },
   score = 0,
   dimensions = 400,
   owned,
-  ownedText = 'owned'
+  ownedText = 'owned',
+  showFloor = false,
 } ) {
+
+  const isMounted = useIsMounted()
+
+  const { data: floorNFTs } = useFloorNFT( symbol );
+  //as there is random royalties we need to retrieve all by symbol from gql and sort here
+
 
   return (
     <div className="single-nft relative p-4 transform transition duration-200 hover:scale-105 flex justify-center flex-col items-center">
-      <div>
+      <div className="relative mb-4">
         { owned &&
           <span className={ `absolute z-10 px-2 -ml-4 mt-5 nft-owned` }>
             <FontAwesomeIcon icon={ faWallet } size={"sm"} /> { ownedText }
           </span>
         }
         { isNumber( score ) && score > 0 && <NFTScore score={ score } /> }
+        { isMounted && showFloor && parseInt(ref.split(" ")[1]) > 191 && floorNFTs?.nfts?.length > 0 && <FloorPrice nfts={ floorNFTs.nfts } url={ url } /> }
         <span className={ `absolute z-10 -ml-4 -mt-3 px-2 nft-${rarity}` }>{ rarity }</span>
         { thumb && thumb !== '' ?
           <Image
@@ -73,7 +103,7 @@ export function SingleNFT( {
           <div className="error">No image found</div>
         }
       </div>
-      { title && <div className="nft-title break-all pt-2 font-bold">{ title }</div> }
+      { title && <div className="nft-title break-all font-bold">{ title }</div> }
       { artist && <div className="nft-artist">artist: { artist }</div> }
       { amount && <div className="nft-amount">amount: { amount }</div> }
     </div>
@@ -120,6 +150,7 @@ export default function NFTDetail( { nfts, scores } ) {
                   nft={ nftByRarity }
                   score={ scores?.[rarity] }
                   owned={ isOwned(nftByRarity.ref, userNFTs, nftByRarity.symbol, nftByRarity.rarity)}
+                  showFloor={ true }
                 />
               </div>
             )
@@ -142,7 +173,7 @@ export default function NFTDetail( { nfts, scores } ) {
             </>}
           </div>
             <a
-                href={nfts[0].url}
+                href={ `${nfts[0].url}&forsale=forSale&sortBy=priceAscending` }
                 target="_blank"
                 rel="noreferrer"
                 className="no-underline"

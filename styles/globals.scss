@@ -30,9 +30,18 @@
   height: auto;
 }
 
-pre {
-  overflow: scroll;
+pre{
   max-width: 100%;
+  word-break: break-all;
+  overflow: hidden;
+  @apply text-xs px-2 py-3;
+}
+
+code {
+  max-width: 100%;
+  word-break: break-all;
+  overflow: hidden;
+  @apply text-xs py-3;
 }
 
 .bg-dark {
@@ -44,19 +53,19 @@ pre {
 }
 
 .nft-common {
-  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-gray-100 to-gray-300 rounded text-black;
+  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-gray-100/90 to-gray-300/90 rounded text-black;
 }
 
 .nft-rare {
-  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-blue-400 to-emerald-400 rounded text-black;
+  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-blue-400/90 to-emerald-400/90 rounded text-black;
 }
 
 .nft-epic {
-  @apply shadow-md text-black px-1.5 text-base py-0.5 rounded bg-gradient-to-r from-pink-400 via-red-400 to-yellow-200 background-animate;
+  @apply shadow-md text-black px-1.5 text-base py-0.5 rounded bg-gradient-to-r from-pink-400/90 via-red-400/90 to-yellow-200/90 background-animate;
 }
 
 .nft-legendary {
-  @apply shadow-md text-black px-1.5 text-base py-0.5 rounded bg-gradient-to-r from-pink-400 via-emerald-400 to-yellow-200 background-animate;
+  @apply shadow-md text-black px-1.5 text-base py-0.5 rounded bg-gradient-to-r from-pink-400/90 via-emerald-400/90 to-yellow-200/90 background-animate;
 }
 
 .nft-owned {
@@ -64,7 +73,11 @@ pre {
 }
 
 .nft-score {
-  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-yellow-300 to-yellow-600 rounded text-black;
+  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-yellow-300/90 to-yellow-600/90 rounded text-black;
+}
+
+.nft-floor {
+  @apply  shadow-md px-1.5 text-base py-0.5 bg-gradient-to-r from-green-300/90 to-green-600/90 rounded text-black;
 }
 
 .status-passed,
@@ -85,25 +98,6 @@ pre {
   -webkit-animation: AnimationName 3s linear infinite;
   -moz-animation: AnimationName 3s linear infinite;
   animation: AnimationName 3s linear infinite;
-}
-
-.loader {
-  span {
-    animation: loading01 1.4s infinite alternate;
-    @for $i from 0 through 6 {
-      &:nth-child(#{$i+1}) {
-        animation-delay: #{$i*.1}s;
-      }
-    }
-  }
-}
-@keyframes loading01 {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
 }
 
 @keyframes AnimationName {
@@ -178,7 +172,7 @@ pre {
   }
 
   a {
-    @apply text-brand-600;
+    @apply text-brand-700;
   }
 
   main a {
@@ -247,4 +241,35 @@ table > tbody > tr:hover {background-color: #ddd;}
 
 table td {
   @apply p-2
+}
+
+button, a {
+  cursor: pointer;
+}
+
+.referendum-heading {
+  @apply text-3xl mb-4 font-bold;
+}
+
+.referendum-description {
+  h1 {
+    @apply text-xl;
+  }
+  h2 {
+    @apply text-lg;
+  }
+  h3 {
+    @apply font-bold mt-3 mb-2;
+  }
+  ul {
+    padding-left: 0.8rem;
+    margin-bottom: 1rem;
+    li {
+      list-style: disc;
+    }
+  }
+
+  p {
+    @apply mb-3;
+  }
 }

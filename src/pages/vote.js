@@ -21,7 +21,7 @@ function Vote() {
         description="Get incentive NFTs for voting on referendums"
       />
       { !knowsAboutLuckBoost && <section className="bg-gradient-to-r from-blue-500/80 to-purple-500/80">
-        <div className="px-4 py-8 mx-auto max-w-6xl">
+        <div className="px-4 py-8 mx-auto max-w-7xl">
           <div
             className="relative py-6 overflow-hidden rounded-lg lg:py-12 md:px-6 lg:p-16 g:flex lg:items-center lg:justify-between"
             data-rounded="rounded-lg" data-rounded-max="rounded-full">
@@ -52,7 +52,7 @@ function Vote() {
           </div>
         </div>
       </section> }
-      <section className="mx-auto w-full max-w-[1160px] text-sm sm:pt-10 4xl:pt-14">
+      <section className="mx-auto w-full max-w-7xl text-sm sm:pt-10 4xl:pt-14">
         <ReferndumTabs />
       </section>
     </>

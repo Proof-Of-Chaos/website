@@ -1,83 +1,20 @@
 import {useEffect, useState} from "react";
 import { Tab } from "@headlessui/react";
-import ReferendumDetail from "./referendum-detail";
+
 import { usePastReferendums, useReferendums } from '../../../hooks/use-referendums'
-import Loader from '../loader'
-import useAppStore from "../../../zustand";
 import { useIsMounted } from '../../../hooks/use-is-mounted'
-import ReferendumPastDetail from "./referendum-past-detail";
+import ReferendumDetail from "./referendum-detail";
 import { useUserVotes } from "../../../hooks/use-votes";
-import { useUserNfts } from "../../../hooks/use-nfts";
+import { ReferendumList } from "./referendum-list";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export function PastReferendumList( ) {
-  const { data: referendums, isLoading, error } = usePastReferendums()
-  const { data:userVotes, isFetching: isUserVotesLoading } = useUserVotes()
-  const { data: userNfts } = useUserNfts()
-
-  const isMounted = useIsMounted();
-
-  return (
-    isMounted && <>
-    { isLoading && <Loader /> }
-    { ! isLoading && referendums?.length > 0 ?
-        referendums?.map( (referendum, idx) => (
-          <div
-            key={`${referendum.title}-key-${referendum.index}`}
-          >
-            <ReferendumPastDetail
-              referendum={ referendum }
-              listIndex={ idx }
-              userVote={ userVotes ? userVotes.find( vote => vote.referendumIndex === referendum.index ) : null }
-              isUserVotesLoading={ isUserVotesLoading }
-              userNFT={ userNfts && userNfts.find( nft => nft.symbol.startsWith( `${referendum.index}` ) ) }
-            />
-          </div>
-        )) :
-        <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
-          There are currently no referendums to vote
-        </h2>
-      }
-    </>
-  )
-}
-
-export function ReferendumList() {
-  const { data: referendums, isLoading, error } = useReferendums()
-
-  if ( isLoading ) {
-    return <Loader />
-  }
-
-  if ( error ) {
-    return <code>{ JSON.stringify( error ) }</code>
-  }
-
-  return (
-    <>
-      { referendums && referendums.length > 0 ?
-        referendums.map( (referendum, idx) => (
-          <div
-            key={`${referendum.title}-key-${referendum.id}`}
-          >
-            <ReferendumDetail referendum={ referendum } listIndex={ idx } />
-          </div>
-        )) :
-        <h2 className="mb-3 text-base font-medium leading-relaxed dark:text-gray-100 md:text-lg xl:text-xl">
-          There are currently no referendums to vote
-        </h2>
-      }
-    </>
-  )
-}
-
-export default function ReferendumTabs( props ) {
+export default function ReferendumTabs( ) {
   const { data: referendums, isLoading, error } = useReferendums()
   const { data: pastReferendums, isLoading: isPastLoading, error: pastError } = usePastReferendums()
-  {/* console.log( 'tabs active', referendums ) */}
+  const { data:userVotes, isFetching: isUserVotesLoading } = useUserVotes()
 
   const activeTabTitle = referendums?.length > 0 ?
     `Active (${ referendums.length })`
@@ -93,11 +30,13 @@ export default function ReferendumTabs( props ) {
       isLoading={ isLoading }
       error={ error }
       />,
-      Past: <PastReferendumList
+      Past: <ReferendumList
         referendums={ pastReferendums }
         referendumStatus='past'
         isLoading={ isPastLoading }
         error={ pastError }
+        userVotes={ userVotes }
+        isUserVotesLoading={ isUserVotesLoading }
       />,
     })
   }, [ referendums ])
