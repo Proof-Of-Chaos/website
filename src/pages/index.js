@@ -1,16 +1,14 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import Button from '../components/ui/button'
-import NftFeed from '../components/ui/nft-feed'
-import Layout from '../layouts/layout'
-import { nftFeedData, priceFeedData } from '../data/nft-feed-data'
 import Link from 'next/link'
+import { NextSeo } from 'next-seo'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLightbulb } from '@fortawesome/free-solid-svg-icons'
-import NFTSnippets from '../components/ui/nft-snippets'
-import FAQ from '../components/ui/faq'
+
 import { websiteConfig } from '../data/website-config'
-import { NextSeo } from 'next-seo'
+import Button from '../components/ui/button'
+import Layout from '../layouts/layout'
+import { nftFeedData } from '../data/nft-feed-data'
+import NftFeed from '../components/nft/nft-feed'
+import NFTSnippets from '../components/nft/nft-snippets'
 
 export async function getStaticProps() {
   const nfts = websiteConfig.classic_referendums
@@ -37,6 +35,7 @@ function Home({ nfts }) {
               </Link>
             </div>
             <NFTSnippets initial={ nfts }/>
+            
           </div>
           <div className="px-4 py-12 mx-auto text-center lg:px-36">
             <span className="font-semibold text-gray-400 uppercase block pb-6">Numbers</span>

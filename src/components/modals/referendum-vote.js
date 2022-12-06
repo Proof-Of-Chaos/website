@@ -5,7 +5,7 @@ import Input from "../ui/input";
 import { useModal } from "./context";
 import { toast } from 'react-toastify';
 import { useEffect, useState } from "react";
-import { getWalletBySource} from "@talisman-connect/wallets";
+import { getWalletBySource} from "@talismn/connect-wallets";
 import useAppStore from "../../zustand";
 import useAccountBalance from "../../hooks/use-account-balance";
 import { microToKSM } from '../../utils'

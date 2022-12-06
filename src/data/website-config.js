@@ -236,6 +236,17 @@ export const websiteConfig = {
         },
         {
             "ref":"Referendum 207",
+            "thumb":"bafybeia4z2cqq7hopgqehq5iolrtpq425f4tfnzxhy3txaez3mjfpwytfi",
+            "amount":"209",
+            "artist":"@kseniashikh",
+            "rarity":"legendary",
+            "url":"https://singular.app/collections/3208723ec6f65df810-ITEM?search=Referendum+207",
+            "symbol":"207CR",
+            "description":"In Referendum 207 the community voted on whether to open a HRMP channel between Robonomics and Statemine.",
+            "title":"Cute Robot with Music"
+        },
+        {
+            "ref":"Referendum 207",
             "thumb":"bafybeidl2pefllitmxdregvcxg3pzo7oqrh7v2a75flg4ojty5ukuh27si",
             "amount":"209",
             "artist":"LokiKot(@LokiPages)",
