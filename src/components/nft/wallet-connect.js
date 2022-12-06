@@ -35,6 +35,7 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
 
   if ( isMounted && window.walletExtension?.isNovaWallet ) {
     walletList = [
+      new PolkadotjsWallet(),
       new SubWallet(),
       new NovaWallet(),
     ]

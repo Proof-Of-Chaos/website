@@ -26,11 +26,4 @@ export class NovaWallet extends BaseDotsamaWallet {
   get installed() {
     return window.walletExtension?.isNovaWallet
   }
-
-  get rawExtension() {
-    const injectedWindow = window & InjectedWindow;
-    const injectedExtension =
-      injectedWindow?.injectedWeb3?.[this.extensionName];
-    return injectedExtension;
-  }
 }
