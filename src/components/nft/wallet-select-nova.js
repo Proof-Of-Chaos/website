@@ -15,7 +15,7 @@ export class NovaWallet extends BaseDotsamaWallet {
   extensionName = 'polkadot-js';
   title = 'Nova Wallet';
   installUrl =
-    'https://play.google.com/store/apps/details?id=net.novawallet.android&hl=de&gl=US';
+    'https://novawallet.io/';
   noExtensionMessage =
     'You can use any Polkadot compatible wallet but we recommend using Nova Wallet';
   logo = {

@@ -9,14 +9,12 @@ import Layout from '../layouts/layout'
 import { nftFeedData } from '../data/nft-feed-data'
 import NftFeed from '../components/nft/nft-feed'
 import NFTSnippets from '../components/nft/nft-snippets'
-import { useIsMounted } from '../hooks/use-is-mounted'
 
 export async function getStaticProps() {
   const nfts = websiteConfig.classic_referendums
   return { props: { nfts } }
 }
 function Home({ nfts }) {
-  const isMounted = useIsMounted();
   return (
     <>
       <NextSeo title="Home" />
@@ -46,7 +44,6 @@ function Home({ nfts }) {
             className="bg-gray-900 text-white relative no-underline inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm px-5 sm:px-6 h-10 sm:h-12 rounded-md sm:rounded-lg mt-4">
               See more statistics on web3go →
             </a>
-            { isMounted && <pre>{ JSON.stringify( window.injectedWeb3, null, 3 ) }</pre> }
           </div>
       </section>
       <section className="w-full flex py-20 px-5 sm:px-10 md:px-5">
