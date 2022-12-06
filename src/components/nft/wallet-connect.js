@@ -1,19 +1,22 @@
-import Button from "../ui/button"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWallet } from '@fortawesome/free-solid-svg-icons'
-import { useModal } from "../modals/context"
-import { useEffect, useState } from 'react'
-import useAppStore from "../../zustand"
-import Identicon from "../ui/IdenticonWithoutSSR"
-import classNames from "classnames"
-import { WalletSelect } from '@talisman-connect/components';
+import { WalletSelect } from '@talismn/connect-components'
+import {
+  PolkadotjsWallet,
+  SubWallet,
+  TalismanWallet
+} from "@talismn/connect-wallets"
 import { encodeAddress } from '@polkadot/keyring'
-import { useIsMounted } from "../../hooks/use-is-mounted"
 import { useQueryClient } from "@tanstack/react-query"
 
+import { NovaWallet } from './wallet-select-nova'
+
+import useAppStore from "../../zustand"
+import Identicon from "../ui/IdenticonWithoutSSR"
+import Button from "../ui/button"
+import { useIsMounted } from "../../hooks/use-is-mounted"
 
 export default function WalletConnect ( { className, title, onAccountSelected, variant = 'calm' } ) {
-  const { openModal } = useModal();
   const isMounted = useIsMounted();
   // const [ connectedAccounts, setSelectedWallet ] = useState(null)
   const connectedAccounts = useAppStore((state) => state.user.connectedAccounts )
@@ -29,6 +32,13 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
       <WalletSelect
         dappName="Proof of Chaos Governance"
         open={false}
+        walletList={[
+          new TalismanWallet(),
+          new SubWallet(),
+          new PolkadotjsWallet(),
+          new NovaWallet(),
+        ]}
+        showAccountsList={true}
 
         onWalletSelected={(accounts) => {
           updateConnectedAccounts( {
@@ -57,7 +67,7 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
 
         triggerComponent={
           <Button
-            className={ `wallet-connect flex shadow-main hover:shadow-large ${className}` }
+            className={ `wallet-connect shadow-main hover:shadow-large ${className}` }
             variant={ variant }
           >
             { connectedAccount ?
@@ -83,8 +93,6 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
             }
           </Button>
         }
-
-        showAccountsList={true}
       />
     </>
   )

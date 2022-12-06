@@ -1,7 +1,5 @@
 import Head from 'next/head';
 import '../../styles/globals.scss'
-import '@talisman-connect/components/talisman-connect-components.esm.css';
-import '@talisman-connect/ui/talisman-connect-ui.esm.css';
 import ModalsContainer from '../components/modals/container';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +11,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { DefaultSeo, NextSeo } from 'next-seo';
+import PolkadotApiProvider from '../context/polkadot-api-context';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,7 +37,9 @@ function MyApp({ Component, pageProps }) {
         <DefaultSeo
           { ...seoConfig }
         />
-        {getLayout(<Component {...pageProps} />)}
+        <PolkadotApiProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </PolkadotApiProvider>
         <DrawersContainer />
         <ModalsContainer />
         <ToastContainer />

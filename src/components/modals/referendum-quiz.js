@@ -5,7 +5,7 @@ import { useModal } from "./context";
 import { toast } from 'react-toastify';
 import useAppStore from "../../zustand";
 import { submitQuizAnswers } from "../../data/quiz-service";
-import { getWalletBySource } from "@talisman-connect/wallets";
+import { getWalletBySource } from "@talismn/connect-wallets";
 
 export default function ReferendumQuizModal( { title, quiz, index } ) {
   const { openModal } = useModal();
