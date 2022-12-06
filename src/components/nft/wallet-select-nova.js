@@ -12,7 +12,7 @@ import {
 
 import logo from '../../../public/logos/nova.svg'
 export class NovaWallet extends BaseDotsamaWallet {
-  extensionName = '@novawallet/extension';
+  extensionName = 'polkadot-js';
   title = 'Nova Wallet';
   installUrl =
     'https://play.google.com/store/apps/details?id=net.novawallet.android&hl=de&gl=US';
