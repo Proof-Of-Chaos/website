@@ -12,6 +12,10 @@ async function fetchFloorNFT( symbol ) {
     return new Promise.resolve({ data: { nfts: [] } })
   }
 
+  if (symbol === '207CR') {
+    return new Promise.resolve({ data: { nfts: [] } })
+  }
+
   return request(
     websiteConfig.singular_graphql_endpoint,
     GET_NFT_FLOOR,
