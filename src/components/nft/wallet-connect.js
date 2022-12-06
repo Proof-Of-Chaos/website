@@ -27,17 +27,25 @@ export default function WalletConnect ( { className, title, onAccountSelected, v
 
   const queryClient = useQueryClient()
 
+  let walletList = [
+    new TalismanWallet(),
+    new SubWallet(),
+    new PolkadotjsWallet(),
+  ]
+
+  if ( isMounted && window.walletExtension?.isNovaWallet ) {
+    walletList = [
+      new SubWallet(),
+      new NovaWallet(),
+    ]
+  }
+
   return(
     isMounted && <>
       <WalletSelect
         dappName="Proof of Chaos Governance"
         open={false}
-        walletList={[
-          new TalismanWallet(),
-          new SubWallet(),
-          new PolkadotjsWallet(),
-          new NovaWallet(),
-        ]}
+        walletList={ walletList }
         showAccountsList={true}
 
         onWalletSelected={(accounts) => {
