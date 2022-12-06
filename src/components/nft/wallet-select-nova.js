@@ -1,11 +1,18 @@
 
 
 import {
+  InjectedExtension,
+  InjectedAccount,
+  InjectedWindow,
+} from '@polkadot/extension-inject/types';
+
+import {
   BaseDotsamaWallet,
 } from "@talismn/connect-wallets"
+
 import logo from '../../../public/logos/nova.svg'
 export class NovaWallet extends BaseDotsamaWallet {
-  extensionName = 'nova wallet';
+  extensionName = 'polkadot-js';
   title = 'Nova Wallet';
   installUrl =
     'https://play.google.com/store/apps/details?id=net.novawallet.android&hl=de&gl=US';
@@ -15,4 +22,15 @@ export class NovaWallet extends BaseDotsamaWallet {
     src: logo.src,
     alt: 'Nova Wallet Logo',
   };
+
+  get installed() {
+    return window.walletExtension?.isNovaWallet
+  }
+
+  get rawExtension() {
+    const injectedWindow = window & InjectedWindow;
+    const injectedExtension =
+      injectedWindow?.injectedWeb3?.[this.extensionName];
+    return injectedExtension;
+  }
 }
