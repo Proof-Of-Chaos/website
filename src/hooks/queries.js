@@ -1,6 +1,18 @@
 import { gql as agql } from '@apollo/client'
 import { websiteConfig } from '../data/website-config'
 
+export const GET_GOV2_REF_TITLE_AND_CONTENT = agql`
+  query Gov2RefTitleAndContent($limit: Int, $where: posts_bool_exp) {
+    posts(limit: $limit, where: $where) {
+      title
+      content
+      onchain_link {
+        onchain_referendumv2_id
+      }
+    }
+  }
+`
+
 export const GET_REFERENDUM_NFTS = agql`
 query PaginatedNFTQuery(
     $where: nfts_bool_exp, 

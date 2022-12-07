@@ -1,5 +1,12 @@
 import Layout from '../layouts/layout'
+import { countBy } from 'lodash';
 import { useLatestUserVoteForRef, useLatestVoteForUserAndRef } from '../hooks/use-votes';
+import { useGov2Referendums, useGov2Tracks } from '../hooks/use-gov2';
+import { titleCase } from '../utils';
+import Loader from '../components/ui/loader';
+import { useState } from 'react';
+import { data } from 'autoprefixer';
+import { useEffect } from 'react';
 
 /**
  * (0)
@@ -50,8 +57,73 @@ import { useLatestUserVoteForRef, useLatestVoteForUserAndRef } from '../hooks/us
 
 
 function Test() {
-  const { data: userVote } = useLatestUserVoteForRef( 246 )
-  return <div>test { JSON.stringify( userVote ) }</div>
+  // const { data: userVote } = useLatestUserVoteForRef( 246 )
+  // return <div>test { JSON.stringify( userVote ) }</div>
+
+  let [filteredRefs, setFilteredRefs] = useState([]);
+  let [counts, setCounts] = useState([]);
+
+  const filter = ( e, trackId ) => {
+    if ( e.currentTarget?.classList.contains('active') ) {
+      setFilteredRefs( gov2refs )
+      e.currentTarget?.classList.remove('active')
+      return
+    }
+
+    let filtered = gov2refs.filter( (ref) => {
+      return ref.track === parseInt(trackId)
+    })
+    setFilteredRefs(filtered)
+    let siblings = [ ...e.currentTarget?.parentNode.children ]
+    siblings.forEach( s => s.classList.remove('active'))
+    e.currentTarget?.classList.add('active')
+  }
+
+
+  const { data: tracks, isLoading: isTracksLoading, error } = useGov2Tracks();
+  const { data: gov2refs, isLoading } = useGov2Referendums();
+
+  useEffect(() => {
+    if ( gov2refs ) {
+      setFilteredRefs( gov2refs )
+      setCounts( countBy(gov2refs,obj => obj.track))
+    }
+  }, [gov2refs])
+
+
+  return (
+    <div className="pl-2">
+      <div className="filters">
+        tracks: { tracks && tracks.map( (track, idx) => {
+          return (
+            <button
+              key={ `filter-${ idx }` }
+              onClick={ (e) => filter(e, track[0]) }
+              className="btn-track-filter text-xs px-2 py-1 m-1 rounded-md bg-slate-200"
+              data-filter={ track[0] }
+              style={ {
+                display: counts[track[0]] ? 'inline' : 'none'
+              } }
+            >
+              { titleCase( track[1].name ) } ({counts[track[0]]})
+            </button>
+          )
+        })}
+      </div>
+      {isLoading && <Loader /> }
+      <ul className="list-disc">
+        {filteredRefs.map( r => {
+          return (
+            <li
+              key={ r.id }
+            >
+              referednum #{ r.id } - { r.title }
+            </li>
+          )
+        } ) }
+      </ul>
+      </div>
+  )
 }
 
 Test.getLayout = function getLayout(page){

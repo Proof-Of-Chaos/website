@@ -273,3 +273,9 @@ button, a {
     @apply mb-3;
   }
 }
+
+.btn-track-filter {
+  &.active {
+    @apply bg-brand-400 text-white transition-all;
+  }
+}

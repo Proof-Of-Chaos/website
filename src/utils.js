@@ -186,6 +186,9 @@ const toBase64 = (str) =>
     ? Buffer.from(str).toString('base64')
     : window.btoa(str)
 
+    const titleCase = (s) =>
+    s.replace(/^_*(.)|_+(.)/g, (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase())
+
 export {
   getRandomInt,
   getRandomIntBetween,
@@ -200,4 +203,5 @@ export {
   getLuckMultiplier,
   shimmer,
   toBase64,
+  titleCase
 }
