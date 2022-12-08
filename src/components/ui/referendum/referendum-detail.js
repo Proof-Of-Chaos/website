@@ -168,6 +168,7 @@ export default function ReferendumDetail( {
   }
 
   const ReferendumLinks = ( { referendumId } ) => (
+    <>
     <div className="referendum-more py-3 px-4 mt-4 bg-gray-100 rounded-md flex items-center">
       <span className="pr-4">View on</span>
       <a
@@ -201,6 +202,7 @@ export default function ReferendumDetail( {
         />
       </a>
     </div>
+    </>
   )
 
   const referendumMeta = (
@@ -208,7 +210,7 @@ export default function ReferendumDetail( {
       { isActive &&
         <>
           <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm hover:shadow-md transition-shadow">
-            { isGov2 ? 
+            { isGov2 ?
               <Tippy content={ 'If the referendum does not enter the confirming state, it will automatically be rejected' }>
                 <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
                 { `Referendum ${index} will be rejected in` }
@@ -264,6 +266,9 @@ export default function ReferendumDetail( {
           />
         </> }
         <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre>
+      </div>
+      <div className="mt-2 px-2 py-1 rounded-md bg-gradient-to-br from-purple-500 to-rose-400 hover:shadow-lg transition-all">
+        { isGov2 && <a className="no-underline text-white" href="https://polkadot.network/blog/gov2-polkadots-next-generation-of-decentralised-governance/">Learn more about Governance 2</a> }
       </div>
     </>
   )
