@@ -3,6 +3,7 @@ const BLOCK_DURATION = 6000;
 const EXPONENT_CONSTANTS = [3, 0.4]
 
 const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {
+  console.log( 'getEnddatebyblock', blockNumber)
   let newStamp = parseInt(currentTimestamp.toString()) + ((parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) * BLOCK_DURATION)
   return new Date(newStamp);
 }
@@ -189,6 +190,17 @@ const toBase64 = (str) =>
     const titleCase = (s) =>
     s.replace(/^_*(.)|_+(.)/g, (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase())
 
+
+/**
+ * Stips all tags from html
+ * @param {String} html
+ * @returns String
+ */
+function stripHtml(html){
+  let doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || "";
+}
+
 export {
   getRandomInt,
   getRandomIntBetween,
@@ -203,5 +215,6 @@ export {
   getLuckMultiplier,
   shimmer,
   toBase64,
-  titleCase
+  titleCase,
+  stripHtml
 }

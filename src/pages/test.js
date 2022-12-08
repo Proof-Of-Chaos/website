@@ -7,6 +7,7 @@ import Loader from '../components/ui/loader';
 import { useState } from 'react';
 import { data } from 'autoprefixer';
 import { useEffect } from 'react';
+import ReferendumDetail from '../components/ui/referendum/referendum-detail';
 
 /**
  * (0)
@@ -99,7 +100,7 @@ function Test() {
             <button
               key={ `filter-${ idx }` }
               onClick={ (e) => filter(e, track[0]) }
-              className="btn-track-filter text-xs px-2 py-1 m-1 rounded-md bg-slate-200"
+              className="btn-track-filter text-xs px-2 py-1 m-1 rounded-sm bg-slate-200"
               data-filter={ track[0] }
               style={ {
                 display: counts[track[0]] ? 'inline' : 'none'
@@ -114,11 +115,11 @@ function Test() {
       <ul className="list-disc">
         {filteredRefs.map( r => {
           return (
-            <li
+            <ReferendumDetail
               key={ r.id }
-            >
-              referednum #{ r.id } - { r.title }
-            </li>
+              referendum={ r }
+              isGov2={ true }
+            />
           )
         } ) }
       </ul>

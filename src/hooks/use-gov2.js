@@ -17,12 +17,15 @@ export const gov2referendumFetcher = async () => {
       } = refjson.ongoing;
       return {
         ...refjson.ongoing,
-        id: parseInt(key.args[0].toHuman()),
+        index: parseInt(key.args[0].toHuman()),
         tally: {
           ayes: parseInt(ayes),
           nays: parseInt(nays),
           support: parseInt(support),
         },
+        //todo this wil change
+        ended_at: null,
+        ends_at: refjson.ongoing.enactment?.after,
       }
     } else {
       return referendum.toJSON()
@@ -30,8 +33,8 @@ export const gov2referendumFetcher = async () => {
   } );
 
   //all ref ids in array of strings
-  const ids = gov2refs.map( ref => ref.id )
-  const notnullids = ids.filter( id => typeof id !== 'undefined' )
+  const indexes = gov2refs.map( ref => ref.index )
+  const notnullids = indexes.filter( index => typeof index !== 'undefined' )
 
   //attach title and content fields to each ref from polkassembly refDetails
   let refDetails = await getTitleAndContentForRefs( notnullids );
@@ -39,7 +42,7 @@ export const gov2referendumFetcher = async () => {
     ref => {
       return Object.assign(ref, refDetails.find(
         refDetail => {
-          return parseInt(refDetail.onchain_link.onchain_referendumv2_id) === ref.id
+          return parseInt(refDetail.onchain_link.onchain_referendumv2_id) === ref.index
         }
       ))
     }

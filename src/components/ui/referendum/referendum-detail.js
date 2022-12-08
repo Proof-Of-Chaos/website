@@ -8,7 +8,7 @@ import Button from "../button"
 import ReferendumCountdown from './referendum-countdown'
 import ReferendumStats from "./referendum-stats";
 import { useModal } from "../../modals/context";
-import { KSMFormatted, microToKSM } from "../../../utils";
+import { KSMFormatted, microToKSM, stripHtml, titleCase } from "../../../utils";
 import { InlineLoader } from "../loader";
 import { useConfig } from "../../../hooks/use-config";
 import ReferendumVoteButtons from "./referendum-vote-buttons";
@@ -23,6 +23,7 @@ export default function ReferendumDetail( {
   userVote,
   isUserVotesLoading,
   userNFT,
+  isGov2 = false,
 } ) {
   const {
     count_aye,
@@ -33,9 +34,12 @@ export default function ReferendumDetail( {
     title,
     index,
     description,
+    content,
     status,
     ends_at,
     ended_at,
+    track,
+    origin,
   } = referendum
 
   const { openModal } = useModal();
@@ -56,6 +60,13 @@ export default function ReferendumDetail( {
         </span>
       </div>
     )
+  }
+
+  const Gov2Badges = () => {
+    return <div className="gov2-badges mb-4 flex">
+      <div className="bg-yellow-300 py-2 px-3 rounded-md flex-1 mr-2">Open Gov</div>
+      { track && origin && <div className="bg-slate-300 py-2 px-3 rounded-md flex-1">{ titleCase(origin.origins) }</div> }
+    </div>
   }
 
   const ReferendumBadges = () => {
@@ -140,7 +151,10 @@ export default function ReferendumDetail( {
   const ReferendumLinks = ( { referendumId } ) => (
     <div className="referendum-more py-3 px-4 mt-4 bg-gray-100 rounded-md flex items-center">
       <span className="pr-4">View on</span>
-      <a className="pr-3 grayscale flex" href={ `https://kusama.polkassembly.io/referendum/${ referendumId }` }>
+      <a
+        className="pr-3 grayscale flex" 
+        href={ isGov2 ? `https://kusama.polkassembly.io/referenda/${ referendumId }` : `https://kusama.polkassembly.io/referendum/${ referendumId }` }
+      >
         <Image
           src='/logos/polkassembly.svg'
           alt="polkassembly logo"
@@ -148,15 +162,18 @@ export default function ReferendumDetail( {
           width={ 110 }
         />
       </a>
-      <a className="flex grayscale invert pr-4" href={ `https://kusama.subscan.io/referenda/${ referendumId }` }>
+      { ! isGov2 && <a className="flex grayscale invert pr-4" href={ `https://kusama.subscan.io/referenda/${ referendumId }` }>
         <Image
           src='/logos/subscan.webp'
           alt="subscan logo"
           height={18}
           width={100}
         />
-      </a>
-      <a className="flex grayscale" href={ `https://kusama.subsquare.io/democracy/referendum/${ referendumId }` }>
+      </a> }
+      <a
+        className="flex grayscale"
+        href={ isGov2 ? `https://kusama.subsquare.io/referenda/referendum/${ referendumId }` : `https://kusama.subsquare.io/democracy/referendum/${ referendumId }` }
+      >
         <Image
           src='/logos/subsquare.svg'
           alt="subscan logo"
@@ -215,41 +232,40 @@ export default function ReferendumDetail( {
   )
 
   return (
-    <section>
-      <div className="mx-auto w-full max-w-7xl rounded-md border-2 border-gray-400 border-b-gray-500 p-3 sm:p-4 md:p-6 my-4 mb-8">
-        <div className="w-full flex flex-wrap">
-          <div className="left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
-            <div className="referendum-heading">
-              <div>Referendum {index}</div>
-            </div>
-            <h3
-              className="cursor-pointer text-xl mb-4"
-            >
-              {title}
-            </h3>
-            <div className="referendum-description break-words">
-              <ReactMarkdown>{ description }</ReactMarkdown>
-            </div>
-            <ReferendumLinks referendumId={ referendum.index } />
+    <div className="relative mx-auto w-full max-w-7xl rounded-md border-2 border-gray-400 border-b-gray-500 p-3 sm:p-4 md:p-6 my-4 mb-8">
+      <div className="w-full flex flex-wrap">
+        <div className="left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
+          <div className="referendum-heading">
+            <div>Referendum {index}</div>
           </div>
-          <div className="right text-center w-full sm:w-5/12 md:w-4/12 pt-6 sm:pt-0 sticky self-start top-24 sm:pl-4 md:pl-6">
-            { refMeta }
+          <h3
+            className="cursor-pointer text-xl mb-4"
+          >
+            {title}
+          </h3>
+          <div className="referendum-description break-words">
+            <ReactMarkdown>{ description || stripHtml( content ) }</ReactMarkdown>
           </div>
+          <ReferendumLinks referendumId={ referendum.index } />
         </div>
-        { hasConfig &&
-            <div className="border-gray-200 border-dashed border-t-2 w-full mx-2 mt-6 pt-6 pl-0 ml-0">
-              <Button
-                className="w-full"
-                variant="calm"
-                onClick={ () => openModal( 'PAST_REFERENDUM_DETAIL', { id: index } ) }
-              >
-                <FontAwesomeIcon icon={ faChartLine } className="pr-2" />
-                View Sendout Statistics and Parameters
-                <FontAwesomeIcon icon={ faSliders } className="pl-2" />
-              </Button>
-            </div>
-          }
+        <div className="right text-center w-full sm:w-5/12 md:w-4/12 pt-6 sm:pt-0 sticky self-start top-24 sm:pl-4 md:pl-6">
+          { isGov2 && <Gov2Badges/> }
+          { refMeta }
+        </div>
       </div>
-    </section>
+      { hasConfig &&
+          <div className="border-gray-200 border-dashed border-t-2 w-full mx-2 mt-6 pt-6 pl-0 ml-0">
+            <Button
+              className="w-full"
+              variant="calm"
+              onClick={ () => openModal( 'PAST_REFERENDUM_DETAIL', { id: index } ) }
+            >
+              <FontAwesomeIcon icon={ faChartLine } className="pr-2" />
+              View Sendout Statistics and Parameters
+              <FontAwesomeIcon icon={ faSliders } className="pl-2" />
+            </Button>
+          </div>
+        }
+    </div>
   )
 }
