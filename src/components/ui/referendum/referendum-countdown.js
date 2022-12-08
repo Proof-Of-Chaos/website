@@ -15,7 +15,7 @@ const renderer = ({ days, hours, minutes, seconds, completed }) => {
           <div className="shrink-0 3xl:w-20">
             {zeroPad(days)}
             <span className="md:hidden">d</span>
-            <span className="hidden truncate pt-2.5 text-sm -tracking-wide text-gray-600 dark:text-gray-400 md:block">
+            <span className="hidden truncate text-sm -tracking-wide text-gray-600 dark:text-gray-400 md:block">
               Days
             </span>
           </div>
@@ -23,21 +23,21 @@ const renderer = ({ days, hours, minutes, seconds, completed }) => {
         <div className="shrink-0 3xl:w-20">
           {zeroPad(hours)}
           <span className="md:hidden">h</span>
-          <span className="hidden truncate pt-2.5 text-sm -tracking-wide text-gray-600 dark:text-gray-400 md:block">
+          <span className="hidden truncate text-sm -tracking-wide text-gray-600 dark:text-gray-400 md:block">
             Hours
           </span>
         </div>
         <div className="shrink-0 3xl:w-20">
           {zeroPad(minutes)}
           <span className="md:hidden">m</span>
-          <span className="hidden truncate pt-2.5 text-sm -tracking-wide text-gray-600 dark:text-gray-400 md:block">
+          <span className="hidden truncate text-sm -tracking-wide text-gray-600 dark:text-gray-400 md:block">
             Minutes
           </span>
         </div>
         <div className="shrink-0 3xl:w-20">
           {zeroPad(seconds)}
           <span className="md:hidden">s</span>
-          <span className="hidden truncate pt-2.5 text-sm -tracking-wide text-gray-600 dark:text-gray-400 md:block">
+          <span className="hidden truncate text-sm -tracking-wide text-gray-600 dark:text-gray-400 md:block">
             Seconds
           </span>
         </div>

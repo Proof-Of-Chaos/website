@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid-svg-icons";
@@ -26,6 +26,8 @@ export default function ReferendumDetail( {
   isUserVotesLoading,
   userNFT,
   isGov2 = false,
+  totalIssuance,
+  track,
 } ) {
   const {
     count_aye,
@@ -40,8 +42,8 @@ export default function ReferendumDetail( {
     status,
     ends_at,
     ended_at,
-    track,
     origin,
+    tally,
   } = referendum
 
   const { openModal } = useModal();
@@ -50,6 +52,15 @@ export default function ReferendumDetail( {
 
   const isActive = ended_at === null;
   const hasConfig = refConfig && refConfig.options
+
+  const metaRef = useRef(null);
+
+  useEffect(() => {
+    //unset sticky if content on right is too high
+    if ( (metaRef.current?.offsetHeight + 16 * 6 ) > window.innerHeight ) {
+      metaRef.current.classList.remove('sticky');
+    }
+  })
 
   const EndedAt = () => {
     return(
@@ -65,11 +76,11 @@ export default function ReferendumDetail( {
   }
 
   const Gov2Badges = () => {
-    return <div className="gov2-badges mb-4 flex">
-      <div className="bg-yellow-300 py-2 px-3 rounded-md flex-1 mr-2">Open Gov</div>
-      { track && origin &&
-        <Tippy content={ getTrackInfo( track )?.text }>
-          <div className="bg-slate-300 py-2 px-3 rounded-md flex-1 cursor-default">
+    return <div className="gov2-badges mb-2 flex">
+      <div className="bg-yellow-300 py-1 px-2 rounded-md flex-1 mr-2">Open Gov</div>
+      { track?.[0] && origin &&
+        <Tippy content={ getTrackInfo( track?.[0] )?.text }>
+          <div className="bg-slate-300 py-1 px-2 rounded-md flex-1 cursor-default">
             { titleCase(origin.origins) }
           </div>
         </Tippy>
@@ -99,7 +110,7 @@ export default function ReferendumDetail( {
     if ( latestUserVote ) {
       const { decision, balance, lockPeriod } = latestUserVote
       return (
-        <div className="flex flex-row mb-4 justify-between rounded-md bg-gray-100 shadow-sm hover:shadow-md transition-shadow px-6 py-4 text-sm flex-wrap">
+        <div className="flex flex-row mb-2 justify-between rounded-md bg-gray-100 shadow-sm hover:shadow-md transition-shadow px-6 py-4 text-sm flex-wrap">
         { ! isUserVotesLoading && <>
           <div className="flex-col w-full text-center">
             <div className="">
@@ -124,12 +135,12 @@ export default function ReferendumDetail( {
     }
 
     if ( isActive ) {
-      return <p className="mb-4 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
+      return <p className="mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
         { JSON.stringify( latestUserVote ) }
         You did not vote on <br/> referendum { index } yet.<br/>{ `Vote to receive NFT rewards.` }
       </p>
     } else {
-      return <p className="mb-4 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
+      return <p className="mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
         { JSON.stringify( latestUserVote ) }
         You did not vote on <br/> referendum { index }.
       </p>
@@ -192,12 +203,12 @@ export default function ReferendumDetail( {
     </div>
   )
 
-  const refMeta = (
+  const referendumMeta = (
     <>
       { isActive &&
         <>
-          <div className="p-4 bg-gray-100 rounded-md mb-4 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="text-gray-900 mb-3 dark:md:text-gray-100 text-xl">
+          <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
               Referendum {index} ends in
             </h3>
             <ReferendumCountdown endBlock={ends_at} />
@@ -208,8 +219,8 @@ export default function ReferendumDetail( {
       }
       { ! isActive &&
         <>
-          <div className="p-4 bg-gray-100 rounded-md mb-4 shadow-sm transition-shadow hover:shadow-md">
-            <h3 className="text-gray-900 mb-3 dark:md:text-gray-100 text-xl">
+          <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm transition-shadow hover:shadow-md">
+            <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-xl">
               Referendum {index} ended at
             </h3>
           <EndedAt />
@@ -219,9 +230,9 @@ export default function ReferendumDetail( {
           <UserReward />
         </>
       }
-      <div className="p-4 bg-gray-100 rounded-md mt-4 shadow-sm transition-shadow hover:shadow-md">
-        <h3 className="text-gray-900 mb-3 dark:md:text-gray-100 text-xl">
-          Referendum {index} results
+      <div className="p-4 bg-gray-100 rounded-md mt-2 shadow-sm transition-shadow hover:shadow-md">
+        <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
+          { isGov2 ? `Referendum ${index} Approval` : `Referendum ${index} results`}
         </h3>
         <ReferendumStats
           aye={ {
@@ -235,6 +246,14 @@ export default function ReferendumDetail( {
             voteVolume: KSMFormatted( voted_amount_nay )
           } }
         />
+        <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
+          { isGov2 ? `Referendum ${index} Support` : `Referendum ${index} results`}
+        </h3>
+        <ReferendumStats
+          part={ tally?.support }
+          total={ totalIssuance }
+        />
+        <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre>
       </div>
     </>
   )
@@ -253,12 +272,13 @@ export default function ReferendumDetail( {
           </h3>
           <div className="referendum-description break-words">
             <ReactMarkdown>{ description || stripHtml( content ) }</ReactMarkdown>
+            <pre>{ JSON.stringify( referendum, null, 2) }</pre>
           </div>
           <ReferendumLinks referendumId={ referendum.index } />
         </div>
-        <div className="right text-center w-full sm:w-5/12 md:w-4/12 pt-6 sm:pt-0 sticky self-start top-24 sm:pl-4 md:pl-6">
+        <div ref={ metaRef } className="right text-center w-full sm:w-5/12 md:w-4/12 pt-6 sm:pt-0 sticky self-start top-24 sm:pl-4 md:pl-6">
           { isGov2 && <Gov2Badges/> }
-          { refMeta }
+          { referendumMeta }
         </div>
       </div>
       { hasConfig &&

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { websiteConfig } from "../data/website-config";
 import { getApi } from '../data/chain';
 import { GET_GOV2_REF_TITLE_AND_CONTENT } from "./queries";
+import { microToKSM } from '../utils';
 
 export const gov2referendumFetcher = async () => {
   const api = await getApi();
@@ -23,6 +24,9 @@ export const gov2referendumFetcher = async () => {
           nays: parseInt(nays),
           support: parseInt(support),
         },
+        voted_amount_aye: microToKSM( parseInt(ayes) ),
+        voted_amount_nay: microToKSM( parseInt(nays) ),
+        voted_amount_total: microToKSM( parseInt(ayes) + parseInt(nays) ),
         //todo this wil change
         ended_at: null,
         ends_at: refjson.ongoing.enactment?.after,
@@ -89,4 +93,16 @@ export const useGov2Tracks = () => {
     const tracks = await api.consts.referenda.tracks.toHuman()
     return tracks
   });
+}
+
+
+async function issuanceFetcher () {
+  const api = await getApi();
+  const totalIssuance = await api.query.balances.totalIssuance();
+
+  return totalIssuance
+}
+
+export const useIssuance = () => {
+  return useQuery(["active-issuance"], issuanceFetcher);
 }

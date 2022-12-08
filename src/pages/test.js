@@ -1,7 +1,7 @@
 import Layout from '../layouts/layout'
 import { countBy } from 'lodash';
 import { useLatestUserVoteForRef, useLatestVoteForUserAndRef } from '../hooks/use-votes';
-import { useGov2Referendums, useGov2Tracks } from '../hooks/use-gov2';
+import { useGov2Referendums, useGov2Tracks, useIssuance } from '../hooks/use-gov2';
 import { titleCase } from '../utils';
 import Loader from '../components/ui/loader';
 import { useMemo, useState } from 'react';
@@ -95,6 +95,7 @@ function Test() {
     }
   }, [gov2refs])
 
+  const { data: totalIssuance, isLoading: isIssuanceLoading } = useIssuance();
 
   return (
     <div className="pl-2">
@@ -125,10 +126,13 @@ function Test() {
               key={ r.id }
               referendum={ r }
               isGov2={ true }
+              totalIssuance={ totalIssuance }
+              track={ tracks.find( t => t[0] == r.track ) }
             />
           )
         } ) }
       </ul>
+      <pre>{ tracks && JSON.stringify(tracks,null,2 ) }</pre>
       </div>
   )
 }

@@ -19,7 +19,7 @@ export default function ReferendumVoteButtons({referendum}) {
         { referendum.quiz?.questions &&
           <Button
             onClick={() => openModal( 'VIEW_REFERENDUM_QUIZ', referendum ) }
-            className="w-full"
+            className="w-full mb-2"
             variant={ hasUserSubmittedQuiz ? 'calm' : 'primary' }
           >
             { hasUserSubmittedQuiz ? 'Submit Quiz Again' : 'Take Quiz' }
@@ -27,7 +27,7 @@ export default function ReferendumVoteButtons({referendum}) {
         }
         <Button
           onClick={() => openModal( 'VIEW_REFERENDUM_VOTE', referendum ) }
-          className="mt-2 w-full"
+          className="w-full"
           variant={ latestUserVote ? 'calm' : 'primary' }
         >
           { latestUserVote ? 'Vote Again' : 'Vote Now' }
