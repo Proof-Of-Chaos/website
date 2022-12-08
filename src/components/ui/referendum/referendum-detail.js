@@ -13,6 +13,8 @@ import { InlineLoader } from "../loader";
 import { useConfig } from "../../../hooks/use-config";
 import ReferendumVoteButtons from "./referendum-vote-buttons";
 import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
+import Tippy from "@tippyjs/react";
+import { getTrackInfo } from "../../../data/kusama-tracks";
 
 const toPercentage = (part, whole) => {
   return Math.round(parseInt(part) / parseInt(whole) * 100)
@@ -65,7 +67,13 @@ export default function ReferendumDetail( {
   const Gov2Badges = () => {
     return <div className="gov2-badges mb-4 flex">
       <div className="bg-yellow-300 py-2 px-3 rounded-md flex-1 mr-2">Open Gov</div>
-      { track && origin && <div className="bg-slate-300 py-2 px-3 rounded-md flex-1">{ titleCase(origin.origins) }</div> }
+      { track && origin &&
+        <Tippy content={ getTrackInfo( track )?.text }>
+          <div className="bg-slate-300 py-2 px-3 rounded-md flex-1 cursor-default">
+            { titleCase(origin.origins) }
+          </div>
+        </Tippy>
+      }
     </div>
   }
 

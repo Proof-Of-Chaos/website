@@ -4,10 +4,15 @@ import { useLatestUserVoteForRef, useLatestVoteForUserAndRef } from '../hooks/us
 import { useGov2Referendums, useGov2Tracks } from '../hooks/use-gov2';
 import { titleCase } from '../utils';
 import Loader from '../components/ui/loader';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { data } from 'autoprefixer';
 import { useEffect } from 'react';
 import ReferendumDetail from '../components/ui/referendum/referendum-detail';
+import { KUSAMA_TRACK_INFO } from '../data/kusama-tracks';
+import Tippy from '@tippyjs/react';
+// import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
+// import { BN_ZERO } from '@polkadot/util';
+
 
 /**
  * (0)
@@ -80,7 +85,6 @@ function Test() {
     e.currentTarget?.classList.add('active')
   }
 
-
   const { data: tracks, isLoading: isTracksLoading, error } = useGov2Tracks();
   const { data: gov2refs, isLoading } = useGov2Referendums();
 
@@ -96,18 +100,20 @@ function Test() {
     <div className="pl-2">
       <div className="filters">
         tracks: { tracks && tracks.map( (track, idx) => {
+          const trackInfo = KUSAMA_TRACK_INFO.find(t => t.id === parseInt(track[0]) )
           return (
-            <button
-              key={ `filter-${ idx }` }
-              onClick={ (e) => filter(e, track[0]) }
-              className="btn-track-filter text-xs px-2 py-1 m-1 rounded-sm bg-slate-200"
-              data-filter={ track[0] }
-              style={ {
-                display: counts[track[0]] ? 'inline' : 'none'
-              } }
-            >
-              { titleCase( track[1].name ) } ({counts[track[0]]})
-            </button>
+            <Tippy key={ `filter-${ idx }` } content={ trackInfo?.text }>
+              <button
+                onClick={ (e) => filter(e, track[0]) }
+                className="btn-track-filter text-sm px-3 py-2 m-1 rounded-sm bg-slate-200 hover:bg-slate-300"
+                data-filter={ track[0] }
+                style={ {
+                  display: counts[track[0]] ? 'inline' : 'none'
+                } }
+              >
+                { titleCase( track[1].name ) } ({counts[track[0]]})
+              </button>
+            </Tippy>
           )
         })}
       </div>

@@ -277,5 +277,9 @@ button, a {
 .btn-track-filter {
   &.active {
     @apply bg-brand-400 text-white transition-all;
+
+    &:hover {
+      @apply bg-brand-400;
+    }
   }
 }
