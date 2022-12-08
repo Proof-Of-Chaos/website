@@ -79,7 +79,7 @@ export default function ReferendumDetail( {
     return <div className="gov2-badges mb-2 flex">
       <div className="bg-yellow-300 py-1 px-2 rounded-md flex-1 mr-2">Open Gov</div>
       { track?.[0] && origin &&
-        <Tippy content={ getTrackInfo( track?.[0] )?.text }>
+        <Tippy content={ getTrackInfo( parseInt(track?.[0]) )?.text }>
           <div className="bg-slate-300 py-1 px-2 rounded-md flex-1 cursor-default">
             { titleCase(origin.origins) }
           </div>
@@ -208,9 +208,17 @@ export default function ReferendumDetail( {
       { isActive &&
         <>
           <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
-              Referendum {index} ends in
-            </h3>
+            { isGov2 ? 
+              <Tippy content={ 'If the referendum does not enter the confirming state, it will automatically be rejected' }>
+                <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
+                { `Referendum ${index} will be rejected in` }
+                </h3>
+              </Tippy>
+              :
+              <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
+                { `Referendum ${index} ends in` }
+              </h3>
+            }
             <ReferendumCountdown endBlock={ends_at} />
           </div>
           <UserVote />
@@ -246,13 +254,15 @@ export default function ReferendumDetail( {
             voteVolume: KSMFormatted( voted_amount_nay )
           } }
         />
-        <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
-          { isGov2 ? `Referendum ${index} Support` : `Referendum ${index} results`}
-        </h3>
-        <ReferendumStats
-          part={ tally?.support }
-          total={ totalIssuance }
-        />
+        { isGov2 && <>
+          <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
+            { `Referendum ${index} Support` }
+          </h3>
+          <ReferendumStats
+            part={ tally?.support }
+            total={ totalIssuance }
+          />
+        </> }
         <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre>
       </div>
     </>
