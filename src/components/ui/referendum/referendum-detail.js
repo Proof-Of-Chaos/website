@@ -318,7 +318,7 @@ export default function ReferendumDetail( {
   )
 
   return (
-    <div className="relative mx-auto w-full max-w-7xl rounded-md border-2 border-gray-400 border-b-gray-500 p-3 sm:p-4 md:p-6 my-4 mb-8">
+    <div className="relative mx-auto w-full max-w-6xl rounded-md border-2 border-gray-100 shadow-lg p-3 sm:p-4 md:p-6 my-4 mb-8">
       <div className="w-full flex flex-wrap">
         <div className="left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
           <div className="referendum-heading">

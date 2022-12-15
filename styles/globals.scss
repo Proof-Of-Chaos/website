@@ -273,6 +273,10 @@ button, a {
     }
   }
 
+  hr {
+    @apply pb-2 pt-1;
+  }
+
   p {
     @apply mb-3;
   }
