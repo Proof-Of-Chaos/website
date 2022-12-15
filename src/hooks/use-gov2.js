@@ -28,7 +28,7 @@ export const gov2referendumFetcher = async () => {
         tally: {
           ayes: parseInt(ayes),
           nays: parseInt(nays),
-          support: parseInt(support),
+          support: support,
         },
         voted_amount_aye: microToKSM( parseInt(ayes) ),
         voted_amount_nay: microToKSM( parseInt(nays) ),

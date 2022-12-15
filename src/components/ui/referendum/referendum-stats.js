@@ -1,4 +1,5 @@
 import { width } from "@mui/system";
+import Tippy from "@tippyjs/react";
 
 export default function ReferendumStats( { aye, nay, status, part, total, threshold } ) {
   
@@ -8,23 +9,25 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
   }
 
   if ( part && total ) {
-    const widthSupport = `${ parseFloat( part / parseInt(total) ).toFixed(3) }%`;
+    const widthSupport = `${ parseFloat( part / parseInt(total) * 100 ).toFixed(4) }%`;
 
     return (
       <div className="referendum-stats align-bottom">
-        { widthSupport }
-        <div className="mb-3">
-          <svg width="100%" height="8" className="rounded-md">
-            <rect x="0" y="0" width="100%" height="12" fill="rgb(200,200,200)" />
-            <rect
-              x="0"
-              y="0"
-              height="12"
-              fill="rgb(74,222,128)"
-              width={ widthSupport }
-            />
-          </svg>
-        </div>
+        <Tippy content={ <>Support is currently <b>{ widthSupport }</b> of a needed <b>{ threshold.toFixed(4) }%</b> to reach the support threshold </> }>
+          <div className="mb-3">
+            <svg width="100%" height="8" className="rounded-md">
+              <rect x="0" y="0" width="100%" height="12" fill="rgb(200,200,200)" />
+              <rect
+                x="0"
+                y="0"
+                height="12"
+                fill="rgb(74,222,128)"
+                width={ widthSupport }
+              />
+            </svg>
+            <span className="text-sm">{ widthSupport } / { threshold }%</span>
+          </div>
+        </Tippy>
       </div>
     )
   }

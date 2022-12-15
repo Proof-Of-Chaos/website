@@ -17,7 +17,7 @@ import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
 import Tippy from "@tippyjs/react";
 import { getTrackInfo } from "../../../data/kusama-tracks";
 import { curveThreshold, getDecidingPercentage } from "../../../gov2-utils";
-import { bnToBn, BN_MILLION, isBn } from "@polkadot/util";
+import { bnToBn, BN_MILLION, BN_ONE, BN_THOUSAND, isBn } from "@polkadot/util";
 import useAppStore from "../../../zustand";
 
 const toPercentage = (part, whole) => {
@@ -57,7 +57,10 @@ export default function ReferendumDetail( {
   const { data: refConfig } = useConfig( index )
   const { data: latestUserVote } = useLatestUserVoteForRef( index )
 
+  //the percentage that has passed in the deciding period: 0 <= decidingPercentage <= 1
   const [decidingPercentage, setDecidingPercentage] = useState(0);
+
+  const [supportThreshold, setSupportThreshold] = useState(bnToBn(0));
 
   const isActive = ended_at === null;
   const hasConfig = refConfig && refConfig.options
@@ -65,7 +68,7 @@ export default function ReferendumDetail( {
   const metaRef = useRef(null);
 
   const currentBlockNumber = useAppStore((state) => state.chain.currentBlock).toNumber();
-  let threshold = 0;
+  let threshold = -1;
 
   const gov2status = rejected ?
     'Rejected' : approved ?
@@ -79,16 +82,10 @@ export default function ReferendumDetail( {
         decisionPeriod,
       } = track?.[1]
       const dPercentage = getDecidingPercentage(decisionPeriod, deciding?.since, currentBlockNumber);
-      // console.log( 'decidingPercentage', decidingPercentage, 'since', bnToBn(1), deciding?.since, currentBlockNumber)
-      setDecidingPercentage(dPercentage);
-      // console.log( 'decisionPeriod',track?.[1].decisionPeriod )
-  
-      //the amount of blocks we are in the decision period for this ref
-      // const decidingSinceBlocks = bnToBn(currentBlockNumber).sub( bnToBn(deciding.since));
-      // threshold = curveThreshold(track?.[1].minSupport, bnToBn(decidingPercentage * 100).mul(BN_MILLION));
-  
-      // console.log('track bn', track[1].minSupport)
-    }
+
+      setDecidingPercentage( dPercentage );
+      setSupportThreshold( curveThreshold(track?.[1].minSupport, dPercentage * 1000 ) )
+      }
   }, [deciding, currentBlockNumber, track])
 
   useEffect(() => {
@@ -306,17 +303,16 @@ export default function ReferendumDetail( {
           } }
         />
         { isGov2 && <>
-          <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
+          <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg mt-3">
             { `Referendum ${index} Support` }
           </h3>
           <ReferendumStats
             part={ tally?.support }
             total={ totalIssuance }
+            threshold={ parseFloat(supportThreshold / 10000000) }
           />
         </> }
-        <pre className="text-xs text-left">{ currentBlockNumber }</pre>
-        <pre className="text-xs text-left">{ isBn(threshold) && threshold.toNumber() }</pre>
-        <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre>
+        {/* <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre> */}
       </div>
     </>
   )
@@ -335,7 +331,7 @@ export default function ReferendumDetail( {
           </h3>
           <div className="referendum-description break-words">
             <ReactMarkdown>{ description || stripHtml( content ) }</ReactMarkdown>
-            <pre>{ JSON.stringify( referendum, null, 2) }</pre>
+            {/* <pre>{ JSON.stringify( referendum, null, 2) }</pre> */}
           </div>
           <ReferendumLinks referendumId={ referendum.index } />
         </div>

@@ -1,4 +1,4 @@
-import { bnMax, bnMin, bnToBn, BN_BILLION, BN_HUNDRED, BN_MILLION, isBn } from "@polkadot/util";
+import { bnMax, bnMin, bnToBn, BN_BILLION, BN_HUNDRED, BN_MILLION, BN_THOUSAND, isBn } from "@polkadot/util";
 import { isNil } from "lodash";
 
 /**
@@ -8,7 +8,7 @@ import { isNil } from "lodash";
  * @param {*} div
  * @returns
  */
-export function curveThreshold (curve, input, div = bnToBn(1)) {
+export function curveThreshold (curve, input, div = bnToBn(1000)) {
   // if divisor is zero, we return the max
   if (div.isZero()) {
     return BN_BILLION;
@@ -18,7 +18,7 @@ export function curveThreshold (curve, input, div = bnToBn(1)) {
     return BN_BILLION;
   }
 
-  const x = bnToBn(input);
+  const x = bnToBn(input).mul(BN_BILLION).div(div);
 
   if (curve?.linearDecreasing) {
     let { ceil, floor, length } = curve.linearDecreasing

@@ -1,5 +1,5 @@
 import Layout from '../layouts/layout'
-import { countBy } from 'lodash';
+import { countBy, some } from 'lodash';
 import { useLatestUserVoteForRef, useLatestVoteForUserAndRef } from '../hooks/use-votes';
 import { useGov2Referendums, useGov2Tracks, useIssuance } from '../hooks/use-gov2';
 import { titleCase } from '../utils';
@@ -90,7 +90,7 @@ function Test() {
 
   useEffect(() => {
     if ( gov2refs ) {
-      setFilteredRefs( gov2refs )
+      setFilteredRefs( gov2refs.filter( ref => ! some([ref.approved, ref.rejected, ref.cancelled]) ) )
       setCounts( countBy(gov2refs,obj => obj.track))
     }
   }, [gov2refs])
@@ -120,10 +120,7 @@ function Test() {
       </div>
       {isLoading && <Loader /> }
       <ul className="list-disc">
-        {filteredRefs.map( r => {
-          return (
-            <>
-              info:{ r.info }
+        {filteredRefs.map( r => 
             <ReferendumDetail
               key={ r.id }
               referendum={ r }
@@ -131,11 +128,8 @@ function Test() {
               totalIssuance={ totalIssuance }
               track={ tracks.find( t => t[0] == r.track ) }
             />
-            </>
-          )
-        } ) }
+        ) }
       </ul>
-      <pre>{ tracks && JSON.stringify(tracks,null,2 ) }</pre>
       </div>
   )
 }
