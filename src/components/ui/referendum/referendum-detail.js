@@ -329,7 +329,7 @@ export default function ReferendumDetail( {
           >
             {title}
           </h3>
-          <div className="referendum-description break-words">
+          <div className="referendum-description break-words text-sm">
             <ReactMarkdown>{ description || stripHtml( content ) }</ReactMarkdown>
             {/* <pre>{ JSON.stringify( referendum, null, 2) }</pre> */}
           </div>
