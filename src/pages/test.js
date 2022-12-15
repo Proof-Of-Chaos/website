@@ -122,6 +122,8 @@ function Test() {
       <ul className="list-disc">
         {filteredRefs.map( r => {
           return (
+            <>
+              info:{ r.info }
             <ReferendumDetail
               key={ r.id }
               referendum={ r }
@@ -129,6 +131,7 @@ function Test() {
               totalIssuance={ totalIssuance }
               track={ tracks.find( t => t[0] == r.track ) }
             />
+            </>
           )
         } ) }
       </ul>

@@ -1,0 +1,89 @@
+import { bnMax, bnMin, bnToBn, BN_BILLION, BN_HUNDRED, BN_MILLION, isBn } from "@polkadot/util";
+import { isNil } from "lodash";
+
+/**
+ * from https://github.com/polkadot-js/apps/blob/bf69fbb625b8d0b585fbe8c40e1b91b939497135/packages/page-referenda/src/util.ts
+ * @param {} curve
+ * @param {*} input
+ * @param {*} div
+ * @returns
+ */
+export function curveThreshold (curve, input, div = bnToBn(1)) {
+  // if divisor is zero, we return the max
+  if (div.isZero()) {
+    return BN_BILLION;
+  }
+
+  if (! curve) {
+    return BN_BILLION;
+  }
+
+  const x = bnToBn(input);
+
+  if (curve?.linearDecreasing) {
+    let { ceil, floor, length } = curve.linearDecreasing
+
+    ceil = bnToBn(ceil)
+    floor = bnToBn(floor)
+    length = bnToBn(length)
+    console.log( 'ceil floor div', ceil.toNumber() , floor.toNumber()  , length.toNumber(), x.toNumber() );
+
+    // *ceil - (x.min(*length).saturating_div(*length, Down) * (*ceil - *floor))
+    // NOTE: We first multiply, then divide (since we work with fractions)
+    return ceil.sub(
+      bnMin(x, length)
+        .mul(ceil.sub(floor))
+        .div(length)
+    );
+  } else if (curve?.isSteppedDecreasing) {
+    const { begin, end, period, step } = curve.asSteppedDecreasing;
+
+    // (*begin - (step.int_mul(x.int_div(*period))).min(*begin)).max(*end)
+    return bnMax(
+      end,
+      begin.sub(
+        bnMin(
+          begin,
+          step
+            .mul(x)
+            .div(period)
+        )
+      )
+    );
+  } else if (curve?.reciprocal) {
+    let { factor, xOffset, yOffset } = curve.reciprocal;
+    factor = bnToBn(factor)
+    xOffset = bnToBn(xOffset)
+    yOffset = bnToBn(yOffset)
+
+    // factor
+    //   .checked_rounding_div(FixedI64::from(x) + *x_offset, Low)
+    //   .map(|yp| (yp + *y_offset).into_clamped_perthing())
+    //   .unwrap_or_else(Perbill::one)
+    return bnMin(
+      BN_BILLION,
+      factor
+        .mul(BN_BILLION)
+        .div(x.add(xOffset))
+        .add(yOffset)
+    );
+  }
+
+  throw new Error(`Unknown curve found ${JSON.stringify(curve)}`);
+}
+
+// 
+/**
+ * return the percentage (0 <= percentage <= 1) of the decision period already passed
+ * @param {*} decisionPeriod The period in blocks, that a decision will last
+ * @param {*} decidingSince The start of the current decision period (blockNumber)
+ * @param {*} currentBlock The current block number
+ */
+export function getDecidingPercentage(decisionPeriod, decidingSince, currentBlock) {
+  if (isNil(decidingSince) || isNil(decisionPeriod) || isNil(currentBlock)) {
+    return null;
+  }
+
+  const passedBlocks = currentBlock - decidingSince;
+  return Math.min(passedBlocks / decisionPeriod, 1);
+}

@@ -13,7 +13,7 @@ const log = (config) => (set, get, api) =>
   )
 
 const useAppStore = create(
-  // log(
+  log(
     persist((set) => ({
       user: {
         quizAnswers: {},
@@ -22,6 +22,16 @@ const useAppStore = create(
         connectedWallet: null,
         connectedAccount: null,
         nfts: [],
+      },
+      chain: {
+        currentBlock: null,
+      },
+      setCurrentBlock: ( blockNumber ) => {
+        set(()=>({
+          chain: {
+            currentBlock: blockNumber,
+          }
+        }))
       },
       setReferendums: ( referendums ) => {
         set(()=>({
@@ -106,7 +116,7 @@ const useAppStore = create(
         name: 'govrewards-storage', // unique name
       }
     )
-  // )
+  )
 )
 
 export default useAppStore;

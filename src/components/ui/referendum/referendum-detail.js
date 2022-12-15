@@ -11,10 +11,14 @@ import { useModal } from "../../modals/context";
 import { KSMFormatted, microToKSM, stripHtml, titleCase } from "../../../utils";
 import { InlineLoader } from "../loader";
 import { useConfig } from "../../../hooks/use-config";
+import { useCurrentBlockNumber } from "../../../hooks/use-chain";
 import ReferendumVoteButtons from "./referendum-vote-buttons";
 import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
 import Tippy from "@tippyjs/react";
 import { getTrackInfo } from "../../../data/kusama-tracks";
+import { curveThreshold, getDecidingPercentage } from "../../../gov2-utils";
+import { bnToBn, BN_MILLION, isBn } from "@polkadot/util";
+import useAppStore from "../../../zustand";
 
 const toPercentage = (part, whole) => {
   return Math.round(parseInt(part) / parseInt(whole) * 100)
@@ -44,16 +48,48 @@ export default function ReferendumDetail( {
     ended_at,
     origin,
     tally,
+    deciding,
+    rejected,
+    approved
   } = referendum
 
   const { openModal } = useModal();
   const { data: refConfig } = useConfig( index )
   const { data: latestUserVote } = useLatestUserVoteForRef( index )
 
+  const [decidingPercentage, setDecidingPercentage] = useState(0);
+
   const isActive = ended_at === null;
   const hasConfig = refConfig && refConfig.options
 
   const metaRef = useRef(null);
+
+  const currentBlockNumber = useAppStore((state) => state.chain.currentBlock).toNumber();
+  let threshold = 0;
+
+  const gov2status = rejected ?
+    'Rejected' : approved ?
+      'Approved' : deciding?.since.confirming && deciding?.since.confirming !== null ?
+      'Confirming' : deciding?.since ?
+      'Deciding' : 'Unknown State';
+
+  useEffect(() => {
+    if ( deciding?.since ) {
+      const {
+        decisionPeriod,
+      } = track?.[1]
+      const dPercentage = getDecidingPercentage(decisionPeriod, deciding?.since, currentBlockNumber);
+      // console.log( 'decidingPercentage', decidingPercentage, 'since', bnToBn(1), deciding?.since, currentBlockNumber)
+      setDecidingPercentage(dPercentage);
+      // console.log( 'decisionPeriod',track?.[1].decisionPeriod )
+  
+      //the amount of blocks we are in the decision period for this ref
+      // const decidingSinceBlocks = bnToBn(currentBlockNumber).sub( bnToBn(deciding.since));
+      // threshold = curveThreshold(track?.[1].minSupport, bnToBn(decidingPercentage * 100).mul(BN_MILLION));
+  
+      // console.log('track bn', track[1].minSupport)
+    }
+  }, [deciding, currentBlockNumber, track])
 
   useEffect(() => {
     //unset sticky if content on right is too high
@@ -76,15 +112,23 @@ export default function ReferendumDetail( {
   }
 
   const Gov2Badges = () => {
+    const statusBadgeBg = `linear-gradient(90deg, #facc15 0%, #facc15 ${ decidingPercentage * 100 }%, #eab308 ${ decidingPercentage * 100 }%, #eab308 100%)`
     return <div className="gov2-badges mb-2 flex">
-      <div className="bg-yellow-300 py-1 px-2 rounded-md flex-1 mr-2">Open Gov</div>
       { track?.[0] && origin &&
         <Tippy content={ getTrackInfo( parseInt(track?.[0]) )?.text }>
-          <div className="bg-slate-300 py-1 px-2 rounded-md flex-1 cursor-default">
+          <div className="bg-slate-300 py-1 px-2 rounded-md flex-1 cursor-default mr-2">
             { titleCase(origin.origins) }
           </div>
         </Tippy>
       }
+      <Tippy content={ `${ (decidingPercentage * 100).toFixed(2) }% of the deciding period has passed` }>
+        <div
+          className="py-1 px-2 rounded-md flex-1 cursor-default"
+          style={ { background: statusBadgeBg } }
+        >
+          { gov2status }
+        </div>
+      </Tippy>
     </div>
   }
 
@@ -211,17 +255,22 @@ export default function ReferendumDetail( {
         <>
           <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm hover:shadow-md transition-shadow">
             { isGov2 ?
+              <>
               <Tippy content={ 'If the referendum does not enter the confirming state, it will automatically be rejected' }>
                 <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
-                { `Referendum ${index} will be rejected in` }
+                { `Referendum ${index} will be decided in` }
                 </h3>
               </Tippy>
+              { deciding?.since && <ReferendumCountdown endBlock={ deciding.since + track[1].decisionPeriod } /> }
+              </>
               :
+              <>
               <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
                 { `Referendum ${index} ends in` }
               </h3>
+              <ReferendumCountdown endBlock={ends_at} />
+              </>
             }
-            <ReferendumCountdown endBlock={ends_at} />
           </div>
           <UserVote />
           <ReferendumVoteButtons referendum={ referendum } />
@@ -265,10 +314,9 @@ export default function ReferendumDetail( {
             total={ totalIssuance }
           />
         </> }
+        <pre className="text-xs text-left">{ currentBlockNumber }</pre>
+        <pre className="text-xs text-left">{ isBn(threshold) && threshold.toNumber() }</pre>
         <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre>
-      </div>
-      <div className="mt-2 px-2 py-1 rounded-md bg-gradient-to-br from-purple-500 to-rose-400 hover:shadow-lg transition-all">
-        { isGov2 && <a className="no-underline text-white" href="https://polkadot.network/blog/gov2-polkadots-next-generation-of-decentralised-governance/">Learn more about Governance 2</a> }
       </div>
     </>
   )

@@ -4,6 +4,12 @@ import { websiteConfig } from "../data/website-config";
 import { getApi } from '../data/chain';
 import { GET_GOV2_REF_TITLE_AND_CONTENT } from "./queries";
 import { microToKSM } from '../utils';
+import { useMemo } from 'react';
+import { BN_ZERO } from '@polkadot/util';
+
+// Inspired by and simplified from subsquare and polkadot.js
+// https://github.com/opensquare-network/subsquare/tree/83a1a03a72aac36220c28e088ffe10621458be9a/packages/next-common/context/post/gov2
+// https://github.com/polkadot-js/apps/tree/master/packages/page-referenda/src
 
 export const gov2referendumFetcher = async () => {
   const api = await getApi();
@@ -90,19 +96,20 @@ async function getTitleAndContentForRefs(referendumIDs) {
 export const useGov2Tracks = () => {
   return useQuery(["gov2-tracks"], async () => {
     const api = await getApi();
-    const tracks = await api.consts.referenda.tracks.toHuman()
+    const tracks = await api.consts.referenda.tracks.toJSON()
     return tracks
   });
 }
 
 
-async function issuanceFetcher () {
+async function activeIssuanceFetcher () {
   const api = await getApi();
-  const totalIssuance = await api.query.balances.totalIssuance();
-
-  return totalIssuance
+  const totalIssuance = await api.query.balances.totalIssuance()
+  const inactiveIssuance = await api.query.balances.inactiveIssuance()
+  const activeIssuance = totalIssuance && totalIssuance.sub(inactiveIssuance || BN_ZERO)
+  return activeIssuance
 }
 
 export const useIssuance = () => {
-  return useQuery(["active-issuance"], issuanceFetcher);
+  return useQuery(["active-issuance"], activeIssuanceFetcher);
 }

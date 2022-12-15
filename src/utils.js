@@ -3,7 +3,6 @@ const BLOCK_DURATION = 6000;
 const EXPONENT_CONSTANTS = [3, 0.4]
 
 const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {
-  console.log( 'getEnddatebyblock', blockNumber)
   let newStamp = parseInt(currentTimestamp.toString()) + ((parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) * BLOCK_DURATION)
   return new Date(newStamp);
 }
