@@ -98,7 +98,7 @@ function Test() {
   const { data: totalIssuance, isLoading: isIssuanceLoading } = useIssuance();
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="">
       <div className="filters">
         tracks: { tracks && tracks.map( (track, idx) => {
           const trackInfo = KUSAMA_TRACK_INFO.find(t => t.id === parseInt(track[0]) )

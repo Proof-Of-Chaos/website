@@ -58,9 +58,11 @@ export default function ReferendumDetail( {
   const { data: latestUserVote } = useLatestUserVoteForRef( index )
 
   //the percentage that has passed in the deciding period: 0 <= decidingPercentage <= 1
-  const [decidingPercentage, setDecidingPercentage] = useState(0);
+  const [decidingPercentage, setDecidingPercentage] = useState(0)
 
-  const [supportThreshold, setSupportThreshold] = useState(bnToBn(0));
+  //will store Big Numbers to be converted before display
+  const [supportThreshold, setSupportThreshold] = useState(bnToBn(0))
+  const [approveThreshold, setApproveThreshold] = useState(bnToBn(0))
 
   const isActive = ended_at === null;
   const hasConfig = refConfig && refConfig.options
@@ -68,7 +70,6 @@ export default function ReferendumDetail( {
   const metaRef = useRef(null);
 
   const currentBlockNumber = useAppStore((state) => state.chain.currentBlock).toNumber();
-  let threshold = -1;
 
   const gov2status = rejected ?
     'Rejected' : approved ?
@@ -81,11 +82,12 @@ export default function ReferendumDetail( {
       const {
         decisionPeriod,
       } = track?.[1]
-      const dPercentage = getDecidingPercentage(decisionPeriod, deciding?.since, currentBlockNumber);
 
+      const dPercentage = getDecidingPercentage(decisionPeriod, deciding?.since, currentBlockNumber);
       setDecidingPercentage( dPercentage );
       setSupportThreshold( curveThreshold(track?.[1].minSupport, dPercentage * 1000 ) )
-      }
+      setApproveThreshold( curveThreshold( track?.[1].minApproval, dPercentage * 1000 ) )
+    }
   }, [deciding, currentBlockNumber, track])
 
   useEffect(() => {
@@ -113,14 +115,14 @@ export default function ReferendumDetail( {
     return <div className="gov2-badges mb-2 flex">
       { track?.[0] && origin &&
         <Tippy content={ getTrackInfo( parseInt(track?.[0]) )?.text }>
-          <div className="bg-slate-300 py-1 px-2 rounded-md flex-1 cursor-default mr-2">
+          <div className="text-sm bg-gray-200 py-1 px-2 rounded-md flex-1 cursor-default mr-2">
             { titleCase(origin.origins) }
           </div>
         </Tippy>
       }
       <Tippy content={ `${ (decidingPercentage * 100).toFixed(2) }% of the deciding period has passed` }>
         <div
-          className="py-1 px-2 rounded-md flex-1 cursor-default"
+          className="text-sm py-1 px-2 rounded-md flex-1 cursor-default"
           style={ { background: statusBadgeBg } }
         >
           { gov2status }
@@ -176,12 +178,12 @@ export default function ReferendumDetail( {
     }
 
     if ( isActive ) {
-      return <p className="mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
+      return <p className="text-sm mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
         { JSON.stringify( latestUserVote ) }
         You did not vote on <br/> referendum { index } yet.<br/>{ `Vote to receive NFT rewards.` }
       </p>
     } else {
-      return <p className="mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
+      return <p className="text-sm mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
         { JSON.stringify( latestUserVote ) }
         You did not vote on <br/> referendum { index }.
       </p>
@@ -248,13 +250,14 @@ export default function ReferendumDetail( {
 
   const referendumMeta = (
     <>
+      { isGov2 && <Gov2Badges/> }
       { isActive &&
         <>
           <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm hover:shadow-md transition-shadow">
             { isGov2 ?
               <>
               <Tippy content={ 'If the referendum does not enter the confirming state, it will automatically be rejected' }>
-                <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
+                <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
                 { `Referendum ${index} will be decided in` }
                 </h3>
               </Tippy>
@@ -287,7 +290,7 @@ export default function ReferendumDetail( {
         </>
       }
       <div className="p-4 bg-gray-100 rounded-md mt-2 shadow-sm transition-shadow hover:shadow-md">
-        <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg">
+        <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
           { isGov2 ? `Referendum ${index} Approval` : `Referendum ${index} results`}
         </h3>
         <ReferendumStats
@@ -301,18 +304,19 @@ export default function ReferendumDetail( {
             percentage: toPercentage( voted_amount_nay, voted_amount_total),
             voteVolume: KSMFormatted( voted_amount_nay )
           } }
+          threshold={ parseFloat(approveThreshold / 1000000000) }
         />
         { isGov2 && <>
-          <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-lg mt-3">
+          <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md mt-3">
             { `Referendum ${index} Support` }
           </h3>
           <ReferendumStats
             part={ tally?.support }
             total={ totalIssuance }
-            threshold={ parseFloat(supportThreshold / 10000000) }
+            threshold={ parseFloat(supportThreshold / 1000000000) }
           />
         </> }
-        {/* <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre> */}
+        <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre>
       </div>
     </>
   )
@@ -331,12 +335,11 @@ export default function ReferendumDetail( {
           </h3>
           <div className="referendum-description break-words text-sm">
             <ReactMarkdown>{ description || stripHtml( content ) }</ReactMarkdown>
-            {/* <pre>{ JSON.stringify( referendum, null, 2) }</pre> */}
+            <pre>{ JSON.stringify( referendum, null, 2) }</pre>
           </div>
           <ReferendumLinks referendumId={ referendum.index } />
         </div>
         <div ref={ metaRef } className="right text-center w-full sm:w-5/12 md:w-4/12 pt-6 sm:pt-0 sticky self-start top-24 sm:pl-4 md:pl-6">
-          { isGov2 && <Gov2Badges/> }
           { referendumMeta }
         </div>
       </div>

@@ -11,6 +11,10 @@
   src:  url('../public/unbounded/WOFF/Unbounded-Bold.woff2') format('woff2');
 }
 
+.font-unbounded {
+  font-family: 'Unbounded', sans-serif;
+}
+
 .tooltip {
   @apply invisible absolute;
 }
