@@ -49,8 +49,9 @@ export default function ReferendumDetail( {
     origin,
     tally,
     deciding,
+    decisionDeposit,
     rejected,
-    approved
+    approved,
   } = referendum
 
   const { openModal } = useModal();
@@ -74,8 +75,9 @@ export default function ReferendumDetail( {
   const gov2status = rejected ?
     'Rejected' : approved ?
       'Approved' : deciding?.since.confirming && deciding?.since.confirming !== null ?
-      'Confirming' : deciding?.since ?
-      'Deciding' : 'Unknown State';
+        'Confirming' : decisionDeposit === null ?
+          'Awaiting Deposit' : deciding?.since ?
+            'Deciding' : 'Unknown State';
 
   useEffect(() => {
     if ( deciding?.since ) {
@@ -256,12 +258,22 @@ export default function ReferendumDetail( {
           <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm hover:shadow-md transition-shadow">
             { isGov2 ?
               <>
-              <Tippy content={ 'If the referendum does not enter the confirming state, it will automatically be rejected' }>
-                <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
-                { `Referendum ${index} will be decided in` }
-                </h3>
-              </Tippy>
-              { deciding?.since && <ReferendumCountdown endBlock={ deciding.since + track[1].decisionPeriod } /> }
+                { gov2status === 'Awaiting Deposit' ? 
+                <>
+                  <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
+                    { `Waiting for anyone to pay the decision deposit for Referendum ${index}` }
+                  </h3>
+                </>
+                :
+                <>
+                  <Tippy content={ 'If the referendum does not enter the confirming state, it will automatically be rejected' }>
+                    <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
+                    { `Referendum ${index} will be decided in` }
+                    </h3>
+                  </Tippy>
+                  { deciding?.since && <ReferendumCountdown endBlock={ deciding.since + track[1].decisionPeriod } /> }
+                </>
+                }
               </>
               :
               <>
@@ -316,13 +328,13 @@ export default function ReferendumDetail( {
             threshold={ parseFloat(supportThreshold / 1000000000) }
           />
         </> }
-        <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre>
+        {/* <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre> */}
       </div>
     </>
   )
 
   return (
-    <div className="relative mx-auto w-full max-w-6xl rounded-md border-2 border-gray-100 shadow-lg p-3 sm:p-4 md:p-6 my-4 mb-8">
+    <div className="relative w-full rounded-md border-2 border-gray-100 shadow-lg p-3 sm:p-4 md:p-6 my-4 mb-8">
       <div className="w-full flex flex-wrap">
         <div className="left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
           <div className="referendum-heading">
@@ -335,7 +347,7 @@ export default function ReferendumDetail( {
           </h3>
           <div className="referendum-description break-words text-sm">
             <ReactMarkdown>{ description || stripHtml( content ) }</ReactMarkdown>
-            <pre>{ JSON.stringify( referendum, null, 2) }</pre>
+            {/* <pre>{ JSON.stringify( referendum, null, 2) }</pre> */}
           </div>
           <ReferendumLinks referendumId={ referendum.index } />
         </div>

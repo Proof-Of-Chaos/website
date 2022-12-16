@@ -10,7 +10,7 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
     const widthSupport = parseFloat( part / parseInt(total) * 100 );
     
     //show 20% more than threshold
-    const maxSupportShown = threshold * 100 * 1.2; 
+    const maxSupportShown = threshold * 100 * 1.2;
 
     //translate all widths
     const widthFactor = maxSupportShown !== 0 ? 1 / maxSupportShown * 100 : 1.0;
@@ -59,16 +59,18 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
         </div>
       }
       <div className="mb-2 relative">
-        <svg width="100%" height="10" className="rounded-md">
-          <rect x="0" y="0" width="100%" height="12" fill="rgb(248,113,113)" />
-          <rect
-            x="0"
-            y="0"
-            height="12"
-            fill="rgb(74,222,128)"
-            width={`${aye.percentage}%`}
-          />
-        </svg>
+        <Tippy content={ <>Approval is currently <b>{ aye.percentage }%</b> of a needed <b>{ (threshold * 100).toFixed(4) }%</b> to reach the approval threshold. <br/>The threshold will decrease over time. </> }>
+          <svg width="100%" height="10" className="rounded-md">
+            <rect x="0" y="0" width="100%" height="12" fill="rgb(248,113,113)" />
+            <rect
+              x="0"
+              y="0"
+              height="12"
+              fill="rgb(74,222,128)"
+              width={`${aye.percentage}%`}
+            />
+          </svg>
+        </Tippy>
         { threshold && <svg
           width="3"
           height="18"

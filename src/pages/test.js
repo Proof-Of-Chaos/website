@@ -71,7 +71,7 @@ function Test() {
 
   const filter = ( e, trackId ) => {
     if ( e.currentTarget?.classList.contains('active') ) {
-      setFilteredRefs( gov2refs )
+      setFilteredRefs( gov2refs.filter( ref => ! some([ref.approved, ref.rejected, ref.cancelled]) ) )
       e.currentTarget?.classList.remove('active')
       return
     }
@@ -98,9 +98,9 @@ function Test() {
   const { data: totalIssuance, isLoading: isIssuanceLoading } = useIssuance();
 
   return (
-    <div className="">
+    <div className="max-w-6xl mx-auto">
       <div className="filters">
-        tracks: { tracks && tracks.map( (track, idx) => {
+        { tracks && tracks.map( (track, idx) => {
           const trackInfo = KUSAMA_TRACK_INFO.find(t => t.id === parseInt(track[0]) )
           return (
             <Tippy key={ `filter-${ idx }` } content={ trackInfo?.text }>
@@ -118,7 +118,7 @@ function Test() {
           )
         })}
       </div>
-      {isLoading && <Loader /> }
+      {isLoading && <Loader text='Loading Referenda' /> }
       <ul className="list-disc">
         {filteredRefs.map( r => 
             <ReferendumDetail
@@ -130,7 +130,7 @@ function Test() {
             />
         ) }
       </ul>
-      </div>
+    </div>
   )
 }
 
