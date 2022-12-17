@@ -14,7 +14,7 @@ import { InlineLoader } from "../ui/loader";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLatestUserVoteForRef } from "../../hooks/use-votes";
 
-export default function ReferendumVoteModal( { index, title, userAnswers } ) {
+export default function ReferendumVoteModal( { index, title, userAnswers, gov2 = false} ) {
   const { data: latestUserVote } = useLatestUserVoteForRef( index )
   const { data: accountBalance, isLoading: isBalanceLoading } = useAccountBalance()
   const availableBalance = microToKSM( accountBalance?.data?.free )
@@ -93,7 +93,7 @@ export default function ReferendumVoteModal( { index, title, userAnswers } ) {
           state['wallet-select'],
           balance,
           state['vote-lock'],
-          state['userAnswers']
+          gov2
         ).then( ( ) => {
           queryClient.invalidateQueries({ queryKey: ['vote', connectedAccount?.ksmAddress, index ] })
           closeModal()

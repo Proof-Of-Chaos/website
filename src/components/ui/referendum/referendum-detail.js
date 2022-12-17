@@ -80,7 +80,7 @@ export default function ReferendumDetail( {
             'Deciding' : 'Unknown State';
 
   useEffect(() => {
-    if ( deciding?.since ) {
+    if ( deciding?.since && track) {
       const {
         decisionPeriod,
       } = track?.[1]

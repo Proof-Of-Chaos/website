@@ -6,25 +6,40 @@ import { GET_GOV2_REF_TITLE_AND_CONTENT } from "./queries";
 import { microToKSM } from '../utils';
 import { useMemo } from 'react';
 import { BN_ZERO } from '@polkadot/util';
+import { isNull } from 'lodash';
 
 // Inspired by and simplified from subsquare and polkadot.js
 // https://github.com/opensquare-network/subsquare/tree/83a1a03a72aac36220c28e088ffe10621458be9a/packages/next-common/context/post/gov2
 // https://github.com/polkadot-js/apps/tree/master/packages/page-referenda/src
 
-export const gov2referendumFetcher = async () => {
+export const gov2referendumFetcher = async ( refId ) => {
   const api = await getApi();
-  let gov2refs = await api.query.referenda.referendumInfoFor.entries()
+  let gov2refs;
+
+  if ( typeof refId === 'undefined' ) {
+    return [];
+  }
+
+  if (refId === 'all') {
+    gov2refs = await api.query.referenda.referendumInfoFor.entries()
+  } else if ( isFinite(refId) ) {
+    gov2refs = await api.query.referenda.referendumInfoFor(refId)
+    gov2refs = [[refId, gov2refs]]
+  } else {
+    return [];
+  }
 
   gov2refs = gov2refs.map( ([key, referendum]) => {
     let refjson = referendum.toJSON();
-
+    try {
     if ( refjson.ongoing ) {
       let {
         tally: { ayes, nays, support },
       } = refjson.ongoing;
       return {
         ...refjson.ongoing,
-        index: parseInt(key.args[0].toHuman()),
+        gov2: true,
+        index: key?.args?.[0] ? parseInt(key.args[0].toHuman()) : parseInt(refId),
         tally: {
           ayes: parseInt(ayes),
           nays: parseInt(nays),
@@ -39,6 +54,9 @@ export const gov2referendumFetcher = async () => {
       }
     } else {
       return referendum.toJSON()
+    }
+    } catch( e ) {
+      console.error( e )
     }
   } );
 
@@ -63,8 +81,15 @@ export const gov2referendumFetcher = async () => {
 
 export const useGov2Referendums = () => {
   return useQuery(
-    [ "gov2-referendums"],
-    gov2referendumFetcher
+    ["gov2-referendums"],
+    async () => gov2referendumFetcher('all')
+  )
+}
+
+export const useGov2Referendum = (referendumId) => {
+  return useQuery(
+    ["gov2-referendum", referendumId],
+    async () => gov2referendumFetcher(referendumId)
   )
 }
 
