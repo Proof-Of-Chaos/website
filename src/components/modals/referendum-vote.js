@@ -64,11 +64,11 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
     userAnswers,
   })
 
-  useEffect( () => {
+  useEffect( () => {
     setState( {
       ...state,
       'vote-amount': microToKSM(latestUserVote?.balance?.value),
-      'vote-lock': `Locked${latestUserVote?.lockPeriod}x`
+      'vote-lock': latestUserVote ? `Locked${latestUserVote?.lockPeriod}x` : 'None',
     })
   }, [ latestUserVote ])
 
