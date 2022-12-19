@@ -26,7 +26,6 @@ const voteFetcher = async ( ksmAddress, referendumIndex=null, gov2=false ) => {
 };
 
 export const useVotes = ( ksmAddress, referendumIndex = null, gov2 = false, config = {} ) => {
-  console.log( 'useVotes', 'ksmAddress', ksmAddress, 'refIdx', referendumIndex, 'gov2', gov2 )
   return useQuery( [ 'votes', ksmAddress, referendumIndex, gov2 ], async() => voteFetcher( ksmAddress, referendumIndex, gov2 ), config )
 };
 

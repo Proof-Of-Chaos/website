@@ -104,7 +104,7 @@ function Test() {
                   display: counts[track[0]] ? 'inline' : 'none'
                 } }
               >
-                { titleCase( track[1].name ) } ({ counts[track[0]] })
+                { titleCase( track[1].name ) } <span className="text-xs text-slate-500">{ counts[track[0]] }</span>
               </button>
             </Tippy>
           )
@@ -115,7 +115,7 @@ function Test() {
               className="btn-track-filter text-sm px-3 py-1 m-1 rounded-sm bg-violet-200 hover:bg-violet-300"
               onClick={ (e) => filter(e, {voted: false}) }
             >
-              { notVotedFilterText } ({ counts.notVoted })
+              { notVotedFilterText } <span className="text-xs text-slate-500">/{ counts.notVoted }</span>
             </button>
           </Tippy>
           <Tippy content={ 'Only show referenda, you already voted on' }>
@@ -123,7 +123,7 @@ function Test() {
               className="btn-track-filter text-sm px-3 py-1 m-1 rounded-sm bg-violet-200 hover:bg-violet-300"
               onClick={ (e) => filter(e, {voted: true}) }
             >
-              { votedFilterText } ({ counts.voted })
+              { votedFilterText } <span className="text-xs text-slate-500">{ counts.voted }</span>
             </button>
           </Tippy>
         </>}
