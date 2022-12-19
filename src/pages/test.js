@@ -166,8 +166,8 @@ function Test() {
             referendum={ r }
             isGov2={ true }
             totalIssuance={ totalIssuance }
-            track={ tracks.find( t => t[0] == r.track ) }
-            userVote={ userVotes.find( vote => vote.referendumIndex === r.index ) }
+            track={ tracks?.find( t => t[0] == r.track ) }
+            userVote={ userVotes?.find( vote => vote.referendumIndex === r.index ) }
           />
         ) }
       </ul>
