@@ -13,7 +13,7 @@ const log = (config) => (set, get, api) =>
   )
 
 const useAppStore = create(
-  log(
+  // log(
     persist((set) => ({
       user: {
         quizAnswers: {},
@@ -116,7 +116,7 @@ const useAppStore = create(
         name: 'govrewards-storage', // unique name
       }
     )
-  )
+  // )
 )
 
 export default useAppStore;

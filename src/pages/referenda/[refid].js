@@ -21,7 +21,7 @@ const ReferendumView = () => {
   const { data: tracks, isLoading: isTracksLoading } = useGov2Tracks();
   const { data: referenda, isLoading, error } = useGov2Referendum( refid )
   const { data: totalIssuance, isLoading: isIssuanceLoading } = useIssuance();
-  // const { data: userVotes, isFetching: isUserVotesLoading } = useUserVotes()
+  const { data: userVotes, isFetching: isUserVotesLoading } = useUserVotes(refid ?? -1, true)
   // const { data: userNfts } = useUserNfts()
 
   if ( ! refid || ! isFinite( refid ) ) {
@@ -62,6 +62,7 @@ const ReferendumView = () => {
       expandButtonVisible={ false }
       totalIssuance={ totalIssuance }
       track={ tracks.find( t => t[0] == referenda[0].track ) }
+      userVote={ userVotes ? userVotes[0] : null }
     />
   // }  
 
@@ -74,6 +75,7 @@ const ReferendumView = () => {
       <Link href="/vote">
       <a className='no-underline py-1 sm:py-3 inline-block text-base'>⇽ Go Back Referendum Overview</a>
       </Link>
+      {/* <pre>userVotes: { JSON.stringify( userVotes, null, 2) }</pre> */}
       {/* <pre>{ JSON.stringify( referenda[0], null, 2) }</pre> */}
       { ReferendumView }
     </div>

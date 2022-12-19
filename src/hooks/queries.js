@@ -1,6 +1,55 @@
 import { gql as agql } from '@apollo/client'
 import { websiteConfig } from '../data/website-config'
 
+
+export const QUERY_QUIZZES = agql`
+  query QuizzesQuery($where: QuizWhereInput) {
+    quizzes(
+      where: $where,
+      orderBy: timestamp_DESC,
+    ) {
+      blockNumber
+      creator
+      id
+      referendumIndex
+      timestamp
+      version
+      questions {
+        id
+        quizId
+        text
+        indexCorrectAnswerHistory {
+          blockNumber
+          correctIndex
+          id
+          questionId
+          submitter
+          timestamp
+          version
+        }
+        answerOptions {
+          id
+          questionId
+          text
+        }
+      }
+      submissions {
+        answers {
+          id
+        }
+        blockNumber
+        id
+        quizId
+        referendumIndex
+        timestamp
+        version
+        wallet
+      }
+    }
+  }
+`
+
+
 export const GET_GOV2_REF_TITLE_AND_CONTENT = agql`
   query Gov2RefTitleAndContent($limit: Int, $where: posts_bool_exp) {
     posts(limit: $limit, where: $where) {
@@ -86,9 +135,9 @@ export const QUERY_REFERENDUMS = agql`
 
 export const QUERY_VOTES = agql`
   query Votes(
-    $votesWhere: VoteWhereInput
+    $where: VoteWhereInput
   ) {
-    votes(where: $votesWhere) {
+    votes(where: $where) {
       voter
       referendumIndex
       balance {
@@ -102,6 +151,33 @@ export const QUERY_VOTES = agql`
       }
       decision
       lockPeriod
+    }
+  }
+`
+
+export const QUERY_CONVICTION_VOTES = agql`
+  query Query(
+    $where: ConvictionVoteWhereInput
+  ) {
+    convictionVotes(where: $where) {
+      referendumIndex
+      voter
+      balance {
+        ... on SplitVoteBalance {
+          aye
+          nay
+        }
+        ... on SplitAbstainVoteBalance {
+          abstain
+          aye
+          nay
+        }
+        ... on StandardVoteBalance {
+          value
+        }
+      }
+      lockPeriod
+      decision
     }
   }
 `

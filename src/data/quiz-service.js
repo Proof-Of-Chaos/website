@@ -1,10 +1,10 @@
 import { getApi, sendAndFinalize } from './chain';
 
-export async function submitQuizAnswers(signer, ref, address, userAnswers, quizVersion) {
+export async function submitQuizAnswers(signer, ref, address, userAnswers, quizVersion, extrinsicVersion) {
   return new Promise( async (resolve, reject ) => {
     try {
       const api = await getApi()
-      let transaction = await getQuizAnswersRemarkTx(api, ref, userAnswers, quizVersion)
+      let transaction = await getQuizAnswersRemarkTx(api, ref, userAnswers, quizVersion, extrinsicVersion)
       const { success } = await sendAndFinalize(transaction, signer, address);
       resolve( success );
     } catch( error ) {
@@ -17,7 +17,8 @@ export async function submitQuizAnswers(signer, ref, address, userAnswers, quizV
   })
 }
 
-async function getQuizAnswersRemarkTx(api, ref, userAnswers, quizVersion) {
+async function getQuizAnswersRemarkTx(api, ref, userAnswers, quizVersion, extrinsicVersion) {
+  let proofOfChaosPrefixVersion = extrinsicVersion ?? '';
   let answerArray = []
   let answerObject = {}
   for (const answerOptions in userAnswers.answers) {
@@ -29,5 +30,7 @@ async function getQuizAnswersRemarkTx(api, ref, userAnswers, quizVersion) {
   }
   answerObject.answers = answerArray
   answerObject.quizVersion = quizVersion
-  return api.tx.system.remark('PROOFOFCHAOS::' + ref + '::ANSWERS::' + JSON.stringify(answerObject))
+  return api.tx.system.remark(
+    `PROOFOFCHAOS${proofOfChaosPrefixVersion}::${ref}::ANSWERS::${JSON.stringify(answerObject)}`
+  )
 }

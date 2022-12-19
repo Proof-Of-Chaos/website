@@ -1,50 +1,32 @@
-import {websiteConfig} from "../data/website-config";
+import { websiteConfig } from "../data/website-config";
 import { request, gql } from "graphql-request";
+import { QUERY_QUIZZES } from "./queries";
+import { useQuery } from "@tanstack/react-query";
 
-export async function getQuizDataForRef(referendumIndex) {
-  return request(
-    websiteConfig.proofofchaos_graphql_endpoint,
-    gql`query QuizzesQuery {
-      quizzes(where: {referendumIndex_eq: ${referendumIndex}}) {
-        blockNumber
-        creator
-        id
-        referendumIndex
-        timestamp
-        version
-        questions {
-          id
-          quizId
-          text
-          indexCorrectAnswerHistory {
-            blockNumber
-            correctIndex
-            id
-            questionId
-            submitter
-            timestamp
-            version
-          }
-          answerOptions {
-            id
-            questionId
-            text
-          }
-        }
-        submissions {
-          answers {
-            id
-          }
-          blockNumber
-          id
-          quizId
-          referendumIndex
-          timestamp
-          version
-          wallet
-        }
-      }
+export async function quizFetcher(referendumIndex, gov2) {
+  if (!referendumIndex) {
+    return []
+  }
+
+  let where = {
+    "where": {
+      "referendumIndex_eq": referendumIndex,
+      "governanceVersion_eq": gov2 ? 2 : 1,
     }
-    `
+  }
+
+  let result = await request(
+    websiteConfig.proofofchaos_graphql_endpoint,
+    QUERY_QUIZZES,
+    where
+  )
+
+  return result.quizzes?.[0]
+}
+
+export const useLatestQuizForRef = (referendumIndex, gov2 = false) => {
+  return useQuery(
+    ["quiz", referendumIndex, gov2],
+    async () => quizFetcher(referendumIndex, gov2)
   )
 }

@@ -26,7 +26,6 @@ export function curveThreshold (curve, input, div = bnToBn(1000)) {
     ceil = bnToBn(ceil)
     floor = bnToBn(floor)
     length = bnToBn(length)
-    console.log( 'ceil floor div', ceil.toNumber() , floor.toNumber()  , length.toNumber(), x.toNumber() );
 
     // *ceil - (x.min(*length).saturating_div(*length, Down) * (*ceil - *floor))
     // NOTE: We first multiply, then divide (since we work with fractions)

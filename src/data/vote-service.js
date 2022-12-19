@@ -1,7 +1,6 @@
 import { getApi, sendAndFinalize } from './chain';
 
 export async function castVote(signer, aye, ref, address, balance, conviction, gov2 = false) {
-  console.log( 'will vote for gov2', gov2 );
   return new Promise( async (resolve, reject ) => {
     try {
       const api = await getApi()

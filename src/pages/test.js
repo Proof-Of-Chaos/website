@@ -1,6 +1,6 @@
 import Layout from '../layouts/layout'
 import { countBy, some } from 'lodash';
-import { useLatestUserVoteForRef, useLatestVoteForUserAndRef } from '../hooks/use-votes';
+import { useLatestUserVoteForRef, useLatestVoteForUserAndRef, useUserVotes } from '../hooks/use-votes';
 import { useGov2Referendums, useGov2Tracks, useIssuance } from '../hooks/use-gov2';
 import { titleCase } from '../utils';
 import Loader from '../components/ui/loader';
@@ -69,24 +69,49 @@ function Test() {
   let [filteredRefs, setFilteredRefs] = useState([]);
   let [counts, setCounts] = useState([]);
 
-  const filter = ( e, trackId ) => {
+  const { data: tracks, isLoading: isTracksLoading, error } = useGov2Tracks();
+  const { data: gov2refs, isLoading } = useGov2Referendums();
+  const { data: userVotes, isFetching: isUserVotesLoading } = useUserVotes(null, true)
+
+  const filter = ( e, { trackId, voted } ) => {
     if ( e.currentTarget?.classList.contains('active') ) {
       setFilteredRefs( gov2refs.filter( ref => ! some([ref.approved, ref.rejected, ref.cancelled]) ) )
       e.currentTarget?.classList.remove('active')
       return
     }
 
-    let filtered = gov2refs.filter( (ref) => {
-      return ref.track === parseInt(trackId)
-    })
-    setFilteredRefs(filtered)
+    if (trackId) {
+      setFilteredRefs(gov2refs.filter( (ref) => {
+        return ref.track === parseInt(trackId)
+      }))
+    }
+
+    if (typeof voted !== undefined ) {
+      if (voted) {
+        const filtered = gov2refs.filter( ref => {
+          if (typeof ref.index === 'undefined') {
+            return false;
+          }
+          const userVotedOnRef = userVotes.findIndex( vote => vote.referendumIndex === ref.index ) !== -1
+          return userVotedOnRef
+        })
+        setFilteredRefs(filtered);
+      } else {
+        const filtered = gov2refs.filter( ref => {
+          if (typeof ref.index === 'undefined') {
+            return false;
+          }
+          const userVotedOnRef = userVotes.findIndex( vote => vote.referendumIndex === ref.index ) === -1
+          return userVotedOnRef
+        })
+        setFilteredRefs(filtered);
+      }
+    }
+
     let siblings = [ ...e.currentTarget?.parentNode.children ]
     siblings.forEach( s => s.classList.remove('active'))
     e.currentTarget?.classList.add('active')
   }
-
-  const { data: tracks, isLoading: isTracksLoading, error } = useGov2Tracks();
-  const { data: gov2refs, isLoading } = useGov2Referendums();
 
   useEffect(() => {
     if ( gov2refs ) {
@@ -105,9 +130,8 @@ function Test() {
           return (
             <Tippy key={ `filter-${ idx }` } content={ trackInfo?.text }>
               <button
-                onClick={ (e) => filter(e, track[0]) }
+                onClick={ (e) => filter(e, {trackId: track[0]}) }
                 className="btn-track-filter text-sm px-3 py-2 m-1 rounded-sm bg-slate-200 hover:bg-slate-300"
-                data-filter={ track[0] }
                 style={ {
                   display: counts[track[0]] ? 'inline' : 'none'
                 } }
@@ -117,17 +141,34 @@ function Test() {
             </Tippy>
           )
         })}
+        <Tippy content={ 'Only show referenda, you did not vote on yet' }>
+          <button
+            className="btn-track-filter text-sm px-3 py-2 m-1 rounded-sm bg-violet-200 hover:bg-violet-300"
+            onClick={ (e) => filter(e, {voted: false}) }
+          >
+            Not Voted Yet
+          </button>
+        </Tippy>
+        <Tippy content={ 'Only show referenda, you already voted on' }>
+          <button
+            className="btn-track-filter text-sm px-3 py-2 m-1 rounded-sm bg-violet-200 hover:bg-violet-300"
+            onClick={ (e) => filter(e, {voted: true}) }
+          >
+            Already Voted
+          </button>
+        </Tippy>
       </div>
       {isLoading && <Loader text='Loading Referenda' /> }
       <ul className="list-disc">
         {filteredRefs.map( r => 
-            <ReferendumDetail
-              key={ r.id }
-              referendum={ r }
-              isGov2={ true }
-              totalIssuance={ totalIssuance }
-              track={ tracks.find( t => t[0] == r.track ) }
-            />
+          <ReferendumDetail
+            key={ r.index }
+            referendum={ r }
+            isGov2={ true }
+            totalIssuance={ totalIssuance }
+            track={ tracks.find( t => t[0] == r.track ) }
+            userVote={ userVotes.find( vote => vote.referendumIndex === r.index ) }
+          />
         ) }
       </ul>
     </div>

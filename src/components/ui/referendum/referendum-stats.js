@@ -14,12 +14,11 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
 
     //translate all widths
     const widthFactor = maxSupportShown !== 0 ? 1 / maxSupportShown * 100 : 1.0;
-    // console.log( 'widthfactor', widthFactor, widthSupport, maxSupportShown, threshold )
 
     return (
       <div className="referendum-stats align-bottom mb-3 relative">
         <Tippy content={ <>Support is currently <b>{ widthSupport.toFixed(4) }%</b> of a needed <b>{ (threshold * 100).toFixed(4) }%</b> to reach the support threshold. <br/>The threshold will decrease over time. </> }>
-          <svg width="100%" height="10" className="rounded-md">
+          <svg width="100%" height="10" className="rounded-md mb-1">
             <rect x="0" y="0" width="100%" height="12" fill="rgb(200,200,200)" />
             <rect
               x="0"
@@ -41,12 +40,12 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
                   x="0"
                   y="0"
                   height="18"
-                  fill="#444"
+                  fill="#999"
                   width="3"
                 />
               </Tippy>
           </svg>
-          <span className="text-sm">{ widthSupport.toFixed(2) }% / { (threshold * 100.0).toFixed(2) }%</span>
+          <span className="text-sm mt-1">{ widthSupport.toFixed(2) }% / { (threshold * 100.0).toFixed(2) }%</span>
         </div>
     )
   }
@@ -82,7 +81,7 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
                 x="0"
                 y="0"
                 height="18"
-                fill="#444"
+                fill="#999"
                 width="3"
               />
             </Tippy>

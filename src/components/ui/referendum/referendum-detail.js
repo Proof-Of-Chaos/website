@@ -1,23 +1,25 @@
 import { useEffect, useRef, useState } from "react"
-import Image from "next/image";
+import { bnToBn, BN_MILLION, BN_ONE, BN_THOUSAND, isBn } from "@polkadot/util";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid-svg-icons";
 import ReactMarkdown from 'react-markdown'
+import Tippy from "@tippyjs/react";
+import Image from "next/image";
 
 import Button from "../button"
 import ReferendumCountdown from './referendum-countdown'
 import ReferendumStats from "./referendum-stats";
+import ReferendumVoteButtons from "./referendum-vote-buttons";
+
 import { useModal } from "../../modals/context";
 import { KSMFormatted, microToKSM, stripHtml, titleCase } from "../../../utils";
 import { InlineLoader } from "../loader";
 import { useConfig } from "../../../hooks/use-config";
-import { useCurrentBlockNumber } from "../../../hooks/use-chain";
-import ReferendumVoteButtons from "./referendum-vote-buttons";
 import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
-import Tippy from "@tippyjs/react";
 import { getTrackInfo } from "../../../data/kusama-tracks";
 import { curveThreshold, getDecidingPercentage } from "../../../gov2-utils";
-import { bnToBn, BN_MILLION, BN_ONE, BN_THOUSAND, isBn } from "@polkadot/util";
+
+
 import useAppStore from "../../../zustand";
 
 const toPercentage = (part, whole) => {
@@ -152,8 +154,8 @@ export default function ReferendumDetail( {
   }
 
   const UserVote = () => {
-    if ( latestUserVote ) {
-      const { decision, balance, lockPeriod } = latestUserVote
+    if ( latestUserVote || userVote ) {
+      const { decision, balance, lockPeriod } = latestUserVote || userVote
       return (
         <div className="flex flex-row mb-2 justify-between rounded-md bg-gray-100 shadow-sm hover:shadow-md transition-shadow px-6 py-4 text-sm flex-wrap">
         { ! isUserVotesLoading && <>
@@ -285,7 +287,7 @@ export default function ReferendumDetail( {
             }
           </div>
           <UserVote />
-          <ReferendumVoteButtons referendum={ referendum } />
+          <ReferendumVoteButtons referendum={ referendum } userVote={ userVote }/>
         </>
       }
       { ! isActive &&
