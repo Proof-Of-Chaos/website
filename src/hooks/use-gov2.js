@@ -6,7 +6,7 @@ import { GET_GOV2_REF_TITLE_AND_CONTENT } from "./queries";
 import { microToKSM } from '../utils';
 import { useMemo } from 'react';
 import { BN_ZERO } from '@polkadot/util';
-import { isNull } from 'lodash';
+import { isNull, some } from 'lodash';
 
 // Inspired by and simplified from subsquare and polkadot.js
 // https://github.com/opensquare-network/subsquare/tree/83a1a03a72aac36220c28e088ffe10621458be9a/packages/next-common/context/post/gov2
@@ -32,33 +32,36 @@ export const gov2referendumFetcher = async ( refId ) => {
   gov2refs = gov2refs.map( ([key, referendum]) => {
     let refjson = referendum.toJSON();
     try {
-    if ( refjson.ongoing ) {
-      let {
-        tally: { ayes, nays, support },
-      } = refjson.ongoing;
-      return {
-        ...refjson.ongoing,
-        gov2: true,
-        index: key?.args?.[0] ? parseInt(key.args[0].toHuman()) : parseInt(refId),
-        tally: {
-          ayes: parseInt(ayes),
-          nays: parseInt(nays),
-          support: support,
-        },
-        voted_amount_aye: microToKSM( parseInt(ayes) ),
-        voted_amount_nay: microToKSM( parseInt(nays) ),
-        voted_amount_total: microToKSM( parseInt(ayes) + parseInt(nays) ),
-        //todo this wil change
-        ended_at: null,
-        ends_at: refjson.ongoing.enactment?.after,
+      if ( refjson.ongoing ) {
+        let {
+          tally: { ayes, nays, support },
+        } = refjson.ongoing;
+        return {
+          ...refjson.ongoing,
+          gov2: true,
+          index: key?.args?.[0] ? parseInt(key.args[0].toHuman()) : parseInt(refId),
+          tally: {
+            ayes: parseInt(ayes),
+            nays: parseInt(nays),
+            support: support,
+          },
+          voted_amount_aye: microToKSM( parseInt(ayes) ),
+          voted_amount_nay: microToKSM( parseInt(nays) ),
+          voted_amount_total: microToKSM( parseInt(ayes) + parseInt(nays) ),
+          //todo this wil change
+          ended_at: null,
+          ends_at: refjson.ongoing.enactment?.after,
+        }
+      } else {
+        return referendum.toJSON()
       }
-    } else {
-      return referendum.toJSON()
-    }
     } catch( e ) {
       console.error( e )
     }
   } );
+
+  //only get active votes
+  // gov2refs = gov2refs.filter( ref => ! some([ref.approved, ref.rejected, ref.cancelled]) ) 
 
   //all ref ids in array of strings
   const indexes = gov2refs.map( ref => ref.index )
@@ -76,7 +79,7 @@ export const gov2referendumFetcher = async ( refId ) => {
     }
   )
 
-  return merged
+  return merged.filter( ref => typeof ref.index !== 'undefined' && ! some([ref.approved, ref.rejected, ref.cancelled]))
 }
 
 export const useGov2Referendums = () => {

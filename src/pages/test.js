@@ -13,55 +13,6 @@ import Tippy from '@tippyjs/react';
 // import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
 // import { BN_ZERO } from '@polkadot/util';
 
-
-/**
- * (0)
- * Add kilt to window in script tag to next js
- * https://nextjs.org/docs/basic-features/script
- */
-
-/**
- * (I)
- * Register a dApp full chain DID via either sporran wallet or check the
- * workshop
- */
-
-/**
- * (I.I)
- * create a well known did config: https://docs.kilt.io/docs/develop/dApp/well-known-did-config
- * 
- * 
- */
-
-/**
- * (II)
- * setup communication between dapp and sporran extension
- * https://docs.kilt.io/docs/develop/dApp/session
- * 
- * const api = Kilt.ConfigService.get('api')
- * const did = '<did from above>'
- * const dAppName = 'Your dApp Name'
- */
-
-/**
- * (III)
- * Frontend claim flow: https://docs.kilt.io/docs/develop/workshop/claimer/request
- *
- * 1. we need to create a claim from the frontend
- * a) have the ctype, content, and lightDID from the claimer ready
- * b) can we get lightDID from sporran?
- * c) claim = Kilt.Claim.fromCTypeAndClaimContents(ctype, content, lightDid)
- * d) content can e.g. look like this:
- * {
- *  age: 28,
- *  name: 'Max Mustermann'
- * }
- *
- * 2. then we need to create a credential from that claim
- * a) credential = Kilt.Credential.fromClaim(claim)
- */
-
-
 function Test() {
   // const { data: userVote } = useLatestUserVoteForRef( 246 )
   // return <div>test { JSON.stringify( userVote ) }</div>
@@ -71,11 +22,36 @@ function Test() {
 
   const { data: tracks, isLoading: isTracksLoading, error } = useGov2Tracks();
   const { data: gov2refs, isLoading } = useGov2Referendums();
-  const { data: userVotes, isFetching: isUserVotesLoading } = useUserVotes(null, true)
+  const { data: userVotes, isFetching: isUserVotesLoading, userVotesError } = useUserVotes(null, true)
+  const { data: totalIssuance, isLoading: isIssuanceLoading } = useIssuance();
+
+  const votedFilterText = 'Already Voted';
+  const notVotedFilterText = 'Not Voted Yet';
+
+  useEffect(()=> {
+    if (gov2refs && gov2refs.length) {
+      setFilteredRefs( gov2refs )
+      let voteCounts = {}
+
+      if (userVotes && userVotes.length) {
+        const activeRefIndices = gov2refs.map( ref => ref.index )
+        const userVotesForActive = userVotes.filter( vote => activeRefIndices.includes( vote.referendumIndex ) )
+        voteCounts = {
+          voted: userVotesForActive.length,
+          notVoted: activeRefIndices.length - userVotesForActive.length
+        }
+      }
+
+      setCounts( {
+        ...countBy( gov2refs, obj => obj.track ),
+        ...voteCounts,
+      })
+    }
+  }, [userVotes, gov2refs])
 
   const filter = ( e, { trackId, voted } ) => {
     if ( e.currentTarget?.classList.contains('active') ) {
-      setFilteredRefs( gov2refs.filter( ref => ! some([ref.approved, ref.rejected, ref.cancelled]) ) )
+      setFilteredRefs( gov2refs )
       e.currentTarget?.classList.remove('active')
       return
     }
@@ -86,7 +62,7 @@ function Test() {
       }))
     }
 
-    if (typeof voted !== undefined ) {
+    if (typeof voted !== 'undefined' && !isUserVotesLoading && ! userVotesError ) {
       if (voted) {
         const filtered = gov2refs.filter( ref => {
           if (typeof ref.index === 'undefined') {
@@ -113,17 +89,9 @@ function Test() {
     e.currentTarget?.classList.add('active')
   }
 
-  useEffect(() => {
-    if ( gov2refs ) {
-      setFilteredRefs( gov2refs.filter( ref => ! some([ref.approved, ref.rejected, ref.cancelled]) ) )
-      setCounts( countBy(gov2refs,obj => obj.track))
-    }
-  }, [gov2refs])
-
-  const { data: totalIssuance, isLoading: isIssuanceLoading } = useIssuance();
-
   return (
     <div className="max-w-6xl mx-auto">
+      {/* <pre>{ JSON.stringify( filteredRefs, null, 2 ) }</pre> */}
       <div className="filters">
         { tracks && tracks.map( (track, idx) => {
           const trackInfo = KUSAMA_TRACK_INFO.find(t => t.id === parseInt(track[0]) )
@@ -131,32 +99,34 @@ function Test() {
             <Tippy key={ `filter-${ idx }` } content={ trackInfo?.text }>
               <button
                 onClick={ (e) => filter(e, {trackId: track[0]}) }
-                className="btn-track-filter text-sm px-3 py-2 m-1 rounded-sm bg-slate-200 hover:bg-slate-300"
+                className="btn-track-filter text-sm px-3 py-1 m-1 rounded-sm bg-slate-200 hover:bg-slate-300"
                 style={ {
                   display: counts[track[0]] ? 'inline' : 'none'
                 } }
               >
-                { titleCase( track[1].name ) } ({counts[track[0]]})
+                { titleCase( track[1].name ) } ({ counts[track[0]] })
               </button>
             </Tippy>
           )
         })}
-        <Tippy content={ 'Only show referenda, you did not vote on yet' }>
-          <button
-            className="btn-track-filter text-sm px-3 py-2 m-1 rounded-sm bg-violet-200 hover:bg-violet-300"
-            onClick={ (e) => filter(e, {voted: false}) }
-          >
-            Not Voted Yet
-          </button>
-        </Tippy>
-        <Tippy content={ 'Only show referenda, you already voted on' }>
-          <button
-            className="btn-track-filter text-sm px-3 py-2 m-1 rounded-sm bg-violet-200 hover:bg-violet-300"
-            onClick={ (e) => filter(e, {voted: true}) }
-          >
-            Already Voted
-          </button>
-        </Tippy>
+        { tracks && counts.voted && <>
+          <Tippy content={ 'Only show referenda, you did not vote on yet' }>
+            <button
+              className="btn-track-filter text-sm px-3 py-1 m-1 rounded-sm bg-violet-200 hover:bg-violet-300"
+              onClick={ (e) => filter(e, {voted: false}) }
+            >
+              { notVotedFilterText } ({ counts.notVoted })
+            </button>
+          </Tippy>
+          <Tippy content={ 'Only show referenda, you already voted on' }>
+            <button
+              className="btn-track-filter text-sm px-3 py-1 m-1 rounded-sm bg-violet-200 hover:bg-violet-300"
+              onClick={ (e) => filter(e, {voted: true}) }
+            >
+              { votedFilterText } ({ counts.voted })
+            </button>
+          </Tippy>
+        </>}
       </div>
       {isLoading && <Loader text='Loading Referenda' /> }
       <ul className="list-disc">
