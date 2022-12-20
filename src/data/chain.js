@@ -74,7 +74,7 @@ export async function getApi(
   wsEndpoints = WS_ENDPOINTS,
   retry = 0,
 ) {
-  if (wsProvider && polkadotApi && polkadotApi.isConnected) return polkadotApi;
+  if (wsProvider && polkadotApi) return polkadotApi;
   const [primaryEndpoint, secondaryEndpoint, ...otherEndpoints] = wsEndpoints;
 
   try {
@@ -94,6 +94,7 @@ export async function getApi(
 
 async function getProvider(wsEndpoints) {
   const [primaryEndpoint, ...otherEndpoints] = wsEndpoints;
+  if (wsProvider) return wsProvider;
   return await new Promise((resolve, reject) => {
     wsProvider = new WsProvider(primaryEndpoint);
     wsProvider.on('disconnected', async () => {

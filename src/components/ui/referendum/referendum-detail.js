@@ -17,8 +17,7 @@ import { InlineLoader } from "../loader";
 import { useConfig } from "../../../hooks/use-config";
 import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
 import { getTrackInfo } from "../../../data/kusama-tracks";
-import { curveThreshold, getDecidingPercentage } from "../../../gov2-utils";
-
+import { curveThreshold, getPercentagePassed } from "../../../gov2-utils";
 
 import useAppStore from "../../../zustand";
 
@@ -52,6 +51,7 @@ export default function ReferendumDetail( {
     tally,
     deciding,
     decisionDeposit,
+    submissionDeposit,
     rejected,
     approved,
   } = referendum
@@ -62,6 +62,7 @@ export default function ReferendumDetail( {
 
   //the percentage that has passed in the deciding period: 0 <= decidingPercentage <= 1
   const [decidingPercentage, setDecidingPercentage] = useState(0)
+  const [confirmingPercentage, setConfirmingPercentage] = useState(0)
 
   //will store Big Numbers to be converted before display
   const [supportThreshold, setSupportThreshold] = useState(bnToBn(0))
@@ -76,21 +77,28 @@ export default function ReferendumDetail( {
 
   const gov2status = rejected ?
     'Rejected' : approved ?
-      'Approved' : deciding?.since.confirming && deciding?.since.confirming !== null ?
+      'Approved' : deciding?.confirming && deciding?.confirming !== null ?
         'Confirming' : decisionDeposit === null ?
           'Awaiting Deposit' : deciding?.since ?
-            'Deciding' : 'Unknown State';
+            'Deciding' : submissionDeposit !== null ? 
+              'Submitted' : 'Unknown State';
 
   useEffect(() => {
     if ( deciding?.since && track) {
       const {
         decisionPeriod,
+        confirmPeriod
       } = track?.[1]
 
-      const dPercentage = getDecidingPercentage(decisionPeriod, deciding?.since, currentBlockNumber);
+      const dPercentage = getPercentagePassed(decisionPeriod, deciding.since, currentBlockNumber);
       setDecidingPercentage( dPercentage );
       setSupportThreshold( curveThreshold(track?.[1].minSupport, dPercentage * 1000 ) )
       setApproveThreshold( curveThreshold( track?.[1].minApproval, dPercentage * 1000 ) )
+
+      if (deciding?.confirming) {
+        const cPercentage = getPercentagePassed(confirmPeriod, deciding.confirming - confirmPeriod, currentBlockNumber);
+        setConfirmingPercentage( cPercentage )
+      }
     }
   }, [deciding, currentBlockNumber, track])
 
@@ -115,7 +123,11 @@ export default function ReferendumDetail( {
   }
 
   const Gov2Badges = () => {
-    const statusBadgeBg = `linear-gradient(90deg, #facc15 0%, #facc15 ${ decidingPercentage * 100 }%, #eab308 ${ decidingPercentage * 100 }%, #eab308 100%)`
+    let percentage = gov2status === 'Confirming' ? confirmingPercentage : decidingPercentage;
+    const fromColor = gov2status === 'Confirming' ? '#86EFAC' :  '#facc15'
+    const toColor = gov2status === 'Confirming' ? '#4ade80' : '#eab308'
+    const statusBadgeBg = `linear-gradient(90deg, ${fromColor} 0%, ${fromColor} ${ percentage * 100 }%, ${toColor} ${ percentage * 100 }%, ${toColor} 100%)`
+
     return <div className="gov2-badges mb-2 flex">
       { track?.[0] && origin &&
         <Tippy content={ getTrackInfo( parseInt(track?.[0]) )?.text }>
@@ -124,7 +136,7 @@ export default function ReferendumDetail( {
           </div>
         </Tippy>
       }
-      <Tippy content={ `${ (decidingPercentage * 100).toFixed(2) }% of the deciding period has passed` }>
+      <Tippy content={ `${ (percentage * 100).toFixed(2) }% of the ${gov2status === 'Confirming' ? 'confirming' : 'deciding'} period has passed` }>
         <div
           className="text-sm py-1 px-2 rounded-md flex-1 cursor-default"
           style={ { background: statusBadgeBg } }
@@ -270,10 +282,11 @@ export default function ReferendumDetail( {
                 <>
                   <Tippy content={ 'If the referendum does not enter the confirming state, it will automatically be rejected' }>
                     <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
-                    { `Referendum ${index} will be decided in` }
+                    { `Referendum ${index} will be ${gov2status === 'Deciding' ? 'decided' : 'confirmed'} in` }
                     </h3>
                   </Tippy>
-                  { deciding?.since && <ReferendumCountdown endBlock={ deciding.since + track[1].decisionPeriod } /> }
+                  { gov2status === 'Deciding' && <ReferendumCountdown endBlock={ deciding.since + track[1].decisionPeriod } /> }
+                  { gov2status === 'Confirming' && <ReferendumCountdown endBlock={ deciding.confirming } /> }
                 </>
                 }
               </>
@@ -330,7 +343,7 @@ export default function ReferendumDetail( {
             threshold={ parseFloat(supportThreshold / 1000000000) }
           />
         </> }
-        {/* <pre className="text-xs text-left">{ JSON.stringify( track?.[1], null, 2 ) }</pre> */}
+        {/* <pre className="text-xs text-left">{ currentBlockNumber } -- { JSON.stringify( track?.[1], null, 2 ) }</pre> */}
       </div>
     </>
   )

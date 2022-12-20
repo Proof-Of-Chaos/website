@@ -79,7 +79,8 @@ export const gov2referendumFetcher = async ( refId ) => {
     }
   )
 
-  return merged.filter( ref => typeof ref.index !== 'undefined' && ! some([ref.approved, ref.rejected, ref.cancelled]))
+  const onlyActiveRefs = merged.filter( ref => typeof ref.index !== 'undefined' && ! some([ref.approved, ref.rejected, ref.cancelled]))
+  return onlyActiveRefs.sort( (a,b) => a.index - b.index )
 }
 
 export const useGov2Referendums = () => {

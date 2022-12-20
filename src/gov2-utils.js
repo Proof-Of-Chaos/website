@@ -73,16 +73,16 @@ export function curveThreshold (curve, input, div = bnToBn(1000)) {
 
 // 
 /**
- * return the percentage (0 <= percentage <= 1) of the decision period already passed
- * @param {*} decisionPeriod The period in blocks, that a decision will last
- * @param {*} decidingSince The start of the current decision period (blockNumber)
+ * return the percentage (0 <= percentage <= 1) of the total period already passed
+ * @param {*} totalPeriod The period in blocks, that something will last
+ * @param {*} decidingSince The start of the current period (blockNumber)
  * @param {*} currentBlock The current block number
  */
-export function getDecidingPercentage(decisionPeriod, decidingSince, currentBlock) {
-  if (isNil(decidingSince) || isNil(decisionPeriod) || isNil(currentBlock)) {
+export function getPercentagePassed(total, since, currentBlock) {
+  if (isNil(since) || isNil(total) || isNil(currentBlock)) {
     return null;
   }
 
-  const passedBlocks = currentBlock - decidingSince;
-  return Math.min(passedBlocks / decisionPeriod, 1);
+  const passedBlocks = currentBlock - since;
+  return Math.min(passedBlocks / total, 1);
 }

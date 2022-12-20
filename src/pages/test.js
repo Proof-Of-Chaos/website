@@ -115,7 +115,7 @@ function Test() {
               className="btn-track-filter text-sm px-3 py-1 m-1 rounded-sm bg-violet-200 hover:bg-violet-300"
               onClick={ (e) => filter(e, {voted: false}) }
             >
-              { notVotedFilterText } <span className="text-xs text-slate-500">/{ counts.notVoted }</span>
+              { notVotedFilterText } <span className="text-xs text-slate-500">{ counts.notVoted }</span>
             </button>
           </Tippy>
           <Tippy content={ 'Only show referenda, you already voted on' }>
