@@ -1,4 +1,4 @@
-import '@polkadot/api-augment'
+import '@polkadot/rpc-augment'
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
 const WS_ENDPOINTS = [
