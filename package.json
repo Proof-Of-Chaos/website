@@ -16,6 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.6.6",
+    "@heroicons/react": "^2.0.13",
     "@mui/material": "^5.10.9",
     "@polkadot/api-contract": "^9.10.1",
     "@polkadot/apps-config": "^0.122.2",
