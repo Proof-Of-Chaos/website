@@ -3,6 +3,28 @@ import { request, gql } from "graphql-request";
 import { QUERY_QUIZZES } from "./queries";
 import { useQuery } from "@tanstack/react-query";
 
+export async function fetchGov1Quizzes() {
+  let where = {
+    "where": {
+      "governanceVersion_eq": 1
+    }
+  }
+
+  let result = await request(
+    websiteConfig.proofofchaos_graphql_endpoint,
+    QUERY_QUIZZES,
+    where,
+  )
+
+  return result.quizzes
+}
+
+export const useGov1Quizzes = () => {
+  return useQuery(
+    ["gov1quizzes"], fetchGov1Quizzes
+  )
+}
+
 export async function quizFetcher(referendumIndex, gov2) {
   if (!referendumIndex) {
     return []

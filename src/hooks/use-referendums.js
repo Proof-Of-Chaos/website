@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { websiteConfig } from "../data/website-config";
 import { microToKSM,  getEndDateByBlock } from "../utils";
 import { getApi } from '../data/chain';
-import { getQuizDataForRef } from './use-quizzes';
+import { useLatestQuizForRef, useGov1Quizzes, fetchGov1Quizzes } from './use-quizzes';
 import { QUERY_REFERENDUMS } from "./queries";
 
 const THRESHOLD_SUPERMAJORITYAPPROVE = 'SuperMajorityApprove'
@@ -31,7 +31,7 @@ export const singleReferendumFetcher = async ( referendumIndex ) => {
       })
 
       const polkassemblyData = await getPADataForRefs( [ referendumIndex ] );
-      const quizData = await getQuizDataForRef(referendumIndex.toString());
+      const quizData = await useLatestQuizForRef(referendumIndex);
       let latestQuiz
 
       if ( quizData?.quizzes?.length > 0) {
@@ -93,11 +93,12 @@ export const activeReferendumFetcher = async (ksmAddress) => {
   const totalIssuance = await api.query.balances.totalIssuance().toString()
   const activeReferendums = await api.derive.democracy.referendums()
   let referendums = [];
+  let quizzesData = await fetchGov1Quizzes();
   for (const referendum of activeReferendums) {
     const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
     const PAData = await getPADataForRefs([referendum.index.toString()]);
     const PADatum = PAData?.[0]
-    const quizData = await getQuizDataForRef(referendum.index.toString());
+    const quizData = quizzesData.find( q => q.referendumIndex === referendum.index)
     const threshold = getPassingThreshold(referendum, totalIssuance)
     referendums.push(referendumObject(referendum, threshold, endDate, PADatum, quizData.quizzes, ksmAddress));
   }
