@@ -43,7 +43,7 @@ export async function quizFetcher(referendumIndex, gov2) {
     where
   )
 
-  return result.quizzes?.[0]
+  return result.quizzes?.[0] ?? []
 }
 
 export const useLatestQuizForRef = (referendumIndex, gov2 = false) => {

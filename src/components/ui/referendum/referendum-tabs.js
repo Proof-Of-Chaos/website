@@ -16,6 +16,9 @@ export default function ReferendumTabs( ) {
   const { data: pastReferendums, isLoading: isPastLoading, error: pastError } = usePastReferendums()
   const { data:userVotes, isFetching: isUserVotesLoading } = useUserVotes()
 
+  console.log( 'gov1 referendums', referendums );
+  console.log( 'past gov1 referendums', pastReferendums );
+
   const activeTabTitle = referendums?.length > 0 ?
     `Active (${ referendums.length })`
     : 'Active'

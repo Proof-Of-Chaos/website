@@ -50,7 +50,7 @@ const singleVoteFetcher = async ( ksmAddress, referendumIndex, gov2 = false ) =>
     }
   );
 
-  return data.votes[0]
+  return data.votes[0] ?? null
 }
 
 /**

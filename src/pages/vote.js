@@ -9,7 +9,7 @@ import { NextSeo } from 'next-seo'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPersonBooth } from '@fortawesome/free-solid-svg-icons'
 import Button from '../components/ui/button'
-import ReferndumTabs from '../components/ui/referendum/referendum-tabs'
+import ReferendumTabs from '../components/ui/referendum/referendum-tabs'
 import useAppStore from '../zustand'
 import Gov2Referenda from '../components/ui/referendum/gov2-referenda'
 
@@ -45,7 +45,7 @@ function Vote() {
             </div>
             <Menu as="div" className="inline-block text-left absolute right-0 w-26">
               <div className="">
-                <Menu.Button className="fancy-border-gradient inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                <Menu.Button className="fancy-border-gradient inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-5 py-3 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                   Gov {govVersion}
                   <ChevronDownIcon
                     className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
@@ -100,7 +100,7 @@ function Vote() {
         </div>
       </section> }
       <section className="mx-auto w-full max-w-7xl text-sm sm:pt-10 4xl:pt-14">
-        { govVersion === 1 ? <ReferndumTabs /> : <Gov2Referenda /> }
+        { govVersion === 1 ? <ReferendumTabs /> : <Gov2Referenda /> }
       </section>
     </>
   )

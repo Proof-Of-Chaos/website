@@ -2542,7 +2542,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/apps-config@npm:^0.122.2":
+"@polkadot/apps-config@npm:latest":
   version: 0.122.2
   resolution: "@polkadot/apps-config@npm:0.122.2"
   dependencies:
@@ -8300,7 +8300,7 @@ __metadata:
     "@mui/material": ^5.10.9
     "@polkadot/api": ^9.2.2
     "@polkadot/api-contract": ^9.10.1
-    "@polkadot/apps-config": ^0.122.2
+    "@polkadot/apps-config": latest
     "@polkadot/extension-dapp": ^0.44.5
     "@polkadot/react-api": ^0.39.1
     "@polkadot/react-components": ^0.39.1

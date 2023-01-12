@@ -2,7 +2,8 @@ const KUSAMA_TRACK_INFO = [
   {
     id: 0,
     name: 'root',
-    origin: { system: 'Root' }
+    origin: { Origins: 'Root' },
+    text: 'Root Track'
   },
   {
     id: 1,
@@ -91,7 +92,7 @@ const KUSAMA_TRACK_INFO = [
 ]
 
 const getTrackInfo = ( trackId ) => {
-  return KUSAMA_TRACK_INFO.find( t => t.id === trackId );
+  return KUSAMA_TRACK_INFO.find( t => parseInt(t.id) === parseInt(trackId) );
 }
 
 export {

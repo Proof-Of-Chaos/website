@@ -31,8 +31,8 @@ export const singleReferendumFetcher = async ( referendumIndex ) => {
       })
 
       const polkassemblyData = await getPADataForRefs( [ referendumIndex ] );
-      const quizData = await useLatestQuizForRef(referendumIndex);
-      let latestQuiz
+      const quizData = await useLatestQuizForRef(referendumIndex, false);
+      let latestQuiz = {}
 
       if ( quizData?.quizzes?.length > 0) {
         latestQuiz = quizData.quizzes.sort((a,b)=>parseInt(b.version)-parseInt(a.version))[0]
@@ -94,13 +94,16 @@ export const activeReferendumFetcher = async (ksmAddress) => {
   const activeReferendums = await api.derive.democracy.referendums()
   let referendums = [];
   let quizzesData = await fetchGov1Quizzes();
+
+  console.log( 'in active ref fetcher', referendums, quizzesData );
+
   for (const referendum of activeReferendums) {
     const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
     const PAData = await getPADataForRefs([referendum.index.toString()]);
     const PADatum = PAData?.[0]
     const quizData = quizzesData.find( q => q.referendumIndex === referendum.index)
     const threshold = getPassingThreshold(referendum, totalIssuance)
-    referendums.push(referendumObject(referendum, threshold, endDate, PADatum, quizData.quizzes, ksmAddress));
+    referendums.push(referendumObject(referendum, threshold, endDate, PADatum, quizData, ksmAddress));
   }
 
   return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));

@@ -124,12 +124,12 @@ export default function ReferendumDetail( {
 
   const Gov2Badges = () => {
     let percentage = gov2status === 'Confirming' ? confirmingPercentage : decidingPercentage;
-    const fromColor = gov2status === 'Confirming' ? '#86EFAC' :  '#facc15'
+    const fromColor = gov2status === 'Confirming' ? '#86EFAC' : '#facc15'
     const toColor = gov2status === 'Confirming' ? '#4ade80' : '#eab308'
     const statusBadgeBg = `linear-gradient(90deg, ${fromColor} 0%, ${fromColor} ${ percentage * 100 }%, ${toColor} ${ percentage * 100 }%, ${toColor} 100%)`
 
     return <div className="gov2-badges mb-2 flex">
-      { track?.[0] && origin &&
+      { track?.[0] !== 0 && origin?.origins &&
         <Tippy content={ getTrackInfo( parseInt(track?.[0]) )?.text }>
           <div className="text-sm bg-gray-200 py-1 px-2 rounded-md flex-1 cursor-default mr-2">
             { titleCase(origin.origins) }
