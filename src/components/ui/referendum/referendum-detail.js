@@ -195,12 +195,12 @@ export default function ReferendumDetail( {
 
     if ( isActive ) {
       return <p className="text-sm mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
-        { JSON.stringify( latestUserVote ) }
+        { latestUserVote && JSON.stringify( latestUserVote ) }
         You did not vote on <br/> referendum { index } yet.<br/>{ `Vote to receive NFT rewards.` }
       </p>
     } else {
       return <p className="text-sm mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
-        { JSON.stringify( latestUserVote ) }
+        { latestUserVote && JSON.stringify( latestUserVote ) }
         You did not vote on <br/> referendum { index }.
       </p>
     }
