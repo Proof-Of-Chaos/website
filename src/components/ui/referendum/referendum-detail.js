@@ -290,13 +290,21 @@ export default function ReferendumDetail( {
           <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm hover:shadow-md transition-shadow">
             { isGov2 ?
               <>
-                { gov2status === 'Awaiting Deposit' ? 
+                { gov2status === 'Awaiting Deposit' &&
                 <>
                   <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
                     { `Waiting for anyone to pay the decision deposit for Referendum ${index}` }
                   </h3>
                 </>
-                :
+                }
+                { gov2status === 'Submitted' &&
+                  <>
+                    <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
+                      { `Waiting for the preparation period to end` }
+                    </h3>
+                  </>
+                }
+                { gov2status !== 'Submitted' && gov2status !== 'Awaiting Deposit' &&
                 <>
                   <Tippy content={ 'If the referendum does not enter the confirming state, it will automatically be rejected' }>
                     <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
@@ -334,7 +342,7 @@ export default function ReferendumDetail( {
           <UserReward />
         </>
       }
-      { gov2status !== 'Awaiting Deposit' && <div className="p-4 bg-gray-100 rounded-md mt-2 shadow-sm transition-shadow hover:shadow-md">
+      { gov2status !== 'Awaiting Deposit' && gov2status !== 'Submitted' && <div className="p-4 bg-gray-100 rounded-md mt-2 shadow-sm transition-shadow hover:shadow-md">
         <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
           { isGov2 ? `Referendum ${index} Approval` : `Referendum ${index} results`}
         </h3>
