@@ -12,7 +12,6 @@ import Button from '../components/ui/button'
 import ReferendumTabs from '../components/ui/referendum/referendum-tabs'
 import useAppStore from '../zustand'
 import Gov2Referenda from '../components/ui/referendum/gov2-referenda'
-
 function Vote() {
   // const knowsAboutLuckBoost = useAppStore( state => state.user.knowsAboutLuckBoost );
   const knowsAboutLuckBoost = false;
