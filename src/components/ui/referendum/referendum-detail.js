@@ -166,6 +166,7 @@ export default function ReferendumDetail( {
   }
 
   const UserVote = () => {
+    console.log( 'userVote', latestUserVote, userVote )
     if ( latestUserVote || userVote ) {
       const { decision, balance, lockPeriod } = latestUserVote || userVote
       return (
@@ -175,14 +176,31 @@ export default function ReferendumDetail( {
             <div className="">
               You voted
                 <b>
-                  { decision === 'yes' ? 
-                    <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span> :
+                  { decision === 'yes' &&
+                    <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span>
+                  }
+                  { decision === 'no' &&
                     <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>
+                  }
+                  { decision === 'split' &&
+                    <>
+                      <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span>+
+                      <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>
+                    </>
                   }
                 </b>
             </div>
-            <div className=""><span>with <b>{ microToKSM( balance.value ) } KSM</b></span></div>
-            <div className=""><span>and conviction <b>{ lockPeriod }</b></span></div>
+            { decision !== 'split' ?
+              <>
+                <div className="">
+                  <span>with <b>{ microToKSM( balance.value ) } KSM</b></span>
+                </div>
+                <div className=""><span>and conviction <b>{ lockPeriod }</b></span></div>
+              </> : 
+              <div className="">
+                <span>with <b>{ microToKSM( balance.aye) }</b> + <b>{ microToKSM( balance.nay) } KSM</b></span>
+              </div>
+            }
           </div>
         </>}
         </div>
