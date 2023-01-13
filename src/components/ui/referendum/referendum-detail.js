@@ -334,7 +334,7 @@ export default function ReferendumDetail( {
           <UserReward />
         </>
       }
-      <div className="p-4 bg-gray-100 rounded-md mt-2 shadow-sm transition-shadow hover:shadow-md">
+      { gov2status !== 'Awaiting Deposit' && <div className="p-4 bg-gray-100 rounded-md mt-2 shadow-sm transition-shadow hover:shadow-md">
         <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
           { isGov2 ? `Referendum ${index} Approval` : `Referendum ${index} results`}
         </h3>
@@ -362,7 +362,7 @@ export default function ReferendumDetail( {
           />
         </> }
         {/* <pre className="text-xs text-left">{ currentBlockNumber } -- { JSON.stringify( track?.[1], null, 2 ) }</pre> */}
-      </div>
+      </div> }
     </>
   )
 
