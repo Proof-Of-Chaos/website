@@ -188,17 +188,31 @@ export default function ReferendumDetail( {
                       <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>
                     </>
                   }
+                  { decision === 'splitAbstain' &&
+                    <>
+                      <span className="bg-yellow-400 px-2 py-1 rounded-sm mx-1">Abstain</span>+
+                      <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span>+
+                      <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>
+                    </>
+                  }
                 </b>
             </div>
-            { decision !== 'split' ?
+            { decision !== 'split' && decision !== 'splitAbstain' &&
               <>
                 <div className="">
                   <span>with <b>{ microToKSM( balance.value ) } KSM</b></span>
                 </div>
                 <div className=""><span>and conviction <b>{ lockPeriod }</b></span></div>
-              </> : 
+              </>
+            }
+            { decision === 'split' &&
               <div className="">
-                <span>with <b>{ microToKSM( balance.aye) }</b> + <b>{ microToKSM( balance.nay) } KSM</b></span>
+                <span>with <b>{ microToKSM( balance.aye  ?? 0) }</b> + <b>{ microToKSM( balance.nay ?? 0) } KSM</b></span>
+              </div>
+            }
+            { decision === 'splitAbstain' &&
+              <div className="">
+                <span>with <b>{ microToKSM( balance.abstain ?? 0) }</b> + <b>{ microToKSM( balance.aye ?? 0) }</b> + <b>{ microToKSM( balance.nay ?? 0) } KSM</b></span>
               </div>
             }
           </div>
