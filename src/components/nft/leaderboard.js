@@ -36,22 +36,20 @@ function LeaderBoardRow( props ) {
 
   const { api } = useContext(PolkadotApiContext);
 
-  useEffect(() => {
-    if ( isInViewport && api ) {
-      const getIdentity = async () => {
-        console.log( wallet )
-        const identity = await api.query.identity.identityOf("5CwW67PPdZQQCcdWJVaRJCepSQSrtKUumDAGa7UZbBKwd9R2");
-        console.log( 'identity', identity.unwrap() );
-        // setIdentity( hexToString(identity.unwrap().web.asRaw.toHex() )  )
-        // if ( identity.web.isRaw ) {
-        //   setIdentity( hexToString(identity.web.asRaw.toHex() ) );
-        // }
-      }
+  // useEffect(() => {
+  //   if ( isInViewport && api ) {
+  //     const getIdentity = async () => {
+  //       const identity = await api.query.identity.identityOf("5CwW67PPdZQQCcdWJVaRJCepSQSrtKUumDAGa7UZbBKwd9R2");
+  //       // setIdentity( hexToString(identity.unwrap().web.asRaw.toHex() )  )
+  //       // if ( identity.web.isRaw ) {
+  //       //   setIdentity( hexToString(identity.web.asRaw.toHex() ) );
+  //       // }
+  //     }
 
-      getIdentity()
-        .catch( console.error )
-    }
-  }, [ isInViewport, wallet, api ])
+  //     getIdentity()
+  //       .catch( console.error )
+  //   }
+  // }, [ isInViewport, wallet, api ])
 
   return(
     <li className={ className } ref={ ref }>

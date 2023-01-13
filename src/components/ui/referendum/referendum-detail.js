@@ -166,7 +166,6 @@ export default function ReferendumDetail( {
   }
 
   const UserVote = () => {
-    console.log( 'userVote', latestUserVote, userVote )
     if ( latestUserVote || userVote ) {
       const { decision, balance, lockPeriod } = latestUserVote || userVote
       return (

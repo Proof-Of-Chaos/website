@@ -32,7 +32,7 @@ export async function quizFetcher(referendumIndex, gov2) {
 
   let where = {
     "where": {
-      "referendumIndex_eq": referendumIndex,
+      "referendumIndex_eq": parseInt(referendumIndex),
       "governanceVersion_eq": gov2 ? 2 : 1,
     }
   }

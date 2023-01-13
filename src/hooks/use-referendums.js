@@ -92,10 +92,13 @@ export const activeReferendumFetcher = async (ksmAddress) => {
   const timestamp = await api.query.timestamp.now.at(hash);
   const totalIssuance = await api.query.balances.totalIssuance().toString()
   const activeReferendums = await api.derive.democracy.referendums()
+
+  if (activeReferendums.length === 0) {
+    return []
+  }
+
   let referendums = [];
   let quizzesData = await fetchGov1Quizzes();
-
-  console.log( 'in active ref fetcher', referendums, quizzesData );
 
   for (const referendum of activeReferendums) {
     const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
@@ -153,10 +156,10 @@ const referendumObject = (referendum, threshold, endDate, PAData, quizData, ksmA
     title = referendum.image.proposal.section.toString() + '.' + referendum.image.proposal.method.toString()
   }
   //getlatestversion
-  let latestQuiz = quizData.sort((a,b)=>parseInt(b.version)-parseInt(a.version))[0]
+  let latestQuiz = quizData?.sort((a,b)=>parseInt(b.version)-parseInt(a.version))[0]
   let allSubmissions = []
   //write submissions from all versions together in one array
-  quizData.forEach(quizVersion => {
+  quizData?.forEach(quizVersion => {
     allSubmissions.push(...quizVersion.submissions)
   });
   
