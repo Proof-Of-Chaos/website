@@ -1,10 +1,10 @@
 import { getApi, sendAndFinalize } from './chain';
 
-export async function castVote(signer, aye, ref, address, balance, conviction) {
+export async function castVote(signer, aye, ref, address, balance, conviction, gov2 = false) {
   return new Promise( async (resolve, reject ) => {
     try {
       const api = await getApi()
-      let transaction = await getVoteTx(api, aye, ref, balance, conviction);
+      let transaction = await getVoteTx(api, aye, ref, balance, conviction, gov2);
       const { success } = await sendAndFinalize(transaction, signer, address);
       resolve( success );
     } catch( error ) {
@@ -17,7 +17,7 @@ export async function castVote(signer, aye, ref, address, balance, conviction) {
   })
 }
 
-function getVoteTx(api, aye, ref, balance, conviction) {
+function getVoteTx(api, aye, ref, balance, conviction, gov2 = false) {
   let vote = {
     Standard: {
       vote: {
@@ -28,5 +28,8 @@ function getVoteTx(api, aye, ref, balance, conviction) {
     }
   };
 
+  if ( gov2 ) {
+    return api.tx.convictionVoting.vote(ref,vote)
+  }
   return api.tx.democracy.vote(ref, vote)
 }

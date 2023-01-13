@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { websiteConfig } from "../data/website-config";
 import { microToKSM,  getEndDateByBlock } from "../utils";
 import { getApi } from '../data/chain';
-import { getQuizDataForRef } from './use-quizzes';
+import { useLatestQuizForRef, useGov1Quizzes, fetchGov1Quizzes } from './use-quizzes';
 import { QUERY_REFERENDUMS } from "./queries";
 
 const THRESHOLD_SUPERMAJORITYAPPROVE = 'SuperMajorityApprove'
@@ -31,8 +31,8 @@ export const singleReferendumFetcher = async ( referendumIndex ) => {
       })
 
       const polkassemblyData = await getPADataForRefs( [ referendumIndex ] );
-      const quizData = await getQuizDataForRef(referendumIndex.toString());
-      let latestQuiz
+      const quizData = await useLatestQuizForRef(referendumIndex, false);
+      let latestQuiz = {}
 
       if ( quizData?.quizzes?.length > 0) {
         latestQuiz = quizData.quizzes.sort((a,b)=>parseInt(b.version)-parseInt(a.version))[0]
@@ -92,14 +92,21 @@ export const activeReferendumFetcher = async (ksmAddress) => {
   const timestamp = await api.query.timestamp.now.at(hash);
   const totalIssuance = await api.query.balances.totalIssuance().toString()
   const activeReferendums = await api.derive.democracy.referendums()
+
+  if (activeReferendums.length === 0) {
+    return []
+  }
+
   let referendums = [];
+  let quizzesData = await fetchGov1Quizzes();
+
   for (const referendum of activeReferendums) {
     const endDate = await getEndDateByBlock(referendum.status.end, number, timestamp)
     const PAData = await getPADataForRefs([referendum.index.toString()]);
     const PADatum = PAData?.[0]
-    const quizData = await getQuizDataForRef(referendum.index.toString());
+    const quizData = quizzesData.find( q => q.referendumIndex === referendum.index)
     const threshold = getPassingThreshold(referendum, totalIssuance)
-    referendums.push(referendumObject(referendum, threshold, endDate, PADatum, quizData.quizzes, ksmAddress));
+    referendums.push(referendumObject(referendum, threshold, endDate, PADatum, quizData, ksmAddress));
   }
 
   return referendums.sort((a,b)=>parseInt(a.id)-parseInt(b.id));
@@ -149,10 +156,10 @@ const referendumObject = (referendum, threshold, endDate, PAData, quizData, ksmA
     title = referendum.image.proposal.section.toString() + '.' + referendum.image.proposal.method.toString()
   }
   //getlatestversion
-  let latestQuiz = quizData.sort((a,b)=>parseInt(b.version)-parseInt(a.version))[0]
+  let latestQuiz = quizData?.sort((a,b)=>parseInt(b.version)-parseInt(a.version))[0]
   let allSubmissions = []
   //write submissions from all versions together in one array
-  quizData.forEach(quizVersion => {
+  quizData?.forEach(quizVersion => {
     allSubmissions.push(...quizVersion.submissions)
   });
   

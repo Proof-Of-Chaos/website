@@ -9,6 +9,8 @@ import Footer from "../components/ui/footer"
 import { useState } from "react"
 import { useDrawer } from "../components/drawer/context"
 import { NextSeo } from "next-seo"
+import { getApi } from "../data/chain"
+import { useSubscribeChainHead } from "../hooks/use-chain"
 
 function HeaderRight() {
   const { openDrawer, isOpen } = useDrawer();
@@ -29,9 +31,10 @@ function HeaderRight() {
 }
 
 export function Header() {
-  const { y: windowY } = useWindowScroll();
   const breakpoint = useBreakpoint();
   const isMounted = useIsMounted();
+  const api = getApi();
+  useSubscribeChainHead( api );
 
   return (
     <nav

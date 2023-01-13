@@ -186,6 +186,20 @@ const toBase64 = (str) =>
     ? Buffer.from(str).toString('base64')
     : window.btoa(str)
 
+    const titleCase = (s) =>
+    s.replace(/^_*(.)|_+(.)/g, (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase())
+
+
+/**
+ * Stips all tags from html
+ * @param {String} html
+ * @returns String
+ */
+function stripHtml(html){
+  let doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || "";
+}
+
 export {
   getRandomInt,
   getRandomIntBetween,
@@ -200,4 +214,6 @@ export {
   getLuckMultiplier,
   shimmer,
   toBase64,
+  titleCase,
+  stripHtml
 }

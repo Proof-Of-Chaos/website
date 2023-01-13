@@ -11,8 +11,16 @@
   src:  url('../public/unbounded/WOFF/Unbounded-Bold.woff2') format('woff2');
 }
 
+.font-unbounded {
+  font-family: 'Unbounded', sans-serif;
+}
+
 .tooltip {
   @apply invisible absolute;
+}
+
+.tippy-box {
+  text-align: center;
 }
 
 .logo {
@@ -269,7 +277,27 @@ button, a {
     }
   }
 
+  hr {
+    @apply pb-2 pt-1;
+  }
+
   p {
     @apply mb-3;
   }
+}
+
+.btn-track-filter {
+  &.active {
+    @apply bg-brand-400 text-white transition-all;
+
+    &:hover {
+      @apply bg-brand-400;
+    }
+  }
+}
+
+.fancy-border-gradient {
+  @apply rounded-lg;
+  border: 4px solid;
+  border-image: linear-gradient(283deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%) 5;
 }

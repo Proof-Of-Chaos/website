@@ -7,9 +7,8 @@ import useAppStore from "../../zustand";
 import { submitQuizAnswers } from "../../data/quiz-service";
 import { getWalletBySource } from "@talismn/connect-wallets";
 
-export default function ReferendumQuizModal( { title, quiz, index } ) {
-  const { openModal } = useModal();
-  const { closeModal } = useModal();
+export default function ReferendumQuizModal( { referendum: { title, index, gov2 }, quiz } ) {
+  const { openModal, closeModal } = useModal();
 
   const submitQuiz = useAppStore( ( state ) => state.submitQuiz )
   const updateQuizAnswers = useAppStore( ( state ) => state.updateQuizAnswers )
@@ -24,7 +23,7 @@ export default function ReferendumQuizModal( { title, quiz, index } ) {
     if ( ! isFormFilled ) {
       return
     }
-    
+
     const wallet = getWalletBySource(connectedAccount.source)
     await wallet.enable('Proof of Chaos')
     toast.promise(
@@ -33,7 +32,8 @@ export default function ReferendumQuizModal( { title, quiz, index } ) {
         index,
         walletAddress,
         userAnswers,
-        quiz.version
+        quiz.version,
+        gov2 ? '2' : '',
       ),
       {
         pending: `sending your quiz answers for referendum ${ index }`,

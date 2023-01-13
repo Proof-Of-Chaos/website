@@ -15,7 +15,7 @@ const configFetcher = async ( refIndex ) => {
   );
 
   //only return the latest config
-  return data.configs[0]
+  return data.configs[0] ?? null
 };
 
 export const useConfig = ( refIndex, queryConfig = {} ) => {

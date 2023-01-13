@@ -1,22 +1,15 @@
-import Layout from '../layouts/layout'
-import { countBy, some } from 'lodash';
-import { useLatestUserVoteForRef, useLatestVoteForUserAndRef, useUserVotes } from '../hooks/use-votes';
-import { useGov2Referendums, useGov2Tracks, useIssuance } from '../hooks/use-gov2';
-import { titleCase } from '../utils';
-import Loader from '../components/ui/loader';
-import { useMemo, useState } from 'react';
-import { data } from 'autoprefixer';
-import { useEffect } from 'react';
-import ReferendumDetail from '../components/ui/referendum/referendum-detail';
-import { KUSAMA_TRACK_INFO } from '../data/kusama-tracks';
+import { countBy } from 'lodash';
+import { useState, useEffect } from 'react';
 import Tippy from '@tippyjs/react';
-// import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
-// import { BN_ZERO } from '@polkadot/util';
 
-function Test() {
-  // const { data: userVote } = useLatestUserVoteForRef( 246 )
-  // return <div>test { JSON.stringify( userVote ) }</div>
+import ReferendumDetail from './referendum-detail';
+import { KUSAMA_TRACK_INFO } from '../../../data/kusama-tracks';
+import { useUserVotes } from '../../../hooks/use-votes';
+import { useGov2Referendums, useGov2Tracks, useIssuance } from '../../../hooks/use-gov2';
+import { titleCase } from '../../../utils';
+import Loader from '../loader';
 
+function Gov2Referenda() {
   let [filteredRefs, setFilteredRefs] = useState([]);
   let [counts, setCounts] = useState([]);
 
@@ -145,8 +138,4 @@ function Test() {
   )
 }
 
-Test.getLayout = function getLayout(page){
-  return <Layout>{page}</Layout>
-}
-
-export default Test
+export default Gov2Referenda

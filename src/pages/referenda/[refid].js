@@ -2,40 +2,46 @@ import { data } from 'autoprefixer'
 import { isEmpty } from 'lodash'
 import { NextSeo } from 'next-seo'
 import Link from 'next/link'
-import { useRouter, Router } from 'next/router'
+import { useRouter } from 'next/router'
 import Loader from '../../components/ui/loader'
 import ReferendumDetail from '../../components/ui/referendum/referendum-detail'
 import ReferendumPastDetail from '../../components/ui/referendum/referendum-detail'
+import { useGov2Referendum, useGov2Tracks, useIssuance } from '../../hooks/use-gov2'
 import { useUserNfts } from '../../hooks/use-nfts'
 import { useReferendum } from '../../hooks/use-referendums'
 import { useUserVotes } from '../../hooks/use-votes'
 import Layout from '../../layouts/layout'
 
+
+// this is the view for gov2
+
 const ReferendumView = () => {
   const router = useRouter()
   const { refid } = router.query
-  const { data: referendum, isLoading } = useReferendum( parseInt( refid ) )
-  const { data: userVotes, isFetching: isUserVotesLoading } = useUserVotes()
-  const { data: userNfts } = useUserNfts()
-
-  if ( ! refid ) {
-    return <></>
-  }
+  const { data: tracks, isLoading: isTracksLoading } = useGov2Tracks();
+  const { data: referenda, isLoading, error } = useGov2Referendum( refid )
+  const { data: totalIssuance, isLoading: isIssuanceLoading } = useIssuance();
+  const { data: userVotes, isFetching: isUserVotesLoading } = useUserVotes(refid ?? -1, true)
+  // const { data: userNfts } = useUserNfts()
 
   if ( ! refid || ! isFinite( refid ) ) {
-    return <div className="px-2 xs:px-4 mx-auto max-w-7xl text-sm py-10">
-        <p className="text-lg text-center">Not a valid referendum</p>
-        <Link href="/vote">
-          <a className='no-underline py-1 sm:py-3 inline-block text-base'>⇽ Go Back Referendum Overview</a>
-        </Link>
+    return 'not a valid referendum'
+  }
+
+  if ( isLoading || isTracksLoading ) {
+    return <Loader text={ `loading gov2 referendum ${ refid }`} />
+  }
+
+  if ( error ) {
+    return <div>
+      error: { JSON.stringify( error ) }
+      <Link href="/vote">
+        <a>Go Back</a>
+      </Link>
     </div>
   }
 
-  if ( isLoading ) {
-    return <Loader text={ `loading referendum ${ refid }`} />
-  }
-
-  if ( isEmpty( referendum ) ) {
+  if ( isEmpty( referenda ) ) {
     return <div>
       referendum { refid } not found
       <Link href="/vote">
@@ -51,12 +57,12 @@ const ReferendumView = () => {
     //   ReferendumView = <ReferendumDetail referendum={ referendum } />
     // } else {
     ReferendumView = <ReferendumPastDetail
-      referendum={ referendum }
-      userVote={ userVotes ? userVotes.find( vote => vote.referendumIndex === referendum.index ) : null }
-      isUserVotesLoading={ isUserVotesLoading }
-      userNFT={ userNfts && userNfts.find( nft => nft.symbol.startsWith( `${referendum.index}` ) ) }
-      expanded={ true }
+      referendum={ referenda[0] }
+      isGov2={ true }
       expandButtonVisible={ false }
+      totalIssuance={ totalIssuance }
+      track={ tracks.find( t => t[0] == referenda[0].track ) }
+      userVote={ userVotes ? userVotes[0] : null }
     />
   // }  
 
@@ -69,6 +75,8 @@ const ReferendumView = () => {
       <Link href="/vote">
       <a className='no-underline py-1 sm:py-3 inline-block text-base'>⇽ Go Back Referendum Overview</a>
       </Link>
+      {/* <pre>userVotes: { JSON.stringify( userVotes, null, 2) }</pre> */}
+      {/* <pre>{ JSON.stringify( referenda[0], null, 2) }</pre> */}
       { ReferendumView }
     </div>
   </>

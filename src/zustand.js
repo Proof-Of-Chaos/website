@@ -23,6 +23,16 @@ const useAppStore = create(
         connectedAccount: null,
         nfts: [],
       },
+      chain: {
+        currentBlock: null,
+      },
+      setCurrentBlock: ( blockNumber ) => {
+        set(()=>({
+          chain: {
+            currentBlock: blockNumber,
+          }
+        }))
+      },
       setReferendums: ( referendums ) => {
         set(()=>({
           referendums,
