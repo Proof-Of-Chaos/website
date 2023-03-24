@@ -29,6 +29,7 @@ export const gov2referendumFetcher = async ( refId ) => {
     return [];
   }
 
+
   gov2refs = gov2refs.map( ([key, referendum]) => {
     let refjson = referendum.toJSON();
     try {
@@ -59,8 +60,9 @@ export const gov2referendumFetcher = async ( refId ) => {
       console.error( e )
     }
   } );
+  console.log( 'gov2ref', gov2refs )
 
-  //only get active votes
+  // only get active votes
   // gov2refs = gov2refs.filter( ref => ! some([ref.approved, ref.rejected, ref.cancelled]) ) 
 
   //all ref ids in array of strings
@@ -69,14 +71,17 @@ export const gov2referendumFetcher = async ( refId ) => {
 
   //attach title and content fields to each ref from polkassembly refDetails
   let refDetails = await getTitleAndContentForRefs( notnullids );
-  console.log( refDetails, refDetails )
   const merged = gov2refs.map(
     ref => {
-      return Object.assign(ref, refDetails.find(
+      const polkassemblyRef = refDetails.find(
         refDetail => {
           return parseInt(refDetail.post_id) === ref.index
         }
-      ))
+      )
+      return Object.assign(ref, {
+        title: polkassemblyRef?.title,
+        content: polkassemblyRef?.content
+      })
     }
   )
 
