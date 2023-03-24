@@ -49,17 +49,14 @@ export function MenuItems() {
           <Link
             key={item.name}
             href={item.href}
+            className={
+              cn(
+                "mx-4 text-lg text-center transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-black",
+                item.href === pathname ? 'text-brand-600' : 'text-black'
+              )
+            }
           >
-            <a
-              className={
-                cn(
-                  "mx-4 text-lg text-center transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white font-black",
-                  item.href === pathname ? 'text-brand-600' : 'text-black'
-                )
-              }
-            >
               {item.name}
-            </a>
           </Link>
         )
       })}
@@ -99,17 +96,14 @@ export default function DrawerMenu() {
                       <Link
                         key={index}
                         href={item.href}
+                        className={
+                          cn(
+                            "py-3 text-2xl text-center font-bold transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
+                            item.href === pathname ? 'text-brand-600' : 'text-black'
+                          )
+                        }
                       >
-                        <a
-                          className={
-                            cn(
-                              "py-3 text-2xl text-center font-bold transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white",
-                              item.href === pathname ? 'text-brand-600' : 'text-black'
-                            )
-                          }
-                        >
-                          {item.name}
-                        </a>
+                        {item.name}
                       </Link>
                     </>
                   )

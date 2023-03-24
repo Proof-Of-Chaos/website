@@ -73,7 +73,6 @@ function LeaderBoardRow( props ) {
       <div className={ styles.wallet }>
         <span>owner</span>
         { isInViewport && <Link href={ `${ SINGULAR_WALLET_BASE_URL }${ ksmAddress }`}>
-          <a>
             <IdenticonWithoutSSR
               value={ wallet }
               size={ 32 }
@@ -81,7 +80,6 @@ function LeaderBoardRow( props ) {
             />
             { trimAddress( ksmAddress, 4 ) }
             { identity }
-          </a>
         </Link> }
       </div>
     </li>

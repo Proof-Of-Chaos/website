@@ -121,7 +121,7 @@ function Gov2Referenda() {
           </Tippy>
         </>}
       </div>
-      {isLoading && <Loader text='Loading Referenda' /> }
+      <Loader text='Loading Referenda' />
       <ul className="list-disc">
         {filteredRefs.map( r => 
           <ReferendumDetail

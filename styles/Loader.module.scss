@@ -6,7 +6,7 @@
   min-height: fit-content;
   justify-content: center;
   padding: 3rem 0;
-
+  align-items: center;
 
   .text {
     margin-top: 1rem;
@@ -25,6 +25,8 @@
     animation-duration: 2500ms;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
+    height: 100px;
+    width: auto;
   }
 
   @keyframes spin {
