@@ -36,10 +36,10 @@ function Vote() {
             data-rounded="rounded-lg" data-rounded-max="rounded-full">
             <div className="relative p-6 rounded-lg md:p-0 md:pb-4">
               <h2 className="text-3xl font-extrabold leading-9 tracking-tight text-white sm:text-4xl sm:leading-10">
-                Boost Your Luck
+                NFT sendouts are paused at the moment
               </h2>
               <p className="w-full max-w-lg mt-5 text-base leading-8 text-white md:w-3/4" data-primary="pink-600">
-                Take a quiz before voting in referenda and your chances of receiving <span className="nft-rare">rare</span> and <span className="nft-epic">epic</span> NFTs will increase by ~50% when all answers are correct.
+              We are currently working on decentralising the rewards send-out logic. Stay tuned on Twitter for announcements.<br/><br/>You can still vote on our site!
               </p>
             </div>
             <Menu as="div" className="inline-block text-left absolute right-0 w-26">
