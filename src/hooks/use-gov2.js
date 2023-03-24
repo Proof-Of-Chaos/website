@@ -69,11 +69,12 @@ export const gov2referendumFetcher = async ( refId ) => {
 
   //attach title and content fields to each ref from polkassembly refDetails
   let refDetails = await getTitleAndContentForRefs( notnullids );
+  console.log( refDetails, refDetails )
   const merged = gov2refs.map(
     ref => {
       return Object.assign(ref, refDetails.find(
         refDetail => {
-          return parseInt(refDetail.onchain_link.onchain_referendumv2_id) === ref.index
+          return parseInt(refDetail.post_id) === ref.index
         }
       ))
     }
@@ -97,28 +98,54 @@ export const useGov2Referendum = (referendumId) => {
   )
 }
 
-async function getTitleAndContentForRefs(referendumIDs) {
-  return new Promise( async ( resolve ) => {
-    const client = new ApolloClient({
-      uri: websiteConfig.polkassembly_graphql_endpoint,
-      cache: new InMemoryCache(),
-    })
+// async function getTitleAndContentForRefs(referendumIDs) {
+//   return new Promise( async ( resolve ) => {
+//     const client = new ApolloClient({
+//       uri: websiteConfig.polkassembly_graphql_endpoint,
+//       cache: new InMemoryCache(),
+//     })
 
-    let result = await client.query({
-      operationName: "ReferendumPostAndComments",
-      query: GET_GOV2_REF_TITLE_AND_CONTENT,
-      variables: {
-        "where": {
-          "onchain_link": {
-            "onchain_referendumv2_id": {
-              "_in": referendumIDs
-            }
-          }
-        }
-      }
-    })
+//     let result = await client.query({
+//       operationName: "ReferendumPostAndComments",
+//       query: GET_GOV2_REF_TITLE_AND_CONTENT,
+//       variables: {
+//         "where": {
+//           "onchain_link": {
+//             "onchain_referendumv2_id": {
+//               "_in": referendumIDs
+//             }
+//           }
+//         }
+//       }
+//     })
 
-    resolve(result?.data?.posts)
+//     resolve(result?.data?.posts)
+//   })
+// }
+
+async function getTitleAndContentForRefs( referendumIds ) {
+
+  const promises = referendumIds.map( id => getTitleAndContentForRef( id ) )
+  return Promise.all(promises).then((values) => {
+    return values
+  });
+}
+
+async function getTitleAndContentForRef( refId ) {
+  return new Promise( async ( resolve, reject ) => {
+    var myHeaders = new Headers();
+    myHeaders.append("x-network", "kusama");
+    
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+    
+    fetch(`https://api.polkassembly.io/api/v1/posts/on-chain-post?proposalType=referendums_v2&postId=${refId}`, requestOptions)
+      .then(response => response.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
   })
 }
 
