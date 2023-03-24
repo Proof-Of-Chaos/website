@@ -19,7 +19,12 @@ const ReferendumView = () => {
   const { data: userNfts } = useUserNfts()
 
   if ( ! refid || ! isFinite( refid ) ) {
-    return 'not a valid referendum'
+    return <div className="px-2 xs:px-4 mx-auto max-w-7xl text-sm py-10">
+        <p className="text-lg text-center">Not a valid referendum</p>
+        <Link href="/vote" className='no-underline py-1 sm:py-3 inline-block text-base'>
+          ⇽ Go Back Referendum Overview
+        </Link>
+    </div>
   }
 
   if ( isLoading ) {
@@ -30,7 +35,7 @@ const ReferendumView = () => {
     return <div>
       referendum { refid } not found
       <Link href="/vote">
-        <a>Go Back</a>
+        Go Back
       </Link>
     </div>
   }
@@ -57,8 +62,8 @@ const ReferendumView = () => {
       description="Take a quiz to receive better NFT rewards, or vote on this Kusama Referendum with your kSM."
     />
     <div className="px-2 xs:px-4 mx-auto max-w-7xl text-sm">
-      <Link href="/vote">
-      <a className='no-underline py-1 sm:py-3 inline-block text-base'>⇽ Go Back Referendum Overview</a>
+      <Link href="/vote" className='no-underline py-1 sm:py-3 inline-block text-base'>
+        ⇽ Go Back Referendum Overview
       </Link>
       { ReferendumView }
     </div>
