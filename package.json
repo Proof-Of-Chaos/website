@@ -34,17 +34,6 @@
     "@talismn/connect-wallets": "^1.2.3",
     "@tanstack/react-query": "^4.28.0",
     "@tippyjs/react": "^4.2.6",
-<<<<<<< HEAD
-    "classnames": "^2.3.1",
-    "daisyui": "^2.19.1",
-    "dompurify": "^2.4.1",
-    "expect": "^29.0.2",
-    "fs": "^0.0.1-security",
-    "graphql": "^16.5.0",
-    "hamburger-react": "^2.5.0",
-    "immer": "^9.0.15",
-    "jotai": "^1.7.4",
-=======
     "@types/node": "18.15.5",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
@@ -55,7 +44,6 @@
     "graphql": "^16.6.0",
     "graphql-request": "^5.2.0",
     "jotai": "^2.0.3",
->>>>>>> beta
     "lodash": "^4.17.21",
     "next": "13.2.4",
     "next-auth": "^4.20.1",

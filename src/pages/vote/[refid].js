@@ -25,13 +25,8 @@ const ReferendumView = () => {
   if ( ! refid || ! isFinite( refid ) ) {
     return <div className="px-2 xs:px-4 mx-auto max-w-7xl text-sm py-10">
         <p className="text-lg text-center">Not a valid referendum</p>
-<<<<<<< HEAD
-        <Link href="/vote">
-          <a className='no-underline py-1 sm:py-3 inline-block text-base'>⇽ Go Back Referendum Overview</a>
-=======
         <Link href="/vote" className='no-underline py-1 sm:py-3 inline-block text-base'>
           ⇽ Go Back Referendum Overview
->>>>>>> beta
         </Link>
     </div>
   }
