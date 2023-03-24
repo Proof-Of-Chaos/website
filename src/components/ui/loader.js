@@ -14,7 +14,6 @@ export default function Loader({
       objectFit='contain'
       width={ width }
       height={ height }
-      className="pb-2"
     />
     <span className={ styles.text }>
       { text.split("").map(
