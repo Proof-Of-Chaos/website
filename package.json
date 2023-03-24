@@ -80,5 +80,6 @@
     "postcss-import": "^14.1.0",
     "sass": "^1.54.4",
     "ss58": "^1.0.2"
-  }
+  },
+  "packageManager": "yarn@3.5.0"
 }
