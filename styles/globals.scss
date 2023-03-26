@@ -260,6 +260,7 @@ button, a {
 }
 
 .referendum-description {
+  position: relative;
   h1 {
     @apply text-xl;
   }
@@ -284,6 +285,25 @@ button, a {
   p {
     @apply mb-3;
   }
+
+  &.overflow-hidden {
+    max-height: 250px;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 4rem;
+      bottom: 0;
+      position: absolute;
+      @apply bg-gradient-to-t from-gray-50 to-gray-50/0;
+  }
+  }
+}
+
+.btn-show-more {
+  margin-top: 1rem;
 }
 
 .btn-track-filter {

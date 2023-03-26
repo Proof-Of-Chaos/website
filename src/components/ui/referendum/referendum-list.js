@@ -26,6 +26,7 @@ export function ReferendumList( { referendums, isLoading, error, isUserVotesLoad
               userVote={ userVotes ? userVotes.find( vote => vote.referendumIndex === referendum.index ) : null }
               isUserVotesLoading={ isUserVotesLoading }
               userNFT={ userNfts && userNfts.find( nft => nft.symbol.startsWith( `${referendum.index}` ) ) }
+              expanded={ false }
             />
           </div>
         )) :

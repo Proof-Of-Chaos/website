@@ -29,6 +29,9 @@ module.exports = {
       },
     },
     extend: {
+      fontSize: {
+        xs: '0.825rem',
+      },
       colors: {
         brand: colors.indigo,
         primary: 'rgba(var(--color-primary) / <alpha-value>)',
