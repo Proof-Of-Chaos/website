@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import { bnToBn, BN_MILLION, BN_ONE, BN_THOUSAND, isBn } from "@polkadot/util";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid-svg-icons";
+import { ChevronDownIcon, ChevronUpIcon} from '@heroicons/react/20/solid'
 import ReactMarkdown from 'react-markdown'
 import Tippy from "@tippyjs/react";
 import Image from "next/image";
+import classNames from "classnames";
 
 import Button from "../button"
 import ReferendumCountdown from './referendum-countdown'
@@ -33,6 +35,7 @@ export default function ReferendumDetail( {
   isGov2 = false,
   totalIssuance,
   track,
+  expanded
 } ) {
   const {
     count_aye,
@@ -59,6 +62,8 @@ export default function ReferendumDetail( {
   const { openModal } = useModal();
   const { data: refConfig } = useConfig( index )
   const { data: latestUserVote } = useLatestUserVoteForRef( index )
+
+  const [isExpanded, setIsExpanded ] = useState(false)
 
   //the percentage that has passed in the deciding period: 0 <= decidingPercentage <= 1
   const [decidingPercentage, setDecidingPercentage] = useState(0)
@@ -259,7 +264,7 @@ export default function ReferendumDetail( {
 
   const ReferendumLinks = ( { referendumId } ) => (
     <>
-    <div className="referendum-more py-3 px-4 mt-4 bg-gray-100 rounded-md flex items-center">
+    <div className="referendum-more py-2 px-4 mt-4 bg-gray-100 rounded-md flex items-center">
       <span className="pr-4">View on</span>
       <a
         className="pr-3 grayscale flex" 
@@ -268,18 +273,18 @@ export default function ReferendumDetail( {
         <Image
           src='/logos/polkassembly.svg'
           alt="polkassembly logo"
-          height={22}
-          width={ 110 }
+          height={10}
+          width={ 90 }
         />
       </a>
-      { ! isGov2 && <a className="flex grayscale invert pr-4" href={ `https://kusama.subscan.io/referenda/${ referendumId }` }>
+      <a className="flex invert pr-5" href={ `https://kusama.subscan.io/referenda${ isGov2 && '_v2' }/${ referendumId }` }>
         <Image
-          src='/logos/subscan.webp'
+          src='/logos/subscan.png'
           alt="subscan logo"
-          height={18}
-          width={100}
+          height={12}
+          width={90}
         />
-      </a> }
+      </a>
       <a
         className="flex grayscale"
         href={ isGov2 ? `https://kusama.subsquare.io/referenda/referendum/${ referendumId }` : `https://kusama.subsquare.io/democracy/referendum/${ referendumId }` }
@@ -287,8 +292,8 @@ export default function ReferendumDetail( {
         <Image
           src='/logos/subsquare.svg'
           alt="subscan logo"
-          height={30}
-          width={120}
+          height={10}
+          width={100}
         />
       </a>
     </div>
@@ -388,9 +393,9 @@ export default function ReferendumDetail( {
   )
 
   return (
-    <div className="relative w-full rounded-md border-2 border-gray-100 shadow-lg p-3 sm:p-4 md:p-6 my-4 mb-8">
+    <div className="relative w-full rounded-lg border-2 border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0">
       <div className="w-full flex flex-wrap">
-        <div className="left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
+        <div className="flex flex-col left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
           <div className="referendum-heading">
             <div>Referendum {index}</div>
           </div>
@@ -399,11 +404,24 @@ export default function ReferendumDetail( {
           >
             {title}
           </h3>
-          <div className="referendum-description break-words text-sm">
-            <ReactMarkdown>{ description || stripHtml( content ) }</ReactMarkdown>
-            {/* <pre>{ JSON.stringify( referendum, null, 2) }</pre> */}
+          <div className="flex-1">
+            <div className={ classNames( 
+              "referendum-description break-words text-xs",
+              {
+                'overflow-hidden': ! isExpanded
+              }
+            )}>
+              <ReactMarkdown>{ description || stripHtml( content ) }</ReactMarkdown>
+            </div>
+            <Button 
+            className="w-full btn-show-more" 
+            variant="black"
+            size="small"
+            onClick={ () => setIsExpanded( ! isExpanded ) } >
+              { isExpanded ? <><ChevronUpIcon className="h-6" /> Show Less</> : <><ChevronDownIcon className="h-6" /> Show More</> }
+            </Button>
           </div>
-          <ReferendumLinks referendumId={ referendum.index } />
+          <ReferendumLinks referendumId={ referendum.index } className="referendum-links"/>
         </div>
         <div ref={ metaRef } className="right text-center w-full sm:w-5/12 md:w-4/12 pt-6 sm:pt-0 sticky self-start top-24 sm:pl-4 md:pl-6">
           { referendumMeta }
