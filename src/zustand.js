@@ -78,6 +78,40 @@ const useAppStore = create(
           }
         }))
       },
+      updateVoteState: ( referendumId, vote ) => {
+        set((state)=>({
+          user: {
+            ...state.user,
+            voteStates: {
+              ...state.user.voteStates,
+              [`${referendumId}`]: {
+                ...state.user.voteStates?.[`${referendumId}`],
+                vote,
+              },              
+            }
+          }
+        }))
+      },
+      removeVoteState: ( referendumId ) => {
+        set(( state ) => {
+          const newVoteStates = {...state.user.voteStates}
+          delete newVoteStates[`${referendumId}`]
+          return {
+            user: {
+              ...state.user,
+              voteStates: newVoteStates 
+            }
+          }
+        })
+      },
+      clearVoteState: () => {
+        set(( state ) => ({
+          user: {
+            ...state.user,
+            voteStates: {}
+          }
+        }))
+      },
       submitQuiz: ( referendumId ) => {
         // store in state that user submitted quiz answers,
         // should only be called in the signAndSend

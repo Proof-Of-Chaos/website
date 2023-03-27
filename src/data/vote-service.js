@@ -17,7 +17,7 @@ export async function castVote(signer, aye, ref, address, balance, conviction, g
   })
 }
 
-function getVoteTx(api, aye, ref, balance, conviction, gov2 = false) {
+export function getVoteTx(api, aye, ref, balance, conviction, gov2 = false) {
   let vote = {
     Standard: {
       vote: {

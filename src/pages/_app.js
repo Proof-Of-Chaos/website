@@ -2,6 +2,8 @@ import Head from 'next/head';
 import '../../styles/globals.scss'
 import ModalsContainer from '../components/modals/container';
 import { ToastContainer } from 'react-toastify';
+import toast, { Toaster, ToastBar } from 'react-hot-toast';
+
 import 'react-toastify/dist/ReactToastify.css';
 import DrawersContainer from '../components/drawer/container';
 import seoConfig from '../next-seo.config' 
@@ -42,7 +44,32 @@ function MyApp({ Component, pageProps }) {
         </PolkadotApiProvider>
         <DrawersContainer />
         <ModalsContainer />
-        <ToastContainer />
+        {/* <ToastContainer /> */}
+        <Toaster
+          className="toaster"
+          position="top-right"
+          toastOptions={{
+            style: {
+              width: '300px',
+              minHeight: '70px',
+
+            },
+          }}
+        >
+            {(t) => (
+              <ToastBar toast={t} className="toaster-bar">
+                {({ icon, message }) => (
+                  <>
+                    {icon}
+                    <div className="message flex flex-col mx-3 text-sm">
+                      <span className="font-bold">{t.title}</span>
+                      {message}
+                    </div>
+                  </>
+                )}
+              </ToastBar>
+            )}
+      </Toaster>
         {/* <ReactQueryDevtools initialIsOpen /> */}
       </QueryClientProvider>
     </>

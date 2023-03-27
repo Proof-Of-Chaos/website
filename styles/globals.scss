@@ -38,6 +38,10 @@
   height: auto;
 }
 
+.toaster .message > div {
+  margin: 0 !important;
+}
+
 pre{
   max-width: 100%;
   word-break: break-all;
@@ -320,4 +324,18 @@ button, a {
   @apply rounded-lg;
   border: 4px solid;
   border-image: linear-gradient(283deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%) 5;
+}
+
+.referendum-detail-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fafafacc;
+  display: flex;
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  @apply rounded-lg;
 }

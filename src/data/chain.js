@@ -34,10 +34,10 @@ export const sendAndFinalize = async (
       const unsub = await tx.signAndSend(
           address, { signer: signer }, ({ status, dispatchError }) => {
             if (status.isInBlock) {
-              // console.log( 'transaction in block waiting for finalization' )
+              console.log( 'transaction in block waiting for finalization' )
             } else if (status.isFinalized) {
-              // console.log(`Transaction included at blockHash ${status.asFinalized}`);
-              // console.log(`Transaction hash ${txHash.toHex()}`);
+              console.log(`Transaction included at blockHash ${status.asFinalized}`);
+              console.log(`Transaction hash ${txHash.toHex()}`);
 
               // Loop through Vec<EventRecord> to display all events
               if (dispatchError) {

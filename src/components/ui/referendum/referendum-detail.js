@@ -15,13 +15,14 @@ import ReferendumVoteButtons from "./referendum-vote-buttons";
 
 import { useModal } from "../../modals/context";
 import { KSMFormatted, microToKSM, stripHtml, titleCase } from "../../../utils";
-import { InlineLoader } from "../loader";
+import Loader, { InlineLoader } from "../loader";
 import { useConfig } from "../../../hooks/use-config";
 import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
 import { getTrackInfo } from "../../../data/kusama-tracks";
 import { curveThreshold, getPercentagePassed } from "../../../gov2-utils";
 
 import useAppStore from "../../../zustand";
+import { useVoteManager } from "../../../hooks/use-vote-manager";
 
 const toPercentage = (part, whole) => {
   return Math.round(parseInt(part) / parseInt(whole) * 100)
@@ -79,6 +80,8 @@ export default function ReferendumDetail( {
   const metaRef = useRef(null);
 
   const currentBlockNumber = useAppStore((state) => state.chain.currentBlock).toNumber();
+
+  const { refsBeingVoted } = useVoteManager();
 
   const gov2status = rejected ?
     'Rejected' : approved ?
@@ -392,6 +395,8 @@ export default function ReferendumDetail( {
     </>
   )
 
+  const isVoteInProgress = refsBeingVoted?.hasOwnProperty( index )
+
   return (
     <div className="relative w-full rounded-lg border-2 border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0">
       <div className="w-full flex flex-wrap">
@@ -440,6 +445,17 @@ export default function ReferendumDetail( {
             </Button>
           </div>
         }
+      { isVoteInProgress && <div className="referendum-detail-overlay flex-col">
+        <Loader text=""/>
+        { refsBeingVoted[ `${ index }` ].vote.aye &&
+          <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">{ refsBeingVoted[ `${ index }` ].vote.balance } KSM Aye Vote</span>
+        }
+        { !refsBeingVoted[ `${ index }` ].vote.aye &&
+          <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">{ refsBeingVoted[ `${ index }` ].vote.balance } KSM Nay Vote</span>
+        }
+        <span>with conviction { refsBeingVoted[ `${ index }` ].vote.conviction }</span>
+        <span>for referendum { index } in progress...</span>
+      </div> }
     </div>
   )
 }

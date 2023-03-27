@@ -38,7 +38,7 @@ export default function ModalsContainer() {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <Dialog.Overlay className="fixed inset-0 z-40 cursor-pointer bg-gray-700 bg-opacity-60 backdrop-blur-sm" />
+          <Dialog.Overlay className="fixed inset-0 z-40 cursor-pointer bg-white bg-opacity-60 backdrop-blur-sm" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto z-50">
@@ -50,7 +50,7 @@ export default function ModalsContainer() {
               leave="ease-in duration-200"
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
-              className="w-full max-w-4xl flex flex-col max-h-[calc(100vh-4rem)] transform overflow-hidden rounded-md bg-white p-6 text-left align-middle shadow-xl transition-all"
+              className="w-full max-w-md flex flex-col max-h-[calc(100vh-4rem)] transform overflow-hidden rounded-md bg-white p-6 text-left align-middle shadow-xl transition-all"
             >
               { view && renderModalContent(view, props) }
             </Transition.Child>
