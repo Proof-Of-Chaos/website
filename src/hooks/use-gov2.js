@@ -60,10 +60,6 @@ export const gov2referendumFetcher = async ( refId ) => {
       console.error( e )
     }
   } );
-  console.log( 'gov2ref', gov2refs )
-
-  // only get active votes
-  // gov2refs = gov2refs.filter( ref => ! some([ref.approved, ref.rejected, ref.cancelled]) ) 
 
   //all ref ids in array of strings
   const indexes = gov2refs.map( ref => ref.index )

@@ -29,11 +29,6 @@ export function useVoteManager() {
   
     const wallet = getWalletBySource(connectedAccount?.source)
 
-
-    useEffect(() => {
-        clearVoteState()
-    }, [])
-
     const voteOnRef = async ( refId, aye, balance, conviction ) => {
         await wallet.enable('Proof of Chaos')
         const api = await getApi()
@@ -53,6 +48,8 @@ export function useVoteManager() {
             conviction,
             state: VoteState.AwaitingSignature
         }
+
+        console.log( 'new vote ', vote )
         
         updateVoteState( refId, vote )
         const toastId = toast.loading(

@@ -13,6 +13,7 @@ import { isNumber } from "lodash";
 import { InlineLoader } from "../ui/loader";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLatestUserVoteForRef } from "../../hooks/use-votes";
+import { useVoteManager } from "../../hooks/use-vote-manager";
 
 export default function ReferendumVoteModal( { index, title, userAnswers, gov2 = false} ) {
   const { data: latestUserVote } = useLatestUserVoteForRef( index )
@@ -56,6 +57,8 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
   const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
   const hasUserSubmittedAnswers = useAppStore((state) => state.user.quizAnswers?.[index]?.submitted )
 
+  const { voteOnRef } = useVoteManager();
+
   const [ state, setState ] = useState({
     'wallet-select': connectedAccount?.address,
     'vote-amount': '',
@@ -80,39 +83,8 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
   }
 
   async function onClickCastVote(aye = true) {
-    const balance = parseFloat(state['vote-amount']) * 1000000000000
-    const wallet = getWalletBySource(connectedAccount.source)
-    
-    await wallet.enable('Proof of Chaos')
-    try {
-      toast.promise(
-        castVote(
-          wallet.signer,
-          aye,
-          index,
-          state['wallet-select'],
-          balance,
-          state['vote-lock'],
-          gov2
-        ).then( ( ) => {
-          queryClient.invalidateQueries({ queryKey: ['vote', connectedAccount?.ksmAddress, index ] })
-          closeModal()
-        } ),
-        {
-          pending: `sending your vote for referendum ${ index }`,
-          success: 'Vote successfully recorded 🗳️',
-          error: {
-            render({data}){
-              // When the promise reject, data will contains the error
-              return `Error recording vote 🤯: ${data}`
-            }
-          },
-          pauseOnFocusLoss: false
-        }
-      )
-    } catch (err) {
-      console.log( '>>> err', err );
-    }
+    voteOnRef(index,aye,parseFloat(state['vote-amount']),state['vote-lock'])
+    closeModal()
   }
 
   const convictionString = latestUserVote?.lockPeriod
@@ -140,6 +112,32 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
             </div>
           }
         <form className="mt-4 pl-1">
+          <div className="mt-6 flex">
+            <button
+              size="small"
+              className="h-8 rounded-none rounded-l-lg mr-0 w-1/4 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white hover:border hover:border-4 hover:border-gray-400"
+              onClick={ async () => onClickCastVote(true) }>
+              Aye
+            </button>
+            <button
+              size="small"
+              className="h-8 rounded-none mr-0 w-1/4 mt-2 sm:mt-0 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white hover:border hover:border-4 hover:border-gray-400"
+              onClick={ async () => onClickCastVote(false) }>
+              Nay
+            </button>
+            <button
+              size="small"
+              className="h-8 rounded-none mr-0 w-1/4 mt-2 sm:mt-0 bg-gradient-to-r from-yellow-500/80 to-yellow-600/80 text-white text-4xlhover:border hover:border-4 hover:border-gray-400"
+              onClick={ async () => onClickCastVote(false) }>
+              Split
+            </button>
+            <button
+              size="small"
+              className="h-8 rounded-none rounded-r-lg w-1/4 mt-2 sm:mt-0 bg-gradient-to-r from-gray-500/80 to-gray-600/80 text-white hover:border hover:border-4 hover:border-gray-400"
+              onClick={ closeModal }>
+              Abstain
+            </button>
+          </div>
           <Input
             id="vote-amount"
             label={ voteAmountLabel }
@@ -162,25 +160,13 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
             tooltip="How long your value is locked - increases voting power"
             onChange={setFormFieldValue.bind(this)}
           />
-        </form>
-        <div className="mt-6">
           <Button
-            className="mr-2 w-full sm:w-auto bg-gradient-to-r from-green-500/80 to-green-700/80 text-white"
-            onClick={ async () => onClickCastVote(true) }>
-            Vote Aye
-          </Button>
-          <Button
-            className="mr-2 w-full  mt-2 sm:mt-0 sm:w-auto bg-gradient-to-r from-red-500/80 to-red-700/80 text-white text-4xl"
-            onClick={ async () => onClickCastVote(false) }>
-            Vote Nay
-          </Button>
-          <Button
-            className="w-full sm:w-auto mt-2 sm:mt-0 "
-            variant="calm"
+            className="w-full mt-2 mt-4 "
+            variant="black"
             onClick={ closeModal }>
-            Cancel
+            Send Vote
           </Button>
-        </div>
+        </form>
       </div>
     </>
   )
