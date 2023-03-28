@@ -37,6 +37,7 @@ const Button = forwardRef(
       size = 'medium',
       shape = 'pill',
       disabled = false,
+      hoverTranslate = true,
       ...props
     }, ref
   ) => (
@@ -46,7 +47,7 @@ const Button = forwardRef(
       type={type}
       className={ cn(
         classes.base,
-        classes.hover,
+        hoverTranslate && classes.hover,
         classes.variant[ variant ],
         classes.size[ size ],
         classes.shapes[ shape ],

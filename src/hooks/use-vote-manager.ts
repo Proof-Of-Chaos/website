@@ -21,7 +21,6 @@ export function useVoteManager() {
      */
 
     const refsBeingVoted = useAppStore(( state ) => state.user.voteStates )
-    const clearVoteState = useAppStore((state)=> state.clearVoteState )
     const updateVoteState = useAppStore((state) => state.updateVoteState)
     const removeVoteState = useAppStore((state) => state.removeVoteState)
     const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
@@ -53,7 +52,7 @@ export function useVoteManager() {
         
         updateVoteState( refId, vote )
         const toastId = toast.loading(
-            `(1/3) Awaiting your signature`, {
+            `(1/3) Awaiting your signature`, {
                 title: `Vote on Referendum ${ refId }`,
                 className: 'toaster'
             }
@@ -76,6 +75,7 @@ export function useVoteManager() {
                 console.log(`Current status: ${status.type}`);
                 toast.success('Vote successfully recorded 🗳️', {
                     id: toastId,
+                    duration: 4000,
                 });
                 removeVoteState( refId )
             } else {

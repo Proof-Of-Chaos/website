@@ -12,20 +12,25 @@ const log = (config) => (set, get, api) =>
     api
   )
 
+const initialState = {
+  user: {
+    quizAnswers: {},
+    knowsAboutLuckBoost: false,
+    connectedWalletProvider: null,
+    connectedWallet: null,
+    connectedAccount: null,
+    nfts: [],
+    voteStates: [],
+  },
+  chain: {
+    currentBlock: null,
+  },
+}
+
 const useAppStore = create(
   // log(
     persist((set) => ({
-      user: {
-        quizAnswers: {},
-        knowsAboutLuckBoost: false,
-        connectedWalletProvider: null,
-        connectedWallet: null,
-        connectedAccount: null,
-        nfts: [],
-      },
-      chain: {
-        currentBlock: null,
-      },
+      ...initialState,
       setCurrentBlock: ( blockNumber ) => {
         set(()=>({
           chain: {
@@ -105,10 +110,10 @@ const useAppStore = create(
         })
       },
       clearVoteState: () => {
-        set(( state ) => ({
+        set((state) => ({
           user: {
             ...state.user,
-            voteStates: {}
+            voteStates: [],
           }
         }))
       },

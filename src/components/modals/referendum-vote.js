@@ -14,6 +14,7 @@ import { InlineLoader } from "../ui/loader";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLatestUserVoteForRef } from "../../hooks/use-votes";
 import { useVoteManager } from "../../hooks/use-vote-manager";
+import { useForm } from "react-hook-form";
 
 export default function ReferendumVoteModal( { index, title, userAnswers, gov2 = false} ) {
   const { data: latestUserVote } = useLatestUserVoteForRef( index )
@@ -59,6 +60,9 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
 
   const { voteOnRef } = useVoteManager();
 
+  const { register, handleSubmit } = useForm();
+  const onSubmit = data => console.log(data);
+
   const [ state, setState ] = useState({
     'wallet-select': connectedAccount?.address,
     'vote-amount': '',
@@ -83,7 +87,7 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
   }
 
   async function onClickCastVote(aye = true) {
-    voteOnRef(index,aye,parseFloat(state['vote-amount']),state['vote-lock'])
+    voteOnRef(index,aye,3,'none')
     closeModal()
   }
 
@@ -112,32 +116,6 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
             </div>
           }
         <form className="mt-4 pl-1">
-          <div className="mt-6 flex">
-            <button
-              size="small"
-              className="h-8 rounded-none rounded-l-lg mr-0 w-1/4 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white hover:border hover:border-4 hover:border-gray-400"
-              onClick={ async () => onClickCastVote(true) }>
-              Aye
-            </button>
-            <button
-              size="small"
-              className="h-8 rounded-none mr-0 w-1/4 mt-2 sm:mt-0 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white hover:border hover:border-4 hover:border-gray-400"
-              onClick={ async () => onClickCastVote(false) }>
-              Nay
-            </button>
-            <button
-              size="small"
-              className="h-8 rounded-none mr-0 w-1/4 mt-2 sm:mt-0 bg-gradient-to-r from-yellow-500/80 to-yellow-600/80 text-white text-4xlhover:border hover:border-4 hover:border-gray-400"
-              onClick={ async () => onClickCastVote(false) }>
-              Split
-            </button>
-            <button
-              size="small"
-              className="h-8 rounded-none rounded-r-lg w-1/4 mt-2 sm:mt-0 bg-gradient-to-r from-gray-500/80 to-gray-600/80 text-white hover:border hover:border-4 hover:border-gray-400"
-              onClick={ closeModal }>
-              Abstain
-            </button>
-          </div>
           <Input
             id="vote-amount"
             label={ voteAmountLabel }
@@ -160,13 +138,21 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
             tooltip="How long your value is locked - increases voting power"
             onChange={setFormFieldValue.bind(this)}
           />
-          <Button
-            className="w-full mt-2 mt-4 "
-            variant="black"
-            onClick={ closeModal }>
-            Send Vote
-          </Button>
         </form>
+        <div className="mt-6 flex">
+            <Button
+              hoverTranslate={ false }
+              className="h-8 rounded-none rounded-l-lg mr-0 w-1/2 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white hover:border hover:border-4 hover:border-black"
+              onClick={ async () => onClickCastVote(true) }>
+              Aye
+            </Button>
+            <Button
+              hoverTranslate={ false }
+              className="h-8 rounded-none rounded-r-lg mr-0 w-1/2 mt-2 sm:mt-0 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white hover:border hover:border-4 hover:border-black"
+              onClick={ async () => onClickCastVote(false) }>
+              Nay
+            </Button>
+          </div>
       </div>
     </>
   )

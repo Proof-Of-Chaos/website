@@ -14,17 +14,14 @@ import { Checkbox,
   ThemeProvider
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { find, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import Button from '../../components/ui/button';
 import ConfigTable from '../../components/ui/ConfigTable'
 import Loader from '../../components/ui/loader';
 import { Dialog } from '@headlessui/react';
 import useAppStore from '../../zustand';
 import WalletConnect from '../nft/wallet-connect';
-import Image from 'next/image';
 import { useUserNfts } from '../../hooks/use-nfts';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWallet } from '@fortawesome/free-solid-svg-icons';
 import { SingleNFT } from '../nft/ref-nfts';
 
 

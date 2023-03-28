@@ -1,19 +1,20 @@
 import Head from 'next/head';
-import '../../styles/globals.scss'
+import { useEffect } from 'react';
 import ModalsContainer from '../components/modals/container';
-import { ToastContainer } from 'react-toastify';
-import toast, { Toaster, ToastBar } from 'react-hot-toast';
-
+import { Toaster, ToastBar } from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 import DrawersContainer from '../components/drawer/container';
 import seoConfig from '../next-seo.config' 
-
 import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { DefaultSeo, NextSeo } from 'next-seo';
+import { DefaultSeo } from 'next-seo';
 import PolkadotApiProvider from '../context/polkadot-api-context';
+import { useVoteManager } from '../hooks/use-vote-manager';
+import useAppStore from '../zustand';
+
+import '../../styles/globals.scss'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,6 +27,12 @@ const queryClient = new QueryClient({
 
 function MyApp({ Component, pageProps }) {
   const getLayout = Component.getLayout ?? ((page) => page)
+  const voteManager = useVoteManager()
+  const clearVoteState = useAppStore((state) => state.clearVoteState )
+
+  useEffect(() => {
+    clearVoteState()
+  }, [])
   
   return (
     <>
@@ -52,7 +59,6 @@ function MyApp({ Component, pageProps }) {
             style: {
               width: '300px',
               minHeight: '70px',
-
             },
           }}
         >

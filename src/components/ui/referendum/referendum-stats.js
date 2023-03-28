@@ -25,7 +25,7 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
               y="0"
               height="12"
               fill="rgb(74,222,128)"
-              width={ `${widthSupport * widthFactor}%` }
+              width={ `${widthSupport * widthFactor < 0 ? 0 : widthSupport * widthFactor }%` }
             />
           </svg>
         </Tippy>

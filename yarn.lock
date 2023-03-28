@@ -4334,6 +4334,7 @@ __metadata:
     react: 18.2.0
     react-countdown: ^2.3.5
     react-dom: 18.2.0
+    react-hook-form: ^7.43.8
     react-hot-toast: ^2.4.0
     react-is: ^18.2.0
     react-markdown: ^8.0.6
@@ -7004,6 +7005,15 @@ __metadata:
   version: 3.2.1
   resolution: "react-fast-compare@npm:3.2.1"
   checksum: 209b4dc3a9cc79c074a26ec020459efd8be279accaca612db2edb8ada2a28849ea51cf3d246fc0fafb344949b93a63a43798b6c1787559b0a128571883fe6859
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.43.8":
+  version: 7.43.8
+  resolution: "react-hook-form@npm:7.43.8"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 1042b68950e1756dd907e7eb904c6efdf04f126a48797b25e8793705d930f7bbff2cc07f0ec7ea4c52272e808a359ae157742c551defa3b3fd0952ff414bd3e3
   languageName: node
   linkType: hard
 
