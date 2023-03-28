@@ -338,4 +338,10 @@ button, a {
   justify-content: center;
   align-items: center;
   @apply rounded-lg;
+  transition: transform 0.7s;
+  transform: translate3d(0,-100%,0);
+
+  &.visible {
+    transform: translate3d(0,0,0);
+  }
 }

@@ -398,7 +398,7 @@ export default function ReferendumDetail( {
   const isVoteInProgress = refsBeingVoted?.hasOwnProperty( index )
 
   return (
-    <div className="relative w-full rounded-lg border-2 border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0">
+    <div className="relative w-full rounded-lg border-2 border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0 overflow-hidden">
       <div className="w-full flex flex-wrap">
         <div className="flex flex-col left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
           <div className="referendum-heading">
@@ -445,17 +445,20 @@ export default function ReferendumDetail( {
             </Button>
           </div>
         }
-      { isVoteInProgress && <div className="referendum-detail-overlay flex-col">
+      <div className={ classNames(
+        "referendum-detail-overlay flex-col",
+        { visible : isVoteInProgress }
+      )}>
         <Loader text=""/>
-        { refsBeingVoted[ `${ index }` ].vote.aye &&
+        { isVoteInProgress && refsBeingVoted[ `${ index }` ].vote.aye &&
           <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">{ refsBeingVoted[ `${ index }` ].vote.balance } KSM Aye Vote</span>
         }
-        { !refsBeingVoted[ `${ index }` ].vote.aye &&
+        { isVoteInProgress && !refsBeingVoted[ `${ index }` ].vote.aye &&
           <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">{ refsBeingVoted[ `${ index }` ].vote.balance } KSM Nay Vote</span>
         }
-        <span>with conviction { refsBeingVoted[ `${ index }` ].vote.conviction }</span>
+        <span>with conviction { isVoteInProgress && refsBeingVoted[ `${ index }` ].vote.conviction }</span>
         <span>for referendum { index } in progress...</span>
-      </div> }
+      </div>
     </div>
   )
 }
