@@ -345,3 +345,71 @@ button, a {
     transform: translate3d(0,0,0);
   }
 }
+
+.vote-button.selected {
+  color: #fff;
+}
+
+.vote-button.nay.selected {
+  @apply bg-red-600;
+}
+
+.vote-button.aye.selected {
+  @apply bg-green-600;
+}
+
+.vote-button.split.selected {
+  @apply bg-yellow-500;
+}
+
+.vote-button.abstain.selected {
+  @apply bg-gray-600;
+}
+
+form label::first-letter {
+  text-transform:capitalize;
+}
+
+.form-error {
+  &::before {
+    content: "⚠ ";
+  }
+
+  @apply text-sm text-red-500;
+}
+
+.conviction-slider {
+
+  .MuiSlider-rail {
+    background-color: #999;
+  }
+
+  .MuiSlider-thumb {
+    @apply bg-gray-800;
+  }
+
+  .MuiSlider-track {
+    height: 10px;
+    background: #c471ed;  /* fallback for old browsers */
+    background: linear-gradient(to right, #c74ff6, #a93ddf, #12e9be); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+    border: none;
+  }
+
+  .MuiSlider-mark {
+    background-color: #555;
+    height: 15px;
+
+    &[data-index="0"] {
+      display: none;
+    }
+
+    &[data-index="0"] {
+      display: none;
+    }
+
+    &[data-index="6"] {
+      display: none;
+    }
+  }
+
+}

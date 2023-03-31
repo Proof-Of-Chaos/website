@@ -36,6 +36,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@fortawesome/react-fontawesome", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:0.2.0"],\
             ["@headlessui/react", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:1.7.13"],\
             ["@heroicons/react", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:2.0.16"],\
+            ["@hookform/resolvers", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:3.0.0"],\
             ["@mui/material", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:5.11.14"],\
             ["@mui/system", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:5.11.14"],\
             ["@polkadot/api", "npm:10.1.4"],\
@@ -85,6 +86,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["tippy.js", "npm:6.3.7"],\
             ["typescript", "patch:typescript@npm%3A5.0.2#~builtin<compat/typescript>::version=5.0.2&hash=85af82"],\
             ["victory", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:36.6.8"],\
+            ["yup", "npm:1.0.2"],\
             ["zustand", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:4.3.6"]\
           ],\
           "linkType": "SOFT"\
@@ -720,6 +722,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packagePeers": [\
             "@types/react",\
             "react"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@hookform/resolvers", [\
+        ["npm:3.0.0", {\
+          "packageLocation": "./.yarn/cache/@hookform-resolvers-npm-3.0.0-e420f6bffb-72c1282c1b.zip/node_modules/@hookform/resolvers/",\
+          "packageDependencies": [\
+            ["@hookform/resolvers", "npm:3.0.0"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:3.0.0", {\
+          "packageLocation": "./.yarn/__virtual__/@hookform-resolvers-virtual-46664de8c3/0/cache/@hookform-resolvers-npm-3.0.0-e420f6bffb-72c1282c1b.zip/node_modules/@hookform/resolvers/",\
+          "packageDependencies": [\
+            ["@hookform/resolvers", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:3.0.0"],\
+            ["@types/react-hook-form", null],\
+            ["react-hook-form", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:7.43.8"]\
+          ],\
+          "packagePeers": [\
+            "@types/react-hook-form",\
+            "react-hook-form"\
           ],\
           "linkType": "HARD"\
         }]\
@@ -5785,6 +5809,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@fortawesome/react-fontawesome", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:0.2.0"],\
             ["@headlessui/react", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:1.7.13"],\
             ["@heroicons/react", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:2.0.16"],\
+            ["@hookform/resolvers", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:3.0.0"],\
             ["@mui/material", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:5.11.14"],\
             ["@mui/system", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:5.11.14"],\
             ["@polkadot/api", "npm:10.1.4"],\
@@ -5834,6 +5859,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["tippy.js", "npm:6.3.7"],\
             ["typescript", "patch:typescript@npm%3A5.0.2#~builtin<compat/typescript>::version=5.0.2&hash=85af82"],\
             ["victory", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:36.6.8"],\
+            ["yup", "npm:1.0.2"],\
             ["zustand", "virtual:f7438c302a80b6cb278ee679e1fab94cf745b2ff1ac1ecec8503bc84e57085f36438101364dd78324ca7a0b270ce238564f7d0a105d1d6ed252eeca7c181722f#npm:4.3.6"]\
           ],\
           "linkType": "SOFT"\
@@ -9734,6 +9760,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["property-expr", [\
+        ["npm:2.0.5", {\
+          "packageLocation": "./.yarn/cache/property-expr-npm-2.0.5-6f6bda4c65-4ebe82ce45.zip/node_modules/property-expr/",\
+          "packageDependencies": [\
+            ["property-expr", "npm:2.0.5"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["property-information", [\
         ["npm:6.2.0", {\
           "packageLocation": "./.yarn/cache/property-information-npm-6.2.0-d3b6a6a493-23afce07ba.zip/node_modules/property-information/",\
@@ -11214,6 +11249,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["tiny-case", [\
+        ["npm:1.0.3", {\
+          "packageLocation": "./.yarn/cache/tiny-case-npm-1.0.3-8c9747c74e-3f7a30c39d.zip/node_modules/tiny-case/",\
+          "packageDependencies": [\
+            ["tiny-case", "npm:1.0.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["tiny-glob", [\
         ["npm:0.2.9", {\
           "packageLocation": "./.yarn/cache/tiny-glob-npm-0.2.9-068f4ab3f8-aea5801eb6.zip/node_modules/tiny-glob/",\
@@ -11259,6 +11303,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/toggle-selection-npm-1.0.6-c506b73005-a90dc80ed1.zip/node_modules/toggle-selection/",\
           "packageDependencies": [\
             ["toggle-selection", "npm:1.0.6"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["toposort", [\
+        ["npm:2.0.2", {\
+          "packageLocation": "./.yarn/cache/toposort-npm-2.0.2-d472329c7d-d64c74b570.zip/node_modules/toposort/",\
+          "packageDependencies": [\
+            ["toposort", "npm:2.0.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -11385,6 +11438,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/type-fest-npm-0.20.2-b36432617f-4fb3272df2.zip/node_modules/type-fest/",\
           "packageDependencies": [\
             ["type-fest", "npm:0.20.2"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:2.19.0", {\
+          "packageLocation": "./.yarn/cache/type-fest-npm-2.19.0-918b953248-a4ef07ece2.zip/node_modules/type-fest/",\
+          "packageDependencies": [\
+            ["type-fest", "npm:2.19.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -12592,6 +12652,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/yocto-queue-npm-0.1.0-c6c9a7db29-f77b3d8d00.zip/node_modules/yocto-queue/",\
           "packageDependencies": [\
             ["yocto-queue", "npm:0.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["yup", [\
+        ["npm:1.0.2", {\
+          "packageLocation": "./.yarn/cache/yup-npm-1.0.2-ebde92ad75-1cb9c49085.zip/node_modules/yup/",\
+          "packageDependencies": [\
+            ["yup", "npm:1.0.2"],\
+            ["property-expr", "npm:2.0.5"],\
+            ["tiny-case", "npm:1.0.3"],\
+            ["toposort", "npm:2.0.2"],\
+            ["type-fest", "npm:2.19.0"]\
           ],\
           "linkType": "HARD"\
         }]\

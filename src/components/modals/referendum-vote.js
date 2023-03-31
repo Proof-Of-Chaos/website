@@ -15,6 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useLatestUserVoteForRef } from "../../hooks/use-votes";
 import { useVoteManager } from "../../hooks/use-vote-manager";
 import { useForm } from "react-hook-form";
+import { ReferendumVoteForm } from "../ui/referendum/referendum-vote-form";
 
 export default function ReferendumVoteModal( { index, title, userAnswers, gov2 = false} ) {
   const { data: latestUserVote } = useLatestUserVoteForRef( index )
@@ -115,44 +116,7 @@ export default function ReferendumVoteModal( { index, title, userAnswers, gov2 =
               You already voted <b>{ latestUserVote.decision === 'yes' ? 'Aye' : 'Nay' }</b> on this referendum with <b>{ latestVoteBalance } KSM</b> and <b>{ convictionString }x</b> conviction. <br /> Voting again will replace your current vote.
             </div>
           }
-        <form className="mt-4 pl-1">
-          <Input
-            id="vote-amount"
-            label={ voteAmountLabel }
-            type="number"
-            step="0.1"
-            max={ isNaN(availableBalance) ? undefined : availableBalance }
-            value={ state["vote-amount"] }
-            className="text-base"
-            placeholder={ ! isNaN(latestVoteBalance) ? latestVoteBalance : '' }
-            tooltip="The value is locked for the selected time below"
-            onChange={setFormFieldValue.bind(this)}
-          />
-          <Input
-            id="vote-lock"
-            label="Vote Lock"
-            type="select"
-            className="text-xs sm:text-sm md:text-base"
-            options={ VOTE_LOCK_OPTIONS }
-            value={ state["vote-lock"] }
-            tooltip="How long your value is locked - increases voting power"
-            onChange={setFormFieldValue.bind(this)}
-          />
-        </form>
-        <div className="mt-6 flex">
-            <Button
-              hoverTranslate={ false }
-              className="h-8 rounded-none rounded-l-lg mr-0 w-1/2 bg-gradient-to-r from-green-500/80 to-green-700/80 text-white hover:border hover:border-4 hover:border-black"
-              onClick={ async () => onClickCastVote(true) }>
-              Aye
-            </Button>
-            <Button
-              hoverTranslate={ false }
-              className="h-8 rounded-none rounded-r-lg mr-0 w-1/2 mt-2 sm:mt-0 bg-gradient-to-r from-red-500/80 to-red-700/80 text-white hover:border hover:border-4 hover:border-black"
-              onClick={ async () => onClickCastVote(false) }>
-              Nay
-            </Button>
-          </div>
+        <ReferendumVoteForm referendumId={ index } />
       </div>
     </>
   )

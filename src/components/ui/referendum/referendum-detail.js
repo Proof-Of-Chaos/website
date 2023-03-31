@@ -131,7 +131,7 @@ export default function ReferendumDetail( {
   }
 
   const Gov2Badges = () => {
-    let percentage = gov2status === 'Confirming' ? confirmingPercentage : decidingPercentage;
+  let percentage = gov2status === 'Confirming' ? confirmingPercentage : decidingPercentage;
     const fromColor = gov2status === 'Confirming' ? '#86EFAC' : '#facc15'
     const toColor = gov2status === 'Confirming' ? '#4ade80' : '#eab308'
     const statusBadgeBg = `linear-gradient(90deg, ${fromColor} 0%, ${fromColor} ${ percentage * 100 }%, ${toColor} ${ percentage * 100 }%, ${toColor} 100%)`

@@ -15,6 +15,13 @@ export const VoteState = {
     None: 'None'
 }
 
+export const VoteChoice = {
+    Aye: 'Aye',
+    Nay: 'Nay',
+    Split: 'Split',
+    Abstain: 'Abstain',
+}
+
 export function useVoteManager() {
     /**
      * Stores the vote state of the votes for each referendum
@@ -28,22 +35,28 @@ export function useVoteManager() {
   
     const wallet = getWalletBySource(connectedAccount?.source)
 
-    const voteOnRef = async ( refId, aye, balance, conviction ) => {
+    const voteOnRef = async ( refId, voteChoice, balances, conviction = 1.0 ) => {
         await wallet.enable('Proof of Chaos')
         const api = await getApi()
 
+        const voteBalances = {
+            aye: balances['vote-amount-aye'] * 1000000000000,
+            nay: balances['vote-amount-nay'] * 1000000000000,
+            abstain: balances['vote-amount-abstain'] * 1000000000000,
+        }
+
         const voteExtrinsic = getVoteTx(
             api,
-            aye,
+            voteChoice,
             refId,
-            balance * 1000000000000,
+            voteBalances,
             conviction,
             true, //gov2
         )
 
         const vote = {
-            aye,
-            balance: balance,
+            aye: true,
+            balances: voteBalances,
             conviction,
             state: VoteState.AwaitingSignature
         }
