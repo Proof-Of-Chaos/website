@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { ChevronDownIcon, ChevronUpIcon} from '@heroicons/react/20/solid'
 import ReactMarkdown from 'react-markdown'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Tippy from "@tippyjs/react";
 import Image from "next/image";
 import classNames from "classnames";
@@ -30,8 +31,6 @@ const toPercentage = (part, whole) => {
 
 export default function ReferendumDetail( {
   referendum,
-  userVote,
-  isUserVotesLoading,
   userNFT,
   isGov2 = false,
   totalIssuance,
@@ -81,7 +80,10 @@ export default function ReferendumDetail( {
 
   const currentBlockNumber = useAppStore((state) => state.chain.currentBlock).toNumber();
 
-  const { refsBeingVoted } = useVoteManager();
+  const queryClient = useQueryClient()
+
+  const { data: userVote, loading: isUserVotesLoading } = useLatestUserVoteForRef(index);
+  const { refsBeingVoted } = useVoteManager( queryClient);
 
   const gov2status = rejected ?
     'Rejected' : approved ?
@@ -474,10 +476,17 @@ export default function ReferendumDetail( {
             }
           </b>
           <div>
-            { [ VoteChoice.Aye, VoteChoice.Nay ].includes( currentVote?.voteChoice ) &&
+            { currentVote?.voteChoice === VoteChoice.Aye &&
               <>
                 <div className="">
                   <span>with <b>{ microToKSM( currentVote?.balances.aye ) } KSM</b></span>
+                </div>
+              </>
+            }
+            { currentVote?.voteChoice === VoteChoice.Nay &&
+              <>
+                <div className="">
+                  <span>with <b>{ microToKSM( currentVote?.balances.nay ) } KSM</b></span>
                 </div>
               </>
             }

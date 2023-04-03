@@ -23,7 +23,7 @@ export const VoteChoice = {
     Abstain: 'Abstain',
 }
 
-export function useVoteManager() {
+export function useVoteManager( queryClient = null ) {
     /**
      * Stores the vote state of the votes for each referendum
      */
@@ -51,14 +51,14 @@ export function useVoteManager() {
             voteChoice,
             refId,
             voteBalances,
-            conviction,
+            conviction < 1 ? 0 : conviction,
             true, //gov2
         )
 
         const vote = {
             voteChoice,
             balances: voteBalances,
-            conviction,
+            conviction: conviction < 1 ? 0 : conviction,
             state: VoteState.AwaitingSignature
         }
 
@@ -92,6 +92,9 @@ export function useVoteManager() {
                     duration: 4000,
                 });
                 removeVoteState( refId )
+                if (queryClient) {
+                    queryClient.invalidateQueries({ queryKey: ['votes'] })
+                }
             } else {
                 console.log(`Current status: ${status.type}`);
             }

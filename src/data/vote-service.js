@@ -20,6 +20,9 @@ export async function castVote(signer, aye, ref, address, balance, conviction, g
 
 export function getVoteTx(api, voteChoice, ref, balances, conviction, gov2 = false) {
 
+  console.log( 'vote balances', balances, voteChoice )
+
+
   let vote = {}
 
   switch (voteChoice) {
@@ -31,7 +34,7 @@ export function getVoteTx(api, voteChoice, ref, balances, conviction, gov2 = fal
             aye: voteChoice === VoteChoice.Aye,
             conviction: conviction,
           },
-          balance: VoteChoice === VoteChoice.Aye ? balances.aye : balances.nay,
+          balance: voteChoice === VoteChoice.Aye ? balances.aye : balances.nay,
         }
       }
       break

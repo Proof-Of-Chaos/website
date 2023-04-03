@@ -84,11 +84,12 @@ export const useLatestVoteForUserAndRef = ( ksmAddress, referendumIndex ) => {
 export const useLatestUserVoteForRef = ( referendumIndex ) => {
   const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
   const ksmAddress = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex]?.ksmAddress )
-  return useQuery(
-    [ 'vote', ksmAddress, referendumIndex ],
-    async () => singleVoteFetcher( ksmAddress, referendumIndex ),
+  return useVotes(
+    ksmAddress,
+    true, //gov2
     {
-      enabled: !!ksmAddress
-    }
+      enabled: !!ksmAddress,
+    },
+    (data) => data.find( ( vote ) => vote.voter === ksmAddress && vote.referendumIndex === referendumIndex)
   )
 }

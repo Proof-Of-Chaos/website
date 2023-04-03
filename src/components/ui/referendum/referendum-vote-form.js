@@ -8,6 +8,11 @@ import {
 } from '@mui/material'
 import { castVote } from "../../../data/vote-service"
 import { useModal } from "../../modals/context"
+import { microToKSM } from "../../../utils"
+import useAccountBalance from "../../../hooks/use-account-balance"
+import { InlineLoader } from "../loader"
+import useAppStore from "../../../zustand"
+import { useLatestUserVoteForRef } from "../../../hooks/use-votes"
 
 const VOTE_LOCK_OPTIONS = [
     {
@@ -72,13 +77,19 @@ const VOTE_LOCK_OPTIONS = [
   ]
 
 export function ReferendumVoteForm( { referendumId } ) {
-
+    const hasUserSubmittedAnswers = useAppStore((state) => state.user.quizAnswers?.[referendumId]?.submitted )
     const [voteChoice, setVoteChoice] = useState(VoteChoice.Aye) 
     const [sliderValue,setSliderValue] = useState(VOTE_LOCK_OPTIONS[1])
     const sliderRef = useRef()
     const { voteOnRef } = useVoteManager();
     const { closeModal } = useModal();
-
+    
+    const { data: latestUserVote } = useLatestUserVoteForRef( referendumId )
+    const { data: accountBalance, isLoading: isBalanceLoading } = useAccountBalance()
+    const availableBalance = microToKSM( accountBalance?.data?.free )
+    const voteAmountLabel = isBalanceLoading ? 
+      <div className="text-sm font-normal text-right"> (available: <InlineLoader /> ) </div> : 
+      <span className="text-sm font-normal text-right float-right">{ `(available: ${ availableBalance?.toFixed( 2 ) } KSM)` }</span>
   
     function sliderValueText(value) {
       return `${value} KSM`;
@@ -122,8 +133,6 @@ export function ReferendumVoteForm( { referendumId } ) {
     const watchNayVoteAmount = watch("vote-amount-nay", 0);
     const watchAbstainVoteAmount = watch("vote-amount-abstain", 0);
   
-    const userFundsAvailable = 15
-  
     const totalAyeVotes = ! isNaN( parseFloat( watchAyeVoteAmount ) ) ? 
       voteChoice === VoteChoice.Aye ? 
         (parseFloat(sliderValue.value) * parseFloat(watchAyeVoteAmount)).toFixed(2).replace(/[.,]00$/, "") :
@@ -142,11 +151,21 @@ export function ReferendumVoteForm( { referendumId } ) {
   
     return (
       <div>
+        {
+          hasUserSubmittedAnswers &&
+          <div className="bg-emerald-600 text-white p-3 mt-4 rounded-lg text-sm">
+          Thanks for answering those questions, your answers were successfully recorded. If you answered correctly, you will have a higher chance of receiving rare and epic Items for this Referendum.
+          </div>
+        }
+        { latestUserVote &&
+          <div className="bg-amber-300 p-3 rounded-lg text-sm mt-3 mx-1">
+            You already voted on this referendum. Voting again will replace your current vote.
+          </div>
+        }
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="my-5 mx-4"
+          className="my-5 mx-1"
         >
-  
           <div className="flex">
             <Button
               hoverTranslate={ false }
@@ -182,7 +201,7 @@ export function ReferendumVoteForm( { referendumId } ) {
                 { selected: voteChoice === VoteChoice.Abstain}
               )}
               onClick={ async () => setVoteChoice(VoteChoice.Abstain) }>
-              Abstain
+              Abstain 
             </Button>
           </div>
   
@@ -202,7 +221,7 @@ export function ReferendumVoteForm( { referendumId } ) {
             {...register("vote-amount-aye", {
               validate: {
                 positiveNumber: (value) => parseFloat(value) >= 0,
-                hasEnoughFunds: (value) => userFundsAvailable && parseFloat(value) <= userFundsAvailable
+                hasEnoughFunds: (value) => availableBalance && parseFloat(value) <= availableBalance
               }
             })}
           />
@@ -230,7 +249,7 @@ export function ReferendumVoteForm( { referendumId } ) {
             {...register("vote-amount-nay", {
               validate: {
                 positiveNumber: (value) => parseFloat(value) >= 0,
-                hasEnoughFunds: (value) => userFundsAvailable && parseFloat(value) <= userFundsAvailable
+                hasEnoughFunds: (value) => availableBalance && parseFloat(value) <= availableBalance
               }
             })}
           />
@@ -258,7 +277,7 @@ export function ReferendumVoteForm( { referendumId } ) {
             {...register("vote-amount-abstain", {
               validate: {
                 positiveNumber: (value) => parseFloat(value) >= 0,
-                hasEnoughFunds: (value) => userFundsAvailable && parseFloat(value) <= userFundsAvailable
+                hasEnoughFunds: (value) => availableBalance && parseFloat(value) <= availableBalance
               }
             })}
           />
@@ -270,7 +289,8 @@ export function ReferendumVoteForm( { referendumId } ) {
           )} 
         </> }
   
-        { ! [VoteChoice.Split, VoteChoice.Abstain].includes(voteChoice) && <>
+        { ! [VoteChoice.Split, VoteChoice.Abstain].includes(voteChoice) && 
+          <>
           <label
             htmlFor='conviction-slider'
             className={ classNames(
@@ -282,6 +302,7 @@ export function ReferendumVoteForm( { referendumId } ) {
           >
             Conviction
           </label>
+          <div className="mx-3">
           <Slider
             id="conviction-slider"
             className={ classNames(
@@ -299,12 +320,14 @@ export function ReferendumVoteForm( { referendumId } ) {
             onChange={ handleSliderChange }
             ref={ sliderRef }
           />
+          </div>
           {sliderValue.value !== 0 && 
             <p className="text-sm text-right">{ sliderValue.label }</p>
           }
-        </> }
+          </>
+         }
   
-        <div className="mt-4 justify-around items-center rounded-lg form-status bg-gray-300 p-3 px-4 flex flex-row">
+        <div className="mt-4 text-sm justify-around items-center rounded-lg form-status bg-gray-300 p-3 px-4 flex flex-row">
           <span className="">Total Votes</span>
           <div className="text-right">
             <p>{ [VoteChoice.Aye, VoteChoice.Split, VoteChoice.Abstain].includes(voteChoice) && <><span className="font-bold">{ totalAyeVotes }</span> Aye Votes</> }</p>
@@ -312,10 +335,9 @@ export function ReferendumVoteForm( { referendumId } ) {
             <p>{ voteChoice === VoteChoice.Abstain && <><span className="font-bold">{ totalAbstainVotes }</span> Abstain Votes </> }</p>
           </div>
         </div>
-  
         <Button 
           type="submit" 
-          variant="black"
+          variant="primary"
           className="w-full mt-4"
         >
           Send Votes
