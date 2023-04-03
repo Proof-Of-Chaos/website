@@ -177,14 +177,12 @@ export default function ReferendumDetail( {
     if ( latestUserVote || userVote ) {
       const { decision, balance, lockPeriod } = latestUserVote || userVote
 
-      console.log( 'latest user vote for ref', index, userVote )
-
       return (
         <div className="flex flex-row mb-2 justify-between rounded-md bg-gray-100 shadow-sm hover:shadow-md transition-shadow px-6 py-4 text-sm flex-wrap">
         { ! isUserVotesLoading && <>
           <div className="flex-col w-full text-center">
             <div className="">
-              You voted
+              <span>You voted</span>
                 <b>
                   { decision === 'yes' &&
                     <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span>
@@ -200,9 +198,9 @@ export default function ReferendumDetail( {
                   }
                   { decision === 'splitAbstain' &&
                     <>
-                      <span className="bg-yellow-400 px-2 py-1 rounded-sm mx-1">Abstain</span>+
                       <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span>+
-                      <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>
+                      <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>+
+                      <span className="bg-gray-400 px-2 py-1 rounded-sm mx-1">Abstain</span>
                     </>
                   }
                 </b>
@@ -222,7 +220,7 @@ export default function ReferendumDetail( {
             }
             { decision === 'splitAbstain' &&
               <div className="">
-                <span>with <b>{ microToKSM( balance.abstain ?? 0) }</b> + <b>{ microToKSM( balance.aye ?? 0) }</b> + <b>{ microToKSM( balance.nay ?? 0) } KSM</b></span>
+                <span>with <b>{ microToKSM( balance.aye ?? 0) } KSM</b> + <b>{ microToKSM( balance.nay ?? 0) } KSM</b> + <b>{ microToKSM( balance.abstain ?? 0) } KSM </b></span>
               </div>
             }
           </div>
@@ -471,7 +469,7 @@ export default function ReferendumDetail( {
               <>
                 <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span>+
                 <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>+
-                <span className="bg-gray-300 px-2 py-1 rounded-sm mx-1">Abstain</span>Vote
+                <span className="bg-gray-400 px-2 py-1 rounded-sm mx-1">Abstain</span>Vote
               </>
             }
           </b>

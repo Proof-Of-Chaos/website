@@ -4,7 +4,7 @@ import Tippy from '@tippyjs/react';
 
 import ReferendumDetail from './referendum-detail';
 import { KUSAMA_TRACK_INFO } from '../../../data/kusama-tracks';
-import { useUserVotes } from '../../../hooks/use-votes';
+import { useUserVotes, useVotes } from '../../../hooks/use-votes';
 import { useGov2Referendums, useGov2Tracks, useIssuance } from '../../../hooks/use-gov2';
 import { titleCase } from '../../../utils';
 import Loader from '../loader';
@@ -15,13 +15,17 @@ function Gov2Referenda() {
 
   const { data: tracks, isLoading: isTracksLoading, error } = useGov2Tracks();
   const { data: gov2refs, isLoading } = useGov2Referendums();
-  const { data: userVotes, isFetching: isUserVotesLoading, userVotesError } = useUserVotes(null, true)
+  const { data: userVotes, isFetching: isUserVotesLoading, userVotesError } = useUserVotes(true)
+
+  console.log( 'userVotes', userVotes )
+
   const { data: totalIssuance, isLoading: isIssuanceLoading } = useIssuance();
 
   const votedFilterText = 'Already Voted';
   const notVotedFilterText = 'Not Voted Yet';
 
   useEffect(()=> {
+    console.log( 'userVotes or gov2refs changed in <Gov2Referenda>')
     if (gov2refs && gov2refs.length) {
       setFilteredRefs( gov2refs )
       let voteCounts = {}

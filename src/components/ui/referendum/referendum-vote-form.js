@@ -144,7 +144,7 @@ export function ReferendumVoteForm( { referendumId } ) {
       <div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="m-6"
+          className="my-5 mx-4"
         >
   
           <div className="flex">
@@ -198,7 +198,7 @@ export function ReferendumVoteForm( { referendumId } ) {
             placeholder="0"
             type="number"
             min={ 0 }
-            step={ 0.1 }
+            step={ 0.00001 }
             {...register("vote-amount-aye", {
               validate: {
                 positiveNumber: (value) => parseFloat(value) >= 0,
@@ -226,7 +226,7 @@ export function ReferendumVoteForm( { referendumId } ) {
             placeholder="0"
             type="number"
             min={ 0 }
-            step={ 0.1 }
+            step={ 0.00001 }
             {...register("vote-amount-nay", {
               validate: {
                 positiveNumber: (value) => parseFloat(value) >= 0,
@@ -254,7 +254,7 @@ export function ReferendumVoteForm( { referendumId } ) {
             placeholder="0"
             type="number"
             min={ 0 }
-            step={ 0.1 }
+            step={ 0.00001 }
             {...register("vote-amount-abstain", {
               validate: {
                 positiveNumber: (value) => parseFloat(value) >= 0,
