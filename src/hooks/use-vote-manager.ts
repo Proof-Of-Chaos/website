@@ -55,7 +55,7 @@ export function useVoteManager() {
         )
 
         const vote = {
-            aye: true,
+            voteChoice,
             balances: voteBalances,
             conviction,
             state: VoteState.AwaitingSignature

@@ -22,7 +22,7 @@ import { getTrackInfo } from "../../../data/kusama-tracks";
 import { curveThreshold, getPercentagePassed } from "../../../gov2-utils";
 
 import useAppStore from "../../../zustand";
-import { useVoteManager } from "../../../hooks/use-vote-manager";
+import { VoteChoice, useVoteManager } from "../../../hooks/use-vote-manager";
 
 const toPercentage = (part, whole) => {
   return Math.round(parseInt(part) / parseInt(whole) * 100)
@@ -176,6 +176,9 @@ export default function ReferendumDetail( {
   const UserVote = () => {
     if ( latestUserVote || userVote ) {
       const { decision, balance, lockPeriod } = latestUserVote || userVote
+
+      console.log( 'latest user vote for ref', index, userVote )
+
       return (
         <div className="flex flex-row mb-2 justify-between rounded-md bg-gray-100 shadow-sm hover:shadow-md transition-shadow px-6 py-4 text-sm flex-wrap">
         { ! isUserVotesLoading && <>
@@ -396,6 +399,7 @@ export default function ReferendumDetail( {
   )
 
   const isVoteInProgress = refsBeingVoted?.hasOwnProperty( index )
+  const currentVote = refsBeingVoted && refsBeingVoted[ `${ index }` ]?.vote
 
   return (
     <div className="relative w-full rounded-lg border-2 border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0 overflow-hidden">
@@ -450,13 +454,49 @@ export default function ReferendumDetail( {
         { visible : isVoteInProgress }
       )}>
         <Loader text=""/>
-        { isVoteInProgress && refsBeingVoted[ `${ index }` ].vote.aye &&
-          <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">{ refsBeingVoted[ `${ index }` ].vote.balance } KSM Aye Vote</span>
+        { isVoteInProgress && <><b>
+            { currentVote?.voteChoice === VoteChoice.Aye &&
+              <><span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span>Vote</>
+            }
+            { currentVote?.voteChoice === VoteChoice.Nay &&
+              <><span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>Vote</>
+            }
+            { currentVote?.voteChoice === VoteChoice.Split &&
+              <>
+                <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span>+
+                <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>Vote
+              </>
+            }
+            { currentVote?.voteChoice === VoteChoice.Abstain &&
+              <>
+                <span className="bg-green-400 px-2 py-1 rounded-sm mx-1">Aye</span>+
+                <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">Nay</span>+
+                <span className="bg-gray-300 px-2 py-1 rounded-sm mx-1">Abstain</span>Vote
+              </>
+            }
+          </b>
+          <div>
+            { [ VoteChoice.Aye, VoteChoice.Nay ].includes( currentVote?.voteChoice ) &&
+              <>
+                <div className="">
+                  <span>with <b>{ microToKSM( currentVote?.balances.aye ) } KSM</b></span>
+                </div>
+              </>
+            }
+            { currentVote?.voteChoice === VoteChoice.Split &&
+              <div className="">
+                <span>with <b>{ microToKSM( currentVote?.balances.aye  ?? 0) }</b> + <b>{ microToKSM( currentVote?.balances.nay ?? 0) } KSM</b></span>
+              </div>
+            }
+            { currentVote?.voteChoice === VoteChoice.Abstain &&
+              <div className="">
+                <span>with <b>{ microToKSM( currentVote?.balances.aye ?? 0) } KSM</b> + <b>{ microToKSM( currentVote?.balances.nay ?? 0) } KSM</b> + <b>{ microToKSM( currentVote?.balances.abstain ?? 0) } KSM</b></span>
+              </div>
+            }
+          </div>
+          </>
         }
-        { isVoteInProgress && !refsBeingVoted[ `${ index }` ].vote.aye &&
-          <span className="bg-red-400 px-2 py-1 rounded-sm mx-1">{ refsBeingVoted[ `${ index }` ].vote.balance } KSM Nay Vote</span>
-        }
-        <span>with conviction { isVoteInProgress && refsBeingVoted[ `${ index }` ].vote.conviction }</span>
+        { [ VoteChoice.Aye, VoteChoice.Nay ].includes( currentVote?.voteChoice ) && <span>and conviction <b>{ isVoteInProgress && refsBeingVoted[ `${ index }` ].vote.conviction }</b></span> }
         <span>for referendum { index } in progress...</span>
       </div>
     </div>
