@@ -1,7 +1,7 @@
 import { websiteConfig } from "../data/website-config";
 import { request, gql } from "graphql-request";
 import { QUERY_QUIZZES } from "./queries";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 
 export async function fetchGov1Quizzes() {
   let where = {

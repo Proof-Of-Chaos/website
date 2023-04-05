@@ -4,9 +4,11 @@ import useAppStore from "../../../zustand";
 import { useModal } from "../../modals/context";
 import WalletConnect from "../../nft/wallet-connect"
 import Button from "../button"
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function ReferendumVoteButtons({referendum, userVote}) {
   const { openModal } = useModal();
+  const queryClient = useQueryClient()
 
   const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
   const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
@@ -15,6 +17,7 @@ export default function ReferendumVoteButtons({referendum, userVote}) {
 
   const hasUserSubmittedQuiz = latestQuiz?.submissions ? latestQuiz?.submissions.some(e => e.wallet === connectedAccount?.ksmAddress) : false
   const uVote = latestUserVote || userVote
+
 
   return (
   <div className="">

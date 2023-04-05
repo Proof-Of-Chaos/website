@@ -38,6 +38,10 @@
   height: auto;
 }
 
+.toaster .message > div {
+  margin: 0 !important;
+}
+
 pre{
   max-width: 100%;
   word-break: break-all;
@@ -282,6 +286,10 @@ button, a {
     @apply pb-2 pt-1;
   }
 
+  pre {
+    @apply text-xs bg-gray-200;
+  }
+
   p {
     @apply mb-3;
   }
@@ -320,4 +328,92 @@ button, a {
   @apply rounded-lg;
   border: 4px solid;
   border-image: linear-gradient(283deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%) 5;
+}
+
+.referendum-detail-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fafafacc;
+  display: flex;
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  @apply rounded-lg;
+  transition: transform 0.7s;
+  transform: translate3d(0,-100%,0);
+
+  &.visible {
+    transform: translate3d(0,0,0);
+  }
+}
+
+.vote-button.selected {
+  color: #fff;
+}
+
+.vote-button.nay.selected {
+  @apply bg-red-600;
+}
+
+.vote-button.aye.selected {
+  @apply bg-green-600;
+}
+
+.vote-button.split.selected {
+  @apply bg-yellow-500;
+}
+
+.vote-button.abstain.selected {
+  @apply bg-gray-600;
+}
+
+form label::first-letter {
+  text-transform:capitalize;
+}
+
+.form-error {
+  &::before {
+    content: "⚠ ";
+  }
+
+  @apply text-sm text-red-500;
+}
+
+.conviction-slider {
+
+  .MuiSlider-rail {
+    background-color: #999;
+  }
+
+  .MuiSlider-thumb {
+    @apply bg-gray-800;
+  }
+
+  .MuiSlider-track {
+    height: 10px;
+    background: #c471ed;  /* fallback for old browsers */
+    background: linear-gradient(to right, #60a5fa, #c084fc); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */    
+    border: none;
+  }
+
+  .MuiSlider-mark {
+    background-color: #555;
+    height: 15px;
+
+    &[data-index="0"] {
+      display: none;
+    }
+
+    &[data-index="0"] {
+      display: none;
+    }
+
+    &[data-index="6"] {
+      display: none;
+    }
+  }
+
 }

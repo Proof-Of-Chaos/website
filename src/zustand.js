@@ -12,20 +12,25 @@ const log = (config) => (set, get, api) =>
     api
   )
 
+const initialState = {
+  user: {
+    quizAnswers: {},
+    knowsAboutLuckBoost: false,
+    connectedWalletProvider: null,
+    connectedWallet: null,
+    connectedAccount: null,
+    nfts: [],
+    voteStates: [],
+  },
+  chain: {
+    currentBlock: null,
+  },
+}
+
 const useAppStore = create(
   // log(
     persist((set) => ({
-      user: {
-        quizAnswers: {},
-        knowsAboutLuckBoost: false,
-        connectedWalletProvider: null,
-        connectedWallet: null,
-        connectedAccount: null,
-        nfts: [],
-      },
-      chain: {
-        currentBlock: null,
-      },
+      ...initialState,
       setCurrentBlock: ( blockNumber ) => {
         set(()=>({
           chain: {
@@ -75,6 +80,40 @@ const useAppStore = create(
           user: {
             ...state.user,
             connectedAccount: index,
+          }
+        }))
+      },
+      updateVoteState: ( referendumId, vote ) => {
+        set((state)=>({
+          user: {
+            ...state.user,
+            voteStates: {
+              ...state.user.voteStates,
+              [`${referendumId}`]: {
+                ...state.user.voteStates?.[`${referendumId}`],
+                vote,
+              },              
+            }
+          }
+        }))
+      },
+      removeVoteState: ( referendumId ) => {
+        set(( state ) => {
+          const newVoteStates = {...state.user.voteStates}
+          delete newVoteStates[`${referendumId}`]
+          return {
+            user: {
+              ...state.user,
+              voteStates: newVoteStates 
+            }
+          }
+        })
+      },
+      clearVoteState: () => {
+        set((state) => ({
+          user: {
+            ...state.user,
+            voteStates: [],
           }
         }))
       },

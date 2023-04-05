@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from '@tanstack/react-query'
 import { useEffect } from "react";
 import { getApi } from "../data/chain";
 import useAppStore from "../zustand";

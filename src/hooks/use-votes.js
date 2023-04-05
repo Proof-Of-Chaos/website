@@ -5,14 +5,13 @@ import { websiteConfig } from "../data/website-config";
 import useAppStore from "../zustand";
 import { QUERY_CONVICTION_VOTES, QUERY_USER_VOTE_FOR_REF, QUERY_VOTES } from "./queries";
 
-const voteFetcher = async ( ksmAddress, referendumIndex=null, gov2=false ) => {
+const voteFetcher = async ( ksmAddress, gov2=false ) => {
   let votes_query = gov2 ? QUERY_CONVICTION_VOTES : QUERY_VOTES
 
   let where = {
     "where": {
       "voter_eq": ksmAddress,
       "blockNumberRemoved_isNull": true, //only latest votes
-      ...( referendumIndex && { "referendumIndex_eq": parseInt(referendumIndex) } )
     },
   }
 
@@ -25,16 +24,25 @@ const voteFetcher = async ( ksmAddress, referendumIndex=null, gov2=false ) => {
   return gov2 ? data.convictionVotes : data.votes
 };
 
-export const useVotes = ( ksmAddress, referendumIndex = null, gov2 = false, config = {} ) => {
-  return useQuery( [ 'votes', ksmAddress, referendumIndex, gov2 ], async() => voteFetcher( ksmAddress, referendumIndex, gov2 ), config )
+export const useVotes = ( ksmAddress, gov2 = false, select ) => {
+  return useQuery({
+    queryKey: [ 'votes', ksmAddress, gov2 ],
+    queryFn: async() => voteFetcher( ksmAddress, gov2 ),
+    config: {
+      enabled: !!ksmAddress,
+    },
+    select,
+  })
 };
 
-export const useUserVotes = (referendumIndex = null, gov2=false) => {
+export const useUserVotes = (gov2=false) => {
   const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
   const ksmAddress = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex]?.ksmAddress )
-  return useVotes( ksmAddress, referendumIndex, gov2, {
-    enabled: !!ksmAddress,
-  })
+  return useVotes(
+    ksmAddress,
+    gov2,
+    (data) => data.filter( (vote) => vote.voter === ksmAddress )
+  )
 }
 
 const singleVoteFetcher = async ( ksmAddress, referendumIndex, gov2 = false ) => {
@@ -54,32 +62,15 @@ const singleVoteFetcher = async ( ksmAddress, referendumIndex, gov2 = false ) =>
 }
 
 /**
- * Get the latest vote for ksmAddress and refeerndumIndex
- * @param { String } ksmAddress
- * @param { String } referendumIndex
- */
-export const useLatestVoteForUserAndRef = ( ksmAddress, referendumIndex ) => {
-  return useQuery(
-    [ 'vote', ksmAddress, referendumIndex ],
-    async () => singleVoteFetcher( ksmAddress, referendumIndex ),
-    {
-      enabled: !!ksmAddress
-    }
-  )
-}
-
-/**
  * Get the latest vote for the current user and refeerndumIndex
  * @param { String } referendumIndex
  */
 export const useLatestUserVoteForRef = ( referendumIndex ) => {
   const connectedAccountIndex = useAppStore( (state) => state.user.connectedAccount )
   const ksmAddress = useAppStore( (state) => state.user.connectedAccounts?.[connectedAccountIndex]?.ksmAddress )
-  return useQuery(
-    [ 'vote', ksmAddress, referendumIndex ],
-    async () => singleVoteFetcher( ksmAddress, referendumIndex ),
-    {
-      enabled: !!ksmAddress
-    }
+  return useVotes(
+    ksmAddress,
+    true, //gov2
+    (data) => data.find( ( vote ) => vote.voter === ksmAddress && vote.referendumIndex === referendumIndex)
   )
 }

@@ -2,12 +2,12 @@ import { forwardRef } from 'react'
 import cn from 'classnames'
 
 const classes = {
-  base: ['relative no-underline inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm'],
+  base: ['relative no-underline inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider transition-all sm:text-sm'],
   hover: ['hover:shadow-md hover:-translate-y-0.5'],
   disabled: ['opacity-50 cursor-not-allowed'],
   shapes: {
-    rounded: ['rounded-md sm:rounded-lg'],
-    pill: ['rounded-lg'],
+    rounded: ['rounded-sm sm:rounded-md'],
+    pill: ['rounded-md'],
     circle: ['rounded-lg'],
   },
   size: {
@@ -37,6 +37,7 @@ const Button = forwardRef(
       size = 'medium',
       shape = 'pill',
       disabled = false,
+      hoverTranslate = true,
       ...props
     }, ref
   ) => (
@@ -46,7 +47,7 @@ const Button = forwardRef(
       type={type}
       className={ cn(
         classes.base,
-        classes.hover,
+        hoverTranslate && classes.hover,
         classes.variant[ variant ],
         classes.size[ size ],
         classes.shapes[ shape ],

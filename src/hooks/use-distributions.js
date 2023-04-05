@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 import { request } from "graphql-request";
 import { websiteConfig } from "../data/website-config";
 import useAppStore from "../zustand";

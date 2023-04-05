@@ -17,7 +17,11 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
 
     return (
       <div className="referendum-stats align-bottom mb-3 relative">
-        <Tippy content={ <>Support is currently <b>{ widthSupport.toFixed(4) }%</b> of a needed <b>{ (threshold * 100).toFixed(4) }%</b> to reach the support threshold. <br/>The threshold will decrease over time. </> }>
+        <Tippy content={ 
+          status !== 'Awaiting Deposit' ?
+          <>Support is currently <b>{ widthSupport.toFixed(4) }%</b> of a needed <b>{ (threshold * 100).toFixed(4) }%</b> to reach the support threshold. <br/>The threshold will decrease over time. </> :
+          <>Awaiting Deposit</> }
+        >
           <svg width="100%" height="10" className="rounded-md mb-1">
             <rect x="0" y="0" width="100%" height="12" fill="rgb(200,200,200)" />
             <rect
@@ -25,11 +29,11 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
               y="0"
               height="12"
               fill="rgb(74,222,128)"
-              width={ `${widthSupport * widthFactor}%` }
+              width={ `${widthSupport * widthFactor < 0 ? 0 : widthSupport * widthFactor }%` }
             />
           </svg>
         </Tippy>
-          <svg 
+          { threshold !== 0 && <svg 
             width="3" 
             height="18" 
             className="rounded-md absolute -top-[4px]"
@@ -44,7 +48,7 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
                   width="3"
                 />
               </Tippy>
-          </svg>
+          </svg> }
           <span className="text-sm mt-1">{ widthSupport.toFixed(2) }% / { (threshold * 100.0).toFixed(2) }%</span>
         </div>
     )
@@ -52,13 +56,12 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
 
   return (
     <div className="referendum-stats align-bottom">
-      { status &&
-        <div className="past-ref-status mb-4">
-          <StatusBadge />
-        </div>
-      }
       <div className="mb-2 relative">
-        { aye?.percentage && <Tippy content={ <>Approval is currently <b>{ aye.percentage }%</b> of a needed <b>{ (threshold * 100).toFixed(4) }%</b> to reach the approval threshold. <br/>The threshold will decrease over time. </> }>
+        { aye?.percentage >= 0 && <Tippy content={ 
+          status !== 'Awaiting Deposit' ?
+            <>Approval is currently <b>{ aye.percentage }%</b> of a needed <b>{ (threshold).toFixed(4) }%</b> to reach the approval threshold. <br/>The threshold will decrease over time. </> :
+            'Awaiting Deposit'
+        }>
           <svg width="100%" height="10" className="rounded-md">
             <rect x="0" y="0" width="100%" height="12" fill="rgb(248,113,113)" />
             <rect
@@ -70,11 +73,11 @@ export default function ReferendumStats( { aye, nay, status, part, total, thresh
             />
           </svg>
         </Tippy> }
-        { threshold && <svg
+        { threshold !== 0 && <svg
           width="3"
           height="18"
           className="rounded-md absolute -top-[4px]"
-          style={ { left: `${threshold * 100}%` } }
+          style={ { left: `${threshold}%` } }
         >
           <Tippy content={ <><b>{ (threshold * 100.0).toFixed(4) }%</b></> }>
               <rect

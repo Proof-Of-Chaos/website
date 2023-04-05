@@ -1,4 +1,5 @@
 import { getApi, sendAndFinalize } from './chain';
+import { VoteChoice } from '../hooks/use-vote-manager';
 
 export async function castVote(signer, aye, ref, address, balance, conviction, gov2 = false) {
   return new Promise( async (resolve, reject ) => {
@@ -17,16 +18,40 @@ export async function castVote(signer, aye, ref, address, balance, conviction, g
   })
 }
 
-function getVoteTx(api, aye, ref, balance, conviction, gov2 = false) {
-  let vote = {
-    Standard: {
-      vote: {
-        aye: aye,
-        conviction: conviction,
-      },
-      balance: balance
-    }
-  };
+export function getVoteTx(api, voteChoice, ref, balances, conviction, gov2 = false) {
+
+  let vote = {}
+
+  switch (voteChoice) {
+    case VoteChoice.Aye:
+    case VoteChoice.Nay:
+      vote = {
+        Standard: {
+          vote: {
+            aye: voteChoice === VoteChoice.Aye,
+            conviction: conviction,
+          },
+          balance: voteChoice === VoteChoice.Aye ? balances.aye : balances.nay,
+        }
+      }
+      break
+    case VoteChoice.Split:
+      vote = {
+        Split: {
+          aye: balances.aye,
+          nay: balances.nay
+        }
+      }
+      break
+    case VoteChoice.Abstain:
+      vote = {
+        SplitAbstain: {
+          aye: balances.aye, 
+          nay: balances.nay,
+          abstain: balances.abstain
+        }
+      }
+  }
 
   if ( gov2 ) {
     return api.tx.convictionVoting.vote(ref,vote)

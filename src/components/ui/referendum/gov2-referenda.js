@@ -15,7 +15,8 @@ function Gov2Referenda() {
 
   const { data: tracks, isLoading: isTracksLoading, error } = useGov2Tracks();
   const { data: gov2refs, isLoading } = useGov2Referendums();
-  const { data: userVotes, isFetching: isUserVotesLoading, userVotesError } = useUserVotes(null, true)
+  const { data: userVotes, isFetching: isUserVotesLoading, userVotesError } = useUserVotes(true)
+
   const { data: totalIssuance, isLoading: isIssuanceLoading } = useIssuance();
 
   const votedFilterText = 'Already Voted';
