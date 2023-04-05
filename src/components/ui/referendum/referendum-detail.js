@@ -34,7 +34,7 @@ export default function ReferendumDetail( {
   isGov2 = false,
   totalIssuance,
   track,
-  expanded
+  expanded = false
 } ) {
   const {
     count_aye,
@@ -62,7 +62,7 @@ export default function ReferendumDetail( {
   const { data: refConfig } = useConfig( index )
   const { data: latestUserVote, loading: isUserVotesLoading } = useLatestUserVoteForRef( index )
 
-  const [isExpanded, setIsExpanded ] = useState(false)
+  const [isExpanded, setIsExpanded ] = useState(expanded)
 
   //the percentage that has passed in the deciding period: 0 <= decidingPercentage <= 1
   const [decidingPercentage, setDecidingPercentage] = useState(0)

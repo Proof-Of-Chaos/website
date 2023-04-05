@@ -59,7 +59,7 @@ const ReferendumView = () => {
     ReferendumView = <ReferendumPastDetail
       referendum={ referenda[0] }
       isGov2={ true }
-      expandButtonVisible={ false }
+      expanded={ true }
       totalIssuance={ totalIssuance }
       track={ tracks.find( t => t[0] == referenda[0].track ) }
       userVote={ userVotes ? userVotes[0] : null }
