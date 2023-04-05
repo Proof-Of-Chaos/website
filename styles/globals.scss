@@ -286,6 +286,10 @@ button, a {
     @apply pb-2 pt-1;
   }
 
+  pre {
+    @apply text-xs bg-gray-200;
+  }
+
   p {
     @apply mb-3;
   }

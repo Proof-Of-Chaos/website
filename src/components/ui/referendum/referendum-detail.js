@@ -360,7 +360,7 @@ export default function ReferendumDetail( {
           <UserReward />
         </>
       }
-      { gov2status !== 'Awaiting Deposit' && gov2status !== 'Submitted' && <div className="p-4 bg-gray-100 rounded-sm mt-2 shadow-sm transition-shadow hover:shadow-md">
+      { gov2status !== 'Submitted' && <div className="p-4 bg-gray-100 rounded-sm mt-2 shadow-sm transition-shadow hover:shadow-md">
         <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
           { isGov2 ? `Referendum ${index} Approval` : `Referendum ${index} results`}
         </h3>
@@ -376,11 +376,13 @@ export default function ReferendumDetail( {
             voteVolume: KSMFormatted( voted_amount_nay )
           } }
           threshold={ parseFloat(approveThreshold / 1000000000) }
+          status={ gov2status}
         />
         { isGov2 && <>
           <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md mt-3">
             { `Referendum ${index} Support` }
           </h3>
+          
           <ReferendumStats
             part={ tally?.support }
             total={ totalIssuance }
