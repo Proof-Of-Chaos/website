@@ -430,7 +430,6 @@ export default function ReferendumDetail( {
           { referendumMeta }
         </div>
       </div>
-      GRRRR{JSON.stringify( refsBeingVoted ) }
       { hasConfig &&
           <div className="border-gray-200 border-dashed border-t-2 w-full mx-2 mt-6 pt-6 pl-0 ml-0">
             <Button
