@@ -22,7 +22,7 @@ import { getTrackInfo } from "../../../data/kusama-tracks";
 import { curveThreshold, getPercentagePassed } from "../../../gov2-utils";
 
 import useAppStore from "../../../zustand";
-import { VoteChoice } from "../../../hooks/use-vote-manager";
+import { VoteChoice, useVoteManager } from "../../../hooks/use-vote-manager";
 
 const toPercentage = (part, whole) => {
   return Math.round(parseInt(part) / parseInt(whole) * 100)
@@ -79,7 +79,7 @@ export default function ReferendumDetail( {
 
   const currentBlockNumber = 123;
 
-  const { refsBeingVoted } = useAppStore(( state ) => state.user.voteStates )
+  const { refsBeingVoted } = useVoteManager()
 
   const gov2status = rejected ?
     'Rejected' : approved ?
@@ -430,6 +430,7 @@ export default function ReferendumDetail( {
           { referendumMeta }
         </div>
       </div>
+      GRRRR{JSON.stringify( refsBeingVoted ) }
       { hasConfig &&
           <div className="border-gray-200 border-dashed border-t-2 w-full mx-2 mt-6 pt-6 pl-0 ml-0">
             <Button
