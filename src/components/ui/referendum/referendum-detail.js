@@ -77,7 +77,7 @@ export default function ReferendumDetail( {
 
   const metaRef = useRef(null);
 
-  const currentBlockNumber = 123;
+  const currentBlockNumber = useAppStore((state) => state.chain.currentBlock )
 
   const { refsBeingVoted } = useVoteManager()
 
@@ -98,7 +98,7 @@ export default function ReferendumDetail( {
 
       const dPercentage = getPercentagePassed(decisionPeriod, deciding.since, currentBlockNumber);
       setDecidingPercentage( dPercentage );
-      setSupportThreshold( curveThreshold(track?.[1].minSupport, dPercentage * 1000 ) )
+      setSupportThreshold( curveThreshold( track?.[1].minSupport, dPercentage * 1000 ) )
       setApproveThreshold( curveThreshold( track?.[1].minApproval, dPercentage * 1000 ) )
 
       if (deciding?.confirming) {
@@ -387,6 +387,7 @@ export default function ReferendumDetail( {
             part={ tally?.support }
             total={ totalIssuance }
             threshold={ parseFloat(supportThreshold / 1000000000) }
+            status={ gov2status}
           />
         </> }
         {/* <pre className="text-xs text-left">{ currentBlockNumber } -- { JSON.stringify( track?.[1], null, 2 ) }</pre> */}
