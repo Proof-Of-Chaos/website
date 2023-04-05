@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { ChevronDownIcon, ChevronUpIcon} from '@heroicons/react/20/solid'
 import ReactMarkdown from 'react-markdown'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Tippy from "@tippyjs/react";
 import Image from "next/image";
 import classNames from "classnames";
@@ -23,7 +22,7 @@ import { getTrackInfo } from "../../../data/kusama-tracks";
 import { curveThreshold, getPercentagePassed } from "../../../gov2-utils";
 
 import useAppStore from "../../../zustand";
-import { VoteChoice, useVoteManager } from "../../../hooks/use-vote-manager";
+import { VoteChoice } from "../../../hooks/use-vote-manager";
 
 const toPercentage = (part, whole) => {
   return Math.round(parseInt(part) / parseInt(whole) * 100)
@@ -61,7 +60,7 @@ export default function ReferendumDetail( {
 
   const { openModal } = useModal();
   const { data: refConfig } = useConfig( index )
-  const { data: latestUserVote } = useLatestUserVoteForRef( index )
+  const { data: latestUserVote, loading: isUserVotesLoading } = useLatestUserVoteForRef( index )
 
   const [isExpanded, setIsExpanded ] = useState(false)
 
@@ -78,12 +77,9 @@ export default function ReferendumDetail( {
 
   const metaRef = useRef(null);
 
-  const currentBlockNumber = useAppStore((state) => state.chain.currentBlock).toNumber();
+  const currentBlockNumber = 123;
 
-  const queryClient = useQueryClient()
-
-  const { data: userVote, loading: isUserVotesLoading } = useLatestUserVoteForRef(index);
-  const { refsBeingVoted } = useVoteManager( queryClient);
+  const { refsBeingVoted } = useAppStore(( state ) => state.user.voteStates )
 
   const gov2status = rejected ?
     'Rejected' : approved ?
@@ -141,14 +137,14 @@ export default function ReferendumDetail( {
     return <div className="gov2-badges mb-2 flex">
       { track?.[0] !== 0 && origin?.origins &&
         <Tippy content={ getTrackInfo( parseInt(track?.[0]) )?.text }>
-          <div className="text-sm bg-gray-200 py-1 px-2 rounded-md flex-1 cursor-default mr-2">
+          <div className="text-sm bg-gray-200 py-1 px-2 rounded-sm flex-1 cursor-default mr-2 flex items-center justify-center">
             { titleCase(origin.origins) }
           </div>
         </Tippy>
       }
       <Tippy content={ `${ (percentage * 100).toFixed(2) }% of the ${gov2status === 'Confirming' ? 'confirming' : 'deciding'} period has passed` }>
         <div
-          className="text-sm py-1 px-2 rounded-md flex-1 cursor-default"
+          className="text-sm py-1 px-2 rounded-sm flex-1 cursor-default flex items-center justify-center"
           style={ { background: statusBadgeBg } }
         >
           { gov2status }
@@ -161,13 +157,13 @@ export default function ReferendumDetail( {
     return <>
       { status === 'Executed' || status === 'Passed' ? 
         <div
-        className="p-2 bg-green-400 rounded-md mb-4 shadow-sm hover:shadow-md transition-shadow"
+        className="p-2 bg-green-400 rounded-sm mb-4 shadow-sm hover:shadow-md transition-shadow"
       >
         { status }
       </div>
       :
       <div
-        className="p-2 bg-red-400 rounded-md mb-4 shadow-sm hover:shadow-md transition-shadow"
+        className="p-2 bg-red-400 rounded-sm mb-4 shadow-sm hover:shadow-md transition-shadow"
       >
         { status }
       </div>
@@ -176,11 +172,11 @@ export default function ReferendumDetail( {
   }
 
   const UserVote = () => {
-    if ( latestUserVote || userVote ) {
-      const { decision, balance, lockPeriod } = latestUserVote || userVote
+    if ( latestUserVote  ) {
+      const { decision, balance, lockPeriod } = latestUserVote
 
       return (
-        <div className="flex flex-row mb-2 justify-between rounded-md bg-gray-100 shadow-sm hover:shadow-md transition-shadow px-6 py-4 text-sm flex-wrap">
+        <div className="flex flex-row mb-2 justify-between rounded-sm bg-gray-100 shadow-sm hover:shadow-md transition-shadow px-6 py-4 text-sm flex-wrap">
         { ! isUserVotesLoading && <>
           <div className="flex-col w-full text-center">
             <div className="">
@@ -236,13 +232,11 @@ export default function ReferendumDetail( {
     }
 
     if ( isActive ) {
-      return <p className="text-sm mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
-        { latestUserVote && JSON.stringify( latestUserVote ) }
+      return <p className="text-sm mb-2 p-4 bg-gray-100 rounded-sm shadow-sm hover:shadow-md transition-shadow">
         You did not vote on <br/> referendum { index } yet.<br/>{ `Vote to receive NFT rewards.` }
       </p>
     } else {
-      return <p className="text-sm mb-2 p-4 bg-gray-100 rounded-md shadow-sm hover:shadow-md transition-shadow">
-        { latestUserVote && JSON.stringify( latestUserVote ) }
+      return <p className="text-sm mb-2 p-4 bg-gray-100 rounded-sm shadow-sm hover:shadow-md transition-shadow">
         You did not vote on <br/> referendum { index }.
       </p>
     }
@@ -252,7 +246,7 @@ export default function ReferendumDetail( {
     const rarity = userNFT?.metadata_properties?.rarity?.value
     if ( userNFT ) {
       return (
-        <div className="flex flex-row justify-between p-4 bg-gray-100 rounded-md mb-4 shadow-sm hover:shadow-md transition-shadow items-center">
+        <div className="flex flex-row justify-between p-4 bg-gray-100 rounded-sm mb-4 shadow-sm hover:shadow-md transition-shadow items-center">
           <div >
             You received
             { rarity && <span className={ `mt-2 block nft-${ rarity }` }>{ rarity }</span> }
@@ -270,7 +264,7 @@ export default function ReferendumDetail( {
 
   const ReferendumLinks = ( { referendumId } ) => (
     <>
-    <div className="referendum-more py-2 px-4 mt-4 bg-gray-100 rounded-md flex items-center">
+    <div className="referendum-more py-2 px-4 mt-4 bg-gray-100 rounded-sm flex items-center">
       <span className="pr-4">View on</span>
       <a
         className="pr-3 grayscale flex" 
@@ -311,7 +305,7 @@ export default function ReferendumDetail( {
       { isGov2 && <Gov2Badges/> }
       { isActive &&
         <>
-          <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm hover:shadow-md transition-shadow">
+          <div className="p-4 bg-gray-100 rounded-sm mb-2 shadow-sm hover:shadow-md transition-shadow">
             { isGov2 ?
               <>
                 { gov2status === 'Awaiting Deposit' &&
@@ -350,12 +344,12 @@ export default function ReferendumDetail( {
             }
           </div>
           <UserVote />
-          <ReferendumVoteButtons referendum={ referendum } userVote={ userVote }/>
+          <ReferendumVoteButtons referendum={ referendum } userVote={ latestUserVote } />
         </>
       }
       { ! isActive &&
         <>
-          <div className="p-4 bg-gray-100 rounded-md mb-2 shadow-sm transition-shadow hover:shadow-md">
+          <div className="p-4 bg-gray-100 rounded-sm mb-2 shadow-sm transition-shadow hover:shadow-md">
             <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-xl">
               Referendum {index} ended at
             </h3>
@@ -366,7 +360,7 @@ export default function ReferendumDetail( {
           <UserReward />
         </>
       }
-      { gov2status !== 'Awaiting Deposit' && gov2status !== 'Submitted' && <div className="p-4 bg-gray-100 rounded-md mt-2 shadow-sm transition-shadow hover:shadow-md">
+      { gov2status !== 'Awaiting Deposit' && gov2status !== 'Submitted' && <div className="p-4 bg-gray-100 rounded-sm mt-2 shadow-sm transition-shadow hover:shadow-md">
         <h3 className="text-gray-900 mb-2 dark:md:text-gray-100 text-md">
           { isGov2 ? `Referendum ${index} Approval` : `Referendum ${index} results`}
         </h3>
@@ -402,9 +396,9 @@ export default function ReferendumDetail( {
   const currentVote = refsBeingVoted && refsBeingVoted[ `${ index }` ]?.vote
 
   return (
-    <div className="relative w-full rounded-lg border-2 border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0 overflow-hidden">
+    <div className="relative w-full rounded-sm border border-dashed border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0 overflow-hidden">
       <div className="w-full flex flex-wrap">
-        <div className="flex flex-col left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r-2 border-b-2 sm:border-b-0">
+        <div className="flex flex-col left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r border-b sm:border-b-0">
           <div className="referendum-heading">
             <div>Referendum {index}</div>
           </div>
@@ -420,7 +414,7 @@ export default function ReferendumDetail( {
                 'overflow-hidden': ! isExpanded
               }
             )}>
-              <ReactMarkdown>{ description || stripHtml( content ) }</ReactMarkdown>
+              <ReactMarkdown>{ description || content }</ReactMarkdown>
             </div>
             <Button 
             className="w-full btn-show-more" 

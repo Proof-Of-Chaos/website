@@ -33,8 +33,39 @@ export function useVoteManager( queryClient = null ) {
     const removeVoteState = useAppStore((state) => state.removeVoteState)
     const connectedAccountIndex = useAppStore((state) => state.user.connectedAccount)
     const connectedAccount = useAppStore((state) => state.user.connectedAccounts?.[connectedAccountIndex])
+    const userAddress = connectedAccount?.ksmAddress
   
     const wallet = getWalletBySource(connectedAccount?.source)
+
+    const optimisticUpdateVotes = async( voteChoice, voteBalances, conviction, refId ) => {
+
+        if (queryClient) {
+            const updateCacheKey = ['votes', userAddress, true ]
+            
+            await queryClient.cancelQueries({ queryKey: updateCacheKey })
+
+            const voteIndexerFormatted = {
+                balance: voteChoice === VoteChoice.Aye ? { value: `${ voteBalances.aye }` } : 
+                    voteChoice === VoteChoice.Nay ?  { value: `${ voteBalances.nay }` } : 
+                        voteChoice === VoteChoice.Split ? 'split' : 'abstain',
+                decision: voteChoice === VoteChoice.Aye ? 'aye' : 
+                    voteChoice === VoteChoice.Nay ? 'nay' : 
+                        voteChoice === VoteChoice.Split ? 'split' : 'abstain',
+                lockPeriod: conviction,
+                referendumIndex: refId,
+                voter: userAddress,
+            }
+
+            queryClient.setQueryData(['votes'], (votes) => {
+                Object.assign(votes ?? {}, votes?.map(el => el.referendumIndex === refId ? voteIndexerFormatted : el))
+            })
+
+            queryClient.invalidateQueries({
+                queryKey: updateCacheKey,
+                refetchType: 'all',
+            })
+        }
+    }
 
     const voteOnRef = async ( refId, voteChoice, balances, conviction = 1.0 ) => {
         await wallet.enable('Proof of Chaos')
@@ -61,8 +92,6 @@ export function useVoteManager( queryClient = null ) {
             conviction: conviction < 1 ? 0 : conviction,
             state: VoteState.AwaitingSignature
         }
-
-        console.log( 'new vote ', vote )
         
         updateVoteState( refId, vote )
         const toastId = toast.loading(
@@ -92,9 +121,8 @@ export function useVoteManager( queryClient = null ) {
                     duration: 4000,
                 });
                 removeVoteState( refId )
-                if (queryClient) {
-                    queryClient.invalidateQueries({ queryKey: ['votes'] })
-                }
+                optimisticUpdateVotes( voteChoice, voteBalances, conviction, refId )
+
             } else {
                 console.log(`Current status: ${status.type}`);
             }

@@ -7,7 +7,7 @@ import {
   TalismanWallet
 } from "@talismn/connect-wallets"
 import { encodeAddress } from '@polkadot/keyring'
-import { useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from '@tanstack/react-query'
 
 import { NovaWallet } from './wallet-select-nova'
 

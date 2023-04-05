@@ -20,9 +20,6 @@ export async function castVote(signer, aye, ref, address, balance, conviction, g
 
 export function getVoteTx(api, voteChoice, ref, balances, conviction, gov2 = false) {
 
-  console.log( 'vote balances', balances, voteChoice )
-
-
   let vote = {}
 
   switch (voteChoice) {
@@ -55,19 +52,6 @@ export function getVoteTx(api, voteChoice, ref, balances, conviction, gov2 = fal
         }
       }
   }
-  
-
-  // let vote = {
-  //   Standard: {
-  //     vote: {
-  //       aye: aye,
-  //       conviction: conviction,
-  //     },
-  //     balance: balance
-  //   }
-  // };
-
-  console.log( 'votetx', vote )
 
   if ( gov2 ) {
     return api.tx.convictionVoting.vote(ref,vote)

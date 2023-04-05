@@ -13,6 +13,7 @@ import useAccountBalance from "../../../hooks/use-account-balance"
 import { InlineLoader } from "../loader"
 import useAppStore from "../../../zustand"
 import { useLatestUserVoteForRef } from "../../../hooks/use-votes"
+import { useQueryClient } from '@tanstack/react-query'
 
 const VOTE_LOCK_OPTIONS = [
     {
@@ -81,8 +82,10 @@ export function ReferendumVoteForm( { referendumId } ) {
     const [voteChoice, setVoteChoice] = useState(VoteChoice.Aye) 
     const [sliderValue,setSliderValue] = useState(VOTE_LOCK_OPTIONS[1])
     const sliderRef = useRef()
-    const { voteOnRef } = useVoteManager();
+    const queryClient = useQueryClient();
+    const { voteOnRef } = useVoteManager( queryClient );
     const { closeModal } = useModal();
+
     
     const { data: latestUserVote } = useLatestUserVoteForRef( referendumId )
     const { data: accountBalance, isLoading: isBalanceLoading } = useAccountBalance()

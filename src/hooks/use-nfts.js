@@ -2,7 +2,7 @@ import { websiteConfig } from "../data/website-config"
 import useAppStore from "../zustand";
 import {
   useQuery,
-} from "@tanstack/react-query";
+} from '@tanstack/react-query';
 import { request, gql } from "graphql-request";
 
 import { GET_NFT_FLOOR, GET_REFERENDUM_NFTS } from "./queries";

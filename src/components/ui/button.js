@@ -6,8 +6,8 @@ const classes = {
   hover: ['hover:shadow-md hover:-translate-y-0.5'],
   disabled: ['opacity-50 cursor-not-allowed'],
   shapes: {
-    rounded: ['rounded-md sm:rounded-lg'],
-    pill: ['rounded-lg'],
+    rounded: ['rounded-sm sm:rounded-md'],
+    pill: ['rounded-md'],
     circle: ['rounded-lg'],
   },
   size: {

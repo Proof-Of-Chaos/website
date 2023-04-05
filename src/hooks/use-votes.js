@@ -24,11 +24,13 @@ const voteFetcher = async ( ksmAddress, gov2=false ) => {
   return gov2 ? data.convictionVotes : data.votes
 };
 
-export const useVotes = ( ksmAddress, gov2 = false, config = {}, select ) => {
+export const useVotes = ( ksmAddress, gov2 = false, select ) => {
   return useQuery({
     queryKey: [ 'votes', ksmAddress, gov2 ],
     queryFn: async() => voteFetcher( ksmAddress, gov2 ),
-    config,
+    config: {
+      enabled: !!ksmAddress,
+    },
     select,
   })
 };
@@ -39,9 +41,6 @@ export const useUserVotes = (gov2=false) => {
   return useVotes(
     ksmAddress,
     gov2,
-    {
-      enabled: !!ksmAddress,
-    },
     (data) => data.filter( (vote) => vote.voter === ksmAddress )
   )
 }
@@ -63,21 +62,6 @@ const singleVoteFetcher = async ( ksmAddress, referendumIndex, gov2 = false ) =>
 }
 
 /**
- * Get the latest vote for ksmAddress and refeerndumIndex
- * @param { String } ksmAddress
- * @param { String } referendumIndex
- */
-export const useLatestVoteForUserAndRef = ( ksmAddress, referendumIndex ) => {
-  return useQuery(
-    [ 'vote', ksmAddress, referendumIndex ],
-    async () => singleVoteFetcher( ksmAddress, referendumIndex ),
-    {
-      enabled: !!ksmAddress
-    }
-  )
-}
-
-/**
  * Get the latest vote for the current user and refeerndumIndex
  * @param { String } referendumIndex
  */
@@ -87,9 +71,6 @@ export const useLatestUserVoteForRef = ( referendumIndex ) => {
   return useVotes(
     ksmAddress,
     true, //gov2
-    {
-      enabled: !!ksmAddress,
-    },
     (data) => data.find( ( vote ) => vote.voter === ksmAddress && vote.referendumIndex === referendumIndex)
   )
 }
