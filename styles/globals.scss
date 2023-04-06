@@ -343,7 +343,7 @@ button, a {
   align-items: center;
   @apply rounded-lg;
   transition: transform 0.7s;
-  transform: translate3d(0,-100%,0);
+  transform: translate3d(-110%,0,0);
 
   &.visible {
     transform: translate3d(0,0,0);
