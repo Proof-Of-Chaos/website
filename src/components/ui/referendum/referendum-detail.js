@@ -399,7 +399,7 @@ export default function ReferendumDetail( {
   const currentVote = refsBeingVoted && refsBeingVoted[ `${ index }` ]?.vote
 
   return (
-    <div className="relative w-full rounded-sm border border-dashed border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0 overflow-hidden">
+    <div className="relative w-full rounded-sm border border-dashed border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0">
       <div className="w-full flex flex-wrap">
         <div className="flex flex-col left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r border-b sm:border-b-0">
           <div className="referendum-heading">
