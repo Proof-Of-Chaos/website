@@ -10,6 +10,7 @@ import { DefaultSeo } from 'next-seo';
 import PolkadotApiProvider from '../context/polkadot-api-context';
 import { useVoteManager } from '../hooks/use-vote-manager';
 import useAppStore from '../zustand';
+import { Analytics } from '@vercel/analytics/react';
 
 import '../../styles/globals.scss'
 
@@ -68,6 +69,7 @@ function MyApp({ Component, pageProps }) {
             </Toaster>
           </QueryClientProvider>
         </PolkadotApiProvider>
+        <Analytics />
         {/* <ReactQueryDevtools initialIsOpen /> */}
     </>
   )

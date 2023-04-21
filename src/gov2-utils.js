@@ -1,4 +1,4 @@
-import { bnMax, bnMin, bnToBn, BN_BILLION, BN_HUNDRED, BN_MILLION, BN_THOUSAND, isBn } from "@polkadot/util";
+import { bnMax, bnMin, bnToBn, BN_BILLION, BN_HUNDRED, BN_MILLION, BN_THOUSAND, isBn, BN } from "@polkadot/util";
 import { isNil } from "lodash";
 
 /**
@@ -79,6 +79,7 @@ export function curveThreshold (curve, input, div = bnToBn(1000)) {
  * @param {*} currentBlock The current block number
  */
 export function getPercentagePassed(total, since, currentBlock) {
+
   if (isNil(since) || isNil(total) || isNil(currentBlock)) {
     return null;
   }
