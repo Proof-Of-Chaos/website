@@ -1,0 +1,14 @@
+.env
+node_modules/
+.DS_Store
+dist/
+log/
+localStorage/localStorage.json
+localStorage/remarkStorage.json
+assets/referenda
+assets/referendaSettings
+assets/shelf/luck/*
+assets/shelf/sendoutConfig/*
+assets/frame/luck/*
+assets/frame/sendoutConfig/*
+assets/frame/votes/*

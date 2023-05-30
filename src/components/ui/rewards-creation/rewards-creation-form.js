@@ -13,12 +13,14 @@ import useAppStore from "../../../zustand";
 import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
 import { useQueryClient } from "@tanstack/react-query";
 import PinataFileUpload from "./pinata-file-upload";
+import axios from "axios";
+const JWT = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJmYmJjN2JlMi03YTYyLTRmYWMtODcwYy0xZWU5ZDcwMDcwNjYiLCJlbWFpbCI6Im5pa2xhc0BlZWRlZS5uZXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiODQ3NjAwODllNzA3MzYyMmRmODUiLCJzY29wZWRLZXlTZWNyZXQiOiI4NjIzYTk2ODUyZTcwNGU4NjdlNDlhNmEwNTJmYmFiMTY0Y2YzNmVlYzY1Y2Y2ODBmOGIwNmU4MjNiZDFmM2ZhIiwiaWF0IjoxNjgyNDEwMzk5fQ.1T4KBu1kRQas5xm8Q8Jop1Z3O7TJHRyDhOUT7ZG_M4Y`;
 
 function RewardsCreationRarityFields({ rarity, controlledValues }) {
   const { register } = useFormContext();
 
   return (
-    <div className={`flex flex-col w-1/3 p-5 m-2 form-fields-${rarity}`}>
+    <div className={`flex flex-col p-5 form-fields-${rarity}`}>
       <h3 className="text-xl">{rarity}</h3>
       <label
         htmlFor={`file-${rarity}`}
@@ -26,7 +28,13 @@ function RewardsCreationRarityFields({ rarity, controlledValues }) {
       >
         Upload Image
       </label>
-      <PinataFileUpload />
+
+      <input
+        type="file"
+        {...register(`options.${rarity}.file`, {
+          validate: {},
+        })}
+      />
 
       <label
         htmlFor={`name-${rarity}`}
@@ -98,14 +106,82 @@ export function RewardsCreationForm() {
     refIndex: undefined,
     royaltyAddress: undefined,
     options: [
-      { rarity: 'common', name: '', description: '', artist: '' },
-      { rarity: 'rare', name: '', description: '', artist: '' },
-      { rarity: 'epic', name: '', description: '', artist: '' },
+      {
+        rarity: "common",
+        name: "",
+        description: "",
+        artist: "",
+        file: undefined,
+      },
+      {
+        rarity: "rare",
+        name: "",
+        description: "",
+        artist: "",
+        file: undefined,
+      },
+      {
+        rarity: "epic",
+        name: "",
+        description: "",
+        artist: "",
+        file: undefined,
+      },
     ],
   });
 
-  async function onSubmit( data ) {
-    console.table( data )
+  async function pinFile(file) {
+    console.log("rewardFields", rewardFields);
+    if (!file) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const metadata = JSON.stringify({
+      name: file.name,
+    });
+    formData.append("pinataMetadata", metadata);
+
+    const options = JSON.stringify({
+      cidVersion: 0,
+    });
+    formData.append("pinataOptions", options);
+
+    try {
+      const res = await axios.post(
+        "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        formData,
+        {
+          maxBodyLength: "Infinity",
+          headers: {
+            "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+            Authorization: JWT,
+          },
+        }
+      );
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function pinAllFiles() {
+    const file_common = watchFormFields.options.common.file?.[0];
+    const file_rare = watchFormFields.options.rare.file?.[0];
+    const file_epic = watchFormFields.options.epic.file?.[0];
+
+    return await Promise.all([
+      pinFile(file_common),
+      pinFile(file_rare),
+      pinFile(file_epic),
+    ]);
+  }
+
+  async function onSubmit(data) {
+    console.table(data);
+    // pinAllFiles();
     closeModal();
   }
 
@@ -127,7 +203,7 @@ export function RewardsCreationForm() {
 
   return (
     <div className="w-full">
-      <FormProvider {...formMethods} >
+      <FormProvider {...formMethods}>
         <form
           onSubmit={formMethods.handleSubmit(onSubmit)}
           className="my-5 mx-1 flex flex-col"
@@ -138,7 +214,7 @@ export function RewardsCreationForm() {
           >
             Referendum Index
           </label>
-          <select 
+          <select
             className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
             {...formMethods.register("refIndex", {
               validate: {},
@@ -165,17 +241,18 @@ export function RewardsCreationForm() {
             })}
           />
 
-
           <label
             htmlFor="royaltyAddress"
             className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
           >
             NFTs
           </label>
-          <div className="flex flex-row w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
             {["common", "rare", "epic"].map((rarity, index) => {
               const fields = rewardFields.options[index];
-              return <RewardsCreationRarityFields rarity={rarity} fields={ fields }/>;
+              return (
+                <RewardsCreationRarityFields rarity={rarity} fields={fields} />
+              );
             })}
           </div>
 

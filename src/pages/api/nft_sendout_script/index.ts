@@ -1,31 +1,16 @@
-import Link from "next/link";
-import { NextSeo } from "next-seo";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
+import "@polkadot/api-augment";
+import dotenv from "dotenv";
+import { generateCalls } from "./src/generateCalls.js";
+import { RewardConfiguration } from "./types.js";
 
-import { websiteConfig } from "../data/website-config";
-import Button from "../components/ui/button";
-import Layout from "../layouts/layout";
-import { nftFeedData } from "../data/nft-feed-data";
-import NftFeed from "../components/nft/nft-feed";
-import NFTSnippets from "../components/nft/nft-snippets";
-import { RewardsCreationForm } from "../components/ui/rewards-creation/rewards-creation-form";
+dotenv.config();
 
-function ReferendumRewards({ test }) {
-  return (
-    <>
-      <NextSeo title="ReferendumRewards" />
-      <section className="w-full flex-col py-20 px-5 sm:px-10 md:px-5">
-        <h1 class="text-2xl">Create Rewards for a Referendum</h1>
-        <p>Here you can create ... {test}</p>
-        <RewardsCreationForm />
-      </section>
-    </>
-  );
+async function main(config: RewardConfiguration) {
+  generateCalls(config);
 }
 
-export const testConfig = {
-  refIndex: 99,
+const testConfig = {
+  refIndex: "99",
   min: "1200000000000",
   max: "100000000000000000000000000000000000000000",
   first: null,
@@ -95,17 +80,4 @@ export const testConfig = {
   ],
 };
 
-ReferendumRewards.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
-};
-
-export const getServerSideProps = async () => {
-  const { generateCalls } = await import(
-    "./api/nft_sendout_script/src/generateCalls"
-  );
-  generateCalls(testConfig);
-
-  return { props: { test: "123" } };
-};
-
-export default ReferendumRewards;
+main(testConfig);
