@@ -8,6 +8,16 @@ Find us on [discord](https://discord.gg/ugE6Brwj22) | [twitter](https://twitter.
 ## Contributing
 
 You can always submit pull requests and issues.
+
+### Installing Dependencies
+```
+yarn install
+```
+
+### Providing Pinata API Key and Secret
+
+Please create a `.env` file following in the `.env-sample` and filling in your own Pinata API and Secret
+
 ### Building the Site
 
 First, run the development server:
