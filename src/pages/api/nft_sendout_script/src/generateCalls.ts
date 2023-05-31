@@ -347,7 +347,7 @@ const processMetadataForOptions = async (
     );
     const metadataCidDirect = await pinSingleMetadataFromDir(
       pinata,
-      "/assets/frame/referenda",
+      "/public/referenda",
       option.main,
       `Referendum ${referendumIndex}`,
       { description: option.text }
@@ -361,7 +361,7 @@ const processMetadataForOptions = async (
     );
     const metadataCidDelegated = await pinSingleMetadataFromDir(
       pinata,
-      "/assets/frame/referenda",
+      "/public/referenda",
       option.main,
       `Referendum ${referendumIndex}`,
       { description: option.text }
@@ -771,10 +771,7 @@ const getBlockNumber = async (
 };
 
 const setupPinata = async (): Promise<PinataClient | null> => {
-  const pinata = new pinataSDK(
-    process.env.PINATA_API,
-    process.env.PINATA_SECRET
-  );
+  const pinata = pinataSDK(process.env.PINATA_API, process.env.PINATA_SECRET);
   try {
     const result = await pinata.testAuthentication();
     logger.info(result);
@@ -1043,10 +1040,10 @@ export const generateCalls = async (config: RewardConfiguration) => {
     ))
   );
   const batchtx = apiStatemine.tx.utility.batchAll(txs).toHex();
-  fs.writeFile(`assets/output/${referendumIndex}.json`, batchtx, (err) => {
-    // In case of a error throw err.
-    if (err) throw err;
-  });
+  // fs.writeFile(`assets/output/${referendumIndex}.json`, batchtx, (err) => {
+  //   // In case of a error throw err.
+  //   if (err) throw err;
+  // });
   // console.log(apiStatemine.tx.utility.batch(txs).toHex())
   const dest = {
     V1: {
@@ -1068,6 +1065,7 @@ export const generateCalls = async (config: RewardConfiguration) => {
       },
     },
   };
+  return JSON.stringify(batchtx)
   // const finalCall = apiKusama.tx.xcmPallet.send(dest, message)
   // fs.writeFile(`assets/output/1.json`, JSON.stringify(finalCall), (err) => {
   //     // In case of a error throw err.
