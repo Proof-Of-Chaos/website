@@ -18,11 +18,11 @@ export const sleep = (ms: number): Promise<void> => {
 export const getDragonBonusFile = async (referendumId: BN) => {
   try {
     const bonuses = await fsPromises.readFile(
-      `${process.cwd()}/assets/frame/dragonBonus/${referendumId}.json`,
+      `${process.cwd()}/public/dragonBonus/${referendumId}.json`,
       "utf8"
     );
     logger.info(
-      `reading bonuses from /assets/frame/dragonBonus/${referendumId}.json`
+      `reading bonuses from /public/dragonBonus/${referendumId}.json`
     );
     return bonuses;
   } catch (e) {
