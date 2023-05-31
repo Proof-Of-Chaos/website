@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "(cd src/pages/api/nft_sendout_script && tsc) && next dev",
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "lint": "next lint"
+    "lint": "next lint",
+    "install": "yarn install --ignore-scripts && cd src/pages/api/nft_sendout_script && yarn install && cd ../../../.."
   },
   "dependencies": {
     "@apollo/client": "^3.7.10",
@@ -76,7 +77,7 @@
     "styled-components": "^5.3.9",
     "tailwindcss": "^3.2.7",
     "tippy.js": "^6.3.7",
-    "typescript": "5.0.2",
+    "typescript": "^5.0.4",
     "victory": "^36.6.8",
     "yup": "^1.0.2",
     "zustand": "^4.3.6"
