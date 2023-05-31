@@ -35,3 +35,10 @@ yarn-error.log*
 
 # editor files
 .idea
+
+# log files
+/log
+
+# sendout script
+/src/pages/api/nft_sendout_script/node_modules/
+/src/pages/api/nft_sendout_script/dist/
