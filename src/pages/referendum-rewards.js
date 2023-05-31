@@ -33,7 +33,7 @@ export const testConfig = {
   directOnly: true,
   createNewCollection: true,
   newCollectionSymbol: 99,
-  newCollectionPath: "/assets/frame/collections",
+  newCollectionPath: "/public/collections",
   newCollectionFile: "test.png",
   newCollectionName: "test for ref 99",
   newCollectionDescription: "Test Description",
@@ -101,10 +101,10 @@ ReferendumRewards.getLayout = function getLayout(page) {
 
 export const getServerSideProps = async () => {
   const { generateCalls } = await import(
-    "./api/nft_sendout_script/src/generateCalls"
+    "./api/nft_sendout_script/dist/src/generateCalls"
   );
-  generateCalls(testConfig);
-
+  const preimage = generateCalls(testConfig);
+  console.log("done")
   return { props: { test: "123" } };
 };
 
