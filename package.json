@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "(cd src/pages/api/nft_sendout_script && tsc) && next dev",
+    "dev": "(cd src/pages/api/nft_sendout_script && ./node_modules/.bin/tsc) && next dev",
     "build": "next build",
     "start": "next start",
     "export": "next export",
