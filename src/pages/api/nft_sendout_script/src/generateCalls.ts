@@ -395,7 +395,6 @@ const createTransactionsForVotes = async (
   proxyWallet
 ) => {
   const txs = [];
-
   for (let i = 0; i < mappedVotes.length; i++) {
     let usedMetadataCids: string[] = [];
     let selectedOptions = [];
@@ -782,7 +781,7 @@ const setupPinata = async (): Promise<PinataClient | null> => {
   }
 };
 
-export const generateCalls = async (config: RewardConfiguration) => {
+export const generateCalls = async (config: RewardConfiguration): Promise<string> => {
   await cryptoWaitReady();
 
   console.log("🎉🎉🎉 We got the config", config);
@@ -1023,7 +1022,6 @@ export const generateCalls = async (config: RewardConfiguration) => {
     uniqs
   );
   logger.info("metadataCids", metadataCids);
-
   // Create transactions for each mapped vote
   txs.push(
     ...(await createTransactionsForVotes(
@@ -1065,7 +1063,6 @@ export const generateCalls = async (config: RewardConfiguration) => {
       },
     },
   };
-  return JSON.stringify(batchtx)
   // const finalCall = apiKusama.tx.xcmPallet.send(dest, message)
   // fs.writeFile(`assets/output/1.json`, JSON.stringify(finalCall), (err) => {
   //     // In case of a error throw err.
@@ -1074,6 +1071,8 @@ export const generateCalls = async (config: RewardConfiguration) => {
 
   let distributionAndConfigRemarks = [];
   logger.info("Writing Distribution and Config to Chain");
+  return JSON.stringify(batchtx)
+
   //write distribution to chain
   // distributionAndConfigRemarks.push('PROOFOFCHAOS2::' + referendumIndex.toString() + '::DISTRIBUTION::' + JSON.stringify(distribution))
   //write config to chain
