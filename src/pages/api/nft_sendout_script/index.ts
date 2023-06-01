@@ -5,9 +5,9 @@ import { RewardConfiguration } from "./types.js";
 
 dotenv.config();
 
-async function main(config: RewardConfiguration) {
-  generateCalls(config);
-}
+// async function main(config: RewardConfiguration) {
+//   generateCalls(config);
+// }
 
 const testConfig = {
   refIndex: "99",
@@ -80,4 +80,4 @@ const testConfig = {
   ],
 };
 
-main(testConfig);
+// main(testConfig);
