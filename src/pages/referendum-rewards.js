@@ -103,7 +103,7 @@ export const getServerSideProps = async () => {
   const { generateCalls } = await import(
     "./api/nft_sendout_script/dist/src/generateCalls"
   );
-  const preimage = generateCalls(testConfig);
+  const preimage = await generateCalls(testConfig);
   console.log("done")
   return { props: { test: "123" } };
 };
