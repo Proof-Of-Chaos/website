@@ -16,7 +16,7 @@ function ReferendumRewards({ test }) {
     <>
       <NextSeo title="ReferendumRewards" />
       <section className="w-full flex-col py-20 px-5 sm:px-10 md:px-5">
-        <h1 class="text-2xl">Create Rewards for a Referendum</h1>
+        <h1 className="text-2xl">Create Rewards for a Referendum</h1>
         <p>Here you can create ... {test}</p>
         <RewardsCreationForm />
       </section>
@@ -99,13 +99,13 @@ ReferendumRewards.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };
 
-export const getServerSideProps = async () => {
-  const { generateCalls } = await import(
-    "./api/nft_sendout_script/dist/src/generateCalls"
-  );
-  const preimage = await generateCalls(testConfig);
-  console.log("done")
-  return { props: { test: "123" } };
-};
+// export const getServerSideProps = async () => {
+//   const { generateCalls } = await import(
+//     "./api/nft_sendout_script/src/generateCalls"
+//   );
+//   const preimage = await generateCalls(testConfig);
+//   console.log("done", preimage);
+//   return { props: { test: "123" } };
+// };
 
 export default ReferendumRewards;

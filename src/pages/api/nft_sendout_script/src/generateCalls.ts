@@ -770,7 +770,10 @@ const getBlockNumber = async (
 };
 
 const setupPinata = async (): Promise<PinataClient | null> => {
-  const pinata = pinataSDK(process.env.PINATA_API, process.env.PINATA_SECRET);
+  const pinata = new pinataSDK(
+    process.env.PINATA_API,
+    process.env.PINATA_SECRET
+  );
   try {
     const result = await pinata.testAuthentication();
     logger.info(result);
@@ -781,7 +784,9 @@ const setupPinata = async (): Promise<PinataClient | null> => {
   }
 };
 
-export const generateCalls = async (config: RewardConfiguration): Promise<string> => {
+export const generateCalls = async (
+  config: RewardConfiguration
+): Promise<string> => {
   await cryptoWaitReady();
 
   console.log("🎉🎉🎉 We got the config", config);
@@ -1071,7 +1076,7 @@ export const generateCalls = async (config: RewardConfiguration): Promise<string
 
   let distributionAndConfigRemarks = [];
   logger.info("Writing Distribution and Config to Chain");
-  return JSON.stringify(batchtx)
+  return JSON.stringify(batchtx);
 
   //write distribution to chain
   // distributionAndConfigRemarks.push('PROOFOFCHAOS2::' + referendumIndex.toString() + '::DISTRIBUTION::' + JSON.stringify(distribution))

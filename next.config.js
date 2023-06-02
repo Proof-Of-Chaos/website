@@ -14,8 +14,6 @@ const nextConfig = {
       "default-src 'self' ipfs.rmrk.link; script-src 'none'; sandbox;",
   },
   trailingSlash: true,
-
-  webpack5: true,
   webpack: (config) => {
     config.resolve.fallback = { fs: false };
     return config;

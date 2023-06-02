@@ -1,19 +1,11 @@
-import { useRef, useState } from "react";
-import { VoteChoice, useVoteManager } from "../../../hooks/use-vote-manager";
+import { useState } from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
-import Button from "../button";
-import classNames from "classnames";
-import { Slider } from "@mui/material";
-import { castVote } from "../../../data/vote-service";
+
 import { useModal } from "../../modals/context";
-import { microToKSM } from "../../../utils";
-import useAccountBalance from "../../../hooks/use-account-balance";
-import { InlineLoader } from "../loader";
-import useAppStore from "../../../zustand";
-import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
-import { useQueryClient } from "@tanstack/react-query";
-import PinataFileUpload from "./pinata-file-upload";
+
 import axios from "axios";
+import Button from "../button";
+import { testConfig } from "../../../pages/referendum-rewards";
 const JWT = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJmYmJjN2JlMi03YTYyLTRmYWMtODcwYy0xZWU5ZDcwMDcwNjYiLCJlbWFpbCI6Im5pa2xhc0BlZWRlZS5uZXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiODQ3NjAwODllNzA3MzYyMmRmODUiLCJzY29wZWRLZXlTZWNyZXQiOiI4NjIzYTk2ODUyZTcwNGU4NjdlNDlhNmEwNTJmYmFiMTY0Y2YzNmVlYzY1Y2Y2ODBmOGIwNmU4MjNiZDFmM2ZhIiwiaWF0IjoxNjgyNDEwMzk5fQ.1T4KBu1kRQas5xm8Q8Jop1Z3O7TJHRyDhOUT7ZG_M4Y`;
 
 function RewardsCreationRarityFields({ rarity, controlledValues }) {
@@ -90,10 +82,10 @@ function RewardsCreationRarityFields({ rarity, controlledValues }) {
 export function RewardsCreationForm() {
   const formMethods = useForm();
 
+  const [callData, setCallData] = useState();
+  const [isCallDataLoading, setIsCallDataLoading] = useState(false);
+
   const {
-    register,
-    getValues,
-    handleSubmit,
     watch,
     formState: { errors },
   } = formMethods;
@@ -179,9 +171,23 @@ export function RewardsCreationForm() {
     ]);
   }
 
+  async function generatePreimage() {
+    setIsCallDataLoading(true);
+    fetch("/api/create-rewards-calls", {
+      method: "POST",
+      body: JSON.stringify(testConfig),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCallData(data);
+        setIsCallDataLoading(false);
+      });
+  }
+
   async function onSubmit(data) {
     console.table(data);
     // pinAllFiles();
+    generatePreimage(testConfig);
     closeModal();
   }
 
@@ -272,8 +278,21 @@ export function RewardsCreationForm() {
           </Button>
         </form>
       </FormProvider>
+      {isCallDataLoading && (
+        <div>
+          Generating your calls, please stand by this may take a while...
+        </div>
+      )}
+      call config:
       <pre className="text-[0.5rem]">
-        {JSON.stringify(watchFormFields, null, 2)}
+        {JSON.stringify(callData?.config, null, 2)}
+      </pre>
+      preimage hex:
+      <pre className="text-[0.5rem]">
+        {JSON.stringify(callData?.preimage, null, 2)}
+      </pre>
+      <pre className="text-[0.5rem]">
+        form fields: {JSON.stringify(watchFormFields, null, 2)}
       </pre>
     </div>
   );
