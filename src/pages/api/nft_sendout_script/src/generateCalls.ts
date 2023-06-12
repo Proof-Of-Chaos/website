@@ -76,12 +76,12 @@ const retrieveAccountLocks = async (
         const lockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-              userVote.endBlock
-                .sub(endBlockBN)
-                .muln(10)
-                .div(sevenDaysBlocks)
-                .toNumber() / 10
-            );
+            userVote.endBlock
+              .sub(endBlockBN)
+              .muln(10)
+              .div(sevenDaysBlocks)
+              .toNumber() / 10
+          );
         const matchingPeriod = LOCKPERIODS.reduce(
           (acc, curr, index) => (lockPeriods >= curr ? index : acc),
           0
@@ -92,8 +92,8 @@ const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-            BN.max(max, current)
-          )
+          BN.max(max, current)
+        )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -408,7 +408,7 @@ const createTransactionsForVotes = async (
       vote.voteType == "Delegating" ? selectedMetadata[1] : selectedMetadata[0];
     const randRoyaltyInRange = Math.floor(
       rng() * (selectedOption.maxRoyalty - selectedOption.minRoyalty + 1) +
-        selectedOption.minRoyalty
+      selectedOption.minRoyalty
     );
     if (!metadataCid) {
       logger.error(`metadataCid is null. exiting.`);
@@ -749,28 +749,47 @@ const addEncointerScoreToVotes = (
   });
 };
 
-const getBlockNumber = async (
-  apiKusama: ApiPromise,
-  referendumIndex: BN
-): Promise<BN | null> => {
+const getBlockNumber = async (apiKusama: ApiPromise, referendumIndex: BN): Promise<BN | null> => {
   try {
-    const info = await apiKusama.query.referenda.referendumInfoFor(
-      referendumIndex
-    );
-    return (
-      info.unwrap().asApproved[0] ||
-      info.unwrap().asRejected[0] ||
-      info.unwrap().asKilled[0] ||
-      info.unwrap().asCancelled[0]
-    );
+    const info = await apiKusama.query.referenda.referendumInfoFor(referendumIndex);
+    const trackJSON = info.toJSON();
+
+    if (
+      trackJSON["approved"] ||
+      trackJSON["cancelled"] ||
+      trackJSON["rejected"] ||
+      trackJSON["timedOut"]
+    ) {
+      let status, confirmationBlockNumber;
+      if (trackJSON["approved"]) {
+        confirmationBlockNumber = trackJSON["approved"][0];
+        status = "Approved";
+      } else if (trackJSON["cancelled"]) {
+        confirmationBlockNumber = trackJSON["cancelled"][0];
+        status = "Cancelled";
+      } else if (trackJSON["rejected"]) {
+        confirmationBlockNumber = trackJSON["rejected"][0];
+        status = "Rejected";
+      } else if (trackJSON["timedOut"]) {
+        confirmationBlockNumber = trackJSON["timedOut"][0];
+        status = "TimedOut";
+      }
+      return confirmationBlockNumber;
+    }
+    else {
+      logger.error(`Referendum is still ongoing.`);
+      return null;
+    }
   } catch (e) {
-    logger.error(`Referendum is still ongoing: ${e}`);
+    logger.error(`Failed to get referendum info: ${e}`);
     return null;
   }
-};
+}
+
+
 
 const setupPinata = async (): Promise<PinataClient | null> => {
-  const pinata = new pinataSDK(
+  const pinata = pinataSDK(
     process.env.PINATA_API,
     process.env.PINATA_SECRET
   );
