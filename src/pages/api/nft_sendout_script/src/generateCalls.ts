@@ -804,7 +804,8 @@ const setupPinata = async (): Promise<PinataClient | null> => {
 };
 
 export const generateCalls = async (
-  config: RewardConfiguration
+  config: RewardConfiguration,
+  seed: number = 0
 ): Promise<string> => {
   await cryptoWaitReady();
 
@@ -813,7 +814,7 @@ export const generateCalls = async (
   const referendumIndex = new BN(config.refIndex);
   let apiKusama = await getApiKusama();
   let apiStatemine = await getApiStatemine();
-  const rng = seedrandom(referendumIndex.toString()); //add secret seed?
+  const rng = seedrandom(seed.toString()); //add secret seed?
 
   const blockNumber = await getBlockNumber(apiKusama, referendumIndex);
   if (!blockNumber) return;
@@ -1005,6 +1006,11 @@ export const generateCalls = async (
   }, {});
 
   logger.info(uniqs);
+  if (!(uniqs['2'] > uniqs['1'] * 4 && uniqs['1'] > uniqs['0'] * 2)) {
+    logger.info('Running again')
+    return generateCalls(config, ++seed)
+  } 
+  
 
   let itemCollectionId;
   //create collection if required
