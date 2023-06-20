@@ -11,6 +11,21 @@ const JWT = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24
 function RewardsCreationRarityFields({ rarity, controlledValues }) {
   const { register } = useFormContext();
 
+  let optionIndex;
+  switch (rarity) {
+    case "epic":
+      optionIndex = 0;
+      break;
+    case "rare":
+      optionIndex = 1;
+      break;
+    case "common":
+      optionIndex = 2;
+      break;
+    default:
+      optionIndex = 2;
+  }
+
   return (
     <div className={`flex flex-col p-5 form-fields-${rarity}`}>
       <h3 className="text-xl">{rarity}</h3>
@@ -23,7 +38,7 @@ function RewardsCreationRarityFields({ rarity, controlledValues }) {
 
       <input
         type="file"
-        {...register(`options.${rarity}.file`, {
+        {...register(`options[${optionIndex}].file`, {
           validate: {},
         })}
       />
@@ -39,7 +54,7 @@ function RewardsCreationRarityFields({ rarity, controlledValues }) {
         className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
         placeholder={`Enter name of ${rarity} NFT`}
         type="text"
-        {...register(`options.${rarity}.name`, {
+        {...register(`options[${optionIndex}].name`, {
           validate: {},
         })}
       />
@@ -55,7 +70,7 @@ function RewardsCreationRarityFields({ rarity, controlledValues }) {
         className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
         placeholder={`Enter name of ${rarity} NFT`}
         type="text"
-        {...register(`options.${rarity}.description`, {
+        {...register(`options[${optionIndex}].description`, {
           validate: {},
         })}
       />
@@ -71,7 +86,7 @@ function RewardsCreationRarityFields({ rarity, controlledValues }) {
         className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
         placeholder={`Enter name of ${rarity} NFT`}
         type="text"
-        {...register(`options.${rarity}.artist`, {
+        {...register(`options[${optionIndex}].artist`, {
           validate: {},
         })}
       />
@@ -84,6 +99,7 @@ export function RewardsCreationForm() {
 
   const [callData, setCallData] = useState();
   const [isCallDataLoading, setIsCallDataLoading] = useState(false);
+  const [error, setError] = useState();
 
   const {
     watch,
@@ -93,6 +109,24 @@ export function RewardsCreationForm() {
   const { closeModal } = useModal();
 
   const watchFormFields = watch();
+
+  // {
+  //   "maxProbability": 40,
+  //   "minProbability": 10,
+  //   "transferable": 1,
+  //   "symbol": "R99",
+  //   "text": "'Rare'\n\nI voted on Ref 99 and got a rare NFT",
+  //   "artist": "Dali",
+  //   "creativeDirector": "Amadeus Mozart",
+  //   "main": "99/rare/main.png",
+  //   "thumb": "99/rare/thumb.png",
+  //   "rarity": "rare",
+  //   "itemName": "Rare",
+  //   "minRoyalty": 20,
+  //   "maxRoyalty": 30,
+  //   "metadataCidDirect": "ipfs://ipfs/bafkreia45czi7tm73kumnrreakggj7b6owywexuhhen4jiv4dyoc3tvx7u",
+  //   "metadataCidDelegated": "ipfs://ipfs/bafkreia45czi7tm73kumnrreakggj7b6owywexuhhen4jiv4dyoc3tvx7u"
+  // },
 
   const [rewardFields, setRewardFields] = useState({
     refIndex: undefined,
@@ -172,22 +206,49 @@ export function RewardsCreationForm() {
   }
 
   async function generatePreimage() {
+    const config = {
+      ...testConfig,
+      ...watchFormFields,
+      options: testConfig.options.map((option, index) => {
+        return {
+          ...option,
+          ...watchFormFields.options[index],
+        };
+      }),
+    };
+
     setIsCallDataLoading(true);
-    fetch("/api/create-rewards-calls", {
-      method: "POST",
-      body: JSON.stringify(testConfig),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCallData(data);
-        setIsCallDataLoading(false);
+
+    try {
+      setError();
+      const res = await fetch("/api/create-rewards-calls", {
+        method: "POST",
+        body: JSON.stringify(config),
       });
+
+      console.log("res", res);
+      let jsonRes = await res.json();
+      console.log("jsonRes", jsonRes);
+
+      if (jsonRes.name === "Error") {
+        console.log(" frontend", jsonRes);
+        setError(jsonRes);
+        setIsCallDataLoading(false);
+      }
+
+      setCallData(jsonRes);
+      setIsCallDataLoading(false);
+    } catch (error) {
+      console.log(" frontend", error);
+      setError(error);
+      setIsCallDataLoading(false);
+    }
   }
 
   async function onSubmit(data) {
     console.table(data);
     // pinAllFiles();
-    generatePreimage(testConfig);
+    generatePreimage();
     closeModal();
   }
 
@@ -226,6 +287,7 @@ export function RewardsCreationForm() {
               validate: {},
             })}
           >
+            <option value="99">99</option>
             <option value="201">201</option>
             <option value="200">200</option>
             <option value="199">199</option>
@@ -248,6 +310,36 @@ export function RewardsCreationForm() {
           />
 
           <label
+            htmlFor="newCollectionName"
+            className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+          >
+            Collection Name
+          </label>
+          <input
+            className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+            placeholder="The name of your new collection"
+            type="text"
+            {...formMethods.register("newCollectionName", {
+              validate: {},
+            })}
+          />
+
+          <label
+            htmlFor="newCollectionName"
+            className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+          >
+            Collection Description
+          </label>
+          <input
+            className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+            placeholder="The description of your new collection"
+            type="text"
+            {...formMethods.register("newCollectionDescription", {
+              validate: {},
+            })}
+          />
+
+          <label
             htmlFor="royaltyAddress"
             className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
           >
@@ -257,7 +349,11 @@ export function RewardsCreationForm() {
             {["common", "rare", "epic"].map((rarity, index) => {
               const fields = rewardFields.options[index];
               return (
-                <RewardsCreationRarityFields rarity={rarity} fields={fields} />
+                <RewardsCreationRarityFields
+                  key={rarity}
+                  rarity={rarity}
+                  fields={fields}
+                />
               );
             })}
           </div>
@@ -281,6 +377,12 @@ export function RewardsCreationForm() {
       {isCallDataLoading && (
         <div>
           Generating your calls, please stand by this may take a while...
+        </div>
+      )}
+      {error && (
+        <div>
+          <p>Error generating your calls, please try again.</p>
+          <p className="text-red-500">{error.message}</p>
         </div>
       )}
       call config:

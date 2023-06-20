@@ -199,6 +199,25 @@ const calculateLuck = async (
   encointerScore: number,
   reputationLifetime: number
 ): Promise<string> => {
+  console.log(
+    "calculate luck",
+    voteAmountWithConviction,
+    minIn,
+    maxIn,
+    minOut,
+    maxOut,
+    exponent,
+    babyBonus,
+    toddlerBonus,
+    adolescentBonus,
+    adultBonus,
+    quizBonus,
+    encointerBonus,
+    dragonEquipped,
+    quizCorrect,
+    encointerScore,
+    reputationLifetime
+  );
   let n = await getDecimal(voteAmountWithConviction);
   minOut = parseInt(minOut.toString());
   maxOut = parseInt(maxOut.toString());
@@ -765,7 +784,7 @@ const getBlockNumber = async (
     );
   } catch (e) {
     logger.error(`Referendum is still ongoing: ${e}`);
-    return null;
+    throw new Error(`Referendum is still ongoing: ${e}`);
   }
 };
 
@@ -795,12 +814,20 @@ export const generateCalls = async (
   let apiKusama = await getApiKusama();
   let apiStatemine = await getApiStatemine();
   const rng = seedrandom(referendumIndex.toString()); //add secret seed?
+  let blockNumber;
 
-  const blockNumber = await getBlockNumber(apiKusama, referendumIndex);
-  if (!blockNumber) return;
+  try {
+    blockNumber = await getBlockNumber(apiKusama, referendumIndex);
+    console.log("blockNumber", blockNumber);
+    console.log("blockNumber here", blockNumber);
+    if (!blockNumber) throw new Error("Referendum is still ongoing");
+  } catch (e) {
+    logger.error(`Referendum is still ongoing: ${e}`);
+    throw new Error(`Referendum is still ongoing: ${e}`);
+  }
 
   const pinata = await setupPinata();
-  if (!pinata) return;
+  if (!pinata) throw new Error("Pinata setup failed");
 
   const { referendum, totalIssuance, votes } = await getConvictionVoting(99);
   logger.info("Number of votes: ", votes.length);
@@ -821,14 +848,12 @@ export const generateCalls = async (
 
   //apply encointer bonus
   let bonusFile = await getDragonBonusFile(referendumIndex);
-  if (bonusFile === "") {
-    return;
-  }
+
   let bonuses = await JSON.parse(bonusFile);
   // check that bonusFile is from correct block
   if (bonuses.block != blockNumber) {
     logger.info(`Wrong Block in Bonus File. Exiting.`);
-    return;
+    throw new Error(`Wrong Block in Bonus File. Exiting.`);
   }
 
   const walletsByDragonAge = getWalletsByDragonAge(bonuses);
