@@ -95,7 +95,33 @@ function RewardsCreationRarityFields({ rarity, controlledValues }) {
 }
 
 export function RewardsCreationForm() {
-  const formMethods = useForm();
+  const formMethods = useForm({
+    defaultValues: {
+      options: [
+        {
+          rarity: "common",
+          name: "",
+          description: "",
+          artist: "",
+          file: undefined,
+        },
+        {
+          rarity: "rare",
+          name: "",
+          description: "",
+          artist: "",
+          file: undefined,
+        },
+        {
+          rarity: "epic",
+          name: "",
+          description: "",
+          artist: "",
+          file: undefined,
+        },
+      ],
+    },
+  });
 
   const [callData, setCallData] = useState();
   const [isCallDataLoading, setIsCallDataLoading] = useState(false);
@@ -128,36 +154,7 @@ export function RewardsCreationForm() {
   //   "metadataCidDelegated": "ipfs://ipfs/bafkreia45czi7tm73kumnrreakggj7b6owywexuhhen4jiv4dyoc3tvx7u"
   // },
 
-  const [rewardFields, setRewardFields] = useState({
-    refIndex: undefined,
-    royaltyAddress: undefined,
-    options: [
-      {
-        rarity: "common",
-        name: "",
-        description: "",
-        artist: "",
-        file: undefined,
-      },
-      {
-        rarity: "rare",
-        name: "",
-        description: "",
-        artist: "",
-        file: undefined,
-      },
-      {
-        rarity: "epic",
-        name: "",
-        description: "",
-        artist: "",
-        file: undefined,
-      },
-    ],
-  });
-
   async function pinFile(file) {
-    console.log("rewardFields", rewardFields);
     if (!file) {
       return;
     }
@@ -347,7 +344,7 @@ export function RewardsCreationForm() {
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
             {["common", "rare", "epic"].map((rarity, index) => {
-              const fields = rewardFields.options[index];
+              const fields = watchFormFields.options[index];
               return (
                 <RewardsCreationRarityFields
                   key={rarity}
