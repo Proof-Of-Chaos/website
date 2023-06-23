@@ -19,6 +19,7 @@ import {
   Bonuses,
   RewardConfiguration,
   RewardOption,
+  VoteConvictionEncointer,
 } from "../types.js";
 import {
   getApiAt,
@@ -110,7 +111,7 @@ const retrieveAccountLocks = async (
  * @returns Array of VoteCheckResult objects containing meetsRequirements property.
  */
 const checkVotesMeetingRequirements = async (
-  votes: VoteConvictionDragonQuizEncointer[],
+  votes: VoteConvictionEncointer[],
   totalIssuance: string,
   config: RewardConfiguration
 ): Promise<VoteConvictionRequirements[]> => {
@@ -527,24 +528,24 @@ const createTransactionsForVotes = async (
           vote.address.toString()
         )
       );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "dragonEquipped",
-          vote.dragonEquipped
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "quizCorrect",
-          vote.quizCorrect.toString()
-        )
-      );
+      // txs.push(
+      //   apiStatemine.tx.nfts.setAttribute(
+      //     config.newCollectionSymbol,
+      //     i,
+      //     "CollectionOwner",
+      //     "dragonEquipped",
+      //     vote.dragonEquipped
+      //   )
+      // );
+      // txs.push(
+      //   apiStatemine.tx.nfts.setAttribute(
+      //     config.newCollectionSymbol,
+      //     i,
+      //     "CollectionOwner",
+      //     "quizCorrect",
+      //     vote.quizCorrect.toString()
+      //   )
+      // );
       txs.push(
         apiStatemine.tx.nfts.setAttribute(
           config.newCollectionSymbol,
@@ -791,9 +792,9 @@ const addQuizCorrectToVotes = (
 };
 
 const addEncointerScoreToVotes = (
-  votesWithDragonAndQuiz: VoteConvictionDragonQuiz[],
+  votesWithDragonAndQuiz: VoteConviction[],
   countPerWallet: Record<string, number>
-): VoteConvictionDragonQuizEncointer[] => {
+): VoteConvictionEncointer[] => {
   return votesWithDragonAndQuiz.map((vote) => {
     const encointerScore = countPerWallet[vote.address];
     return { ...vote, encointerScore: encointerScore ? encointerScore : 0 };
@@ -867,28 +868,38 @@ export const generateCalls = async (
   seed: number = 0
 ): Promise<string> => {
   await cryptoWaitReady();
-
-  console.log("🎉🎉🎉 We got the config", config);
-
   const referendumIndex = new BN(config.refIndex);
+  //get Kusama API
   let apiKusama = await getApiKusama();
+  //get Statemine API
   let apiStatemine = await getApiStatemine();
-  const rng = seedrandom(seed.toString()); //add secret seed?
+  //seed the randomizer
+  const rng = seedrandom(seed.toString());
 
+  //get ref ended block number
   const blockNumber = await getBlockNumber(apiKusama, referendumIndex);
   if (!blockNumber) return;
 
+  //initialize Pinata
   const pinata = await setupPinata();
   if (!pinata) return;
 
+  //retrieve all votes for a given ref
   const { referendum, totalIssuance, votes } = await getConvictionVoting(99);
   logger.info("Number of votes: ", votes.length);
 
+  //depending on outcome of the ref, voted amounts may or may not be locked up.
+  //we consider locked amounts as opposed to merely voting amounts.
+  //funds are not locked up when the outcome of a ref goes against a vote.
+  //we retrieve account locks for each voting wallet at ref end to come up with a "voted amount".
   const voteLocks = await retrieveAccountLocks(
     votes,
     referendum.confirmationBlockNumber
   );
 
+  //--Encointer Section Start--
+
+  //retrieve all the wallets that have attended any of last X ceremonies before ref expiry
   const { countPerWallet, reputationLifetime } = await fetchReputableVoters({
     confirmationBlockNumber: referendum.confirmationBlockNumber,
     getEncointerBlockNumberFromKusama: getEncointerBlockNumberFromKusama,
@@ -899,43 +910,52 @@ export const generateCalls = async (
   });
 
   //apply encointer bonus
-  let bonusFile = await getDragonBonusFile(referendumIndex);
-  if (bonusFile === "") {
-    return;
-  }
-  let bonuses = await JSON.parse(bonusFile);
-  // check that bonusFile is from correct block
-  if (bonuses.block != blockNumber) {
-    logger.info(`Wrong Block in Bonus File. Exiting.`);
-    return;
-  }
-
-  const walletsByDragonAge = getWalletsByDragonAge(bonuses);
-  const votesWithDragon = addDragonEquippedToVotes(
+  const votesWithEncointer = addEncointerScoreToVotes(
     voteLocks,
-    walletsByDragonAge
-  );
-
-  const client = createGraphQLClient(
-    "https://squid.subsquid.io/referenda-dashboard/v/0/graphql"
-  );
-  const quizSubmissions = await fetchQuizSubmissions(
-    client,
-    referendum.index.toString()
-  );
-
-  const votesWithDragonAndQuiz = addQuizCorrectToVotes(
-    votesWithDragon,
-    quizSubmissions
-  );
-  const votesWithDragonAndQuizAndEncointer = addEncointerScoreToVotes(
-    votesWithDragonAndQuiz,
     countPerWallet
   );
 
+  //--Encointer Section End--
+
+  // //--Dragon Section Start--
+  // let bonusFile = await getDragonBonusFile(referendumIndex);
+  // if (bonusFile === "") {
+  //   return;
+  // }
+  // let bonuses = await JSON.parse(bonusFile);
+  // // check that bonusFile is from correct block
+  // if (bonuses.block != blockNumber) {
+  //   logger.info(`Wrong Block in Bonus File. Exiting.`);
+  //   return;
+  // }
+
+  // const walletsByDragonAge = getWalletsByDragonAge(bonuses);
+  // const votesWithDragon = addDragonEquippedToVotes(
+  //   voteLocks,
+  //   walletsByDragonAge
+  // );
+
+  // //--Dragon Section End--
+
+  // const client = createGraphQLClient(
+  //   "https://squid.subsquid.io/referenda-dashboard/v/0/graphql"
+  // );
+  // const quizSubmissions = await fetchQuizSubmissions(
+  //   client,
+  //   referendum.index.toString()
+  // );
+
+  // const votesWithDragonAndQuiz = addQuizCorrectToVotes(
+  //   votesWithDragon,
+  //   quizSubmissions
+  // );
+  
+
+  //votes that don't meet requirements automatically receive common NFT
+  //requirements are defined in config
   const mappedVotes: VoteConvictionRequirements[] =
     await checkVotesMeetingRequirements(
-      votesWithDragonAndQuizAndEncointer,
+      votesWithEncointer,
       totalIssuance.toString(),
       config
     );
@@ -957,9 +977,11 @@ export const generateCalls = async (
   );
 
   let allChances = [];
+  //determine minVote out of votes meeting requirements
   const minVote = votesMeetingRequirements.reduce((prev, curr) =>
     prev.lockedWithConviction.lt(curr.lockedWithConviction) ? prev : curr
   );
+  //determine maxVote out of votes meeting requirements
   const maxVote = votesMeetingRequirements.reduce((prev, curr) =>
     prev.lockedWithConviction.gt(curr.lockedWithConviction) ? prev : curr
   );
@@ -969,6 +991,7 @@ export const generateCalls = async (
     return await getDecimal(vote.lockedWithConviction.toString());
   });
   const voteAmounts = await Promise.all(promises);
+  //get min, max and median to build the S curve.
   let { minValue, maxValue, median } = getMinMaxMedian(
     voteAmounts,
     config.minAmount
@@ -984,6 +1007,7 @@ export const generateCalls = async (
   config.median = median;
   logger.info("median", median);
   let selectedIndexArray = [];
+  //for each vote compute chances at epic, rare and common
   for (const vote of mappedVotes) {
     let chance;
     let selectedIndex;
@@ -991,11 +1015,16 @@ export const generateCalls = async (
     let counter = 0;
     let chances = {};
     if (vote.meetsRequirements) {
+      //repeat the following for each of the NFT options for each vote => compute a chance per option (epic, rare, common) per vote
       for (const option of config.options) {
         if (counter < config.options.length - 1) {
+          //the center of the S curve is at the median of the votes
+          //S curve is essentially 2 separate curves
+          //determine if each vote is less or more than median
           if (
             (await getDecimal(vote.lockedWithConviction.toString())) < median
           ) {
+            //if vote amount is less than median: max = median and curve exponenet = 3
             chance = await calculateLuck(
               vote.lockedWithConviction.toString(),
               minValue,
@@ -1009,12 +1038,13 @@ export const generateCalls = async (
               config.adultBonus,
               config.quizBonus,
               config.encointerBonus,
-              vote.dragonEquipped,
-              vote.quizCorrect,
+              "No", //vote.dragonEquipped,
+              0, //vote.quizCorrect,
               vote.encointerScore,
               reputationLifetime
             );
           } else {
+            //if vote amount is greater than median: min = median and curve exponenet = 0.4
             chance = await calculateLuck(
               vote.lockedWithConviction.toString(),
               median,
@@ -1028,8 +1058,8 @@ export const generateCalls = async (
               config.adultBonus,
               config.quizBonus,
               config.encointerBonus,
-              vote.dragonEquipped,
-              vote.quizCorrect,
+              "No", //vote.dragonEquipped,
+              0, //vote.quizCorrect,
               vote.encointerScore,
               reputationLifetime
             );
@@ -1065,11 +1095,15 @@ export const generateCalls = async (
   }, {});
 
   logger.info(uniqs);
+  //check that rarities are upheld
+  //if not, exit current iteration and rerun generateCalls with a new seed
   if (!(uniqs['2'] > uniqs['1'] * 4 && uniqs['1'] > uniqs['0'] * 2)) {
     logger.info('Running again')
     return generateCalls(config, ++seed)
   }
 
+
+  //computing the actual calls is still WIP and likely to change
 
   let itemCollectionId;
   //create collection if required

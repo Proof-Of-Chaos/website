@@ -18,7 +18,11 @@ export interface VoteConvictionDragonQuizEncointer extends VoteConvictionDragonQ
     encointerScore: number;
 }
 
-export interface VoteConvictionRequirements extends VoteConvictionDragonQuizEncointer {
+export interface VoteConvictionEncointer extends VoteConviction {
+    encointerScore: number;
+}
+
+export interface VoteConvictionRequirements extends VoteConvictionEncointer {
     meetsRequirements: boolean;
 }
 
