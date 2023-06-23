@@ -27,6 +27,8 @@ export const getDragonBonusFile = async (referendumId: BN) => {
     return bonuses;
   } catch (e) {
     logger.info(`No bonus file specified. Exiting.`);
-    return "";
+    throw new Error(
+      `No bonus file found at ${process.cwd()}/public/dragonBonus/${referendumId}.json. Exiting.`
+    );
   }
 };

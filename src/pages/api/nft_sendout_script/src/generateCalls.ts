@@ -77,12 +77,12 @@ const retrieveAccountLocks = async (
         const lockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-            userVote.endBlock
-              .sub(endBlockBN)
-              .muln(10)
-              .div(sevenDaysBlocks)
-              .toNumber() / 10
-          );
+              userVote.endBlock
+                .sub(endBlockBN)
+                .muln(10)
+                .div(sevenDaysBlocks)
+                .toNumber() / 10
+            );
         const matchingPeriod = LOCKPERIODS.reduce(
           (acc, curr, index) => (lockPeriods >= curr ? index : acc),
           0
@@ -93,8 +93,8 @@ const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-          BN.max(max, current)
-        )
+            BN.max(max, current)
+          )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -200,6 +200,25 @@ const calculateLuck = async (
   encointerScore: number,
   reputationLifetime: number
 ): Promise<string> => {
+  console.log(
+    "calculate luck",
+    voteAmountWithConviction,
+    minIn,
+    maxIn,
+    minOut,
+    maxOut,
+    exponent,
+    babyBonus,
+    toddlerBonus,
+    adolescentBonus,
+    adultBonus,
+    quizBonus,
+    encointerBonus,
+    dragonEquipped,
+    quizCorrect,
+    encointerScore,
+    reputationLifetime
+  );
   let n = await getDecimal(voteAmountWithConviction);
   minOut = parseInt(minOut.toString());
   maxOut = parseInt(maxOut.toString());
@@ -409,16 +428,24 @@ const createTransactionsForVotes = async (
       vote.voteType == "Delegating" ? selectedMetadata[1] : selectedMetadata[0];
     const randRoyaltyInRange = Math.floor(
       rng() * (selectedOption.maxRoyalty - selectedOption.minRoyalty + 1) +
-      selectedOption.minRoyalty
+        selectedOption.minRoyalty
     );
     if (!metadataCid) {
       logger.error(`metadataCid is null. exiting.`);
       return;
     }
     usedMetadataCids.push(metadataCid);
-    if (vote.address.toString() == "Hgcdd6sjp37KD1cKrAbwMZ6sBZTAVwb6v2GTssv9L2w1oN3") {
+    if (
+      vote.address.toString() ==
+      "Hgcdd6sjp37KD1cKrAbwMZ6sBZTAVwb6v2GTssv9L2w1oN3"
+    ) {
       txs.push(
-        apiStatemine.tx.nfts.mint(config.newCollectionSymbol, i, vote.address.toString(), null)
+        apiStatemine.tx.nfts.mint(
+          config.newCollectionSymbol,
+          i,
+          vote.address.toString(),
+          null
+        )
       );
       txs.push(
         apiStatemine.tx.nfts.setAttribute(
@@ -617,7 +644,11 @@ const createConfigNFT = async (
   const txs = [];
 
   txs.push(
-    apiStatemine.tx.uniques.mint(config.settingsCollectionSymbol, referendumIndex, proxyWallet)
+    apiStatemine.tx.uniques.mint(
+      config.settingsCollectionSymbol,
+      referendumIndex,
+      proxyWallet
+    )
   );
   txs.push(
     apiStatemine.tx.uniques.setAttribute(
@@ -801,9 +832,14 @@ const addEncointerScoreToVotes = (
   });
 };
 
-const getBlockNumber = async (apiKusama: ApiPromise, referendumIndex: BN): Promise<BN | null> => {
+const getBlockNumber = async (
+  apiKusama: ApiPromise,
+  referendumIndex: BN
+): Promise<BN | null> => {
   try {
-    const info = await apiKusama.query.referenda.referendumInfoFor(referendumIndex);
+    const info = await apiKusama.query.referenda.referendumInfoFor(
+      referendumIndex
+    );
     const trackJSON = info.toJSON();
 
     if (
@@ -827,18 +863,20 @@ const getBlockNumber = async (apiKusama: ApiPromise, referendumIndex: BN): Promi
         status = "TimedOut";
       }
       return confirmationBlockNumber;
-    }
-    else {
+    } else {
       logger.error(`Referendum is still ongoing.`);
       return null;
     }
   } catch (e) {
-    logger.error(`Failed to get referendum info: ${e}`);
-    return null;
+    logger.error(`Referendum is still ongoing: ${e}`);
+    throw new Error(`Referendum is still ongoing: ${e}`);
   }
-}
+};
 
-const checkCollectionExists = async (api: ApiPromise, collectionId: BN): Promise<boolean> => {
+const checkCollectionExists = async (
+  api: ApiPromise,
+  collectionId: BN
+): Promise<boolean> => {
   try {
     const collection = await api.query.uniques.collection(collectionId);
     return !collection.isEmpty;
@@ -846,10 +884,10 @@ const checkCollectionExists = async (api: ApiPromise, collectionId: BN): Promise
     console.error(`Failed to check collection: ${error}`);
     return false;
   }
-}
+};
 
 const setupPinata = async (): Promise<PinataClient | null> => {
-  const pinata = pinataSDK(
+  const pinata = new pinataSDK(
     process.env.PINATA_API,
     process.env.PINATA_SECRET
   );
@@ -875,14 +913,22 @@ export const generateCalls = async (
   let apiStatemine = await getApiStatemine();
   //seed the randomizer
   const rng = seedrandom(seed.toString());
+  let blockNumber;
 
   //get ref ended block number
-  const blockNumber = await getBlockNumber(apiKusama, referendumIndex);
-  if (!blockNumber) return;
+  try {
+    blockNumber = await getBlockNumber(apiKusama, referendumIndex);
+    console.log("blockNumber", blockNumber);
+    console.log("blockNumber here", blockNumber);
+    if (!blockNumber) throw new Error("Referendum is still ongoing");
+  } catch (e) {
+    logger.error(`Referendum is still ongoing: ${e}`);
+    throw new Error(`Referendum is still ongoing: ${e}`);
+  }
 
   //initialize Pinata
   const pinata = await setupPinata();
-  if (!pinata) return;
+  if (!pinata) throw new Error("Pinata setup failed");
 
   //retrieve all votes for a given ref
   const { referendum, totalIssuance, votes } = await getConvictionVoting(99);
@@ -1097,9 +1143,9 @@ export const generateCalls = async (
   logger.info(uniqs);
   //check that rarities are upheld
   //if not, exit current iteration and rerun generateCalls with a new seed
-  if (!(uniqs['2'] > uniqs['1'] * 4 && uniqs['1'] > uniqs['0'] * 2)) {
-    logger.info('Running again')
-    return generateCalls(config, ++seed)
+  if (!(uniqs["2"] > uniqs["1"] * 4 && uniqs["1"] > uniqs["0"] * 2)) {
+    logger.info("Running again");
+    return generateCalls(config, ++seed);
   }
 
 
@@ -1216,8 +1262,12 @@ export const generateCalls = async (
   // })
 
   let distributionAndConfigRemarks = [];
-  let txsKusama = []
-  txsKusama.push(apiKusama.tx.system.remark("Created with https://www.proofofchaos.app/referendum-rewards/"))
+  let txsKusama = [];
+  txsKusama.push(
+    apiKusama.tx.system.remark(
+      "Created with https://www.proofofchaos.app/referendum-rewards/"
+    )
+  );
   const batchtxKusama = apiKusama.tx.utility.batchAll(txsKusama);
   logger.info("Writing Distribution and Config to Chain");
   return JSON.stringify(batchtx);
