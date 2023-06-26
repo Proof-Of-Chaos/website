@@ -1229,12 +1229,19 @@ export const generateCalls = async (
   //   referendumIndex.toString(),
   //   proxyWallet)
 
-  const batchtx = apiStatemine.tx.utility.batchAll(txs).toHex();
+  const batchtx = apiStatemine.tx.utility.batchAll(txs).method.toHex();
   fs.writeFile(`public/output/${referendumIndex}.json`, batchtx, (err) => {
     // In case of a error throw err.
     if (err) throw err;
   });
+
   // console.log(apiStatemine.tx.utility.batch(txs).toHex())
+
+  //determine refTime + proofSize
+  const requiredWeight = (await apiStatemine.call.transactionPaymentCallApi.queryCallInfo(batchtx, 0)).toJSON()
+  const refTime = requiredWeight["weight"]["refTime"]
+  const proofSize = requiredWeight["weight"]["proofSize"]
+
   const dest = {
     V1: {
       interior: {
