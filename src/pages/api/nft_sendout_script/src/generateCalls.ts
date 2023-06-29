@@ -77,12 +77,12 @@ const retrieveAccountLocks = async (
         const lockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-              userVote.endBlock
-                .sub(endBlockBN)
-                .muln(10)
-                .div(sevenDaysBlocks)
-                .toNumber() / 10
-            );
+            userVote.endBlock
+              .sub(endBlockBN)
+              .muln(10)
+              .div(sevenDaysBlocks)
+              .toNumber() / 10
+          );
         const matchingPeriod = LOCKPERIODS.reduce(
           (acc, curr, index) => (lockPeriods >= curr ? index : acc),
           0
@@ -93,8 +93,8 @@ const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-            BN.max(max, current)
-          )
+          BN.max(max, current)
+        )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -428,7 +428,7 @@ const createTransactionsForVotes = async (
       vote.voteType == "Delegating" ? selectedMetadata[1] : selectedMetadata[0];
     const randRoyaltyInRange = Math.floor(
       rng() * (selectedOption.maxRoyalty - selectedOption.minRoyalty + 1) +
-        selectedOption.minRoyalty
+      selectedOption.minRoyalty
     );
     if (!metadataCid) {
       logger.error(`metadataCid is null. exiting.`);
@@ -887,7 +887,7 @@ const checkCollectionExists = async (
 };
 
 const setupPinata = async (): Promise<PinataClient | null> => {
-  const pinata = new pinataSDK(
+  const pinata = pinataSDK(
     process.env.PINATA_API,
     process.env.PINATA_SECRET
   );
@@ -995,7 +995,7 @@ export const generateCalls = async (
   //   votesWithDragon,
   //   quizSubmissions
   // );
-  
+
 
   //votes that don't meet requirements automatically receive common NFT
   //requirements are defined in config
@@ -1229,7 +1229,8 @@ export const generateCalls = async (
   //   referendumIndex.toString(),
   //   proxyWallet)
 
-  const batchtx = apiStatemine.tx.utility.batchAll(txs).method.toHex();
+  const batchMethodtx = apiStatemine.tx.utility.batchAll(txs).method.toHex();
+  const batchtx = apiStatemine.tx.utility.batchAll(txs).toHex();
   fs.writeFile(`public/output/${referendumIndex}.json`, batchtx, (err) => {
     // In case of a error throw err.
     if (err) throw err;
@@ -1238,35 +1239,37 @@ export const generateCalls = async (
   // console.log(apiStatemine.tx.utility.batch(txs).toHex())
 
   //determine refTime + proofSize
-  const requiredWeight = (await apiStatemine.call.transactionPaymentCallApi.queryCallInfo(batchtx, 0)).toJSON()
+  const requiredWeight = (await apiStatemine.call.transactionPaymentCallApi.queryCallInfo(batchMethodtx, 0)).toJSON()
   const refTime = requiredWeight["weight"]["refTime"]
   const proofSize = requiredWeight["weight"]["proofSize"]
 
+
+  //design xcmv3 call
   const dest = {
-    V1: {
+    V3: {
       interior: {
         X1: {
-          parachain: 1000,
+          Parachain: 1000,
         },
       },
+      parents: 0
     },
   };
   const message = {
-    V2: {
-      0: {
-        transact: {
-          call: batchtx,
-          originType: "Superuser",
-          require_weight_at_most: 1000000000,
-        },
+    V3: [{
+      Transact: {
+        call: batchtx,
+        origin_kind: "Superuser",
+        require_weight_at_most: {
+          proof_size: proofSize,
+          ref_time: refTime
+        }
       },
-    },
+    }],
   };
-  // const finalCall = apiKusama.tx.xcmPallet.send(dest, message)
-  // fs.writeFile(`public/output/1.json`, JSON.stringify(finalCall), (err) => {
-  //     // In case of a error throw err.
-  //     if (err) throw err;
-  // })
+  const xcmCall = apiKusama.tx.xcmPallet.send(dest, message)
+
+
 
   let distributionAndConfigRemarks = [];
   let txsKusama = [];
@@ -1275,7 +1278,12 @@ export const generateCalls = async (
       "Created with https://www.proofofchaos.app/referendum-rewards/"
     )
   );
-  const batchtxKusama = apiKusama.tx.utility.batchAll(txsKusama);
+  txsKusama.push(xcmCall)
+  const finalCall = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
+  fs.writeFile(`public/output/1.json`, finalCall, (err) => {
+    // In case of a error throw err.
+    if (err) throw err;
+  })
   logger.info("Writing Distribution and Config to Chain");
   return JSON.stringify(batchtx);
 
