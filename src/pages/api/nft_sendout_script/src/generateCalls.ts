@@ -20,6 +20,7 @@ import {
   RewardConfiguration,
   RewardOption,
   VoteConvictionEncointer,
+  CallResult,
 } from "../types.js";
 import {
   getApiAt,
@@ -904,7 +905,7 @@ const setupPinata = async (): Promise<PinataClient | null> => {
 export const generateCalls = async (
   config: RewardConfiguration,
   seed: number = 0
-): Promise<string> => {
+): Promise<CallResult> => {
   await cryptoWaitReady();
   const referendumIndex = new BN(config.refIndex);
   //get Kusama API
@@ -1280,12 +1281,11 @@ export const generateCalls = async (
   );
   txsKusama.push(xcmCall)
   const finalCall = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
-  fs.writeFile(`public/output/1.json`, finalCall, (err) => {
-    // In case of a error throw err.
-    if (err) throw err;
-  })
-  logger.info("Writing Distribution and Config to Chain");
-  return JSON.stringify(batchtx);
+  // fs.writeFile(`public/output/1.json`, finalCall, (err) => {
+  //   // In case of a error throw err.
+  //   if (err) throw err;
+  // })
+  return {call: JSON.stringify(finalCall), epic_count: uniqs["0"], rare_count: uniqs["1"], common_count: uniqs["2"]};
 
   //write distribution to chain
   // distributionAndConfigRemarks.push('PROOFOFCHAOS2::' + referendumIndex.toString() + '::DISTRIBUTION::' + JSON.stringify(distribution))

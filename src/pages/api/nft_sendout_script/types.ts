@@ -249,3 +249,10 @@ export interface RewardOption {
     metadataCidDirect?: string;
     metadataCidDelegated?: string;
 }
+
+export type CallResult = {
+    call: string;
+    epic_count: number;
+    rare_count: number;
+    common_count: number;
+  };

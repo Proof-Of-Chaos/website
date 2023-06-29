@@ -4,10 +4,11 @@ export default async function handler(req, res) {
   const config = JSON.parse(req.body);
   console.log("in api:", config);
   try {
-    const callData = await generateCalls(config);
+    const {call, epic_count, rare_count, common_count} = await generateCalls(config);
+    console.log(call, epic_count, rare_count, common_count)
     res.status(200).json({
       config: config,
-      preimage: callData,
+      preimage: call,
     });
   } catch (error) {
     // Sends error to the client side
