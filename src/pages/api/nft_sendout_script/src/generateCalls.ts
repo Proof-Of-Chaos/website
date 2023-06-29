@@ -78,12 +78,12 @@ const retrieveAccountLocks = async (
         const lockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-            userVote.endBlock
-              .sub(endBlockBN)
-              .muln(10)
-              .div(sevenDaysBlocks)
-              .toNumber() / 10
-          );
+              userVote.endBlock
+                .sub(endBlockBN)
+                .muln(10)
+                .div(sevenDaysBlocks)
+                .toNumber() / 10
+            );
         const matchingPeriod = LOCKPERIODS.reduce(
           (acc, curr, index) => (lockPeriods >= curr ? index : acc),
           0
@@ -94,8 +94,8 @@ const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-          BN.max(max, current)
-        )
+            BN.max(max, current)
+          )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -429,7 +429,7 @@ const createTransactionsForVotes = async (
       vote.voteType == "Delegating" ? selectedMetadata[1] : selectedMetadata[0];
     const randRoyaltyInRange = Math.floor(
       rng() * (selectedOption.maxRoyalty - selectedOption.minRoyalty + 1) +
-      selectedOption.minRoyalty
+        selectedOption.minRoyalty
     );
     if (!metadataCid) {
       logger.error(`metadataCid is null. exiting.`);
@@ -888,7 +888,7 @@ const checkCollectionExists = async (
 };
 
 const setupPinata = async (): Promise<PinataClient | null> => {
-  const pinata = pinataSDK(
+  const pinata = new pinataSDK(
     process.env.PINATA_API,
     process.env.PINATA_SECRET
   );
@@ -996,7 +996,6 @@ export const generateCalls = async (
   //   votesWithDragon,
   //   quizSubmissions
   // );
-
 
   //votes that don't meet requirements automatically receive common NFT
   //requirements are defined in config
@@ -1149,7 +1148,6 @@ export const generateCalls = async (
     return generateCalls(config, ++seed);
   }
 
-
   //computing the actual calls is still WIP and likely to change
 
   let itemCollectionId;
@@ -1240,10 +1238,14 @@ export const generateCalls = async (
   // console.log(apiStatemine.tx.utility.batch(txs).toHex())
 
   //determine refTime + proofSize
-  const requiredWeight = (await apiStatemine.call.transactionPaymentCallApi.queryCallInfo(batchMethodtx, 0)).toJSON()
-  const refTime = requiredWeight["weight"]["refTime"]
-  const proofSize = requiredWeight["weight"]["proofSize"]
-
+  const requiredWeight = (
+    await apiStatemine.call.transactionPaymentCallApi.queryCallInfo(
+      batchMethodtx,
+      0
+    )
+  ).toJSON();
+  const refTime = requiredWeight["weight"]["refTime"];
+  const proofSize = requiredWeight["weight"]["proofSize"];
 
   //design xcmv3 call
   const dest = {
@@ -1253,24 +1255,24 @@ export const generateCalls = async (
           Parachain: 1000,
         },
       },
-      parents: 0
+      parents: 0,
     },
   };
   const message = {
-    V3: [{
-      Transact: {
-        call: batchtx,
-        origin_kind: "Superuser",
-        require_weight_at_most: {
-          proof_size: proofSize,
-          ref_time: refTime
-        }
+    V3: [
+      {
+        Transact: {
+          call: batchtx,
+          origin_kind: "Superuser",
+          require_weight_at_most: {
+            proof_size: proofSize,
+            ref_time: refTime,
+          },
+        },
       },
-    }],
+    ],
   };
-  const xcmCall = apiKusama.tx.xcmPallet.send(dest, message)
-
-
+  const xcmCall = apiKusama.tx.xcmPallet.send(dest, message);
 
   let distributionAndConfigRemarks = [];
   let txsKusama = [];
@@ -1279,13 +1281,18 @@ export const generateCalls = async (
       "Created with https://www.proofofchaos.app/referendum-rewards/"
     )
   );
-  txsKusama.push(xcmCall)
+  txsKusama.push(xcmCall);
   const finalCall = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
   // fs.writeFile(`public/output/1.json`, finalCall, (err) => {
   //   // In case of a error throw err.
   //   if (err) throw err;
   // })
-  return {call: JSON.stringify(finalCall), epic_count: uniqs["0"], rare_count: uniqs["1"], common_count: uniqs["2"]};
+  return {
+    call: JSON.stringify(finalCall),
+    epic_count: uniqs["0"],
+    rare_count: uniqs["1"],
+    common_count: uniqs["2"],
+  };
 
   //write distribution to chain
   // distributionAndConfigRemarks.push('PROOFOFCHAOS2::' + referendumIndex.toString() + '::DISTRIBUTION::' + JSON.stringify(distribution))

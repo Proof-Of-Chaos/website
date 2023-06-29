@@ -24,7 +24,7 @@
     "@hookform/resolvers": "^3.0.0",
     "@mui/material": "^5.11.14",
     "@mui/system": "^5.11.14",
-    "@pinata/sdk": "^1.2.0",
+    "@pinata/sdk": "^2.1.0",
     "@polkadot/api": "^10.9.1",
     "@polkadot/extension-dapp": "^0.45.3",
     "@polkadot/extension-inject": "^0.45.3",
