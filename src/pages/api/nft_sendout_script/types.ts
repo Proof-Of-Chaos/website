@@ -24,6 +24,7 @@ export interface VoteConvictionEncointer extends VoteConviction {
 
 export interface VoteConvictionRequirements extends VoteConvictionEncointer {
     meetsRequirements: boolean;
+    lockedWithConvictionDecimal: number;
 }
 
 export type PalletReferenda = 'referenda' | 'rankedPolls' | 'fellowshipReferenda';

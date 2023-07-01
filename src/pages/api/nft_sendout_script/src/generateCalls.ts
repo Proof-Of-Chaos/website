@@ -26,6 +26,7 @@ import {
   getApiAt,
   getApiKusama,
   getApiStatemine,
+  getChainDecimals,
   getDecimal,
 } from "../tools/substrateUtils";
 import { getDragonBonusFile } from "../tools/utils";
@@ -114,13 +115,14 @@ const retrieveAccountLocks = async (
 const checkVotesMeetingRequirements = async (
   votes: VoteConvictionEncointer[],
   totalIssuance: string,
-  config: RewardConfiguration
+  config: RewardConfiguration,
+  chainDecimals: BN
 ): Promise<VoteConvictionRequirements[]> => {
   const minVote = BN.max(new BN(config.min), new BN("0"));
   const maxVote = BN.min(new BN(config.max), new BN(totalIssuance));
 
-  config.minVote = await getDecimal(minVote.toString());
-  config.maxVote = await getDecimal(maxVote.toString());
+  config.minVote = getDecimal(minVote.toString(), chainDecimals);
+  config.maxVote = getDecimal(maxVote.toString(), chainDecimals);
 
   const filtered: VoteConvictionRequirements[] = votes.map((vote, i) => {
     const meetsRequirements = !(
@@ -130,7 +132,9 @@ const checkVotesMeetingRequirements = async (
       (config.first !== null && i > config.first)
     );
 
-    return { ...vote, meetsRequirements };
+    const lockedWithConvictionDecimal = getDecimal(vote.lockedWithConviction.toString(), chainDecimals)
+
+    return { ...vote, meetsRequirements, lockedWithConvictionDecimal };
   });
 
   return filtered;
@@ -183,8 +187,8 @@ const getRandom = (rng: RNG, weights: number[]): number => {
  * @param encointerScore - The encointer score.
  * @returns - A Promise that resolves to the calculated luck value.
  */
-const calculateLuck = async (
-  voteAmountWithConviction: string,
+const calculateLuck = (
+  voteAmountWithConviction: number,
   minIn: number,
   maxIn: number,
   minOut: number,
@@ -200,7 +204,7 @@ const calculateLuck = async (
   quizCorrect: number,
   encointerScore: number,
   reputationLifetime: number
-): Promise<string> => {
+): string => {
   console.log(
     "calculate luck",
     voteAmountWithConviction,
@@ -220,7 +224,7 @@ const calculateLuck = async (
     encointerScore,
     reputationLifetime
   );
-  let n = await getDecimal(voteAmountWithConviction);
+  let n = voteAmountWithConviction;
   minOut = parseInt(minOut.toString());
   maxOut = parseInt(maxOut.toString());
   if (n > maxIn) {
@@ -472,7 +476,7 @@ const createTransactionsForVotes = async (
           i,
           "CollectionOwner",
           "amountLockedInGovernance",
-          await getDecimal(vote.lockedWithConviction.toString())
+          vote.lockedWithConvictionDecimal
         )
       );
       txs.push(
@@ -997,13 +1001,16 @@ export const generateCalls = async (
   //   quizSubmissions
   // );
 
+  const kusamaChainDecimals = await getChainDecimals("kusama")
+
   //votes that don't meet requirements automatically receive common NFT
   //requirements are defined in config
   const mappedVotes: VoteConvictionRequirements[] =
     await checkVotesMeetingRequirements(
       votesWithEncointer,
       totalIssuance.toString(),
-      config
+      config,
+      kusamaChainDecimals
     );
 
   const votesMeetingRequirements = mappedVotes.filter((vote) => {
@@ -1033,10 +1040,9 @@ export const generateCalls = async (
   );
   logger.info("minVote", minVote.lockedWithConviction.toString());
   logger.info("maxVote", maxVote.lockedWithConviction.toString());
-  const promises = votesMeetingRequirements.map(async (vote) => {
-    return await getDecimal(vote.lockedWithConviction.toString());
+  const voteAmounts = votesMeetingRequirements.map((vote) => {
+    return vote.lockedWithConvictionDecimal;
   });
-  const voteAmounts = await Promise.all(promises);
   //get min, max and median to build the S curve.
   let { minValue, maxValue, median } = getMinMaxMedian(
     voteAmounts,
@@ -1044,7 +1050,7 @@ export const generateCalls = async (
   );
   minValue = Math.max(
     minValue,
-    await getDecimal(minVote.lockedWithConviction.toString())
+    getDecimal(minVote.lockedWithConviction.toString(), kusamaChainDecimals)
   );
   config.minValue = Math.max(minValue, config.minAmount);
   logger.info("minValue", minValue);
@@ -1068,11 +1074,11 @@ export const generateCalls = async (
           //S curve is essentially 2 separate curves
           //determine if each vote is less or more than median
           if (
-            (await getDecimal(vote.lockedWithConviction.toString())) < median
+            vote.lockedWithConvictionDecimal < median
           ) {
             //if vote amount is less than median: max = median and curve exponenet = 3
-            chance = await calculateLuck(
-              vote.lockedWithConviction.toString(),
+            chance = calculateLuck(
+              vote.lockedWithConvictionDecimal,
               minValue,
               median,
               option.minProbability,
@@ -1091,8 +1097,8 @@ export const generateCalls = async (
             );
           } else {
             //if vote amount is greater than median: min = median and curve exponenet = 0.4
-            chance = await calculateLuck(
-              vote.lockedWithConviction.toString(),
+            chance = calculateLuck(
+              vote.lockedWithConvictionDecimal,
               median,
               maxValue,
               (option.maxProbability + option.minProbability) / 2,
