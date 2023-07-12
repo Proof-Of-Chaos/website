@@ -376,12 +376,10 @@ export const getBlockIndexer = (block: Block) => {
 
 export const getDecimal = (bigNum: string, chainDecimals: BN) => {
   const base = new BN(10);
-  return new BN(bigNum)
-    .div(base.pow(chainDecimals))
-    .toNumber();
+  return new BN(bigNum).div(base.pow(chainDecimals)).toNumber();
 };
 
-export const getChainDecimals = async (network: string,) => {
+export const getChainDecimals = async (network: string) => {
   let api;
   switch (network) {
     case "kusama":
@@ -396,7 +394,7 @@ export const getChainDecimals = async (network: string,) => {
     default:
       break;
   }
-  return new BN(api.registry.chainDecimals)
+  return new BN(api.registry.chainDecimals);
 };
 
 // Returns the denomination of the chain. Used for formatting planck denomianted amounts

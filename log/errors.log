@@ -92,3 +92,4 @@
 [2023-06-20T18:26:48.779] [ERROR] api - Referendum is still ongoing: Error: Referendum is still ongoing: Error: Cannot convert 'Rejected' via asApproved
 [2023-06-20T18:27:13.214] [ERROR] api - Referendum is still ongoing: Error: Cannot convert 'Rejected' via asApproved
 [2023-06-20T18:27:13.215] [ERROR] api - Referendum is still ongoing: Error: Referendum is still ongoing: Error: Cannot convert 'Rejected' via asApproved
+[2023-07-12T12:01:52.411] [ERROR] api - one of metadataCids is null: dir:  del: ipfs://ipfs/bafkreignfbwfoj3hy2wuuu6y3cql45ycudcrvkbeey27aaa7yoyoc7pk54. exiting.

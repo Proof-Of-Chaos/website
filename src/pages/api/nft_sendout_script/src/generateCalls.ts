@@ -23,7 +23,6 @@ import {
   CallResult,
 } from "../types.js";
 import {
-  getApiAt,
   getApiKusama,
   getApiStatemine,
   getChainDecimals,
@@ -32,7 +31,7 @@ import {
 import { getDragonBonusFile } from "../tools/utils";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import { createNewCollection } from "./createNewCollection";
-import { useAccountLocksImpl } from "./accountLocks";
+import { retrieveAccountLocks } from "./_helpersVote";
 import pinataSDK, { PinataClient } from "@pinata/sdk";
 import { getConvictionVoting } from "./voteData";
 import { GraphQLClient } from "graphql-request";
@@ -44,66 +43,7 @@ import {
   getLatestEncointerCeremony,
   getReputationLifetime,
 } from "./encointerData";
-
-/**
- * Retrieve account locks for the given votes and endBlock.
- * @param votes Array of ConvictionVote objects.
- * @param endBlock The block number to calculate locked balances.
- * @returns Array of VoteWithLock objects containing lockedWithConviction property.
- */
-const retrieveAccountLocks = async (
-  votes: ConvictionVote[],
-  endBlock: number
-): Promise<VoteConviction[]> => {
-  const api = await getApiAt("kusama", endBlock);
-  const LOCKS = [1, 10, 20, 30, 40, 50, 60];
-  const LOCKPERIODS = [0, 1, 2, 4, 8, 16, 32];
-  const sevenDaysBlocks = api.consts.convictionVoting.voteLockingPeriod;
-
-  const endBlockBN = new BN(endBlock);
-  const promises = votes.map(async (vote) => {
-    const userVotes = await useAccountLocksImpl(
-      api,
-      "referenda",
-      "convictionVoting",
-      vote.address.toString()
-    );
-
-    const userLockedBalancesWithConviction = userVotes
-      .filter(
-        (userVote) =>
-          userVote.endBlock.sub(endBlockBN).gte(new BN(0)) ||
-          userVote.endBlock.eqn(0)
-      )
-      .map((userVote) => {
-        const lockPeriods = userVote.endBlock.eqn(0)
-          ? 0
-          : Math.floor(
-              userVote.endBlock
-                .sub(endBlockBN)
-                .muln(10)
-                .div(sevenDaysBlocks)
-                .toNumber() / 10
-            );
-        const matchingPeriod = LOCKPERIODS.reduce(
-          (acc, curr, index) => (lockPeriods >= curr ? index : acc),
-          0
-        );
-        return userVote.total.muln(LOCKS[matchingPeriod]).div(new BN(10));
-      });
-
-    const maxLockedWithConviction =
-      userLockedBalancesWithConviction.length > 0
-        ? userLockedBalancesWithConviction.reduce((max, current) =>
-            BN.max(max, current)
-          )
-        : new BN(0);
-
-    return { ...vote, lockedWithConviction: maxLockedWithConviction };
-  });
-
-  return await Promise.all(promises);
-};
+import { getBlockNumber, setupPinata } from "./_helpersApi";
 
 /**
  * Check if votes meet the specified requirements.
@@ -113,7 +53,7 @@ const retrieveAccountLocks = async (
  * @returns Array of VoteCheckResult objects containing meetsRequirements property.
  */
 const checkVotesMeetingRequirements = async (
-  votes: VoteConvictionEncointer[],
+  votes: VoteConviction[],
   totalIssuance: string,
   config: RewardConfiguration,
   chainDecimals: BN
@@ -132,7 +72,10 @@ const checkVotesMeetingRequirements = async (
       (config.first !== null && i > config.first)
     );
 
-    const lockedWithConvictionDecimal = getDecimal(vote.lockedWithConviction.toString(), chainDecimals)
+    const lockedWithConvictionDecimal = getDecimal(
+      vote.lockedWithConviction.toString(),
+      chainDecimals
+    );
 
     return { ...vote, meetsRequirements, lockedWithConvictionDecimal };
   });
@@ -837,47 +780,6 @@ const addEncointerScoreToVotes = (
   });
 };
 
-const getBlockNumber = async (
-  apiKusama: ApiPromise,
-  referendumIndex: BN
-): Promise<BN | null> => {
-  try {
-    const info = await apiKusama.query.referenda.referendumInfoFor(
-      referendumIndex
-    );
-    const trackJSON = info.toJSON();
-
-    if (
-      trackJSON["approved"] ||
-      trackJSON["cancelled"] ||
-      trackJSON["rejected"] ||
-      trackJSON["timedOut"]
-    ) {
-      let status, confirmationBlockNumber;
-      if (trackJSON["approved"]) {
-        confirmationBlockNumber = trackJSON["approved"][0];
-        status = "Approved";
-      } else if (trackJSON["cancelled"]) {
-        confirmationBlockNumber = trackJSON["cancelled"][0];
-        status = "Cancelled";
-      } else if (trackJSON["rejected"]) {
-        confirmationBlockNumber = trackJSON["rejected"][0];
-        status = "Rejected";
-      } else if (trackJSON["timedOut"]) {
-        confirmationBlockNumber = trackJSON["timedOut"][0];
-        status = "TimedOut";
-      }
-      return confirmationBlockNumber;
-    } else {
-      logger.error(`Referendum is still ongoing.`);
-      return null;
-    }
-  } catch (e) {
-    logger.error(`Referendum is still ongoing: ${e}`);
-    throw new Error(`Referendum is still ongoing: ${e}`);
-  }
-};
-
 const checkCollectionExists = async (
   api: ApiPromise,
   collectionId: BN
@@ -891,40 +793,34 @@ const checkCollectionExists = async (
   }
 };
 
-const setupPinata = async (): Promise<PinataClient | null> => {
-  const pinata = new pinataSDK(
-    process.env.PINATA_API,
-    process.env.PINATA_SECRET
-  );
-  try {
-    const result = await pinata.testAuthentication();
-    logger.info(result);
-    return pinata;
-  } catch (err) {
-    logger.info(err);
-    return null;
-  }
-};
-
 export const generateCalls = async (
   config: RewardConfiguration,
   seed: number = 0
 ): Promise<CallResult> => {
+  const { refIndex } = config;
+
+  logger.info(
+    `Generating calls for reward distribution of referendum ${refIndex}`
+  );
+  logger.trace("with config", config);
+
   await cryptoWaitReady();
   const referendumIndex = new BN(config.refIndex);
+
   //get Kusama API
-  let apiKusama = await getApiKusama();
+  const apiKusama = await getApiKusama();
+  const kusamaChainDecimals = await getChainDecimals("kusama");
+
   //get Statemine API
-  let apiStatemine = await getApiStatemine();
+  const apiStatemine = await getApiStatemine();
+
   //seed the randomizer
   const rng = seedrandom(seed.toString());
-  let blockNumber;
 
   //get ref ended block number
+  let blockNumber;
   try {
     blockNumber = await getBlockNumber(apiKusama, referendumIndex);
-    console.log("blockNumber", blockNumber);
-    console.log("blockNumber here", blockNumber);
     if (!blockNumber) throw new Error("Referendum is still ongoing");
   } catch (e) {
     logger.error(`Referendum is still ongoing: ${e}`);
@@ -933,11 +829,12 @@ export const generateCalls = async (
 
   //initialize Pinata
   const pinata = await setupPinata();
-  if (!pinata) throw new Error("Pinata setup failed");
 
   //retrieve all votes for a given ref
-  const { referendum, totalIssuance, votes } = await getConvictionVoting(99);
-  logger.info("Number of votes: ", votes.length);
+  const { referendum, totalIssuance, votes } = await getConvictionVoting(
+    parseInt(refIndex)
+  );
+  logger.info(`Processing ${votes.length} votes for referendum ${refIndex}`);
 
   //depending on outcome of the ref, voted amounts may or may not be locked up.
   //we consider locked amounts as opposed to merely voting amounts.
@@ -948,16 +845,18 @@ export const generateCalls = async (
     referendum.confirmationBlockNumber
   );
 
+  //TODO write a applyBonus function that takes names of bonuses to be applied
+
   //--Encointer Section Start--
 
   //retrieve all the wallets that have attended any of last X ceremonies before ref expiry
   const { countPerWallet, reputationLifetime } = await fetchReputableVoters({
     confirmationBlockNumber: referendum.confirmationBlockNumber,
-    getEncointerBlockNumberFromKusama: getEncointerBlockNumberFromKusama,
-    getCurrentEncointerCommunities: getCurrentEncointerCommunities,
-    getLatestEncointerCeremony: getLatestEncointerCeremony,
-    getReputationLifetime: getReputationLifetime,
-    getCeremonyAttendants: getCeremonyAttendants,
+    getEncointerBlockNumberFromKusama,
+    getCurrentEncointerCommunities,
+    getLatestEncointerCeremony,
+    getReputationLifetime,
+    getCeremonyAttendants,
   });
 
   //apply encointer bonus
@@ -988,6 +887,8 @@ export const generateCalls = async (
 
   // //--Dragon Section End--
 
+  // //--Quiz Section Start--
+
   // const client = createGraphQLClient(
   //   "https://squid.subsquid.io/referenda-dashboard/v/0/graphql"
   // );
@@ -1001,13 +902,13 @@ export const generateCalls = async (
   //   quizSubmissions
   // );
 
-  const kusamaChainDecimals = await getChainDecimals("kusama")
+  // //--Quiz Section End--
 
   //votes that don't meet requirements automatically receive common NFT
   //requirements are defined in config
   const mappedVotes: VoteConvictionRequirements[] =
     await checkVotesMeetingRequirements(
-      votesWithEncointer,
+      voteLocks,
       totalIssuance.toString(),
       config,
       kusamaChainDecimals
@@ -1073,9 +974,7 @@ export const generateCalls = async (
           //the center of the S curve is at the median of the votes
           //S curve is essentially 2 separate curves
           //determine if each vote is less or more than median
-          if (
-            vote.lockedWithConvictionDecimal < median
-          ) {
+          if (vote.lockedWithConvictionDecimal < median) {
             //if vote amount is less than median: max = median and curve exponenet = 3
             chance = calculateLuck(
               vote.lockedWithConvictionDecimal,
