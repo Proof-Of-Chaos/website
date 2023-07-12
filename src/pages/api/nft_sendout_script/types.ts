@@ -3,10 +3,12 @@ import { Bytes } from "@polkadot/types";
 import { BN } from "@polkadot/util";
 
 export interface VoteConviction extends ConvictionVote {
-  lockedWithConviction: BN;
+  lockedWithConviction?: BN;
   dragonEquipped?: string;
   quizCorrect?: number;
   encointerScore?: number;
+  meetsRequirements?: boolean;
+  lockedWithConvictionDecimal?: number;
 }
 
 export interface VoteConvictionDragon extends VoteConviction {

@@ -4,16 +4,20 @@ import type {
   PalletConvictionVotingVoteVoting,
   PalletReferendaReferendumInfoConvictionVotingTally,
 } from "@polkadot/types/lookup";
-import { BN } from "@polkadot/util";
+import { BN, bnToBn } from "@polkadot/util";
 import type {
   Lock,
   PalletReferenda,
   PalletVote,
   ConvictionVote,
   VoteConviction,
+  RewardConfiguration,
+  VoteConvictionRequirements,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
-import { getApiAt } from "../tools/substrateUtils";
+import { getApiAt, getDecimal } from "../tools/substrateUtils";
+import { getConvictionVoting } from "./voteData";
+import { Logger } from "log4js";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -44,6 +48,132 @@ const getRefParams = (
     }
   }
   return undefined;
+};
+
+// Helper function to calculate bonuses for wallets that meet the requirements
+const applyBonusesFor = (
+  bonusName: String,
+  votes: VoteConviction[]
+): VoteConviction[] => {
+  return votes;
+};
+
+/**
+ * Given a referendum index, gets all the votes for that referendum. Also adds annotations that are relevant for the sendout script like the luckbonus and the finally received nft rarity.
+ * @param referendumIndex
+ * @returns
+ */
+export const getAnnotatedVotes = async (
+  config: RewardConfiguration,
+  chainDecimals: BN,
+  logger: Logger
+): Promise<VoteConviction[]> => {
+  let { referendum, totalIssuance, votes } = await getConvictionVoting(
+    parseInt(config.refIndex)
+  );
+
+  // start annotating new attributes to the votes
+  votes = await retrieveAccountLocks(votes, referendum.confirmationBlockNumber);
+
+  votes = applyBonusesFor("encointer", votes);
+  votes = applyBonusesFor("dragon", votes);
+  votes = applyBonusesFor("quiz", votes);
+
+  votes = await checkVotesMeetingRequirements(
+    votes,
+    totalIssuance,
+    config,
+    chainDecimals
+  );
+
+  const {
+    votesMeetingRequirements,
+    votesNotMeetingRequirements,
+    minVoteValue,
+    maxVoteValue,
+    medianVoteValue,
+  } = getVoteInfo(votes);
+
+  logger.info(
+    `Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
+  );
+  logger.info(
+    `Min vote value: ${minVoteValue}, max vote value: ${maxVoteValue}, median vote value: ${medianVoteValue}`
+  );
+
+  return votes;
+};
+
+const getVoteInfo = (
+  votes: VoteConviction[]
+): {
+  votesMeetingRequirements: VoteConviction[];
+  votesNotMeetingRequirements: VoteConviction[];
+  minVoteValue: BN;
+  maxVoteValue: BN;
+  medianVoteValue: BN;
+} => {
+  const votesMeetingRequirements = votes.filter((vote) => {
+    return vote.meetsRequirements;
+  });
+
+  const votesNotMeetingRequirements = votes.filter((vote) => {
+    return !vote.meetsRequirements;
+  });
+
+  const minVoteValue = votesMeetingRequirements.reduce((prev, curr) =>
+    prev.lockedWithConviction.lt(curr.lockedWithConviction) ? prev : curr
+  )?.lockedWithConviction;
+
+  const maxVoteValue = votesMeetingRequirements.reduce((prev, curr) =>
+    prev.lockedWithConviction.gt(curr.lockedWithConviction) ? prev : curr
+  )?.lockedWithConviction;
+
+  return {
+    votesMeetingRequirements,
+    votesNotMeetingRequirements,
+    minVoteValue,
+    maxVoteValue,
+    medianVoteValue: bnToBn(0),
+  };
+};
+
+/**
+ * Check if votes meet the specified requirements.
+ * @param votes Array of VoteConvictionDragon objects.
+ * @param totalIssuance Total issuance as a string.
+ * @param config Configuration object with min, max, directOnly, and first properties.
+ * @returns Array of VoteCheckResult objects containing meetsRequirements property.
+ */
+export const checkVotesMeetingRequirements = async (
+  votes: VoteConviction[],
+  totalIssuance: string,
+  config: RewardConfiguration,
+  chainDecimals: BN
+): Promise<VoteConvictionRequirements[]> => {
+  const minVote = BN.max(new BN(config.min), new BN("0"));
+  const maxVote = BN.min(new BN(config.max), new BN(totalIssuance));
+
+  config.minVote = getDecimal(minVote.toString(), chainDecimals);
+  config.maxVote = getDecimal(maxVote.toString(), chainDecimals);
+
+  const filtered: VoteConvictionRequirements[] = votes.map((vote, i) => {
+    const meetsRequirements = !(
+      vote.lockedWithConviction.lt(minVote) ||
+      vote.lockedWithConviction.gt(maxVote) ||
+      (config.directOnly && vote.voteType === "Delegating") ||
+      (config.first !== null && i > config.first)
+    );
+
+    const lockedWithConvictionDecimal = getDecimal(
+      vote.lockedWithConviction.toString(),
+      chainDecimals
+    );
+
+    return { ...vote, meetsRequirements, lockedWithConvictionDecimal };
+  });
+
+  return filtered;
 };
 
 /**

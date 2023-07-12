@@ -31,7 +31,11 @@ import {
 import { getDragonBonusFile } from "../tools/utils";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import { createNewCollection } from "./createNewCollection";
-import { retrieveAccountLocks } from "./_helpersVote";
+import {
+  checkVotesMeetingRequirements,
+  getAnnotatedVotes,
+  retrieveAccountLocks,
+} from "./_helpersVote";
 import pinataSDK, { PinataClient } from "@pinata/sdk";
 import { getConvictionVoting } from "./voteData";
 import { GraphQLClient } from "graphql-request";
@@ -44,44 +48,6 @@ import {
   getReputationLifetime,
 } from "./encointerData";
 import { getBlockNumber, setupPinata } from "./_helpersApi";
-
-/**
- * Check if votes meet the specified requirements.
- * @param votes Array of VoteConvictionDragon objects.
- * @param totalIssuance Total issuance as a string.
- * @param config Configuration object with min, max, directOnly, and first properties.
- * @returns Array of VoteCheckResult objects containing meetsRequirements property.
- */
-const checkVotesMeetingRequirements = async (
-  votes: VoteConviction[],
-  totalIssuance: string,
-  config: RewardConfiguration,
-  chainDecimals: BN
-): Promise<VoteConvictionRequirements[]> => {
-  const minVote = BN.max(new BN(config.min), new BN("0"));
-  const maxVote = BN.min(new BN(config.max), new BN(totalIssuance));
-
-  config.minVote = getDecimal(minVote.toString(), chainDecimals);
-  config.maxVote = getDecimal(maxVote.toString(), chainDecimals);
-
-  const filtered: VoteConvictionRequirements[] = votes.map((vote, i) => {
-    const meetsRequirements = !(
-      vote.lockedWithConviction.lt(minVote) ||
-      vote.lockedWithConviction.gt(maxVote) ||
-      (config.directOnly && vote.voteType === "Delegating") ||
-      (config.first !== null && i > config.first)
-    );
-
-    const lockedWithConvictionDecimal = getDecimal(
-      vote.lockedWithConviction.toString(),
-      chainDecimals
-    );
-
-    return { ...vote, meetsRequirements, lockedWithConvictionDecimal };
-  });
-
-  return filtered;
-};
 
 /**
  * Returns a random index based on the given weights.
@@ -845,6 +811,13 @@ export const generateCalls = async (
     referendum.confirmationBlockNumber
   );
 
+  // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getAnnotatedVotes
+  const annotatedVotes = await getAnnotatedVotes(
+    config,
+    kusamaChainDecimals,
+    logger
+  );
+
   //TODO write a applyBonus function that takes names of bonuses to be applied
 
   //--Encointer Section Start--
@@ -908,7 +881,7 @@ export const generateCalls = async (
   //requirements are defined in config
   const mappedVotes: VoteConvictionRequirements[] =
     await checkVotesMeetingRequirements(
-      voteLocks,
+      votesWithEncointer,
       totalIssuance.toString(),
       config,
       kusamaChainDecimals
@@ -959,6 +932,7 @@ export const generateCalls = async (
   logger.info("maxValue", maxValue);
   config.median = median;
   logger.info("median", median);
+
   let selectedIndexArray = [];
   //for each vote compute chances at epic, rare and common
   for (const vote of mappedVotes) {
