@@ -63,7 +63,7 @@ const applyBonusesFor = (
  * @param referendumIndex
  * @returns
  */
-export const getAnnotatedVotes = async (
+export const getDecoratedVotes = async (
   config: RewardConfiguration,
   chainDecimals: BN,
   logger: Logger
@@ -72,13 +72,18 @@ export const getAnnotatedVotes = async (
     parseInt(config.refIndex)
   );
 
-  // start annotating new attributes to the votes
+  // start decorating the votes with additional information
+  // TODO rename all below to decorateWith...
+
+  // 1. decorate `lockedWithConviction` - relevant info we consider instead of the vote * locked
   votes = await retrieveAccountLocks(votes, referendum.confirmationBlockNumber);
 
+  // 2. decorate with bonuses
   votes = applyBonusesFor("encointer", votes);
   votes = applyBonusesFor("dragon", votes);
   votes = applyBonusesFor("quiz", votes);
 
+  // 3. decorate `meetsRequirements` - whether vote > threshold
   votes = await checkVotesMeetingRequirements(
     votes,
     totalIssuance,
@@ -86,32 +91,54 @@ export const getAnnotatedVotes = async (
     chainDecimals
   );
 
+  // 4. get global min, max, median values for calculating the final rarity
   const {
     votesMeetingRequirements,
     votesNotMeetingRequirements,
     minVoteValue,
     maxVoteValue,
     medianVoteValue,
-  } = getVoteInfo(votes);
+  } = getVoteInfo(votes, config);
 
   logger.info(
-    `Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
+    `AAA Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
   );
   logger.info(
-    `Min vote value: ${minVoteValue}, max vote value: ${maxVoteValue}, median vote value: ${medianVoteValue}`
+    `AAA Min vote value: ${minVoteValue}, max vote value: ${maxVoteValue}, median vote value: ${medianVoteValue}`
+  );
+
+  // 5. decorate with chances. E.g. chances: { common: 0.5, rare: 0.3, epic 0.2}
+  votes = decorateWithChances(
+    votes,
+    config,
+    minVoteValue,
+    maxVoteValue,
+    medianVoteValue
   );
 
   return votes;
 };
 
+//TODO
+const decorateWithChances = (
+  votes: VoteConviction[],
+  config: RewardConfiguration,
+  minVoteValue: BN,
+  maxVoteValue: BN,
+  medianVoteValue: BN
+): VoteConviction[] => {
+  return votes.map((vote) => vote);
+};
+
 const getVoteInfo = (
-  votes: VoteConviction[]
+  votes: VoteConviction[],
+  config: RewardConfiguration
 ): {
   votesMeetingRequirements: VoteConviction[];
   votesNotMeetingRequirements: VoteConviction[];
-  minVoteValue: BN;
-  maxVoteValue: BN;
-  medianVoteValue: BN;
+  minVoteValue: number;
+  maxVoteValue: number;
+  medianVoteValue: number;
 } => {
   const votesMeetingRequirements = votes.filter((vote) => {
     return vote.meetsRequirements;
@@ -129,13 +156,76 @@ const getVoteInfo = (
     prev.lockedWithConviction.gt(curr.lockedWithConviction) ? prev : curr
   )?.lockedWithConviction;
 
+  // Get the median and normalize min vote to threshold
+  const threshold = config.minAmount;
+  console.log("::::::minMaxMedian NEEEEW:::::");
+  const { minValue, maxValue, median } = getMinMaxMedian(
+    votesMeetingRequirements.map((vote) => vote.lockedWithConvictionDecimal),
+    threshold
+  );
+
   return {
     votesMeetingRequirements,
     votesNotMeetingRequirements,
-    minVoteValue,
-    maxVoteValue,
-    medianVoteValue: bnToBn(0),
+    minVoteValue: minValue,
+    maxVoteValue: maxValue,
+    medianVoteValue: median,
   };
+};
+
+/**
+ * Calculate the minimum, maximum, and median values of an array of vote amounts, considering only those above a critical value.
+ * @param voteAmounts An array of vote amounts.
+ * @param criticalValue The critical value to filter the vote amounts.
+ * @returns An object containing the minimum, maximum, and median values.
+ */
+export const getMinMaxMedian = (
+  voteAmounts: number[],
+  criticalValue: number
+): { minValue: number; maxValue: number; median: number } => {
+  if (voteAmounts.length < 4) {
+    return {
+      minValue: Math.min(...voteAmounts),
+      maxValue: Math.max(...voteAmounts),
+      median: voteAmounts[Math.floor(voteAmounts.length / 2)],
+    };
+  }
+
+  console.log("getMinMaxMedian", voteAmounts, criticalValue);
+
+  const filteredVotes = voteAmounts.filter((vote) => vote > criticalValue);
+
+  let values, q1, q3, iqr, maxValue, minValue, median;
+
+  values = filteredVotes.slice().sort((a, b) => a - b); // Copy array and sort
+  if ((values.length / 4) % 1 === 0) {
+    // Find quartiles
+    q1 = (1 / 2) * (values[values.length / 4] + values[values.length / 4 + 1]);
+    q3 =
+      (1 / 2) *
+      (values[values.length * (3 / 4)] + values[values.length * (3 / 4) + 1]);
+  } else {
+    q1 = values[Math.floor(values.length / 4 + 1)];
+    q3 = values[Math.ceil(values.length * (3 / 4) + 1)];
+  }
+
+  if ((values.length / 2) % 1 === 0) {
+    // Find median
+    median =
+      (1 / 2) * (values[values.length / 2] + values[values.length / 2 + 1]);
+  } else {
+    median = values[Math.floor(values.length / 2 + 1)];
+  }
+
+  iqr = q3 - q1;
+  maxValue = q3 + iqr * 1.5;
+  minValue = Math.max(q1 - iqr * 1.5, criticalValue);
+
+  console.log(
+    `getMinMaxMediaun:: minValue: ${minValue}, maxValue: ${maxValue}, median: ${median}`
+  );
+
+  return { minValue, maxValue, median };
 };
 
 /**

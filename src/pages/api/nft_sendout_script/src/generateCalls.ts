@@ -33,7 +33,8 @@ import { cryptoWaitReady } from "@polkadot/util-crypto";
 import { createNewCollection } from "./createNewCollection";
 import {
   checkVotesMeetingRequirements,
-  getAnnotatedVotes,
+  getDecoratedVotes,
+  getMinMaxMedian,
   retrieveAccountLocks,
 } from "./_helpersVote";
 import pinataSDK, { PinataClient } from "@pinata/sdk";
@@ -114,25 +115,25 @@ const calculateLuck = (
   encointerScore: number,
   reputationLifetime: number
 ): string => {
-  console.log(
-    "calculate luck",
-    voteAmountWithConviction,
-    minIn,
-    maxIn,
-    minOut,
-    maxOut,
-    exponent,
-    babyBonus,
-    toddlerBonus,
-    adolescentBonus,
-    adultBonus,
-    quizBonus,
-    encointerBonus,
-    dragonEquipped,
-    quizCorrect,
-    encointerScore,
-    reputationLifetime
-  );
+  // console.log(
+  //   "calculate luck",
+  //   voteAmountWithConviction,
+  //   minIn,
+  //   maxIn,
+  //   minOut,
+  //   maxOut,
+  //   exponent,
+  //   babyBonus,
+  //   toddlerBonus,
+  //   adolescentBonus,
+  //   adultBonus,
+  //   quizBonus,
+  //   encointerBonus,
+  //   dragonEquipped,
+  //   quizCorrect,
+  //   encointerScore,
+  //   reputationLifetime
+  // );
   let n = voteAmountWithConviction;
   minOut = parseInt(minOut.toString());
   maxOut = parseInt(maxOut.toString());
@@ -196,55 +197,6 @@ const calculateLuck = (
     }
   }
   return n.toFixed(2);
-};
-
-/**
- * Calculate the minimum, maximum, and median values of an array of vote amounts, considering only those above a critical value.
- * @param voteAmounts An array of vote amounts.
- * @param criticalValue The critical value to filter the vote amounts.
- * @returns An object containing the minimum, maximum, and median values.
- */
-const getMinMaxMedian = (
-  voteAmounts: number[],
-  criticalValue: number
-): { minValue: number; maxValue: number; median: number } => {
-  if (voteAmounts.length < 4) {
-    return {
-      minValue: Math.min(...voteAmounts),
-      maxValue: Math.max(...voteAmounts),
-      median: voteAmounts[Math.floor(voteAmounts.length / 2)],
-    };
-  }
-
-  const filteredVotes = voteAmounts.filter((vote) => vote > criticalValue);
-
-  let values, q1, q3, iqr, maxValue, minValue, median;
-
-  values = filteredVotes.slice().sort((a, b) => a - b); // Copy array and sort
-  if ((values.length / 4) % 1 === 0) {
-    // Find quartiles
-    q1 = (1 / 2) * (values[values.length / 4] + values[values.length / 4 + 1]);
-    q3 =
-      (1 / 2) *
-      (values[values.length * (3 / 4)] + values[values.length * (3 / 4) + 1]);
-  } else {
-    q1 = values[Math.floor(values.length / 4 + 1)];
-    q3 = values[Math.ceil(values.length * (3 / 4) + 1)];
-  }
-
-  if ((values.length / 2) % 1 === 0) {
-    // Find median
-    median =
-      (1 / 2) * (values[values.length / 2] + values[values.length / 2 + 1]);
-  } else {
-    median = values[Math.floor(values.length / 2 + 1)];
-  }
-
-  iqr = q3 - q1;
-  maxValue = q3 + iqr * 1.5;
-  minValue = Math.max(q1 - iqr * 1.5, 0);
-
-  return { minValue, maxValue, median };
 };
 
 // Function to generate attributes for direct and delegated options
@@ -768,7 +720,7 @@ export const generateCalls = async (
   logger.info(
     `Generating calls for reward distribution of referendum ${refIndex}`
   );
-  logger.trace("with config", config);
+  logger.info("with config", config);
 
   await cryptoWaitReady();
   const referendumIndex = new BN(config.refIndex);
@@ -811,14 +763,12 @@ export const generateCalls = async (
     referendum.confirmationBlockNumber
   );
 
-  // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getAnnotatedVotes
-  const annotatedVotes = await getAnnotatedVotes(
+  // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
+  const decoratedVotes = await getDecoratedVotes(
     config,
     kusamaChainDecimals,
     logger
   );
-
-  //TODO write a applyBonus function that takes names of bonuses to be applied
 
   //--Encointer Section Start--
 
@@ -918,6 +868,7 @@ export const generateCalls = async (
     return vote.lockedWithConvictionDecimal;
   });
   //get min, max and median to build the S curve.
+  console.log("::::::minMaxMedian OOOOOOLD:::::");
   let { minValue, maxValue, median } = getMinMaxMedian(
     voteAmounts,
     config.minAmount
