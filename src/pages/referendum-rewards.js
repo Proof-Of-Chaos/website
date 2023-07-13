@@ -24,7 +24,7 @@ function ReferendumRewards({ test }) {
   );
 }
 
-export const testConfig = {
+export const defaultReferendumRewardsConfig = {
   refIndex: 99,
   min: "1200000000000",
   max: "100000000000000000000000000000000000000000",
@@ -78,8 +78,8 @@ export const testConfig = {
       maxRoyalty: 30,
     },
     {
-      maxProbability: null,
-      minProbability: null,
+      maxProbability: 100,
+      minProbability: 0,
       transferable: 1,
       symbol: "C99",
       text: "'Common'\n\nI voted on Ref 99 and got a common NFT",
@@ -103,7 +103,7 @@ ReferendumRewards.getLayout = function getLayout(page) {
 //   const { generateCalls } = await import(
 //     "./api/nft_sendout_script/src/generateCalls"
 //   );
-//   const preimage = await generateCalls(testConfig);
+//   const preimage = await generateCalls(defaultConfig);
 //   console.log("done", preimage);
 //   return { props: { test: "123" } };
 // };

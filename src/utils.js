@@ -1,14 +1,21 @@
-import { merge, values, keyBy } from 'lodash'
+import { merge, values, keyBy } from "lodash";
 const BLOCK_DURATION = 6000;
-const EXPONENT_CONSTANTS = [3, 0.4]
+const EXPONENT_CONSTANTS = [3, 0.4];
 
-const getEndDateByBlock = (blockNumber, currentBlockNumber, currentTimestamp) => {
-  let newStamp = parseInt(currentTimestamp.toString()) + ((parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) * BLOCK_DURATION)
+const getEndDateByBlock = (
+  blockNumber,
+  currentBlockNumber,
+  currentTimestamp
+) => {
+  let newStamp =
+    parseInt(currentTimestamp.toString()) +
+    (parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) *
+      BLOCK_DURATION;
   return new Date(newStamp);
-}
+};
 
-function getRandomInt( max ) {
-  return Math.floor( Math.random() * max )
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
 }
 
 function getRandomIntBetween(min, max) {
@@ -19,19 +26,21 @@ function getRandomIntBetween(min, max) {
 
 const microToKSM = (microKSM) => {
   return parseInt(microKSM) / 1000000000000;
-}
+};
 
 const microToKSMFormatted = (microKSM) => {
-  return KSMFormatted( microToKSM( microKSM ) )
-}
+  return KSMFormatted(microToKSM(microKSM));
+};
 
-const KSMFormatted = ( KSM ) => {
-  return `${ parseFloat( KSM / 1000 ).toFixed(2) } K KSM`
-}
+const KSMFormatted = (KSM) => {
+  return `${parseFloat(KSM / 1000).toFixed(2)} K KSM`;
+};
 
-const trimAddress = ( address, length = 3 ) => {
-  return `${ address.substring(0,length) }...${ address.substring(address.length - length) }`
-}
+const trimAddress = (address, length = 3) => {
+  return `${address.substring(0, length)}...${address.substring(
+    address.length - length
+  )}`;
+};
 
 /**
  * Merge two arrays (similar to join on mysql) based on key
@@ -40,7 +49,7 @@ const trimAddress = ( address, length = 3 ) => {
 const mergeArrays = (a1, a2, key) => {
   const merged = merge(keyBy(a1, key), keyBy(a2, key));
   return values(merged);
-}
+};
 
 /**
  * Merge two arrays (similar to join on mysql) based on key
@@ -51,10 +60,13 @@ const mergeArrays = (a1, a2, key) => {
  * @param {*} a2key
  */
 const joinArrays = (a1, a2, a1key, a2key) => {
-  return a1.map( obj => {
-    return Object.assign(obj, a2.find( el => el[a2key] === obj[a1key] ) );
-  })
-}
+  return a1.map((obj) => {
+    return Object.assign(
+      obj,
+      a2.find((el) => el[a2key] === obj[a1key])
+    );
+  });
+};
 
 const calculateLuck = (
   n,
@@ -64,97 +76,95 @@ const calculateLuck = (
   maxOut,
   exponent,
   minAmount,
-  luckMultiplier,
+  luckMultiplier
 ) => {
   minOut = parseInt(minOut);
   maxOut = parseInt(maxOut);
   if (n > maxIn) {
-      n = maxOut;
+    n = maxOut;
+  } else if (n < minAmount) {
+    n = minOut;
+  } else {
+    // unscale input
+    n -= minIn;
+    n /= maxIn - minIn;
+    n = Math.pow(n, exponent);
+    // scale output
+    n *= maxOut - minOut;
+    n += minOut;
   }
-  else if (n < minAmount) {
-      n = minOut;
-  }
-  else {
-      // unscale input
-      n -= minIn
-      n /= maxIn - minIn
-      n = Math.pow(n, exponent)
-      // scale output
-      n *= maxOut - minOut
-      n += minOut
-  }
-  return n * luckMultiplier
-}
+  return n * luckMultiplier;
+};
 
-const getLuckMultiplier = ( options, config ) => {
-  let luckMultiplier = 1.0
+const getLuckMultiplier = (options, config) => {
+  let luckMultiplier = 1.0;
 
-  const {
-    babyBonus,
-    toddlerBonus,
-    adolescentBonus,
-    adultBonus
-  } = config
+  const { babyBonus, toddlerBonus, adolescentBonus, adultBonus } = config;
 
-  if ( options.babyEquipped ) {
-    luckMultiplier = babyBonus ? (1 + (babyBonus / 100)) : 1.0
-  } else if ( options.toddlerEquipped ) {
-    luckMultiplier = toddlerBonus ? (1 + (toddlerBonus / 100)) : 1.0
-  } else if ( options.adolescentEquipped ) {
-    luckMultiplier = adolescentBonus ? (1 + (adolescentBonus / 100)) : 1.0
-  } else if ( options.adultEquipped ) {
-    luckMultiplier = adultBonus ? (1 + (adultBonus / 100)) : 1.0
+  if (options.babyEquipped) {
+    luckMultiplier = babyBonus ? 1 + babyBonus / 100 : 1.0;
+  } else if (options.toddlerEquipped) {
+    luckMultiplier = toddlerBonus ? 1 + toddlerBonus / 100 : 1.0;
+  } else if (options.adolescentEquipped) {
+    luckMultiplier = adolescentBonus ? 1 + adolescentBonus / 100 : 1.0;
+  } else if (options.adultEquipped) {
+    luckMultiplier = adultBonus ? 1 + adultBonus / 100 : 1.0;
   }
 
-  return luckMultiplier
-}
+  return luckMultiplier;
+};
 
 /**
  * return the chances array
  */
- const lucksForConfig = ( ksm, refConfig, luckMultiplier ) => {
-  const lucks = {}
+const lucksForConfig = (ksm, refConfig, luckMultiplier) => {
+  const lucks = {};
 
-  if ( ksm < refConfig.minValue ) {
+  if (ksm < refConfig.minValue) {
     return {
       common: 100,
       rare: 0,
       epic: 0,
-    }
+    };
   }
   //do not calc luck for the last to items (common, default)
   //will be done below
   //TODO will have to find a filter that will filter the correct items
-  const optionsToConsider = refConfig?.options.filter( opt => opt.rarity !== 'common' )
-  optionsToConsider?.forEach( option => {
-    if ( ksm < refConfig.median ) {
-      lucks[`${ option.rarity }`] = calculateLuck(
+  const optionsToConsider = refConfig?.options.filter(
+    (opt) => opt.rarity !== "common"
+  );
+
+  optionsToConsider?.forEach((option) => {
+    if (ksm < refConfig.median) {
+      lucks[`${option.rarity}`] = calculateLuck(
         ksm,
         refConfig.minValue,
         refConfig.median,
         option.minProbability,
-        option.sweetspotProbability,
+        option.sweetspotProbability ??
+          (option.maxProbability + option.minProbability) / 2,
         EXPONENT_CONSTANTS[0],
         refConfig.minAmount,
-        luckMultiplier,
-      )
+        luckMultiplier
+      );
     } else {
-      lucks[`${ option.rarity }`] = calculateLuck(
-          ksm,
-          refConfig.median,
-          refConfig.maxValue,
-          option.sweetspotProbability,
-          option.maxProbability,
-          EXPONENT_CONSTANTS[1],
-          refConfig.minAmount,
-          luckMultiplier,
-        )
+      lucks[`${option.rarity}`] = calculateLuck(
+        ksm,
+        refConfig.median,
+        refConfig.maxValue,
+        option.sweetspotProbability ??
+          (option.maxProbability + option.minProbability) / 2,
+        option.maxProbability,
+        EXPONENT_CONSTANTS[1],
+        refConfig.minAmount,
+        luckMultiplier
+      );
     }
-  })
-  lucks.rare = (100 - lucks.epic) / 100 * lucks.rare
-  lucks.common = 100 - lucks.rare - lucks.epic
-  return lucks
-}
+  });
+  lucks.rare = ((100 - lucks.epic) / 100) * lucks.rare;
+  lucks.common = 100 - lucks.rare - lucks.epic;
+  return lucks;
+};
 
 /**
  * Produce an animated svg that can be used as image placeholder
@@ -174,7 +184,7 @@ const shimmer = (w, h) => `
     <rect width="${w}" height="${h}" fill="#fff" />
     <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
     <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
-  </svg>`
+  </svg>`;
 
 /**
  * Base64 encode string, can be used for inline images
@@ -182,21 +192,22 @@ const shimmer = (w, h) => `
  * @returns String
  */
 const toBase64 = (str) =>
-  typeof window === 'undefined'
-    ? Buffer.from(str).toString('base64')
-    : window.btoa(str)
+  typeof window === "undefined"
+    ? Buffer.from(str).toString("base64")
+    : window.btoa(str);
 
-    const titleCase = (s) =>
-    s.replace(/^_*(.)|_+(.)/g, (s, c, d) => c ? c.toUpperCase() : ' ' + d.toUpperCase())
-
+const titleCase = (s) =>
+  s.replace(/^_*(.)|_+(.)/g, (s, c, d) =>
+    c ? c.toUpperCase() : " " + d.toUpperCase()
+  );
 
 /**
  * Stips all tags from html
  * @param {String} html
  * @returns String
  */
-function stripHtml(html){
-  let doc = new DOMParser().parseFromString(html, 'text/html');
+function stripHtml(html) {
+  let doc = new DOMParser().parseFromString(html, "text/html");
   return doc.body.textContent || "";
 }
 
@@ -215,5 +226,5 @@ export {
   shimmer,
   toBase64,
   titleCase,
-  stripHtml
-}
+  stripHtml,
+};

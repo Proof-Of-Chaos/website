@@ -17,6 +17,7 @@ import type {
 import { ApiDecoration } from "@polkadot/api/types";
 import { getApiAt, getDecimal } from "../tools/substrateUtils";
 import { getConvictionVoting } from "./voteData";
+import { lucksForConfig } from "../../../../utils.js";
 import { Logger } from "log4js";
 
 // Helper function to get vote parameters
@@ -123,11 +124,22 @@ export const getDecoratedVotes = async (
 const decorateWithChances = (
   votes: VoteConviction[],
   config: RewardConfiguration,
-  minVoteValue: BN,
-  maxVoteValue: BN,
-  medianVoteValue: BN
+  minVoteValue: number,
+  maxVoteValue: number,
+  medianVoteValue: number
 ): VoteConviction[] => {
-  return votes.map((vote) => vote);
+  const rarities = config.options.map((option) => option.rarity);
+
+  config.minValue = minVoteValue;
+  config.maxValue = maxVoteValue;
+  config.median = medianVoteValue;
+
+  return votes.map((vote) => {
+    let chances = lucksForConfig(vote.lockedWithConvictionDecimal, config, 1.0);
+
+    console.log("chances", chances);
+    return { ...vote, chances };
+  });
 };
 
 const getVoteInfo = (
