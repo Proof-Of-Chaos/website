@@ -72,7 +72,10 @@ export const getDecoratedVotesWithInfo = async (
   config: RewardConfiguration,
   chainDecimals: BN,
   logger: Logger
-): Promise<{ decoratedVotes: VoteConviction[]; distribution: Uniqs }> => {
+): Promise<{
+  decoratedVotes: VoteConviction[];
+  distribution: RarityDistribution;
+}> => {
   let { referendum, totalIssuance, votes } = await getConvictionVoting(
     parseInt(config.refIndex)
   );

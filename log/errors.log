@@ -96,3 +96,38 @@
 [2023-07-14T15:32:30.413] [ERROR] api - metadataCid is null. exiting.
 [2023-07-14T15:49:09.509] [ERROR] api - metadataCid is null. exiting.
 [2023-07-14T15:53:16.093] [ERROR] api - metadataCid is null. exiting.
+[2023-07-14T18:59:22.403] [ERROR] api - metadataCid is null. exiting.
+[2023-07-14T19:01:58.625] [ERROR] api - metadataCid is null. exiting.
+[2023-07-14T19:06:32.665] [ERROR] api - metadataCid is null. exiting.
+[2023-07-14T19:09:49.598] [ERROR] api - metadataCid is null. exiting.
+[2023-07-14T19:09:49.598] [ERROR] api - metadataCid undefined
+[2023-07-14T19:09:49.598] [ERROR] api - metadataCids {
+  epic: {
+    direct: 'ipfs://ipfs/bafkreignfbwfoj3hy2wuuu6y3cql45ycudcrvkbeey27aaa7yoyoc7pk54',
+    delegated: 'ipfs://ipfs/bafkreignfbwfoj3hy2wuuu6y3cql45ycudcrvkbeey27aaa7yoyoc7pk54'
+  },
+  rare: {
+    direct: 'ipfs://ipfs/bafkreia45czi7tm73kumnrreakggj7b6owywexuhhen4jiv4dyoc3tvx7u',
+    delegated: 'ipfs://ipfs/bafkreia45czi7tm73kumnrreakggj7b6owywexuhhen4jiv4dyoc3tvx7u'
+  },
+  common: {
+    direct: 'ipfs://ipfs/bafkreibgf57g6lkwbniu7z5wshucieq5sf3umniluuynwf6v2zn2xvdoau',
+    delegated: 'ipfs://ipfs/bafkreibgf57g6lkwbniu7z5wshucieq5sf3umniluuynwf6v2zn2xvdoau'
+  }
+}
+[2023-07-14T19:11:51.991] [ERROR] api - metadataCid is null. exiting.
+[2023-07-14T19:11:51.991] [ERROR] api - metadataCid undefined
+[2023-07-14T19:11:51.991] [ERROR] api - metadataCids {
+  epic: {
+    direct: 'ipfs://ipfs/bafkreignfbwfoj3hy2wuuu6y3cql45ycudcrvkbeey27aaa7yoyoc7pk54',
+    delegated: 'ipfs://ipfs/bafkreignfbwfoj3hy2wuuu6y3cql45ycudcrvkbeey27aaa7yoyoc7pk54'
+  },
+  rare: {
+    direct: 'ipfs://ipfs/bafkreia45czi7tm73kumnrreakggj7b6owywexuhhen4jiv4dyoc3tvx7u',
+    delegated: 'ipfs://ipfs/bafkreia45czi7tm73kumnrreakggj7b6owywexuhhen4jiv4dyoc3tvx7u'
+  },
+  common: {
+    direct: 'ipfs://ipfs/bafkreibgf57g6lkwbniu7z5wshucieq5sf3umniluuynwf6v2zn2xvdoau',
+    delegated: 'ipfs://ipfs/bafkreibgf57g6lkwbniu7z5wshucieq5sf3umniluuynwf6v2zn2xvdoau'
+  }
+}

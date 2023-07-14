@@ -296,13 +296,17 @@ const createTransactionsForVotes = async (
 
     let metadataCid =
       vote.voteType == "Delegating"
-        ? selectedMetadata.delegating
+        ? selectedMetadata.delegated
         : selectedMetadata.direct;
 
-    console.info("checking vote by address: ", vote.address.toString());
-    console.info("chosenOption", chosenOption.rarity);
-    console.info("selectedMetadata", selectedMetadata);
-    console.info("metadataCid", metadataCid);
+    // console.info(
+    //   "checking vote by address: ",
+    //   vote.address.toString(),
+    //   vote.voteType
+    // );
+    // console.info("chosenOption", chosenOption.rarity);
+    // console.info("selectedMetadata", selectedMetadata);
+    // console.info("metadataCid", metadataCid);
 
     const randRoyaltyInRange = Math.floor(
       rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
@@ -808,7 +812,7 @@ export const generateCalls = async (
     // config.newCollectionMetadataCid = await createNewCollection(pinata, account.address, config);
     // txs.push(apiStatemine.tx.utility.dispatchAs(proxyWalletSignature, apiStatemine.tx.uniques.setCollectionMetadata(config.newCollectionSymbol, config.newCollectionMetadataCid, false)))
   } else {
-    // use a default collection
+    // TODO use a default collection
   }
   logger.info("collectionID Item: ", itemCollectionId);
 
@@ -818,7 +822,6 @@ export const generateCalls = async (
     referendumIndex,
     rarityDistribution
   );
-  logger.info("metadataCids", metadataCids);
 
   // Create transactions for each mapped vote
   txs.push(
@@ -911,6 +914,7 @@ export const generateCalls = async (
     )
   );
   txsKusama.push(xcmCall);
+
   const finalCall = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
   // fs.writeFile(`public/output/1.json`, finalCall, (err) => {
   //   // In case of a error throw err.
@@ -918,7 +922,7 @@ export const generateCalls = async (
   // })
   return {
     call: JSON.stringify(finalCall),
-    distribution,
+    distribution: rarityDistribution,
   };
 
   //write distribution to chain
