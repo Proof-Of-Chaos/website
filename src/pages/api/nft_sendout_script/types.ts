@@ -9,6 +9,10 @@ export interface VoteConviction extends ConvictionVote {
   encointerScore?: number;
   meetsRequirements?: boolean;
   lockedWithConvictionDecimal?: number;
+  // the chances for each rarity option
+  chances?: Chances;
+  // the option that was chosen for the voter
+  chosenOption?: RewardOption;
 }
 
 export interface VoteConvictionDragon extends VoteConviction {
@@ -107,6 +111,8 @@ export type TrackInfo = {
   minEnactmentPeriod: number;
 };
 
+export type Chances = { [key: string]: number };
+
 export type OpenGovReferendum = {
   index: number;
   track: number;
@@ -173,7 +179,7 @@ interface Answer {
   isCorrect: boolean;
 }
 
-export interface Uniqs {
+export interface RarityDistribution {
   [key: string]: number;
 }
 
@@ -188,9 +194,24 @@ interface Attribute {
   value: string | Uint8Array | Bytes;
 }
 
+export type MetadataCid = {
+  direct: string;
+  delegated: string;
+};
+
 export interface ProcessMetadataResult {
-  metadataCids: [string, string][];
-  attributes: [Attribute[], Attribute[]][];
+  metadataCids: {
+    [key: string]: {
+      direct: string;
+      delegated: string;
+    };
+  };
+  attributes: {
+    [key: string]: {
+      direct: string;
+      delegated: string;
+    };
+  };
 }
 
 export type RNG = () => number;
@@ -272,7 +293,5 @@ export interface RewardOption {
 
 export type CallResult = {
   call: string;
-  epic_count: number;
-  rare_count: number;
-  common_count: number;
+  distribution: RarityDistribution;
 };

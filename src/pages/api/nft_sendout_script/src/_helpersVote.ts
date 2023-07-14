@@ -14,12 +14,15 @@ import type {
   VoteConviction,
   RewardConfiguration,
   VoteConvictionRequirements,
+  Uniqs,
+  RarityDistribution,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
 import { getApiAt, getDecimal } from "../tools/substrateUtils";
 import { getConvictionVoting } from "./voteData";
-import { lucksForConfig, weightedRandom } from "../../../../utils.js";
+import { lucksForConfig, weightedRandom } from "../../../../utils";
 import { Logger } from "log4js";
+import { Uniqs } from "../types";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -65,11 +68,11 @@ const applyBonusesFor = (
  * @param referendumIndex
  * @returns
  */
-export const getDecoratedVotes = async (
+export const getDecoratedVotesWithInfo = async (
   config: RewardConfiguration,
   chainDecimals: BN,
   logger: Logger
-): Promise<VoteConviction[]> => {
+): Promise<{ decoratedVotes: VoteConviction[]; distribution: Uniqs }> => {
   let { referendum, totalIssuance, votes } = await getConvictionVoting(
     parseInt(config.refIndex)
   );
@@ -110,18 +113,34 @@ export const getDecoratedVotes = async (
   );
 
   // 5. decorate with chances. E.g. chances: { common: 0.5, rare: 0.3, epic 0.2}
-  votes = decorateWithChances(
+
+  const decoratedWithChancesVotes = decorateWithChances(
     votes,
     config,
     minVoteValue,
     maxVoteValue,
     medianVoteValue
   );
+  votes = decoratedWithChancesVotes.votesWithChances;
 
-  return votes;
+  return {
+    decoratedVotes: votes,
+    distribution: decoratedWithChancesVotes.distribution,
+  };
 };
 
-//TODO
+/**
+ * Decorates the votes with two additional properties:
+ * `chances` which is an object with the rarity as key and the chance as value.
+ * `chosenOption` which is the option (NFT option with rarity) that was chosen for the voter.
+ * @param votes
+ * @param config
+ * @param minVoteValue
+ * @param maxVoteValue
+ * @param medianVoteValue
+ * @param seed
+ * @returns
+ */
 const decorateWithChances = (
   votes: VoteConviction[],
   config: RewardConfiguration,
@@ -129,7 +148,7 @@ const decorateWithChances = (
   maxVoteValue: number,
   medianVoteValue: number,
   seed: number = 0
-): VoteConviction[] => {
+): { votesWithChances: VoteConviction[]; distribution: RarityDistribution } => {
   //seed the randomizer
   const rng = seedrandom(seed.toString());
 
@@ -137,41 +156,39 @@ const decorateWithChances = (
   config.maxValue = maxVoteValue;
   config.median = medianVoteValue;
 
-  const totalChosen = {};
+  const rarityDistribution = {};
 
-  let decoratedVotes = votes.map((vote) => {
+  let votesWithChances = votes.map((vote) => {
     let chances = lucksForConfig(vote.lockedWithConvictionDecimal, config, 1.0);
-    let chosen = weightedRandom(
+    let chosenRarity = weightedRandom(
       rng,
       Object.keys(chances),
       Object.values(chances)
     );
+    const chosenOption = config.options.find(
+      (option) => option.rarity === chosenRarity
+    );
 
-    console.log(chances);
+    // Count the distribution
+    rarityDistribution[chosenRarity] = rarityDistribution[chosenRarity]
+      ? rarityDistribution[chosenRarity] + 1
+      : 1;
 
-    // console.log(
-    //   "weightedRandom: ",
-    //   weightedRandom(rng, ["test1", "test2", "test3"], [0.9, 0.100023, 0])
-    // );
-
-    // console.log("chances: ", chances);
-    // console.log("-> chosen: ", chosen);
-    totalChosen[chosen] = totalChosen[chosen] ? totalChosen[chosen] + 1 : 1;
-    return { ...vote, chances, chosen };
+    return { ...vote, chances, chosenOption };
   });
 
-  console.log("totalChosen", totalChosen);
-
+  //TODO this is not generic
   const invariantHolds =
-    totalChosen["common"] > totalChosen["rare"] * 2 &&
-    totalChosen["rare"] > totalChosen["epic"] * 4;
+    rarityDistribution["common"] > rarityDistribution["rare"] * 4 &&
+    rarityDistribution["rare"] > rarityDistribution["epic"] * 2;
 
   if (invariantHolds) {
-    return decoratedVotes;
+    console.info(`invariant holds for ${JSON.stringify(rarityDistribution)}`);
+    return { votesWithChances, distribution: rarityDistribution };
   } else {
     console.info(
       `invariant does not hold for ${JSON.stringify(
-        totalChosen
+        rarityDistribution
       )} retrying with seed ${seed + 1}...`
     );
     return decorateWithChances(
@@ -213,7 +230,6 @@ const getVoteInfo = (
 
   // Get the median and normalize min vote to threshold
   const threshold = config.minAmount;
-  console.log("::::::minMaxMedian NEEEEW:::::");
   const { minValue, maxValue, median } = getMinMaxMedian(
     votesMeetingRequirements.map((vote) => vote.lockedWithConvictionDecimal),
     threshold
@@ -246,8 +262,6 @@ export const getMinMaxMedian = (
     };
   }
 
-  console.log("getMinMaxMedian", voteAmounts, criticalValue);
-
   const filteredVotes = voteAmounts.filter((vote) => vote > criticalValue);
 
   let values, q1, q3, iqr, maxValue, minValue, median;
@@ -275,10 +289,6 @@ export const getMinMaxMedian = (
   iqr = q3 - q1;
   maxValue = q3 + iqr * 1.5;
   minValue = Math.max(q1 - iqr * 1.5, criticalValue);
-
-  console.log(
-    `getMinMaxMediaun:: minValue: ${minValue}, maxValue: ${maxValue}, median: ${median}`
-  );
 
   return { minValue, maxValue, median };
 };

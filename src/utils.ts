@@ -1,4 +1,8 @@
 import { merge, values, keyBy } from "lodash";
+import {
+  Chances,
+  RewardConfiguration,
+} from "./pages/api/nft_sendout_script/types";
 const BLOCK_DURATION = 6000;
 const EXPONENT_CONSTANTS = [3, 0.4];
 
@@ -68,17 +72,26 @@ const joinArrays = (a1, a2, a1key, a2key) => {
   });
 };
 
+/**
+ * Calculate the chances for a given ksm vote value and given options
+ * @param n the ksm vote value
+ * @param minIn
+ * @param maxIn
+ * @param minOut
+ * @param maxOut
+ * @param exponent
+ * @param luckMultiplier
+ * @returns a probability between 0 and 100
+ */
 const calculateLuck = (
-  n,
-  minIn,
-  maxIn,
-  minOut,
-  maxOut,
-  exponent,
-  luckMultiplier
-) => {
-  minOut = parseInt(minOut);
-  maxOut = parseInt(maxOut);
+  n: number,
+  minIn: number,
+  maxIn: number,
+  minOut: number,
+  maxOut: number,
+  exponent: number,
+  luckMultiplier: number
+): number => {
   if (n > maxIn) {
     n = maxOut;
   } else if (n < minIn) {
@@ -92,7 +105,7 @@ const calculateLuck = (
     n *= maxOut - minOut;
     n += minOut;
   }
-  return (n * luckMultiplier).toFixed(3);
+  return n * luckMultiplier;
 };
 
 const getLuckMultiplier = (options, config) => {
@@ -116,8 +129,12 @@ const getLuckMultiplier = (options, config) => {
 /**
  * return the chances array
  */
-const lucksForConfig = (ksm, refConfig, luckMultiplier) => {
-  const lucks = {};
+const lucksForConfig = (
+  ksm: number,
+  refConfig: RewardConfiguration,
+  luckMultiplier: number
+): Record<string, number> => {
+  const lucks: Record<string, number> = {};
 
   if (ksm < refConfig.minValue) {
     return {
@@ -126,6 +143,7 @@ const lucksForConfig = (ksm, refConfig, luckMultiplier) => {
       epic: 0,
     };
   }
+
   //do not calc luck for the last to items (common, default)
   //will be done below
   //TODO will have to find a filter that will filter the correct items
@@ -134,46 +152,35 @@ const lucksForConfig = (ksm, refConfig, luckMultiplier) => {
   );
 
   optionsToConsider?.forEach((option) => {
-    console.log(
-      `checking if ${ksm} is between ${refConfig.minValue} and ${refConfig.median}`
-    );
     if (ksm < refConfig.median) {
       lucks[`${option.rarity}`] = calculateLuck(
         ksm,
         refConfig.minValue,
         refConfig.median,
         option.minProbability,
-        option.sweetspotProbability ??
-          (option.maxProbability + option.minProbability) / 2,
+        //this was before the sweetspot probability
+        (option.maxProbability + option.minProbability) / 2,
         EXPONENT_CONSTANTS[0],
         luckMultiplier
       );
-
-      console.log(
-        `< median: lucks for ${option.rarity} is ${lucks[`${option.rarity}`]}`
-      );
     } else {
-      console.log(
-        `checking if ${ksm} is between ${refConfig.median} and ${refConfig.maxValue}`
-      );
       lucks[`${option.rarity}`] = calculateLuck(
         ksm,
         refConfig.median,
         refConfig.maxValue,
-        option.sweetspotProbability ??
-          (option.maxProbability + option.minProbability) / 2,
+        (option.maxProbability + option.minProbability) / 2,
         option.maxProbability,
         EXPONENT_CONSTANTS[1],
         luckMultiplier
       );
-
-      console.log(
-        `> median: lucks for ${option.rarity} is ${lucks[`${option.rarity}`]}`
-      );
     }
   });
-  // lucks.rare = ((100 - lucks.epic) / 100) * lucks.rare;
-  // lucks.common = 100 - lucks.rare - lucks.epic;
+
+  // console.log("final lucks before normalization:", lucks);
+
+  lucks.rare = ((100 - lucks.epic) / 100) * lucks.rare;
+  lucks.common = 100 - lucks.rare - lucks.epic;
+
   return lucks;
 };
 

@@ -13,7 +13,6 @@ import {
   VoteConvictionDragonQuiz,
   VoteConvictionDragonQuizEncointer,
   VoteConvictionRequirements,
-  Uniqs,
   ProcessMetadataResult,
   FetchReputableVotersParams,
   Bonuses,
@@ -21,6 +20,8 @@ import {
   RewardOption,
   VoteConvictionEncointer,
   CallResult,
+  RarityDistribution,
+  Chances,
 } from "../types.js";
 import {
   getApiKusama,
@@ -33,7 +34,7 @@ import { cryptoWaitReady } from "@polkadot/util-crypto";
 import { createNewCollection } from "./createNewCollection";
 import {
   checkVotesMeetingRequirements,
-  getDecoratedVotes,
+  getDecoratedVotesWithInfo,
   getMinMaxMedian,
   retrieveAccountLocks,
 } from "./_helpersVote";
@@ -220,16 +221,16 @@ const processMetadataForOptions = async (
   config: RewardConfiguration,
   pinata: ReturnType<typeof pinataSDK>,
   referendumIndex: BN,
-  uniqs: Uniqs
+  rarityDistribution: RarityDistribution
 ): Promise<ProcessMetadataResult> => {
-  const metadataCids = [];
-  const attributes = [];
+  let metadataCids = {};
+  let attributes = {};
 
   for (const option of config.options) {
     const attributesDirect = generateAttributes(
       option,
       "direct",
-      uniqs[config.options.indexOf(option).toString()]
+      rarityDistribution[option.rarity]
     );
     const metadataCidDirect = await pinSingleMetadataFromDir(
       pinata,
@@ -243,7 +244,7 @@ const processMetadataForOptions = async (
     const attributesDelegated = generateAttributes(
       option,
       "delegated",
-      uniqs[config.options.indexOf(option).toString()]
+      rarityDistribution[option.rarity]
     );
     const metadataCidDelegated = await pinSingleMetadataFromDir(
       pinata,
@@ -261,46 +262,57 @@ const processMetadataForOptions = async (
       return;
     }
 
-    metadataCids.push([metadataCidDirect, metadataCidDelegated]);
-    attributes.push([attributesDirect, attributesDelegated]);
+    metadataCids[option.rarity] = {
+      direct: metadataCidDirect,
+      delegated: metadataCidDelegated,
+    };
+    attributes[option.rarity] = {
+      direct: attributesDirect,
+      delegated: attributesDelegated,
+    };
   }
   return { metadataCids, attributes };
 };
 
 // Function to create transactions for each mapped vote
 const createTransactionsForVotes = async (
-  apiStatemine,
-  config,
+  apiStatemine: ApiPromise,
+  config: RewardConfiguration,
   metadataCids,
   attributes,
-  selectedIndexArray,
-  mappedVotes,
-  chances,
-  rng,
-  referendumIndex,
-  proxyWallet
-) => {
+  decoratedVotes: VoteConviction[],
+  rng: RNG,
+  referendumIndex: string,
+  proxyWallet: string
+): Promise<any> => {
   const txs = [];
-  for (let i = 0; i < mappedVotes.length; i++) {
-    let usedMetadataCids: string[] = [];
-    let selectedOptions = [];
+  for (let i = 0; i < decoratedVotes.length; i++) {
+    const vote = decoratedVotes[i];
 
-    const vote = mappedVotes[i];
-    const selectedOption = config.options[selectedIndexArray[i]];
-    selectedOptions.push(selectedOption);
-    const selectedMetadata = metadataCids[selectedIndexArray[i]];
+    // the rarity option that was chosen for the voter
+    const { chosenOption } = vote;
+
+    const selectedMetadata = metadataCids[chosenOption.rarity];
 
     let metadataCid =
-      vote.voteType == "Delegating" ? selectedMetadata[1] : selectedMetadata[0];
+      vote.voteType == "Delegating"
+        ? selectedMetadata.delegating
+        : selectedMetadata.direct;
+
+    console.info("checking vote by address: ", vote.address.toString());
+    console.info("chosenOption", chosenOption.rarity);
+    console.info("selectedMetadata", selectedMetadata);
+    console.info("metadataCid", metadataCid);
+
     const randRoyaltyInRange = Math.floor(
-      rng() * (selectedOption.maxRoyalty - selectedOption.minRoyalty + 1) +
-        selectedOption.minRoyalty
+      rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
+        chosenOption.minRoyalty
     );
+
     if (!metadataCid) {
       logger.error(`metadataCid is null. exiting.`);
       return;
     }
-    usedMetadataCids.push(metadataCid);
     if (
       vote.address.toString() ==
       "Hgcdd6sjp37KD1cKrAbwMZ6sBZTAVwb6v2GTssv9L2w1oN3"
@@ -391,7 +403,7 @@ const createTransactionsForVotes = async (
           i,
           "CollectionOwner",
           "chanceAtEpic",
-          chances[i].epic.toString()
+          vote.chances.epic.toString()
         )
       );
       txs.push(
@@ -400,7 +412,7 @@ const createTransactionsForVotes = async (
           i,
           "CollectionOwner",
           "chanceAtRare",
-          chances[i].rare.toString()
+          vote.chances.rare.toString()
         )
       );
       txs.push(
@@ -409,7 +421,7 @@ const createTransactionsForVotes = async (
           i,
           "CollectionOwner",
           "chanceAtCommon",
-          chances[i].common.toString()
+          vote.chances.common.toString()
         )
       );
       txs.push(
@@ -467,8 +479,8 @@ const createTransactionsForVotes = async (
         )
       );
       for (const attribute of vote.voteType == "Delegating"
-        ? attributes[selectedIndexArray[i]][1]
-        : attributes[selectedIndexArray[i]][0]) {
+        ? attributes[chosenOption.rarity].delegated
+        : attributes[chosenOption.rarity].direct) {
         txs.push(
           apiStatemine.tx.nfts.setAttribute(
             config.newCollectionSymbol,
@@ -764,224 +776,10 @@ export const generateCalls = async (
   );
 
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
-  // const decoratedVotes = await getDecoratedVotes(
-  //   config,
-  //   kusamaChainDecimals,
-  //   logger
-  // );
-
-  //--Encointer Section Start--
-
-  //retrieve all the wallets that have attended any of last X ceremonies before ref expiry
-  const { countPerWallet, reputationLifetime } = await fetchReputableVoters({
-    confirmationBlockNumber: referendum.confirmationBlockNumber,
-    getEncointerBlockNumberFromKusama,
-    getCurrentEncointerCommunities,
-    getLatestEncointerCeremony,
-    getReputationLifetime,
-    getCeremonyAttendants,
-  });
-
-  //apply encointer bonus
-  const votesWithEncointer = addEncointerScoreToVotes(
-    voteLocks,
-    countPerWallet
-  );
-
-  //--Encointer Section End--
-
-  // //--Dragon Section Start--
-  // let bonusFile = await getDragonBonusFile(referendumIndex);
-  // if (bonusFile === "") {
-  //   return;
-  // }
-  // let bonuses = await JSON.parse(bonusFile);
-  // // check that bonusFile is from correct block
-  // if (bonuses.block != blockNumber) {
-  //   logger.info(`Wrong Block in Bonus File. Exiting.`);
-  //   return;
-  // }
-
-  // const walletsByDragonAge = getWalletsByDragonAge(bonuses);
-  // const votesWithDragon = addDragonEquippedToVotes(
-  //   voteLocks,
-  //   walletsByDragonAge
-  // );
-
-  // //--Dragon Section End--
-
-  // //--Quiz Section Start--
-
-  // const client = createGraphQLClient(
-  //   "https://squid.subsquid.io/referenda-dashboard/v/0/graphql"
-  // );
-  // const quizSubmissions = await fetchQuizSubmissions(
-  //   client,
-  //   referendum.index.toString()
-  // );
-
-  // const votesWithDragonAndQuiz = addQuizCorrectToVotes(
-  //   votesWithDragon,
-  //   quizSubmissions
-  // );
-
-  // //--Quiz Section End--
-
-  //votes that don't meet requirements automatically receive common NFT
-  //requirements are defined in config
-  const mappedVotes: VoteConvictionRequirements[] =
-    await checkVotesMeetingRequirements(
-      votesWithEncointer,
-      totalIssuance.toString(),
-      config,
-      kusamaChainDecimals
-    );
-
-  const votesMeetingRequirements = mappedVotes.filter((vote) => {
-    return vote.meetsRequirements;
-  });
-
-  logger.info(
-    `${votesMeetingRequirements.length} votes meeting the requirements.`
-  );
-
-  const votesNotMeetingRequirements = mappedVotes.filter((vote) => {
-    return !vote.meetsRequirements;
-  });
-
-  logger.info(
-    `${votesNotMeetingRequirements.length} votes not meeting the requirements.`
-  );
-
-  let allChances = [];
-  //determine minVote out of votes meeting requirements
-  const minVote = votesMeetingRequirements.reduce((prev, curr) =>
-    prev.lockedWithConviction.lt(curr.lockedWithConviction) ? prev : curr
-  );
-  //determine maxVote out of votes meeting requirements
-  const maxVote = votesMeetingRequirements.reduce((prev, curr) =>
-    prev.lockedWithConviction.gt(curr.lockedWithConviction) ? prev : curr
-  );
-  logger.info("minVote", minVote.lockedWithConviction.toString());
-  logger.info("maxVote", maxVote.lockedWithConviction.toString());
-  const voteAmounts = votesMeetingRequirements.map((vote) => {
-    return vote.lockedWithConvictionDecimal;
-  });
-  //get min, max and median to build the S curve.
-  console.log("::::::minMaxMedian OOOOOOLD:::::");
-  let { minValue, maxValue, median } = getMinMaxMedian(
-    voteAmounts,
-    config.minAmount
-  );
-  minValue = Math.max(
-    minValue,
-    getDecimal(minVote.lockedWithConviction.toString(), kusamaChainDecimals)
-  );
-  config.minValue = Math.max(minValue, config.minAmount);
-  logger.info("minValue", minValue);
-  config.maxValue = maxValue;
-  logger.info("maxValue", maxValue);
-  config.median = median;
-  logger.info("median", median);
-
-  let selectedIndexArray = [];
-  //for each vote compute chances at epic, rare and common
-  for (const vote of mappedVotes) {
-    let chance;
-    let selectedIndex;
-    let zeroOrOne;
-    let counter = 0;
-    let chances = {};
-    if (vote.meetsRequirements) {
-      //repeat the following for each of the NFT options for each vote => compute a chance per option (epic, rare, common) per vote
-      for (const option of config.options) {
-        if (counter < config.options.length - 1) {
-          //the center of the S curve is at the median of the votes
-          //S curve is essentially 2 separate curves
-          //determine if each vote is less or more than median
-          if (vote.lockedWithConvictionDecimal < median) {
-            //if vote amount is less than median: max = median and curve exponenet = 3
-            chance = calculateLuck(
-              vote.lockedWithConvictionDecimal,
-              minValue,
-              median,
-              option.minProbability,
-              (option.maxProbability + option.minProbability) / 2,
-              3,
-              config.babyBonus,
-              config.toddlerBonus,
-              config.adolescentBonus,
-              config.adultBonus,
-              config.quizBonus,
-              config.encointerBonus,
-              "No", //vote.dragonEquipped,
-              0, //vote.quizCorrect,
-              vote.encointerScore,
-              reputationLifetime
-            );
-          } else {
-            //if vote amount is greater than median: min = median and curve exponenet = 0.4
-            chance = calculateLuck(
-              vote.lockedWithConvictionDecimal,
-              median,
-              maxValue,
-              (option.maxProbability + option.minProbability) / 2,
-              option.maxProbability,
-              0.4,
-              config.babyBonus,
-              config.toddlerBonus,
-              config.adolescentBonus,
-              config.adultBonus,
-              config.quizBonus,
-              config.encointerBonus,
-              "No", //vote.dragonEquipped,
-              0, //vote.quizCorrect,
-              vote.encointerScore,
-              reputationLifetime
-            );
-          }
-
-          console.log(`OOOOLD::::chance for ${option.rarity}: ${chance}`);
-          zeroOrOne = getRandom(rng, [chance / 100, (100 - chance) / 100]);
-          if (zeroOrOne === 0 && selectedIndex == null) {
-            selectedIndex = counter;
-          }
-        }
-
-        if (counter === config.options.length - 1) {
-          chances[option.rarity] = 100 - chance;
-          if (selectedIndex == null) {
-            selectedIndex = counter;
-          }
-        } else {
-          chances[option.rarity] = chance;
-        }
-        counter++;
-      }
-      allChances.push(chances);
-      selectedIndexArray.push(selectedIndex);
-    } else {
-      const commonIndex = config.options.length - 1;
-      const chances = { epic: 0, rare: 0, common: 100 };
-      allChances.push(chances);
-      selectedIndexArray.push(commonIndex);
-    }
-  }
-  var uniqs = selectedIndexArray.reduce((acc, val) => {
-    acc[val] = acc[val] === undefined ? 1 : (acc[val] += 1);
-    return acc;
-  }, {});
-
-  logger.info(uniqs);
-  //check that rarities are upheld
-  //if not, exit current iteration and rerun generateCalls with a new seed
-  if (!(uniqs["2"] > uniqs["1"] * 4 && uniqs["1"] > uniqs["0"] * 2)) {
-    logger.info("Running again");
-    return generateCalls(config, ++seed);
-  }
+  const { decoratedVotes, distribution: rarityDistribution } =
+    await getDecoratedVotesWithInfo(config, kusamaChainDecimals, logger);
 
   //computing the actual calls is still WIP and likely to change
-
   let itemCollectionId;
   //create collection if required
   config.newCollectionMetadataCid = "";
@@ -1018,9 +816,10 @@ export const generateCalls = async (
     config,
     pinata,
     referendumIndex,
-    uniqs
+    rarityDistribution
   );
   logger.info("metadataCids", metadataCids);
+
   // Create transactions for each mapped vote
   txs.push(
     ...(await createTransactionsForVotes(
@@ -1028,9 +827,7 @@ export const generateCalls = async (
       config,
       metadataCids,
       attributes,
-      selectedIndexArray,
-      mappedVotes,
-      allChances,
+      decoratedVotes,
       rng,
       referendumIndex.toString(),
       proxyWallet
@@ -1121,9 +918,7 @@ export const generateCalls = async (
   // })
   return {
     call: JSON.stringify(finalCall),
-    epic_count: uniqs["0"],
-    rare_count: uniqs["1"],
-    common_count: uniqs["2"],
+    distribution,
   };
 
   //write distribution to chain

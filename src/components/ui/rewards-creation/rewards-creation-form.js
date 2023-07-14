@@ -6,26 +6,13 @@ import { useModal } from "../../modals/context";
 import axios from "axios";
 import Button from "../button";
 import Loader from "../loader";
-import { defaultReferendumRewardsConfig } from "../../../pages/referendum-rewards";
+import { defaultReferendumRewardsConfig } from "../../../data/default-referendum-rewards-config";
 const JWT = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJmYmJjN2JlMi03YTYyLTRmYWMtODcwYy0xZWU5ZDcwMDcwNjYiLCJlbWFpbCI6Im5pa2xhc0BlZWRlZS5uZXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiODQ3NjAwODllNzA3MzYyMmRmODUiLCJzY29wZWRLZXlTZWNyZXQiOiI4NjIzYTk2ODUyZTcwNGU4NjdlNDlhNmEwNTJmYmFiMTY0Y2YzNmVlYzY1Y2Y2ODBmOGIwNmU4MjNiZDFmM2ZhIiwiaWF0IjoxNjgyNDEwMzk5fQ.1T4KBu1kRQas5xm8Q8Jop1Z3O7TJHRyDhOUT7ZG_M4Y`;
 
-function RewardsCreationRarityFields({ rarity, controlledValues }) {
+function RewardsCreationRarityFields({ rarity, refConfig }) {
   const { register } = useFormContext();
 
-  let optionIndex;
-  switch (rarity) {
-    case "epic":
-      optionIndex = 0;
-      break;
-    case "rare":
-      optionIndex = 1;
-      break;
-    case "common":
-      optionIndex = 2;
-      break;
-    default:
-      optionIndex = 2;
-  }
+  let optionIndex = refConfig.options.findIndex((opt) => opt.rarity === rarity);
 
   return (
     <div className={`flex flex-col p-5 form-fields-${rarity}`}>
@@ -97,31 +84,7 @@ function RewardsCreationRarityFields({ rarity, controlledValues }) {
 
 export function RewardsCreationForm() {
   const formMethods = useForm({
-    defaultValues: {
-      options: [
-        {
-          rarity: "common",
-          name: "",
-          description: "",
-          artist: "",
-          file: undefined,
-        },
-        {
-          rarity: "rare",
-          name: "",
-          description: "",
-          artist: "",
-          file: undefined,
-        },
-        {
-          rarity: "epic",
-          name: "",
-          description: "",
-          artist: "",
-          file: undefined,
-        },
-      ],
-    },
+    defaultValues: defaultReferendumRewardsConfig,
   });
 
   const [callData, setCallData] = useState();
@@ -204,16 +167,7 @@ export function RewardsCreationForm() {
   }
 
   async function generatePreimage() {
-    const config = {
-      ...defaultReferendumRewardsConfig,
-      ...watchFormFields,
-      options: defaultReferendumRewardsConfig.options.map((option, index) => {
-        return {
-          ...option,
-          ...watchFormFields.options[index],
-        };
-      }),
-    };
+    const config = watchFormFields;
 
     setIsCallDataLoading(true);
 
@@ -345,12 +299,12 @@ export function RewardsCreationForm() {
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
             {["common", "rare", "epic"].map((rarity, index) => {
-              const fields = watchFormFields.options[index];
+              // const fields = watchFormFields.options[index];
               return (
                 <RewardsCreationRarityFields
                   key={rarity}
                   rarity={rarity}
-                  fields={fields}
+                  refConfig={watchFormFields}
                 />
               );
             })}
