@@ -329,7 +329,11 @@ export function RewardsCreationForm() {
       {isCallDataLoading && (
         <div className="text-center">
           <Loader className="w-12 h-12" text="" />
-          <p>Generating your calls, please stand by this may take a while...</p>
+          <p>
+            Generating all required transactions to distribute the rewards to
+            all voters of the selected referendum,
+          </p>
+          <p>please stand by this may take a while...</p>
         </div>
       )}
       {error && (

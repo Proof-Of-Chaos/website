@@ -14,7 +14,6 @@ import type {
   VoteConviction,
   RewardConfiguration,
   VoteConvictionRequirements,
-  Uniqs,
   RarityDistribution,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
@@ -22,7 +21,7 @@ import { getApiAt, getDecimal } from "../tools/substrateUtils";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils";
 import { Logger } from "log4js";
-import { Uniqs } from "../types";
+import { pinSingleMetadataFromDir } from "../tools/pinataUtils";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -524,3 +523,21 @@ export async function useAccountLocksImpl(
   // Combine the referenda outcomes and the votes into locks
   return getLocks(api, palletVote, votesFormatted, referendaFormatted);
 }
+
+export const createNewCollection = async (pinata, settings) => {
+  try {
+    const collectionMetadataCid = await pinSingleMetadataFromDir(
+      pinata,
+      settings.newCollectionPath,
+      settings.newCollectionFile,
+      settings.newCollectionName,
+      {
+        description: settings.newCollectionDescription,
+        external_url: "https://www.proofofchaos.app/",
+      }
+    );
+    return collectionMetadataCid;
+  } catch (error: any) {
+    console.error(error);
+  }
+};
