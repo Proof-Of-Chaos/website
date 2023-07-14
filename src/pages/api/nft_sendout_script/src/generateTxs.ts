@@ -220,199 +220,195 @@ export const getTxsForVotes = async (
       console.error(`metadataCid is null. exiting.`);
       return;
     }
-    if (
-      vote.address.toString() ==
-      "Hgcdd6sjp37KD1cKrAbwMZ6sBZTAVwb6v2GTssv9L2w1oN3"
-    ) {
-      txs.push(
-        apiStatemine.tx.nfts.mint(
-          config.newCollectionSymbol,
-          i,
-          vote.address.toString(),
-          null
-        )
-      );
+
+    txs.push(
+      apiStatemine.tx.nfts.mint(
+        config.newCollectionSymbol,
+        i,
+        vote.address.toString(),
+        null
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "royaltyPercentFloat",
+        vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "royaltyReceiver",
+        "DhvRNnnsyykGpmaa9GMjK9H4DeeQojd5V5qCTWd1GoYwnTc"
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "amountLockedInGovernance",
+        vote.lockedWithConvictionDecimal
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "voteDirection",
+        vote.voteDirection
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "aye",
+        vote.balance.aye.toString()
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "nay",
+        vote.balance.nay.toString()
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "abstain",
+        vote.balance.abstain.toString()
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "delegatedConvictionBalance",
+        vote.delegatedConvictionBalance.toString()
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "chanceAtEpic",
+        vote.chances.epic.toString()
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "chanceAtRare",
+        vote.chances.rare.toString()
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "chanceAtCommon",
+        vote.chances.common.toString()
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "voter",
+        vote.address.toString()
+      )
+    );
+    // txs.push(
+    //   apiStatemine.tx.nfts.setAttribute(
+    //     config.newCollectionSymbol,
+    //     i,
+    //     "CollectionOwner",
+    //     "dragonEquipped",
+    //     vote.dragonEquipped
+    //   )
+    // );
+    // txs.push(
+    //   apiStatemine.tx.nfts.setAttribute(
+    //     config.newCollectionSymbol,
+    //     i,
+    //     "CollectionOwner",
+    //     "quizCorrect",
+    //     vote.quizCorrect.toString()
+    //   )
+    // );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "encointerScore",
+        vote.encointerScore
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "referendumIndex",
+        referendumIndex
+      )
+    );
+    txs.push(
+      apiStatemine.tx.nfts.setAttribute(
+        config.newCollectionSymbol,
+        i,
+        "CollectionOwner",
+        "meetsRequirements",
+        vote.meetsRequirements
+      )
+    );
+    for (const attribute of vote.voteType == "Delegating"
+      ? attributes[chosenOption.rarity].delegated
+      : attributes[chosenOption.rarity].direct) {
       txs.push(
         apiStatemine.tx.nfts.setAttribute(
           config.newCollectionSymbol,
           i,
           "CollectionOwner",
-          "royaltyPercentFloat",
-          vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty
+          attribute.name,
+          attribute.value
         )
       );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "royaltyReceiver",
-          "DhvRNnnsyykGpmaa9GMjK9H4DeeQojd5V5qCTWd1GoYwnTc"
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "amountLockedInGovernance",
-          vote.lockedWithConvictionDecimal
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "voteDirection",
-          vote.voteDirection
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "aye",
-          vote.balance.aye.toString()
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "nay",
-          vote.balance.nay.toString()
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "abstain",
-          vote.balance.abstain.toString()
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "delegatedConvictionBalance",
-          vote.delegatedConvictionBalance.toString()
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "chanceAtEpic",
-          vote.chances.epic.toString()
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "chanceAtRare",
-          vote.chances.rare.toString()
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "chanceAtCommon",
-          vote.chances.common.toString()
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "voter",
-          vote.address.toString()
-        )
-      );
-      // txs.push(
-      //   apiStatemine.tx.nfts.setAttribute(
-      //     config.newCollectionSymbol,
-      //     i,
-      //     "CollectionOwner",
-      //     "dragonEquipped",
-      //     vote.dragonEquipped
-      //   )
-      // );
-      // txs.push(
-      //   apiStatemine.tx.nfts.setAttribute(
-      //     config.newCollectionSymbol,
-      //     i,
-      //     "CollectionOwner",
-      //     "quizCorrect",
-      //     vote.quizCorrect.toString()
-      //   )
-      // );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "encointerScore",
-          vote.encointerScore
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "referendumIndex",
-          referendumIndex
-        )
-      );
-      txs.push(
-        apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
-          i,
-          "CollectionOwner",
-          "meetsRequirements",
-          vote.meetsRequirements
-        )
-      );
-      for (const attribute of vote.voteType == "Delegating"
-        ? attributes[chosenOption.rarity].delegated
-        : attributes[chosenOption.rarity].direct) {
-        txs.push(
-          apiStatemine.tx.nfts.setAttribute(
-            config.newCollectionSymbol,
-            i,
-            "CollectionOwner",
-            attribute.name,
-            attribute.value
-          )
-        );
-      }
-      txs.push(
-        apiStatemine.tx.nfts.setMetadata(
-          config.newCollectionSymbol,
-          i,
-          metadataCid
-        )
-      );
-      // txs.push(
-      //   apiStatemine.tx.nfts.transfer(
-      //     config.newCollectionSymbol,
-      //     i,
-      //     vote.address.toString()
-      //   )
-      // );
     }
+    txs.push(
+      apiStatemine.tx.nfts.setMetadata(
+        config.newCollectionSymbol,
+        i,
+        metadataCid
+      )
+    );
+    // txs.push(
+    //   apiStatemine.tx.nfts.transfer(
+    //     config.newCollectionSymbol,
+    //     i,
+    //     vote.address.toString()
+    //   )
+    // );
   }
 
   return txs;
