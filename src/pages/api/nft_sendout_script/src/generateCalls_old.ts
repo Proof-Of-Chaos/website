@@ -764,11 +764,11 @@ export const generateCalls = async (
   );
 
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
-  // const decoratedVotes = await getDecoratedVotes(
-  //   config,
-  //   kusamaChainDecimals,
-  //   logger
-  // );
+  const decoratedVotes = await getDecoratedVotes(
+    config,
+    kusamaChainDecimals,
+    logger
+  );
 
   //--Encointer Section Start--
 
@@ -940,8 +940,6 @@ export const generateCalls = async (
               reputationLifetime
             );
           }
-
-          console.log(`OOOOLD::::chance for ${option.rarity}: ${chance}`);
           zeroOrOne = getRandom(rng, [chance / 100, (100 - chance) / 100]);
           if (zeroOrOne === 0 && selectedIndex == null) {
             selectedIndex = counter;

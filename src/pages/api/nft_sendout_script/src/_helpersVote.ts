@@ -1,3 +1,4 @@
+import seedrandom from "seedrandom";
 import type { Option } from "@polkadot/types";
 import type {
   PalletConvictionVotingVoteCasting,
@@ -17,7 +18,7 @@ import type {
 import { ApiDecoration } from "@polkadot/api/types";
 import { getApiAt, getDecimal } from "../tools/substrateUtils";
 import { getConvictionVoting } from "./voteData";
-import { lucksForConfig } from "../../../../utils.js";
+import { lucksForConfig, weightedRandom } from "../../../../utils.js";
 import { Logger } from "log4js";
 
 // Helper function to get vote parameters
@@ -126,20 +127,62 @@ const decorateWithChances = (
   config: RewardConfiguration,
   minVoteValue: number,
   maxVoteValue: number,
-  medianVoteValue: number
+  medianVoteValue: number,
+  seed: number = 0
 ): VoteConviction[] => {
-  const rarities = config.options.map((option) => option.rarity);
+  //seed the randomizer
+  const rng = seedrandom(seed.toString());
 
   config.minValue = minVoteValue;
   config.maxValue = maxVoteValue;
   config.median = medianVoteValue;
 
-  return votes.map((vote) => {
-    let chances = lucksForConfig(vote.lockedWithConvictionDecimal, config, 1.0);
+  const totalChosen = {};
 
-    console.log("chances", chances);
-    return { ...vote, chances };
+  let decoratedVotes = votes.map((vote) => {
+    let chances = lucksForConfig(vote.lockedWithConvictionDecimal, config, 1.0);
+    let chosen = weightedRandom(
+      rng,
+      Object.keys(chances),
+      Object.values(chances)
+    );
+
+    console.log(chances);
+
+    // console.log(
+    //   "weightedRandom: ",
+    //   weightedRandom(rng, ["test1", "test2", "test3"], [0.9, 0.100023, 0])
+    // );
+
+    // console.log("chances: ", chances);
+    // console.log("-> chosen: ", chosen);
+    totalChosen[chosen] = totalChosen[chosen] ? totalChosen[chosen] + 1 : 1;
+    return { ...vote, chances, chosen };
   });
+
+  console.log("totalChosen", totalChosen);
+
+  const invariantHolds =
+    totalChosen["common"] > totalChosen["rare"] * 2 &&
+    totalChosen["rare"] > totalChosen["epic"] * 4;
+
+  if (invariantHolds) {
+    return decoratedVotes;
+  } else {
+    console.info(
+      `invariant does not hold for ${JSON.stringify(
+        totalChosen
+      )} retrying with seed ${seed + 1}...`
+    );
+    return decorateWithChances(
+      votes,
+      config,
+      minVoteValue,
+      maxVoteValue,
+      medianVoteValue,
+      ++seed
+    );
+  }
 };
 
 const getVoteInfo = (

@@ -75,14 +75,13 @@ const calculateLuck = (
   minOut,
   maxOut,
   exponent,
-  minAmount,
   luckMultiplier
 ) => {
   minOut = parseInt(minOut);
   maxOut = parseInt(maxOut);
   if (n > maxIn) {
     n = maxOut;
-  } else if (n < minAmount) {
+  } else if (n < minIn) {
     n = minOut;
   } else {
     // unscale input
@@ -93,7 +92,7 @@ const calculateLuck = (
     n *= maxOut - minOut;
     n += minOut;
   }
-  return n * luckMultiplier;
+  return (n * luckMultiplier).toFixed(3);
 };
 
 const getLuckMultiplier = (options, config) => {
@@ -135,6 +134,9 @@ const lucksForConfig = (ksm, refConfig, luckMultiplier) => {
   );
 
   optionsToConsider?.forEach((option) => {
+    console.log(
+      `checking if ${ksm} is between ${refConfig.minValue} and ${refConfig.median}`
+    );
     if (ksm < refConfig.median) {
       lucks[`${option.rarity}`] = calculateLuck(
         ksm,
@@ -144,10 +146,16 @@ const lucksForConfig = (ksm, refConfig, luckMultiplier) => {
         option.sweetspotProbability ??
           (option.maxProbability + option.minProbability) / 2,
         EXPONENT_CONSTANTS[0],
-        refConfig.minAmount,
         luckMultiplier
       );
+
+      console.log(
+        `< median: lucks for ${option.rarity} is ${lucks[`${option.rarity}`]}`
+      );
     } else {
+      console.log(
+        `checking if ${ksm} is between ${refConfig.median} and ${refConfig.maxValue}`
+      );
       lucks[`${option.rarity}`] = calculateLuck(
         ksm,
         refConfig.median,
@@ -156,13 +164,16 @@ const lucksForConfig = (ksm, refConfig, luckMultiplier) => {
           (option.maxProbability + option.minProbability) / 2,
         option.maxProbability,
         EXPONENT_CONSTANTS[1],
-        refConfig.minAmount,
         luckMultiplier
+      );
+
+      console.log(
+        `> median: lucks for ${option.rarity} is ${lucks[`${option.rarity}`]}`
       );
     }
   });
-  lucks.rare = ((100 - lucks.epic) / 100) * lucks.rare;
-  lucks.common = 100 - lucks.rare - lucks.epic;
+  // lucks.rare = ((100 - lucks.epic) / 100) * lucks.rare;
+  // lucks.common = 100 - lucks.rare - lucks.epic;
   return lucks;
 };
 
@@ -211,6 +222,25 @@ function stripHtml(html) {
   return doc.body.textContent || "";
 }
 
+/**
+ * Get a random item from an array of items based on weights
+ * @param {*} rng random number generator
+ * @param {*} items array of items
+ * @param {*} weights array of weights
+ * @returns item
+ */
+function weightedRandom(rng, items, weights) {
+  var i;
+
+  for (i = 1; i < weights.length; i++) weights[i] += weights[i - 1];
+
+  var random = rng() * weights[weights.length - 1];
+
+  for (i = 0; i < weights.length; i++) if (weights[i] > random) break;
+
+  return items[i];
+}
+
 export {
   getRandomInt,
   getRandomIntBetween,
@@ -227,4 +257,5 @@ export {
   toBase64,
   titleCase,
   stripHtml,
+  weightedRandom,
 };
