@@ -116,10 +116,10 @@ export const getDecoratedVotesWithInfo = async (
   } = getVoteInfo(votes, config);
 
   logger.info(
-    `AAA Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
+    `📊 Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
   );
   logger.info(
-    `AAA Min vote value: ${minVoteValue}, max vote value: ${maxVoteValue}, median vote value: ${medianVoteValue}`
+    `📊 Min vote value: ${minVoteValue}, max vote value: ${maxVoteValue}, median vote value: ${medianVoteValue}`
   );
 
   // 5. decorate with chances. E.g. chances: { common: 0.5, rare: 0.3, epic 0.2}
@@ -129,7 +129,9 @@ export const getDecoratedVotesWithInfo = async (
     config,
     minVoteValue,
     maxVoteValue,
-    medianVoteValue
+    medianVoteValue,
+    0,
+    logger
   );
   votes = decoratedWithChancesVotes.votesWithChances;
 
@@ -157,7 +159,8 @@ const decorateWithChances = (
   minVoteValue: number,
   maxVoteValue: number,
   medianVoteValue: number,
-  seed: number = 0
+  seed: number = 0,
+  logger: Logger
 ): { votesWithChances: VoteConviction[]; distribution: RarityDistribution } => {
   //seed the randomizer
   const rng = seedrandom(seed.toString());
@@ -193,10 +196,10 @@ const decorateWithChances = (
     rarityDistribution["rare"] > rarityDistribution["epic"] * 2;
 
   if (invariantHolds) {
-    console.info(`invariant holds for ${JSON.stringify(rarityDistribution)}`);
+    logger.info(`invariant holds for ${JSON.stringify(rarityDistribution)}`);
     return { votesWithChances, distribution: rarityDistribution };
   } else {
-    console.info(
+    logger.info(
       `invariant does not hold for ${JSON.stringify(
         rarityDistribution
       )} retrying with seed ${seed + 1}...`
@@ -207,7 +210,8 @@ const decorateWithChances = (
       minVoteValue,
       maxVoteValue,
       medianVoteValue,
-      ++seed
+      ++seed,
+      logger
     );
   }
 };

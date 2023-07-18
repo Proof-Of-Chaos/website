@@ -1,4 +1,9 @@
-export const defaultReferendumRewardsConfig = {
+import { RewardOption } from "../pages/api/nft_sendout_script/types";
+
+export const defaultReferendumRewardsConfig: {
+  [key: string]: any;
+  options: RewardOption[];
+} = {
   refIndex: 99,
   min: "1200000000000",
   max: "100000000000000000000000000000000000000000",
@@ -11,6 +16,7 @@ export const defaultReferendumRewardsConfig = {
   newCollectionFile: "test.png",
   newCollectionName: "test for ref 99",
   newCollectionDescription: "Test Description",
+  collectionId: 34, //the collection to mint into
   babyBonus: 7,
   toddlerBonus: 13,
   adolescentBonus: 16,

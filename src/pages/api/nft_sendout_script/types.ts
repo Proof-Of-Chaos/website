@@ -1,6 +1,7 @@
 import { DeriveReferendumVote } from "@polkadot/api-derive/types";
 import { Bytes } from "@polkadot/types";
 import { BN } from "@polkadot/util";
+import { pinImageAndMetadataForOptions } from "./tools/pinataUtils";
 
 export interface VoteConviction extends ConvictionVote {
   lockedWithConviction?: BN;
@@ -214,6 +215,28 @@ export interface ProcessMetadataResult {
   };
 }
 
+export type PinImageAndMetadataForOptionsResult = {
+  imageIpfsCids: {
+    [key: string]: {
+      direct: string;
+      delegated: string;
+    };
+  };
+  metadataIpfsCids: {
+    [key: string]: {
+      direct: string;
+      delegated: string;
+    };
+  };
+};
+
+export type NftAttributesResult = {
+  [key: string]: {
+    direct: string;
+    delegated: string;
+  };
+};
+
 export type RNG = () => number;
 
 export interface FetchReputableVotersParams {
@@ -275,6 +298,7 @@ export interface RewardConfiguration {
 }
 
 export interface RewardOption {
+  description: String;
   maxProbability: number | null;
   minProbability: number | null;
   transferable: number;
@@ -290,6 +314,7 @@ export interface RewardOption {
   maxRoyalty: number;
   metadataCidDirect?: string;
   metadataCidDelegated?: string;
+  file?: any;
 }
 
 export type CallResult = {
@@ -297,5 +322,9 @@ export type CallResult = {
   distribution: RarityDistribution;
   fees: {
     [key: string]: string;
+  };
+  txsCount: {
+    xcm: number;
+    nfts: number;
   };
 };

@@ -6,6 +6,14 @@ import { sleep } from "./utils";
 // import { params } from '../config.js';
 // import { Metadata } from 'rmrk-tools/dist/tools/types';
 import { logger } from "./logger";
+import { config } from "process";
+import {
+  PinImageAndMetadataForOptionsResult,
+  ProcessMetadataResult,
+  RewardConfiguration,
+  RewardOption,
+} from "../types";
+import pinataSDK from "@pinata/sdk";
 
 const defaultOptions: Partial<PinataPinOptions> = {
   pinataOptions: {
@@ -19,6 +27,68 @@ export type StreamPinata = Readable & {
 };
 
 const limit = pLimit(1);
+
+export const pinImageAndMetadataForOptions = async (
+  pinata: pinataSDK,
+  config: RewardConfiguration
+): Promise<PinImageAndMetadataForOptionsResult> => {
+  const imageIpfsCids = {};
+  const metadataIpfsCids = {};
+
+  for (const option of config.options) {
+    const pinataFileOptions: PinataPinOptions = {
+      pinataMetadata: {
+        name: `referendum-${config.refIndex}_${option.itemName}`,
+      },
+      pinataOptions: {
+        cidVersion: 1,
+      },
+    };
+
+    const pinataMetadataOptions: PinataPinOptions = {
+      pinataMetadata: {
+        name: `referendum-${config.refIndex}_${option.itemName}_meta`,
+      },
+      pinataOptions: {
+        cidVersion: 1,
+      },
+    };
+
+    //pin image file
+    const imageIpfsCid = await pinata.pinFileToIPFS(
+      Readable.from(option.file),
+      pinataFileOptions
+    );
+
+    imageIpfsCids[option.rarity] = {
+      direct: imageIpfsCid,
+      // TODO
+      delegated: imageIpfsCid,
+    };
+
+    //pin metadata
+    const metadata = {
+      external_url: "https://www.proofofchaos.app/",
+      mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
+      name: option.itemName,
+      description: option.description,
+    };
+    const metadataIpfsCid = await pinata.pinJSONToIPFS(
+      metadata,
+      pinataMetadataOptions
+    );
+    metadataIpfsCids[option.rarity] = {
+      direct: metadataIpfsCid,
+      // TODO
+      delegated: metadataIpfsCid,
+    };
+  }
+
+  return {
+    imageIpfsCids,
+    metadataIpfsCids,
+  };
+};
 
 const pinFileStreamToIpfs = async (
   pinata,

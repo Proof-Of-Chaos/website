@@ -1,5 +1,8 @@
 import { ApiPromise } from "@polkadot/api";
-import { pinSingleMetadataFromDir } from "../tools/pinataUtils";
+import {
+  pinImageAndMetadataForOptions,
+  pinSingleMetadataFromDir,
+} from "../tools/pinataUtils";
 
 import {
   VoteConviction,
@@ -8,10 +11,12 @@ import {
   RarityDistribution,
   ProcessMetadataResult,
   RewardOption,
+  PinImageAndMetadataForOptionsResult,
 } from "../types";
 import { BN, bnToBn } from "@polkadot/util";
 import PinataClient from "@pinata/sdk";
 import { createNewCollection } from "./_helpersVote";
+import { Logger } from "log4js";
 
 export const getTxsReferendumRewards = async (
   apiStatemine: ApiPromise,
@@ -20,7 +25,8 @@ export const getTxsReferendumRewards = async (
   config: RewardConfiguration,
   decoratedVotes: VoteConviction[],
   rarityDistribution: RarityDistribution,
-  rng: RNG
+  rng: RNG,
+  logger: Logger
 ): Promise<{
   txsStatemine: any[];
   txsKusama: any[];
@@ -54,20 +60,29 @@ export const getTxsReferendumRewards = async (
 
     txsStatemine = [...txsCreateNewCollection];
   } else {
-    // TODO use a default collection
+    // use a default collection
   }
 
-  const { metadataCids, attributes } = await processMetadataForOptions(
-    config,
+  // pin metadata and file for each rarity option to Pinata and get nft attributes
+
+  const fileAndMetadataCids = await pinImageAndMetadataForOptions(
     apiPinata,
-    bnToBn(referendumIndex),
+    config
+  );
+
+  logger.info("File And Metadata Cids", JSON.stringify(fileAndMetadataCids));
+
+  const attributes = getNftAttributesForOptions(
+    config.options,
     rarityDistribution
   );
+
+  logger.info("NFT attributes", JSON.stringify(attributes));
 
   const txsVotes = await getTxsForVotes(
     apiStatemine,
     config,
-    metadataCids,
+    fileAndMetadataCids,
     attributes,
     decoratedVotes,
     rng,
@@ -86,6 +101,41 @@ export const getTxsReferendumRewards = async (
   txsKusama = [...txsKusama, ...txsKusamaXCM];
 
   return { txsStatemine, txsKusama };
+};
+
+//TODO i think this can be without an array and just return the object
+const getNftAttributesForOptions = (
+  options: RewardOption[],
+  rarityDistribution: RarityDistribution
+) => {
+  let attributes = {};
+
+  for (const option of options) {
+    // generate nft attributes
+    const nftAttributes = [
+      { name: "rarity", value: option.rarity },
+      { name: "totalSupply", value: rarityDistribution[option.rarity] },
+      { name: "artist", value: option.artist },
+      { name: "creativeDirector", value: option.creativeDirector },
+      { name: "name", value: option.itemName },
+    ];
+
+    const attributesDirect = [
+      ...nftAttributes,
+      { name: "typeOfVote", value: "direct" },
+    ];
+    const attributesDelegated = [
+      ...nftAttributes,
+      { name: "typeOfVote", value: "delegated" },
+    ];
+
+    attributes[option.rarity] = {
+      direct: attributesDirect,
+      delegated: attributesDelegated,
+    };
+  }
+
+  return attributes;
 };
 
 const getTxsKusamaXCM = async (
@@ -181,7 +231,7 @@ const getTxsCreateNewCollection = async (
 export const getTxsForVotes = async (
   apiStatemine: ApiPromise,
   config: RewardConfiguration,
-  metadataCids,
+  fileAndMetadataCids: PinImageAndMetadataForOptionsResult,
   attributes,
   decoratedVotes: VoteConviction[],
   rng: RNG,
@@ -195,7 +245,8 @@ export const getTxsForVotes = async (
     // the rarity option that was chosen for the voter
     const { chosenOption } = vote;
 
-    const selectedMetadata = metadataCids[chosenOption.rarity];
+    const selectedMetadata =
+      fileAndMetadataCids.metadataIpfsCids[chosenOption.rarity];
 
     let metadataCid =
       vote.voteType == "Delegating"
@@ -355,15 +406,15 @@ export const getTxsForVotes = async (
     //     vote.quizCorrect.toString()
     //   )
     // );
-    txs.push(
-      apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
-        i,
-        "CollectionOwner",
-        "encointerScore",
-        vote.encointerScore
-      )
-    );
+    // txs.push(
+    //   apiStatemine.tx.nfts.setAttribute(
+    //     config.newCollectionSymbol,
+    //     i,
+    //     "CollectionOwner",
+    //     "encointerScore",
+    //     vote.encointerScore
+    //   )
+    // );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
         config.newCollectionSymbol,
@@ -418,6 +469,7 @@ export const getTxsForVotes = async (
 const processMetadataForOptions = async (
   config: RewardConfiguration,
   pinata: ReturnType<typeof pinataSDK>,
+  //TODO this parameter could be used from config.refIndex
   referendumIndex: BN,
   rarityDistribution: RarityDistribution
 ): Promise<ProcessMetadataResult> => {
@@ -425,11 +477,45 @@ const processMetadataForOptions = async (
   let attributes = {};
 
   for (const option of config.options) {
-    const attributesDirect = generateAttributes(
-      option,
-      "direct",
-      rarityDistribution[option.rarity]
+    // generate nft attributes
+    const nftAttributes = [
+      { name: "rarity", value: option.rarity },
+      { name: "totalSupply", value: rarityDistribution[option.rarity] },
+      { name: "artist", value: option.artist },
+      { name: "creativeDirector", value: option.creativeDirector },
+      { name: "name", value: option.itemName },
+    ];
+
+    const attributesDirect = [
+      ...nftAttributes,
+      { name: "typeOfVote", value: "direct" },
+    ];
+    const attributesDelegated = [
+      ...nftAttributes,
+      { name: "typeOfVote", value: "delegated" },
+    ];
+
+    attributes[option.rarity] = {
+      direct: attributesDirect,
+      delegated: attributesDelegated,
+    };
+
+    // pin image and metadata to Pinata and get the cid hashes
+    const { imageIpfsHash, metadataIpfsHash } = await pinImageAndMetadata(
+      pinata,
+      option.file?.[0],
+      option.itemName ?? `Referendum ${referendumIndex}`,
+      option
     );
+
+    metadataCids[option.rarity] = {
+      direct: {
+        image: imageIpfsHash,
+        metadata: metadataIpfsHash,
+      },
+      // delegated: metadataCidDelegated,
+    };
+
     const metadataCidDirect = await pinSingleMetadataFromDir(
       pinata,
       "/public/referenda",
@@ -439,11 +525,6 @@ const processMetadataForOptions = async (
     );
     option.metadataCidDirect = metadataCidDirect;
 
-    const attributesDelegated = generateAttributes(
-      option,
-      "delegated",
-      rarityDistribution[option.rarity]
-    );
     const metadataCidDelegated = await pinSingleMetadataFromDir(
       pinata,
       "/public/referenda",
@@ -459,31 +540,6 @@ const processMetadataForOptions = async (
       );
       return;
     }
-
-    metadataCids[option.rarity] = {
-      direct: metadataCidDirect,
-      delegated: metadataCidDelegated,
-    };
-    attributes[option.rarity] = {
-      direct: attributesDirect,
-      delegated: attributesDelegated,
-    };
   }
   return { metadataCids, attributes };
-};
-
-// Function to generate attributes for direct and delegated options
-const generateAttributes = (
-  option: RewardOption,
-  typeOfVote: string,
-  totalSupplyOfOption: number
-): { name: string; value: string | number }[] => {
-  return [
-    { name: "rarity", value: option.rarity },
-    { name: "totalSupply", value: totalSupplyOfOption },
-    { name: "artist", value: option.artist },
-    { name: "creativeDirector", value: option.creativeDirector },
-    { name: "name", value: option.itemName },
-    { name: "typeOfVote", value: typeOfVote },
-  ];
 };
