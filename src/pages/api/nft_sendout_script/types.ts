@@ -271,6 +271,7 @@ export interface RewardConfiguration {
   minVote?: number | null;
   maxVote?: number | null;
   newCollectionMetadataCid?: string | null;
+  sender?: string;
 }
 
 export interface RewardOption {
@@ -294,4 +295,7 @@ export interface RewardOption {
 export type CallResult = {
   call: string;
   distribution: RarityDistribution;
+  fees: {
+    [key: string]: string;
+  };
 };

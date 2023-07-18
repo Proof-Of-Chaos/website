@@ -248,6 +248,33 @@ function weightedRandom(rng, items, weights) {
   return items[i];
 }
 
+/**
+ * Convert a stream to a JSON object
+ * @param data
+ */
+async function* streamToJSON(
+  data: ReadableStream<Uint8Array>
+): AsyncIterableIterator<any> {
+  const reader = data.getReader();
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const { value, done } = await reader.read();
+    console.log("streamToJson", value, done);
+    if (done) {
+      break;
+    }
+
+    if (value) {
+      try {
+        yield JSON.parse(decoder.decode(value));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+}
+
 export {
   getRandomInt,
   getRandomIntBetween,
@@ -265,4 +292,5 @@ export {
   titleCase,
   stripHtml,
   weightedRandom,
+  streamToJSON,
 };

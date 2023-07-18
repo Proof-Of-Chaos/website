@@ -46,6 +46,7 @@ pre{
   max-width: 100%;
   word-break: break-all;
   overflow: hidden;
+  white-space: break-spaces;
   @apply text-xs px-2 py-3;
 }
 

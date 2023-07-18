@@ -1,16 +1,16 @@
-import create from "zustand";
-import { persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const log = (config) => (set, get, api) =>
   config(
     (...args) => {
-      console.log('  applying', args)
-      set(...args)
-      console.log('  new state', get())
+      console.log("  applying", args);
+      set(...args);
+      console.log("  new state", get());
     },
     get,
     api
-  )
+  );
 
 const initialState = {
   user: {
@@ -25,66 +25,67 @@ const initialState = {
   chain: {
     currentBlock: null,
   },
-}
+};
 
 const useAppStore = create(
   // log(
-    persist((set) => ({
+  persist(
+    (set) => ({
       ...initialState,
-      setCurrentBlock: ( blockNumber ) => {
-        set(()=>({
+      setCurrentBlock: (blockNumber) => {
+        set(() => ({
           chain: {
             currentBlock: blockNumber,
-          }
-        }))
+          },
+        }));
       },
-      setReferendums: ( referendums ) => {
-        set(()=>({
+      setReferendums: (referendums) => {
+        set(() => ({
           referendums,
-        }))
+        }));
       },
-      updateUserNfts: ( nfts ) => {
-        set((state)=>({
+      updateUserNfts: (nfts) => {
+        set((state) => ({
           user: {
             ...state.user,
             nfts,
-          }
-        }))
+          },
+        }));
       },
-      updateLuckBoostKnowledge: ( val ) => {
-        set((state)=>({
+      updateLuckBoostKnowledge: (val) => {
+        set((state) => ({
           user: {
             ...state.user,
             knowsAboutLuckBoost: val,
-          }
-        }))
+          },
+        }));
       },
-      updateConnectedWalletProvider: ( walletProvider ) => {
-        set((state)=>({
+      updateConnectedWalletProvider: (walletProvider) => {
+        set((state) => ({
           user: {
             ...state.user,
             connectedWalletProvider: walletProvider,
-          }
-        }))
+          },
+        }));
       },
-      updateConnectedAccounts: ( accounts ) => {
-        set((state)=>({
+      updateConnectedAccounts: (accounts) => {
+        set((state) => ({
           user: {
             ...state.user,
             connectedAccounts: accounts,
-          }
-        }))
+          },
+        }));
       },
-      updateConnectedAccount: ( index ) => {
-        set((state)=>({
+      updateConnectedAccount: (index) => {
+        set((state) => ({
           user: {
             ...state.user,
             connectedAccount: index,
-          }
-        }))
+          },
+        }));
       },
-      updateVoteState: ( referendumId, vote ) => {
-        set((state)=>({
+      updateVoteState: (referendumId, vote) => {
+        set((state) => ({
           user: {
             ...state.user,
             voteStates: {
@@ -92,35 +93,35 @@ const useAppStore = create(
               [`${referendumId}`]: {
                 ...state.user.voteStates?.[`${referendumId}`],
                 vote,
-              },              
-            }
-          }
-        }))
+              },
+            },
+          },
+        }));
       },
-      removeVoteState: ( referendumId ) => {
-        set(( state ) => {
-          const newVoteStates = {...state.user.voteStates}
-          delete newVoteStates[`${referendumId}`]
+      removeVoteState: (referendumId) => {
+        set((state) => {
+          const newVoteStates = { ...state.user.voteStates };
+          delete newVoteStates[`${referendumId}`];
           return {
             user: {
               ...state.user,
-              voteStates: newVoteStates 
-            }
-          }
-        })
+              voteStates: newVoteStates,
+            },
+          };
+        });
       },
       clearVoteState: () => {
         set((state) => ({
           user: {
             ...state.user,
             voteStates: [],
-          }
-        }))
+          },
+        }));
       },
-      submitQuiz: ( referendumId ) => {
+      submitQuiz: (referendumId) => {
         // store in state that user submitted quiz answers,
         // should only be called in the signAndSend
-        set((state)=>({
+        set((state) => ({
           user: {
             ...state.user,
             quizAnswers: {
@@ -130,11 +131,11 @@ const useAppStore = create(
                 submitted: true,
                 submittedOn: Date.now(),
               },
-            }
-          }
-        }))
+            },
+          },
+        }));
       },
-      updateQuizAnswers: ( referendumId, answer ) =>
+      updateQuizAnswers: (referendumId, answer) =>
         set((state) => ({
           user: {
             ...state.user,
@@ -147,15 +148,15 @@ const useAppStore = create(
                 },
                 lastChange: Date.now(),
               },
-            }
-          }
-        }))
-      }),
-      {
-        name: 'govrewards-storage', // unique name
-      }
-    )
+            },
+          },
+        })),
+    }),
+    {
+      name: "govrewards-storage", // unique name
+    }
+  )
   // )
-)
+);
 
 export default useAppStore;

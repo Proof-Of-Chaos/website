@@ -52,7 +52,7 @@ export const getTxsReferendumRewards = async (
       proxyWallet
     );
 
-    txsStatemine = [...txsStatemine, ...txsCreateNewCollection];
+    txsStatemine = [...txsCreateNewCollection];
   } else {
     // TODO use a default collection
   }

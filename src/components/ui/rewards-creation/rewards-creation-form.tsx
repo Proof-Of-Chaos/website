@@ -7,6 +7,8 @@ import axios from "axios";
 import Button from "../button";
 import Loader from "../loader";
 import { defaultReferendumRewardsConfig } from "../../../data/default-referendum-rewards-config";
+import { streamToJSON } from "../../../utils";
+import useAppStore from "../../../zustand";
 const JWT = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJmYmJjN2JlMi03YTYyLTRmYWMtODcwYy0xZWU5ZDcwMDcwNjYiLCJlbWFpbCI6Im5pa2xhc0BlZWRlZS5uZXQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiODQ3NjAwODllNzA3MzYyMmRmODUiLCJzY29wZWRLZXlTZWNyZXQiOiI4NjIzYTk2ODUyZTcwNGU4NjdlNDlhNmEwNTJmYmFiMTY0Y2YzNmVlYzY1Y2Y2ODBmOGIwNmU4MjNiZDFmM2ZhIiwiaWF0IjoxNjgyNDEwMzk5fQ.1T4KBu1kRQas5xm8Q8Jop1Z3O7TJHRyDhOUT7ZG_M4Y`;
 
 function RewardsCreationRarityFields({ rarity, refConfig }) {
@@ -83,13 +85,30 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
 }
 
 export function RewardsCreationForm() {
+  const connectedAccountIndex = useAppStore(
+    (state) => state.user.connectedAccount
+  );
+  const connectedAccount = useAppStore(
+    (state) => state.user.connectedAccounts?.[connectedAccountIndex]
+  );
+  const walletAddress = connectedAccount?.address;
+
+  const [callData, setCallData] = useState({
+    config: {},
+    preimage: null,
+    step: null,
+    fees: null,
+    distribution: {},
+  });
+  const [isCallDataLoading, setIsCallDataLoading] = useState(false);
+  const [error, setError] = useState({
+    message: "",
+    name: "",
+  });
+
   const formMethods = useForm({
     defaultValues: defaultReferendumRewardsConfig,
   });
-
-  const [callData, setCallData] = useState();
-  const [isCallDataLoading, setIsCallDataLoading] = useState(false);
-  const [error, setError] = useState();
 
   const {
     watch,
@@ -99,24 +118,6 @@ export function RewardsCreationForm() {
   const { closeModal } = useModal();
 
   const watchFormFields = watch();
-
-  // {
-  //   "maxProbability": 40,
-  //   "minProbability": 10,
-  //   "transferable": 1,
-  //   "symbol": "R99",
-  //   "text": "'Rare'\n\nI voted on Ref 99 and got a rare NFT",
-  //   "artist": "Dali",
-  //   "creativeDirector": "Amadeus Mozart",
-  //   "main": "99/rare/main.png",
-  //   "thumb": "99/rare/thumb.png",
-  //   "rarity": "rare",
-  //   "itemName": "Rare",
-  //   "minRoyalty": 20,
-  //   "maxRoyalty": 30,
-  //   "metadataCidDirect": "ipfs://ipfs/bafkreia45czi7tm73kumnrreakggj7b6owywexuhhen4jiv4dyoc3tvx7u",
-  //   "metadataCidDelegated": "ipfs://ipfs/bafkreia45czi7tm73kumnrreakggj7b6owywexuhhen4jiv4dyoc3tvx7u"
-  // },
 
   async function pinFile(file) {
     if (!file) {
@@ -141,7 +142,7 @@ export function RewardsCreationForm() {
         "https://api.pinata.cloud/pinning/pinFileToIPFS",
         formData,
         {
-          maxBodyLength: "Infinity",
+          maxBodyLength: Number.MAX_VALUE,
           headers: {
             "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
             Authorization: JWT,
@@ -154,33 +155,41 @@ export function RewardsCreationForm() {
     }
   }
 
-  async function pinAllFiles() {
-    const file_common = watchFormFields.options.common.file?.[0];
-    const file_rare = watchFormFields.options.rare.file?.[0];
-    const file_epic = watchFormFields.options.epic.file?.[0];
+  // async function pinAllFiles() {
+  //   const file_common = watchFormFields.options.common.file?.[0];
+  //   const file_rare = watchFormFields.options.rare.file?.[0];
+  //   const file_epic = watchFormFields.options.epic.file?.[0];
 
-    return await Promise.all([
-      pinFile(file_common),
-      pinFile(file_rare),
-      pinFile(file_epic),
-    ]);
-  }
+  //   return await Promise.all([
+  //     pinFile(file_common),
+  //     pinFile(file_rare),
+  //     pinFile(file_epic),
+  //   ]);
+  // }
 
   async function generatePreimage() {
-    const config = watchFormFields;
+    if (!walletAddress) {
+      setError({
+        message: "Please connect your wallet to continue.",
+        name: "Wallet not connected",
+      });
+      return;
+    }
+
+    const config = {
+      ...watchFormFields,
+      sender: walletAddress,
+    };
 
     setIsCallDataLoading(true);
 
     try {
-      setError();
+      setError({ message: "", name: "" });
       const res = await fetch("/api/create-rewards-calls", {
         method: "POST",
         body: JSON.stringify(config),
       });
-
-      console.log("res", res);
-      let jsonRes = await res.json();
-      console.log("jsonRes", jsonRes);
+      const jsonRes = await res.json();
 
       if (jsonRes.name === "Error") {
         console.log(" frontend", jsonRes);
@@ -336,23 +345,29 @@ export function RewardsCreationForm() {
           <p>please stand by this may take a while...</p>
         </div>
       )}
-      {error && (
+      {error.message !== "" && (
         <div>
           <p>Error generating your calls, please try again.</p>
           <p className="text-red-500">{error.message}</p>
         </div>
       )}
-      call config:
-      <pre className="text-[0.5rem]">
+      {callData && (
+        <div>
+          <p>{JSON.stringify(callData.distribution)} will be sendout</p>
+          <p>Fees for your call: ~{JSON.stringify(callData.fees)}</p>
+        </div>
+      )}
+      {/* <pre className="text-[0.5rem]">
+        call config:
         {JSON.stringify(callData?.config, null, 2)}
       </pre>
-      preimage hex:
-      <pre className="text-[0.5rem]">
-        {JSON.stringify(callData?.preimage, null, 2)}
+      <pre className="text-[0.5rem] break-spaces">
+        preimage hex:
+        {callData?.preimage}
       </pre>
       <pre className="text-[0.5rem]">
         form fields: {JSON.stringify(watchFormFields, null, 2)}
-      </pre>
+      </pre> */}
     </div>
   );
 }

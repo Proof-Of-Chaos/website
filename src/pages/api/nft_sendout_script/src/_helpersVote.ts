@@ -15,6 +15,13 @@ import type {
   RewardConfiguration,
   VoteConvictionRequirements,
   RarityDistribution,
+  VoteConvictionEncointer,
+  VoteConvictionDragon,
+  QuizSubmission,
+  VoteConvictionDragonQuiz,
+  Bonuses,
+  EncointerCommunity,
+  FetchReputableVotersParams,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
 import { getApiAt, getDecimal } from "../tools/substrateUtils";
@@ -22,6 +29,7 @@ import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils";
 import { Logger } from "log4js";
 import { pinSingleMetadataFromDir } from "../tools/pinataUtils";
+import { ApiPromise } from "@polkadot/api";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -539,5 +547,219 @@ export const createNewCollection = async (pinata, settings) => {
     return collectionMetadataCid;
   } catch (error: any) {
     console.error(error);
+  }
+};
+
+// TODO ------ are these still needed??
+
+// Function to create a config NFT
+const createConfigNFT = async (
+  apiStatemine,
+  config,
+  metadataCidSettings,
+  referendumIndex,
+  proxyWallet
+) => {
+  const txs = [];
+
+  txs.push(
+    apiStatemine.tx.uniques.mint(
+      config.settingsCollectionSymbol,
+      referendumIndex,
+      proxyWallet
+    )
+  );
+  txs.push(
+    apiStatemine.tx.uniques.setAttribute(
+      config.settingsCollectionSymbol,
+      referendumIndex,
+      "seed",
+      config.seed
+    )
+  );
+  txs.push(
+    apiStatemine.tx.uniques.setMetadata(
+      config.settingsCollectionSymbol,
+      referendumIndex,
+      metadataCidSettings,
+      true
+    )
+  );
+
+  return txs;
+};
+
+const fetchReputableVoters = async (
+  params: FetchReputableVotersParams
+): Promise<{
+  countPerWallet: Record<string, number>;
+  reputationLifetime: number;
+}> => {
+  const {
+    confirmationBlockNumber,
+    getEncointerBlockNumberFromKusama,
+    getCurrentEncointerCommunities,
+    getLatestEncointerCeremony,
+    getReputationLifetime,
+    getCeremonyAttendants,
+  } = params;
+
+  const encointerBlock = await getEncointerBlockNumberFromKusama(
+    confirmationBlockNumber
+  );
+  const communities: EncointerCommunity[] =
+    await getCurrentEncointerCommunities(encointerBlock);
+  const currentCeremonyIndex = await getLatestEncointerCeremony(encointerBlock);
+  const reputationLifetime = await getReputationLifetime(encointerBlock);
+
+  const lowerIndex = Math.max(0, currentCeremonyIndex - reputationLifetime);
+  let attendants = [];
+  // for each community get latest 5 ceremony attendants
+  for (const community of communities) {
+    for (let cIndex = lowerIndex; cIndex < currentCeremonyIndex; cIndex++) {
+      const unformattedAttendants = await getCeremonyAttendants(
+        community,
+        cIndex,
+        encointerBlock
+      );
+      attendants.push(unformattedAttendants);
+    }
+  }
+  const arrayOfReputables = attendants.flat();
+
+  const countPerWallet = arrayOfReputables.reduce((elementCounts, element) => {
+    elementCounts[element] = (elementCounts[element] || 0) + 1;
+    return elementCounts;
+  }, {});
+
+  return { countPerWallet, reputationLifetime };
+};
+
+const getWalletsByDragonAge = (bonuses: Bonuses): Record<string, string[]> => {
+  const dragonAges = ["babies", "toddlers", "adolescents", "adults"];
+  const walletsByDragonAge: Record<string, string[]> = {};
+
+  for (const age of dragonAges) {
+    walletsByDragonAge[age] = bonuses[age].map(({ wallet }) => wallet);
+  }
+
+  return walletsByDragonAge;
+};
+
+const addDragonEquippedToVotes = (
+  voteLocks: VoteConviction[],
+  walletsByDragonAge: Record<string, string[]>
+): VoteConvictionDragon[] => {
+  return voteLocks.map((vote) => {
+    let dragonEquipped: string;
+
+    if (walletsByDragonAge.adults.includes(vote.address.toString())) {
+      dragonEquipped = "Adult";
+    } else if (
+      walletsByDragonAge.adolescents.includes(vote.address.toString())
+    ) {
+      dragonEquipped = "Adolescent";
+    } else if (walletsByDragonAge.toddlers.includes(vote.address.toString())) {
+      dragonEquipped = "Toddler";
+    } else if (walletsByDragonAge.babies.includes(vote.address.toString())) {
+      dragonEquipped = "Baby";
+    } else {
+      dragonEquipped = "No";
+    }
+
+    return { ...vote, dragonEquipped };
+  });
+};
+
+const createGraphQLClient = (url: string): GraphQLClient => {
+  return new GraphQLClient(url);
+};
+
+const fetchQuizSubmissions = async (
+  client: GraphQLClient,
+  referendumIndex: string
+): Promise<QuizSubmission[]> => {
+  const queryQuizSubmissions = `
+    query {
+      quizSubmissions(where: {governanceVersion_eq: 2, referendumIndex_eq: ${referendumIndex}}) {
+          blockNumber,
+          quizId,
+          timestamp,
+          version,
+          wallet,
+          answers {
+              isCorrect
+          }
+        }
+    }
+  `;
+
+  try {
+    const response = await client.request<{
+      quizSubmissions: QuizSubmission[];
+    }>(queryQuizSubmissions);
+    return response.quizSubmissions;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const addQuizCorrectToVotes = (
+  votesWithDragon: VoteConvictionDragon[],
+  quizSubmissions: QuizSubmission[]
+): VoteConvictionDragonQuiz[] => {
+  return votesWithDragon.map((vote) => {
+    const walletSubmissions = quizSubmissions.filter(
+      (submission) => submission.wallet === vote.address
+    );
+
+    if (walletSubmissions.length == 0) {
+      return { ...vote, quizCorrect: 0 };
+    }
+
+    const latestSubmission = walletSubmissions.reduce((latest, submission) => {
+      return submission.blockNumber > latest.blockNumber ? submission : latest;
+    }, walletSubmissions[0]);
+
+    const someAnswersMissingCorrect = latestSubmission.answers.some(
+      (answer) => answer.isCorrect === null || answer.isCorrect === undefined
+    );
+
+    if (someAnswersMissingCorrect) {
+      console.log("Some answers are missing correct answer");
+      return { ...vote, quizCorrect: 0 };
+    }
+
+    const allAnswersCorrect = latestSubmission.answers.every(
+      (answer) => answer.isCorrect
+    );
+
+    const quizCorrect = allAnswersCorrect ? 1 : 0;
+
+    return { ...vote, quizCorrect };
+  });
+};
+
+const addEncointerScoreToVotes = (
+  votesWithDragonAndQuiz: VoteConviction[],
+  countPerWallet: Record<string, number>
+): VoteConvictionEncointer[] => {
+  return votesWithDragonAndQuiz.map((vote) => {
+    const encointerScore = countPerWallet[vote.address];
+    return { ...vote, encointerScore: encointerScore ? encointerScore : 0 };
+  });
+};
+
+const checkCollectionExists = async (
+  api: ApiPromise,
+  collectionId: BN
+): Promise<boolean> => {
+  try {
+    const collection = await api.query.uniques.collection(collectionId);
+    return !collection.isEmpty;
+  } catch (error) {
+    console.error(`Failed to check collection: ${error}`);
+    return false;
   }
 };
