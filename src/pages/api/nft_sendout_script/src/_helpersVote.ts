@@ -196,11 +196,11 @@ const decorateWithChances = (
     rarityDistribution["rare"] > rarityDistribution["epic"] * 2;
 
   if (invariantHolds) {
-    logger.info(`invariant holds for ${JSON.stringify(rarityDistribution)}`);
+    logger.info(`✅ invariant holds for ${JSON.stringify(rarityDistribution)}`);
     return { votesWithChances, distribution: rarityDistribution };
   } else {
     logger.info(
-      `invariant does not hold for ${JSON.stringify(
+      `⚠️  invariant does not hold for ${JSON.stringify(
         rarityDistribution
       )} retrying with seed ${seed + 1}...`
     );

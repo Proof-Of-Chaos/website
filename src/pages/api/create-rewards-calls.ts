@@ -3,6 +3,9 @@ import { logger } from "./nft_sendout_script/tools/logger";
 import { CallResult, RewardConfiguration } from "./nft_sendout_script/types";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import seedrandom from "seedrandom";
+
+import fs from "fs";
+
 import {
   getApiKusama,
   getApiStatemine,
@@ -18,6 +21,16 @@ import {
   retrieveAccountLocks,
 } from "./nft_sendout_script/src/_helpersVote";
 import { getTxsReferendumRewards } from "./nft_sendout_script/src/generateTxs";
+import { Readable } from "stream";
+import formidable, { errors as formidableErrors } from "formidable";
+
+async function buffer(readable: Readable) {
+  const chunks = [];
+  for await (const chunk of readable) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks);
+}
 
 /**
  * Handler for the /api/create-rewards-calls endpoint
@@ -26,19 +39,38 @@ import { getTxsReferendumRewards } from "./nft_sendout_script/src/generateTxs";
  */
 export default async function handler(req, res) {
   let config;
+
+  const form = formidable({});
+  let fields;
+  let files;
   try {
-    config = JSON.parse(req.body.data);
-  } catch (error) {
-    console.log("error parsing config", error);
-    res.status(400).json({
-      name: "error parsing config",
-      message: error.message,
+    [fields, files] = await form.parse(req);
+
+    config = JSON.parse(fields.data);
+
+    config.options.forEach(async (option) => {
+      // console.log("option", option.rarity, files[`${option.rarity}File`][0]);
+      const file = files[`${option.rarity}File`][0];
+      const readableFileStream = fs.createReadStream(file.filepath);
+      // console.log("file for option", option.rarity, data);
+      option.file = readableFileStream;
     });
+  } catch (err) {
+    console.log("error parsing form", err);
   }
 
-  config.options.forEach((option) => {
-    option.file = req.body[`${option.rarity}File`];
-  });
+  // const buf = await buffer(req);
+  // config = buf.toString("utf8");
+
+  // try {
+  //   console.log("received config", req);
+  // } catch (error) {
+  //   console.log("error parsing config", error);
+  //   res.status(400).json({
+  //     name: "error parsing config",
+  //     message: error.message,
+  //   });
+  // }
 
   // const config = req.body;
   console.log("api endpoint received", config);
@@ -164,4 +196,10 @@ const generateCalls = async (
   // if (!settings.isTest) {
   //     logger.info("distributionAndConfigRemarks: ", JSON.stringify(distributionAndConfigRemarks))
   // }
+};
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
 };

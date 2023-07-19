@@ -141,7 +141,7 @@ const getProviderKusama = async (wsEndpoints: string[]) => {
   return await new Promise<WsProvider | undefined>((resolve, reject) => {
     wsProviderKusama = new WsProvider(primaryEndpoint);
     wsProviderKusama.on("disconnected", async () => {
-      logger.info(`WS provider for rpc ${primaryEndpoint} disconnected!`);
+      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} disconnected!`);
       if (!healthCheckInProgressKusama) {
         try {
           await providerHealthCheckKusama(wsEndpoints);
@@ -152,7 +152,7 @@ const getProviderKusama = async (wsEndpoints: string[]) => {
       }
     });
     wsProviderKusama.on("connected", () => {
-      logger.info(`WS provider for rpc ${primaryEndpoint} connected`);
+      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} connected`);
       resolve(wsProviderKusama);
     });
     wsProviderKusama.on("error", async () => {
@@ -178,7 +178,7 @@ const getProviderStatemine = async (wsEndpoints: string[]) => {
   return await new Promise<WsProvider | undefined>((resolve, reject) => {
     wsProviderStatemine = new WsProvider(primaryEndpoint);
     wsProviderStatemine.on("disconnected", async () => {
-      logger.info(`WS provider for rpc ${primaryEndpoint} disconnected!`);
+      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} disconnected!`);
       if (!healthCheckInProgressStatemine) {
         try {
           await providerHealthCheckStatemine(wsEndpoints);
@@ -189,7 +189,7 @@ const getProviderStatemine = async (wsEndpoints: string[]) => {
       }
     });
     wsProviderStatemine.on("connected", () => {
-      logger.info(`WS provider for rpc ${primaryEndpoint} connected`);
+      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} connected`);
       resolve(wsProviderStatemine);
     });
     wsProviderStatemine.on("error", async () => {
@@ -215,7 +215,7 @@ const getProviderEncointer = async (wsEndpoints: string[]) => {
   return await new Promise<WsProvider | undefined>((resolve, reject) => {
     wsProviderEncointer = new WsProvider(primaryEndpoint);
     wsProviderEncointer.on("disconnected", async () => {
-      logger.info(`WS provider for rpc ${primaryEndpoint} disconnected!`);
+      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} disconnected!`);
       if (!healthCheckInProgressEncointer) {
         try {
           await providerHealthCheckEncointer(wsEndpoints);
@@ -226,7 +226,7 @@ const getProviderEncointer = async (wsEndpoints: string[]) => {
       }
     });
     wsProviderEncointer.on("connected", () => {
-      logger.info(`WS provider for rpc ${primaryEndpoint} connected`);
+      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} connected`);
       resolve(wsProviderEncointer);
     });
     wsProviderEncointer.on("error", async () => {

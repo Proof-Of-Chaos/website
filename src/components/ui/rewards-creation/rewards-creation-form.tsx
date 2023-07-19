@@ -5,6 +5,7 @@ import Button from "../button";
 import Loader from "../loader";
 import { defaultReferendumRewardsConfig } from "../../../data/default-referendum-rewards-config";
 import useAppStore from "../../../zustand";
+import { Readable } from "stream";
 
 function RewardsCreationRarityFields({ rarity, refConfig }) {
   const { register } = useFormContext();
@@ -157,17 +158,20 @@ export function RewardsCreationForm() {
     console.table(data);
 
     // we use form data because we are also transmitting files
-    const formData = new URLSearchParams({
-      data: JSON.stringify({
+    const formData = new FormData();
+
+    formData.append(
+      "data",
+      JSON.stringify({
         ...data,
         sender: walletAddress,
-      }),
-    });
+      })
+    );
 
     // that are appended to the form data in respective key value pairs
     // e.g. commonFile => FileObject
     data.options.forEach((option) => {
-      formData.append(`${option.rarity}File`, option.file[0]);
+      formData.append(`${option.rarity}File`, option.file[0], "somename.jpg");
     });
 
     generatePreimage(formData);
