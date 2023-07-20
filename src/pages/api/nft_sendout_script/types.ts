@@ -17,16 +17,23 @@ export interface VoteConviction extends ConvictionVote {
 }
 
 export type GenerateRewardsResult = {
-  call: string;
-  distribution: RarityDistribution;
-  fees: {
-    kusama: string;
-    nfts: string;
-  };
-  txsCount: {
-    kusama: string;
-    nfts: string;
-  };
+  call: string | undefined;
+  kusamaCall: string | undefined;
+  statemineCall: string | undefined;
+  statemineTxs: any;
+  distribution: RarityDistribution | undefined;
+  fees:
+    | {
+        kusama: string;
+        nfts: string;
+      }
+    | undefined;
+  txsCount:
+    | {
+        kusama: number;
+        nfts: number;
+      }
+    | undefined;
 };
 
 export interface VoteConvictionDragon extends VoteConviction {

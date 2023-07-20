@@ -8,6 +8,8 @@ import useAppStore from "../../../zustand";
 
 import style from "./rewards-creation-form.module.scss";
 import { GenerateRewardsResult } from "../../../pages/api/nft_sendout_script/types";
+import { WS_ENDPOINTS_STATEMINE, sendAndFinalize } from "../../../data/chain";
+import { getWalletBySource } from "@talismn/connect-wallets";
 
 function RewardsCreationRarityFields({ rarity, refConfig }) {
   const { register } = useFormContext();
@@ -91,6 +93,7 @@ export function RewardsCreationForm() {
     (state) => state.user.connectedAccounts?.[connectedAccountIndex]
   );
   const walletAddress = connectedAccount?.address;
+  const wallet = getWalletBySource(connectedAccount?.source);
 
   const [callData, setCallData] = useState<GenerateRewardsResult>();
   const [isCallDataLoading, setIsCallDataLoading] = useState(false);
@@ -149,6 +152,13 @@ export function RewardsCreationForm() {
       setError(error);
       setIsCallDataLoading(false);
     }
+  }
+
+  async function signAndSend() {
+    await wallet.enable("Proof of Chaos");
+    const signer = wallet.signer;
+
+    sendAndFinalize(callData.statemineTxs, walletAddress, signer);
   }
 
   async function onSubmit(data) {
@@ -345,13 +355,7 @@ export function RewardsCreationForm() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  onClick={() => {
-                    setIsOverlayVisible(false);
-                    setIsCallDataLoading(false);
-                  }}
-                  variant="primary"
-                >
+                <Button onClick={signAndSend} variant="primary">
                   Sign and Send
                 </Button>
               </div>

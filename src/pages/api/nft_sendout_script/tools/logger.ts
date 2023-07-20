@@ -27,7 +27,7 @@ log4js.configure({
     default: {
       appenders: [isProduction ? apiFileCategory : "out", "errors"],
       level: logLevel,
-    }
+    },
   },
 });
 

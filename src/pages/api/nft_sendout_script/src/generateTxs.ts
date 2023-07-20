@@ -78,12 +78,13 @@ export const getTxsReferendumRewards = async (
 
   // logger.info("NFT attributes", JSON.stringify(attributes, null, 2));
 
+  // generate NFT mint txs for each vote(er)
   const txsVotes = await getTxsForVotes(
     apiStatemine,
     config,
     fileAndMetadataCids,
     attributes,
-    decoratedVotes,
+    decoratedVotes.slice(0, 10),
     rng,
     referendumIndex.toString(),
     proxyWallet

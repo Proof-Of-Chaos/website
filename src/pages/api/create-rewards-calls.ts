@@ -64,14 +64,8 @@ export default async function handler(req, res) {
   console.log("api endpoint received", config);
 
   try {
-    const { call, distribution, fees } = await generateCalls(config);
-    console.log(distribution);
-    res.status(200).json({
-      // config: config,
-      preimage: call,
-      distribution,
-      fees,
-    });
+    const callResult: GenerateRewardsResult = await generateCalls(config);
+    res.status(200).json(callResult);
   } catch (error) {
     // Sends error to the client side
     console.trace(error);
@@ -134,6 +128,7 @@ const generateCalls = async (
   //computing the actual calls is still WIP and likely to change
 
   // get all transactions that are needed for the distribution
+  // TODO --- warning we slice by 10 here
   let { txsStatemine, txsKusama } = await getTxsReferendumRewards(
     apiStatemine,
     apiKusama,
@@ -167,26 +162,6 @@ const generateCalls = async (
   logger.info("🎉 All Done");
 
   logger.info(
-    "returning",
-    JSON.stringify(
-      {
-        call: "omitted",
-        distribution: rarityDistribution,
-        fees: {
-          kusama: infoKusamaCalls.partialFee.toHuman(),
-          nfts: infoNftCalls.partialFee.toHuman(),
-        },
-        txsCount: {
-          kusama: txsKusama.length.toString(),
-          nfts: txsStatemine.length.toString(),
-        },
-      },
-      null,
-      2
-    )
-  );
-
-  logger.info(
     "📄 Writing transactions to",
     `./log/tmp_transactions_${config.refIndex}_xcm.json`
   );
@@ -202,16 +177,39 @@ const generateCalls = async (
     )
   );
 
+  logger.info(
+    "returning",
+    JSON.stringify(
+      {
+        call: "omitted",
+        distribution: rarityDistribution,
+        fees: {
+          kusama: infoKusamaCalls.partialFee.toHuman(),
+          nfts: infoNftCalls.partialFee.toHuman(),
+        },
+        txsCount: {
+          kusama: txsKusama.length,
+          nfts: txsStatemine.length,
+        },
+      },
+      null,
+      2
+    )
+  );
+
   return {
-    txsCount: {
-      kusama: txsKusama.length,
-      nfts: txsStatemine.length,
-    },
-    call: JSON.stringify(kusamaCalls),
+    call: "omitted",
+    kusamaCall: JSON.stringify(kusamaCalls),
+    statemineCall: JSON.stringify(nftCalls),
+    statemineTxs: txsStatemine,
     distribution: rarityDistribution,
     fees: {
       kusama: infoKusamaCalls.partialFee.toHuman(),
       nfts: infoNftCalls.partialFee.toHuman(),
+    },
+    txsCount: {
+      kusama: txsKusama.length,
+      nfts: txsStatemine.length,
     },
   };
 

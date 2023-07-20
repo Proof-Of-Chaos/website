@@ -1,10 +1,29 @@
 import "@polkadot/rpc-augment";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 
-const WS_ENDPOINTS = [
+export const WS_ENDPOINTS = [
   "wss://kusama-rpc.polkadot.io",
   "wss://kusama.api.onfinality.io/public-ws",
   "wss://kusama-rpc.dwellir.com",
+];
+
+export const WS_ENDPOINTS_KUSAMA = [
+  "wss://kusama-rpc.polkadot.io",
+  "wss://kusama.api.onfinality.io/public-ws",
+  "wss://kusama-rpc.dwellir.com",
+];
+
+export const WS_ENDPOINTS_STATEMINE = [
+  "wss://statemine-rpc.polkadot.io",
+  "wss://statemine.api.onfinality.io/public-ws",
+  "wss://statemine-rpc.dwellir.com",
+];
+
+export const WS_ENDPOINTS_ENCOINTER = [
+  "wss://encointer.api.onfinality.io/public-ws",
+  "wss://sys.ibp.network/encointer-kusama",
+  "wss://sys.dotters.network/encointer-kusama",
+  "wss://kusama.api.enointer.org",
 ];
 
 const MAX_RETRIES = 15;
@@ -16,17 +35,29 @@ let healthCheckInProgress = false;
 
 /**
  * @see https://polkadot.js.org/docs/api/cookbook/tx
- * TODO maybe include a batchall call when multiple tx are passed
  * @param {*} tx
  * @param {*} signer
  * @param {*} address
  * @returns
  */
-
-export const sendAndFinalize = async (tx, signer, address) => {
+export const sendAndFinalize = async (
+  tx,
+  signer,
+  address,
+  wsEndpoints = WS_ENDPOINTS
+) => {
   return new Promise(async (resolve, reject) => {
-    const api = await getApi();
+    const api = await getApi(wsEndpoints);
     try {
+      let txOrBatch;
+
+      if (tx.length) {
+        console.log("tx is array with length", tx.length);
+        txOrBatch = api.tx.utility.batchAll(tx);
+      } else {
+        txOrBatch = tx;
+      }
+
       const unsub = await tx.signAndSend(
         address,
         { signer: signer },
