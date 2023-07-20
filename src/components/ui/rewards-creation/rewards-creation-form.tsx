@@ -216,6 +216,7 @@ export function RewardsCreationForm() {
             {...formMethods.register("royaltyAddress", {
               validate: {},
             })}
+            required
           />
 
           <label
@@ -248,10 +249,7 @@ export function RewardsCreationForm() {
             })}
           />
 
-          <label
-            htmlFor="royaltyAddress"
-            className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-          >
+          <label className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white">
             NFTs
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
@@ -303,7 +301,7 @@ export function RewardsCreationForm() {
         <div>
           <p>{JSON.stringify(callData.distribution)} will be sendout</p>
           <p>Fees for your call: ~{JSON.stringify(callData.fees)}</p>
-          <p>Transaction Count: {JSON.stringify(callData.txsCount)}</p>
+          <p>Transaction Count: {JSON.stringify(callData)}</p>
         </div>
       )}
       <pre className="text-[0.5rem]">

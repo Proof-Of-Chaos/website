@@ -55,7 +55,7 @@ let healthCheckInProgressEncointer = false;
 const providerHealthCheckKusama = async (wsEndpoints: string[]) => {
   const [primaryEndpoint, secondaryEndpoint, ...otherEndpoints] = wsEndpoints;
   logger.info(
-    `Performing ${WS_DISCONNECT_TIMEOUT_SECONDS} seconds health check for WS Provider fro rpc ${primaryEndpoint}.`
+    `💗 Performing ${WS_DISCONNECT_TIMEOUT_SECONDS} seconds health check for WS Provider fro rpc ${primaryEndpoint}.`
   );
   healthCheckInProgressKusama = true;
   await sleep(WS_DISCONNECT_TIMEOUT_SECONDS * 1000);
@@ -83,7 +83,7 @@ const providerHealthCheckKusama = async (wsEndpoints: string[]) => {
 const providerHealthCheckStatemine = async (wsEndpoints: string[]) => {
   const [primaryEndpoint, secondaryEndpoint, ...otherEndpoints] = wsEndpoints;
   logger.info(
-    `Performing ${WS_DISCONNECT_TIMEOUT_SECONDS} seconds health check for WS Provider fro rpc ${primaryEndpoint}.`
+    `💗 Performing ${WS_DISCONNECT_TIMEOUT_SECONDS} seconds health check for WS Provider fro rpc ${primaryEndpoint}.`
   );
   healthCheckInProgressStatemine = true;
   await sleep(WS_DISCONNECT_TIMEOUT_SECONDS * 1000);
@@ -111,7 +111,7 @@ const providerHealthCheckStatemine = async (wsEndpoints: string[]) => {
 const providerHealthCheckEncointer = async (wsEndpoints: string[]) => {
   const [primaryEndpoint, secondaryEndpoint, ...otherEndpoints] = wsEndpoints;
   logger.info(
-    `Performing ${WS_DISCONNECT_TIMEOUT_SECONDS} seconds health check for WS Provider fro rpc ${primaryEndpoint}.`
+    `💗 Performing ${WS_DISCONNECT_TIMEOUT_SECONDS} seconds health check for WS Provider fro rpc ${primaryEndpoint}.`
   );
   healthCheckInProgressEncointer = true;
   await sleep(WS_DISCONNECT_TIMEOUT_SECONDS * 1000);
@@ -141,7 +141,7 @@ const getProviderKusama = async (wsEndpoints: string[]) => {
   return await new Promise<WsProvider | undefined>((resolve, reject) => {
     wsProviderKusama = new WsProvider(primaryEndpoint);
     wsProviderKusama.on("disconnected", async () => {
-      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} disconnected!`);
+      logger.info(`⛓️  WS provider for rpc ${primaryEndpoint} disconnected!`);
       if (!healthCheckInProgressKusama) {
         try {
           await providerHealthCheckKusama(wsEndpoints);
@@ -152,11 +152,11 @@ const getProviderKusama = async (wsEndpoints: string[]) => {
       }
     });
     wsProviderKusama.on("connected", () => {
-      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} connected`);
+      logger.info(`⛓️  WS provider for rpc ${primaryEndpoint} connected`);
       resolve(wsProviderKusama);
     });
     wsProviderKusama.on("error", async () => {
-      logger.info(`Error thrown for rpc ${primaryEndpoint}`);
+      logger.info(`⚠️  Error thrown for rpc ${primaryEndpoint}`);
       if (!healthCheckInProgressKusama) {
         try {
           await providerHealthCheckKusama(wsEndpoints);
@@ -178,7 +178,7 @@ const getProviderStatemine = async (wsEndpoints: string[]) => {
   return await new Promise<WsProvider | undefined>((resolve, reject) => {
     wsProviderStatemine = new WsProvider(primaryEndpoint);
     wsProviderStatemine.on("disconnected", async () => {
-      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} disconnected!`);
+      logger.info(`⛓️  WS provider for rpc ${primaryEndpoint} disconnected!`);
       if (!healthCheckInProgressStatemine) {
         try {
           await providerHealthCheckStatemine(wsEndpoints);
@@ -189,11 +189,11 @@ const getProviderStatemine = async (wsEndpoints: string[]) => {
       }
     });
     wsProviderStatemine.on("connected", () => {
-      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} connected`);
+      logger.info(`⛓️  WS provider for rpc ${primaryEndpoint} connected`);
       resolve(wsProviderStatemine);
     });
     wsProviderStatemine.on("error", async () => {
-      logger.info(`Error thrown for rpc ${primaryEndpoint}`);
+      logger.info(`⚠️  Error thrown for rpc ${primaryEndpoint}`);
       if (!healthCheckInProgressStatemine) {
         try {
           await providerHealthCheckStatemine(wsEndpoints);
@@ -215,7 +215,7 @@ const getProviderEncointer = async (wsEndpoints: string[]) => {
   return await new Promise<WsProvider | undefined>((resolve, reject) => {
     wsProviderEncointer = new WsProvider(primaryEndpoint);
     wsProviderEncointer.on("disconnected", async () => {
-      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} disconnected!`);
+      logger.info(`⛓️  WS provider for rpc ${primaryEndpoint} disconnected!`);
       if (!healthCheckInProgressEncointer) {
         try {
           await providerHealthCheckEncointer(wsEndpoints);
@@ -226,11 +226,11 @@ const getProviderEncointer = async (wsEndpoints: string[]) => {
       }
     });
     wsProviderEncointer.on("connected", () => {
-      logger.info(`⛓️ WS provider for rpc ${primaryEndpoint} connected`);
+      logger.info(`⛓️  WS provider for rpc ${primaryEndpoint} connected`);
       resolve(wsProviderEncointer);
     });
     wsProviderEncointer.on("error", async () => {
-      logger.info(`Error thrown for rpc ${primaryEndpoint}`);
+      logger.info(`⚠️  Error thrown for rpc ${primaryEndpoint}`);
       if (!healthCheckInProgressEncointer) {
         try {
           await providerHealthCheckEncointer(wsEndpoints);

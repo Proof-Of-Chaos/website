@@ -66,17 +66,17 @@ export const getTxsReferendumRewards = async (
     config
   );
 
-  logger.info(
-    "File And Metadata Cids",
-    JSON.stringify(fileAndMetadataCids, null, 2)
-  );
+  // logger.info(
+  //   "File And Metadata Cids",
+  //   JSON.stringify(fileAndMetadataCids, null, 2)
+  // );
 
   const attributes = getNftAttributesForOptions(
     config.options,
     rarityDistribution
   );
 
-  logger.info("NFT attributes", JSON.stringify(attributes, null, 2));
+  // logger.info("NFT attributes", JSON.stringify(attributes, null, 2));
 
   const txsVotes = await getTxsForVotes(
     apiStatemine,

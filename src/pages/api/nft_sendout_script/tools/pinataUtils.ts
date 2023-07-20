@@ -74,7 +74,7 @@ export const pinImageAndMetadataForOptions = async (
     //pin metadata
     const metadata = {
       external_url: "https://www.proofofchaos.app/",
-      mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
+      mediaUri: `ipfs://ipfs/${imageIpfsCid.IpfsHash}`,
       name: option.itemName,
       description: option.description,
     };

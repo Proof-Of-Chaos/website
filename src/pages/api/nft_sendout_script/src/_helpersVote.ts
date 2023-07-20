@@ -162,6 +162,8 @@ const decorateWithChances = (
   seed: number = 0,
   logger: Logger
 ): { votesWithChances: VoteConviction[]; distribution: RarityDistribution } => {
+  logger.info(`🎲 Calculating NFT probabilities and distribution`);
+
   //seed the randomizer
   const rng = seedrandom(seed.toString());
 

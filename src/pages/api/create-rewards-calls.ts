@@ -135,7 +135,9 @@ const generateCalls = async (
   const { referendum, totalIssuance, votes } = await getConvictionVoting(
     parseInt(refIndex)
   );
-  logger.info(`⚙️ Processing ${votes.length} votes for referendum ${refIndex}`);
+  logger.info(
+    `⚙️  Processing ${votes.length} votes for referendum ${refIndex}`
+  );
 
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =
@@ -175,6 +177,27 @@ const generateCalls = async (
     .paymentInfo(config.sender);
 
   logger.info("🎉 All Done");
+
+  logger.info("transactions", {
+    xcm: txsKusama.length,
+    nfts: txsStatemine.length,
+  });
+
+  logger.info(
+    "📄 Writing transactions to",
+    `./log/tmp_transactions_${config.refIndex}_xcm.json`
+  );
+  fs.writeFileSync(
+    `./log/tmp_transactions_${config.refIndex}_xcm.json`,
+    JSON.stringify(
+      {
+        nfts: txsStatemine.map((tx) => tx.toHuman()),
+        xcm: txsKusama.map((tx) => tx.toHuman()),
+      },
+      null,
+      2
+    )
+  );
 
   return {
     call: JSON.stringify(xcmCall),
