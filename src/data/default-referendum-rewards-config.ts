@@ -14,8 +14,8 @@ export const defaultReferendumRewardsConfig: {
   newCollectionSymbol: 9,
   newCollectionPath: "/public/collections",
   newCollectionFile: "test.png",
-  newCollectionName: "test for ref 99",
-  newCollectionDescription: "Test Description",
+  newCollectionName: "",
+  newCollectionDescription: "",
   collectionId: 34, //the collection to mint into
   babyBonus: 7,
   toddlerBonus: 13,
@@ -41,6 +41,7 @@ export const defaultReferendumRewardsConfig: {
       itemName: "Epic",
       minRoyalty: 25,
       maxRoyalty: 35,
+      description: "This is an epic NFT",
     },
     {
       maxProbability: 40,
@@ -56,6 +57,7 @@ export const defaultReferendumRewardsConfig: {
       itemName: "Rare",
       minRoyalty: 20,
       maxRoyalty: 30,
+      description: "This is a rare NFT",
     },
     {
       maxProbability: 67,
@@ -71,6 +73,7 @@ export const defaultReferendumRewardsConfig: {
       itemName: "Common",
       minRoyalty: 15,
       maxRoyalty: 25,
+      description: "This is a common NFT",
     },
   ],
 };

@@ -5,7 +5,9 @@ import Button from "../button";
 import Loader from "../loader";
 import { defaultReferendumRewardsConfig } from "../../../data/default-referendum-rewards-config";
 import useAppStore from "../../../zustand";
-import { Readable } from "stream";
+
+import style from "./rewards-creation-form.module.scss";
+import { GenerateRewardsResult } from "../../../pages/api/nft_sendout_script/types";
 
 function RewardsCreationRarityFields({ rarity, refConfig }) {
   const { register } = useFormContext();
@@ -90,19 +92,13 @@ export function RewardsCreationForm() {
   );
   const walletAddress = connectedAccount?.address;
 
-  const [callData, setCallData] = useState({
-    config: {},
-    preimage: null,
-    step: null,
-    fees: null,
-    distribution: {},
-    txsCount: null,
-  });
+  const [callData, setCallData] = useState<GenerateRewardsResult>();
   const [isCallDataLoading, setIsCallDataLoading] = useState(false);
   const [error, setError] = useState({
     message: "",
     name: "",
   });
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
   const formMethods = useForm({
     defaultValues: defaultReferendumRewardsConfig,
@@ -110,14 +106,14 @@ export function RewardsCreationForm() {
 
   const {
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
 
   const watchFormFields = watch();
 
   //TODO type
   async function generatePreimage(formData) {
-    console.log("my Form data is", formData);
+    console.log("Form data is", JSON.stringify(formData, null, 2));
     if (!walletAddress) {
       setError({
         message: "Please connect your wallet to continue.",
@@ -127,6 +123,7 @@ export function RewardsCreationForm() {
     }
 
     setIsCallDataLoading(true);
+    setIsOverlayVisible(true);
 
     try {
       setError({ message: "", name: "" });
@@ -136,8 +133,8 @@ export function RewardsCreationForm() {
         body: formData,
       });
 
-      console.log("result from api ", res);
       const jsonRes = await res.json();
+      console.log("result from api ", jsonRes);
 
       if (jsonRes.name === "Error") {
         console.log(" frontend", jsonRes);
@@ -156,6 +153,8 @@ export function RewardsCreationForm() {
 
   async function onSubmit(data) {
     console.table(data);
+
+    setCallData(undefined);
 
     // we use form data because we are also transmitting files
     const formData = new FormData();
@@ -178,12 +177,18 @@ export function RewardsCreationForm() {
   }
 
   return (
-    <div className="w-full">
+    <div className={style.formWrapper}>
       <FormProvider {...formMethods}>
         <form
           onSubmit={formMethods.handleSubmit(onSubmit)}
-          className="my-5 mx-1 flex flex-col"
+          className={style.form}
         >
+          <h1 className="text-2xl">Create Rewards for a Referendum</h1>
+          <p className="text-xs">
+            Here you can create a signable transactions for sending out NFTs to
+            users who voted on a referendum.
+          </p>
+          <p className="text-xs">Just fill in the form and click submit.</p>
           <label
             htmlFor="refIndex"
             className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
@@ -276,42 +281,92 @@ export function RewardsCreationForm() {
               <p className="form-error">You do not have enough available KSM</p>
             )}
 
-          <Button type="submit" variant="primary" className="w-full mt-4">
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-full mt-4"
+            disabled={isCallDataLoading}
+          >
             Submit Referendum Rewards
           </Button>
         </form>
       </FormProvider>
-      {isCallDataLoading && (
-        <div className="text-center">
-          <Loader className="w-12 h-12" text="" />
-          <p>
-            Generating all required transactions to distribute the rewards to
-            all voters of the selected referendum,
-          </p>
-          <p>please stand by this may take a while...</p>
+      {isOverlayVisible && (
+        <div className={style.overlay}>
+          {isCallDataLoading && (
+            <>
+              <Loader className="w-12 h-12" text="" />
+              <p className="text-xs"></p>
+              <ul className="text-xs">
+                <li>
+                  - Creating a new collection with the name and description
+                  provided
+                </li>
+                <li>- Pinning your images and NFT metadata to IPFS</li>
+                <li>
+                  - Generating all required transactions to distribute the
+                  rewards to all voters of the selected referendum
+                </li>
+              </ul>
+              <p className="text-xs mt-5">
+                Please stand by this may take a while...
+              </p>
+            </>
+          )}
+          {!isCallDataLoading && callData && (
+            <>
+              <h3 className="text-lg">
+                🛠️ Your transactions were successfully created ⛓️
+              </h3>
+              {error.message !== "" && (
+                <div>
+                  <p>Error generating your calls, please try again.</p>
+                  <p className="text-red-500">{error.message}</p>
+                </div>
+              )}
+              {callData && (
+                <div className="text-sm">
+                  <p>
+                    NFTs to send out:&nbsp;
+                    {JSON.stringify(callData.distribution)}
+                  </p>
+                  <p>
+                    Estimated fees for your transactions:&nbsp;
+                    {JSON.stringify(callData.fees)}
+                  </p>
+                  <p>Transaction Count: {JSON.stringify(callData.txsCount)}</p>
+                </div>
+              )}
+              <div className="button-wrap pt-5">
+                <Button
+                  className="mr-4"
+                  onClick={() => setIsOverlayVisible(false)}
+                  variant="cancel"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    setIsOverlayVisible(false);
+                    setIsCallDataLoading(false);
+                  }}
+                  variant="primary"
+                >
+                  Sign and Send
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       )}
-      {error.message !== "" && (
-        <div>
-          <p>Error generating your calls, please try again.</p>
-          <p className="text-red-500">{error.message}</p>
-        </div>
-      )}
-      {callData && (
-        <div>
-          <p>{JSON.stringify(callData.distribution)} will be sendout</p>
-          <p>Fees for your call: ~{JSON.stringify(callData.fees)}</p>
-          <p>Transaction Count: {JSON.stringify(callData)}</p>
-        </div>
-      )}
-      <pre className="text-[0.5rem]">
+      {/* <pre className="text-[0.5rem]">
         file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
         form fields: {JSON.stringify(watchFormFields, null, 2)}
-      </pre>
-      <pre className="text-[0.5rem]">
+      </pre> */}
+      {/* <pre className="text-[0.5rem]">
         call config:
         {JSON.stringify(callData?.config, null, 2)}
-      </pre>
+      </pre> */}
       {/* <pre className="text-[0.5rem] break-spaces">
         preimage hex:
         {callData?.preimage}

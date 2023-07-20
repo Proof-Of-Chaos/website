@@ -16,7 +16,7 @@ export const setupPinata = async (): Promise<PinataClient | null> => {
   );
   try {
     const result = await pinata.testAuthentication();
-    logger.info(result);
+    logger.info("🤖 Successfully authenticated with Pinata");
     return pinata;
   } catch (err) {
     logger.info(err);

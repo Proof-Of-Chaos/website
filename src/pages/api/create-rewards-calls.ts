@@ -1,6 +1,9 @@
 import { BN } from "@polkadot/util";
 import { logger } from "./nft_sendout_script/tools/logger";
-import { CallResult, RewardConfiguration } from "./nft_sendout_script/types";
+import {
+  GenerateRewardsResult,
+  RewardConfiguration,
+} from "./nft_sendout_script/types";
 import { cryptoWaitReady } from "@polkadot/util-crypto";
 import seedrandom from "seedrandom";
 
@@ -40,6 +43,7 @@ async function buffer(readable: Readable) {
 export default async function handler(req, res) {
   let config;
 
+  // Parse the form data: files and fields
   const form = formidable({});
   let fields;
   let files;
@@ -49,30 +53,14 @@ export default async function handler(req, res) {
     config = JSON.parse(fields.data);
 
     config.options.forEach(async (option) => {
-      // console.log("option", option.rarity, files[`${option.rarity}File`][0]);
       const file = files[`${option.rarity}File`][0];
       const readableFileStream = fs.createReadStream(file.filepath);
-      // console.log("file for option", option.rarity, data);
       option.file = readableFileStream;
     });
   } catch (err) {
     console.log("error parsing form", err);
   }
 
-  // const buf = await buffer(req);
-  // config = buf.toString("utf8");
-
-  // try {
-  //   console.log("received config", req);
-  // } catch (error) {
-  //   console.log("error parsing config", error);
-  //   res.status(400).json({
-  //     name: "error parsing config",
-  //     message: error.message,
-  //   });
-  // }
-
-  // const config = req.body;
   console.log("api endpoint received", config);
 
   try {
@@ -97,7 +85,7 @@ export default async function handler(req, res) {
 const generateCalls = async (
   config: RewardConfiguration,
   seed: number = 0
-): Promise<CallResult> => {
+): Promise<GenerateRewardsResult> => {
   const { refIndex, sender } = config;
 
   logger.info(
@@ -160,7 +148,7 @@ const generateCalls = async (
   const nftCalls = apiStatemine.tx.utility
     .batchAll(txsStatemine)
     .method.toHex();
-  const xcmCall = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
+  const kusamaCalls = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
 
   logger.info(
     `📊 Generated ${txsStatemine.length} txs for minting NFTs on Statemine and ${txsKusama.length} txs for Kusama XCM calls`
@@ -168,20 +156,35 @@ const generateCalls = async (
 
   logger.info("💵 Calculating fees for sender", config.sender);
 
-  const infoXcmCall = await apiKusama.tx.utility
+  const infoKusamaCalls = await apiKusama.tx.utility
     .batchAll(txsKusama)
     .paymentInfo(config.sender);
 
-  const infoNftCall = await apiStatemine.tx.utility
+  const infoNftCalls = await apiStatemine.tx.utility
     .batchAll(txsStatemine)
     .paymentInfo(config.sender);
 
   logger.info("🎉 All Done");
 
-  logger.info("transactions", {
-    xcm: txsKusama.length,
-    nfts: txsStatemine.length,
-  });
+  logger.info(
+    "returning",
+    JSON.stringify(
+      {
+        call: "omitted",
+        distribution: rarityDistribution,
+        fees: {
+          kusama: infoKusamaCalls.partialFee.toHuman(),
+          nfts: infoNftCalls.partialFee.toHuman(),
+        },
+        txsCount: {
+          kusama: txsKusama.length.toString(),
+          nfts: txsStatemine.length.toString(),
+        },
+      },
+      null,
+      2
+    )
+  );
 
   logger.info(
     "📄 Writing transactions to",
@@ -200,15 +203,15 @@ const generateCalls = async (
   );
 
   return {
-    call: JSON.stringify(xcmCall),
+    txsCount: {
+      kusama: txsKusama.length,
+      nfts: txsStatemine.length,
+    },
+    call: JSON.stringify(kusamaCalls),
     distribution: rarityDistribution,
     fees: {
-      xcm: infoXcmCall.partialFee.toHuman(),
-      nfts: infoNftCall.partialFee.toHuman(),
-    },
-    txsCount: {
-      xcm: txsKusama.length,
-      nfts: txsStatemine.length,
+      kusama: infoKusamaCalls.partialFee.toHuman(),
+      nfts: infoNftCalls.partialFee.toHuman(),
     },
   };
 

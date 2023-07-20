@@ -16,6 +16,19 @@ export interface VoteConviction extends ConvictionVote {
   chosenOption?: RewardOption;
 }
 
+export type GenerateRewardsResult = {
+  call: string;
+  distribution: RarityDistribution;
+  fees: {
+    kusama: string;
+    nfts: string;
+  };
+  txsCount: {
+    kusama: string;
+    nfts: string;
+  };
+};
+
 export interface VoteConvictionDragon extends VoteConviction {
   dragonEquipped: string;
 }
@@ -316,15 +329,3 @@ export interface RewardOption {
   metadataCidDelegated?: string;
   file?: any;
 }
-
-export type CallResult = {
-  call: string;
-  distribution: RarityDistribution;
-  fees: {
-    [key: string]: string;
-  };
-  txsCount: {
-    xcm: number;
-    nfts: number;
-  };
-};

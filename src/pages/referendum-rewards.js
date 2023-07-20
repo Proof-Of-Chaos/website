@@ -11,17 +11,11 @@ import NftFeed from "../components/nft/nft-feed";
 import NFTSnippets from "../components/nft/nft-snippets";
 import { RewardsCreationForm } from "../components/ui/rewards-creation/rewards-creation-form";
 
-function ReferendumRewards({ test }) {
+function ReferendumRewards() {
   return (
     <>
       <NextSeo title="ReferendumRewards" />
       <section className="w-full flex-col py-20 px-5 sm:px-10 md:px-5">
-        <h1 className="text-2xl">Create Rewards for a Referendum</h1>
-        <p>
-          Here you can create a signable transactions for sending out NFTs to
-          users who voted on a referendum. Just fill in the form and click
-          submit. {test}
-        </p>
         <RewardsCreationForm />
       </section>
     </>
