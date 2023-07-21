@@ -19,6 +19,12 @@ export const WS_ENDPOINTS_STATEMINE = [
   "wss://statemine-rpc.dwellir.com",
 ];
 
+export const WS_ENDPOINTS_ASSET_HUB_KUSAMA = [
+  "wss://kusama-asset-hub-rpc.polkadot.io",
+  "wss://statemine.api.onfinality.io%2Fpublic-ws",
+  "wss://rpc-asset-hub-kusama.luckyfriday.io",
+];
+
 export const WS_ENDPOINTS_ENCOINTER = [
   "wss://encointer.api.onfinality.io/public-ws",
   "wss://sys.ibp.network/encointer-kusama",
@@ -49,15 +55,6 @@ export const sendAndFinalize = async (
   return new Promise(async (resolve, reject) => {
     const api = await getApi(wsEndpoints);
     try {
-      let txOrBatch;
-
-      if (tx.length) {
-        console.log("tx is array with length", tx.length);
-        txOrBatch = api.tx.utility.batchAll(tx);
-      } else {
-        txOrBatch = tx;
-      }
-
       const unsub = await tx.signAndSend(
         address,
         { signer: signer },
@@ -106,7 +103,10 @@ async function sleep(ms) {
 }
 
 export async function getApi(wsEndpoints = WS_ENDPOINTS, retry = 0) {
-  if (wsProvider && polkadotApi) return polkadotApi;
+  if (wsProvider && polkadotApi) {
+    console.log("returning polkadot api");
+    return polkadotApi;
+  }
   const [primaryEndpoint, secondaryEndpoint, ...otherEndpoints] = wsEndpoints;
 
   try {

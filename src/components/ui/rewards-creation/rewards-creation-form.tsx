@@ -8,7 +8,12 @@ import useAppStore from "../../../zustand";
 
 import style from "./rewards-creation-form.module.scss";
 import { GenerateRewardsResult } from "../../../pages/api/nft_sendout_script/types";
-import { WS_ENDPOINTS_STATEMINE, sendAndFinalize } from "../../../data/chain";
+import {
+  WS_ENDPOINTS_ASSET_HUB_KUSAMA,
+  WS_ENDPOINTS_STATEMINE,
+  getApi,
+  sendAndFinalize,
+} from "../../../data/chain";
 import { getWalletBySource } from "@talismn/connect-wallets";
 
 function RewardsCreationRarityFields({ rarity, refConfig }) {
@@ -158,7 +163,59 @@ export function RewardsCreationForm() {
     await wallet.enable("Proof of Chaos");
     const signer = wallet.signer;
 
-    sendAndFinalize(callData.statemineTxs, walletAddress, signer);
+    const apiStatemine = await getApi(WS_ENDPOINTS_ASSET_HUB_KUSAMA);
+
+    const tx = apiStatemine.tx.system.remark(
+      "Created with https://www.proofofchaos.app/referendum-rewards/"
+    );
+
+    console.log("aaa", signer, walletAddress, tx, callData.statemineTxs);
+
+    apiStatemine.tx.system
+      .remark("Created with https://www.proofofchaos.app/referendum-rewards/")
+      .signAndSend(walletAddress, { signer: wallet.signer }, ({ status }) => {
+        if (status.isReady) {
+        } else if (status.isInBlock) {
+          console.log(
+            `Completed at block hash #${status.asInBlock.toString()}`
+          );
+        } else if (status.isFinalized) {
+          console.log(`Current status: ${status.type}`);
+        } else {
+          console.log(`Current status: ${status.type}`);
+        }
+      })
+      .catch((error) => {
+        console.log(":( transaction failed", error);
+      });
+
+    // apiStatemine.tx.utility
+    //   .batchAll(callData.statemineTxs)
+    //   .signAndSend(walletAddress, { signer: wallet.signer }, ({ status }) => {
+    //     if (status.isReady) {
+    //     } else if (status.isInBlock) {
+    //       console.log(
+    //         `Completed at block hash #${status.asInBlock.toString()}`
+    //       );
+    //     } else if (status.isFinalized) {
+    //       console.log(`Current status: ${status.type}`);
+    //     } else {
+    //       console.log(`Current status: ${status.type}`);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(":( transaction failed", error);
+    //   });
+
+    // sendAndFinalize(
+    // callData.statemineTxs,
+    // apiStatemine.tx.system.remark(
+    //   "Created with https://www.proofofchaos.app/referendum-rewards/"
+    // ),
+    //   walletAddress,
+    //   signer,
+    //   WS_ENDPOINTS_STATEMINE
+    // );
   }
 
   async function onSubmit(data) {
