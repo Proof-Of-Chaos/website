@@ -293,7 +293,7 @@ export interface RewardConfiguration {
   blockCutOff: number | null;
   directOnly: boolean;
   createNewCollection: boolean;
-  newCollectionSymbol: number;
+  collectionId: number | null;
   newCollectionPath: string;
   newCollectionFile: string;
   newCollectionName: string;
@@ -307,6 +307,7 @@ export interface RewardConfiguration {
   encointerBonus: number;
   minAmount: number;
   defaultRoyalty: number;
+  royaltyAddress: string;
   options: RewardOption[];
   minValue?: number | null;
   maxValue?: number | null;

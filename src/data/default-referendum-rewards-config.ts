@@ -11,12 +11,11 @@ export const defaultReferendumRewardsConfig: {
   blockCutOff: null,
   directOnly: true,
   createNewCollection: false,
-  newCollectionSymbol: 9,
   newCollectionPath: "/public/collections",
   newCollectionFile: "test.png",
   newCollectionName: "",
   newCollectionDescription: "",
-  collectionId: 34, //the collection to mint into
+  collectionId: 34, //the collection to mint into, if it exists
   babyBonus: 7,
   toddlerBonus: 13,
   adolescentBonus: 16,
@@ -26,6 +25,7 @@ export const defaultReferendumRewardsConfig: {
   encointerBonus: 50,
   minAmount: 0.2,
   defaultRoyalty: 95,
+  royaltyAddress: "DhvRNnnsyykGpmaa9GMjK9H4DeeQojd5V5qCTWd1GoYwnTc",
   options: [
     {
       maxProbability: 25,

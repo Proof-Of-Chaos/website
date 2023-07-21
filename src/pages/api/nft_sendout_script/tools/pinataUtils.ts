@@ -66,15 +66,17 @@ export const pinImageAndMetadataForOptions = async (
     );
 
     imageIpfsCids[option.rarity] = {
-      direct: imageIpfsCid,
+      direct: imageIpfsCid.IpfsHash,
       // TODO
-      delegated: imageIpfsCid,
+      delegated: imageIpfsCid.IpfsHash,
     };
 
+    //TODO what is correct here? Kodadot wants image, but RMRK wants mediaUri
     //pin metadata
     const metadata = {
       external_url: "https://www.proofofchaos.app/",
       mediaUri: `ipfs://ipfs/${imageIpfsCid.IpfsHash}`,
+      image: `ipfs://ipfs/${imageIpfsCid.IpfsHash}`,
       name: option.itemName,
       description: option.description,
     };
@@ -83,9 +85,9 @@ export const pinImageAndMetadataForOptions = async (
       pinataMetadataOptions
     );
     metadataIpfsCids[option.rarity] = {
-      direct: metadataIpfsCid,
+      direct: metadataIpfsCid.IpfsHash,
       // TODO
-      delegated: metadataIpfsCid,
+      delegated: metadataIpfsCid.IpfsHash,
     };
   }
 

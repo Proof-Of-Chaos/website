@@ -66,17 +66,26 @@ export const getTxsReferendumRewards = async (
     config
   );
 
-  // logger.info(
-  //   "File And Metadata Cids",
-  //   JSON.stringify(fileAndMetadataCids, null, 2)
-  // );
-
   const attributes = getNftAttributesForOptions(
     config.options,
     rarityDistribution
   );
 
+  // logger.info(
+  //   "File And Metadata Cids",
+  //   JSON.stringify(fileAndMetadataCids, null, 2)
+  // );
   // logger.info("NFT attributes", JSON.stringify(attributes, null, 2));
+
+  const todoTestOnlyDecoratedVotes = decoratedVotes.filter((vote) =>
+    ["DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m"].includes(
+      vote.address.toString()
+    )
+  );
+
+  logger.info(
+    `🚨🚨🚨  TESTING, filtered votes to only send to ${todoTestOnlyDecoratedVotes.length} votes for referendum ${referendumIndex}`
+  );
 
   // generate NFT mint txs for each vote(er)
   const txsVotes = await getTxsForVotes(
@@ -84,7 +93,8 @@ export const getTxsReferendumRewards = async (
     config,
     fileAndMetadataCids,
     attributes,
-    decoratedVotes.slice(0, 10),
+    todoTestOnlyDecoratedVotes,
+    // decoratedVotes,
     rng,
     referendumIndex.toString(),
     proxyWallet
@@ -208,22 +218,20 @@ const getTxsCreateNewCollection = async (
 ): Promise<any> => {
   const txs = [];
 
-  txs.push(
-    apiStatemine.tx.nfts.create(config.newCollectionSymbol, proxyWallet)
-  );
+  txs.push(apiStatemine.tx.nfts.create(config.collectionId, proxyWallet));
   config.newCollectionMetadataCid = await createNewCollection(
     apiPinata,
     config
   );
   txs.push(
     apiStatemine.tx.uniques.setCollectionMetadata(
-      config.newCollectionSymbol,
+      config.collectionId,
       config.newCollectionMetadataCid
     )
   );
-  // txs.push(apiStatemine.tx.utility.dispatchAs(proxyWalletSignature, apiStatemine.tx.uniques.create(config.newCollectionSymbol, proxyWallet)))
+  // txs.push(apiStatemine.tx.utility.dispatchAs(proxyWalletSignature, apiStatemine.tx.uniques.create(config.collectionId, proxyWallet)))
   // config.newCollectionMetadataCid = await createNewCollection(pinata, account.address, config);
-  // txs.push(apiStatemine.tx.utility.dispatchAs(proxyWalletSignature, apiStatemine.tx.uniques.setCollectionMetadata(config.newCollectionSymbol, config.newCollectionMetadataCid, false)))
+  // txs.push(apiStatemine.tx.utility.dispatchAs(proxyWalletSignature, apiStatemine.tx.uniques.setCollectionMetadata(config.collectionId, config.newCollectionMetadataCid, false)))
 
   return txs;
 };
@@ -274,7 +282,7 @@ export const getTxsForVotes = async (
 
     txs.push(
       apiStatemine.tx.nfts.mint(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         vote.address.toString(),
         null
@@ -282,7 +290,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "royaltyPercentFloat",
@@ -291,16 +299,16 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "royaltyReceiver",
-        "DhvRNnnsyykGpmaa9GMjK9H4DeeQojd5V5qCTWd1GoYwnTc"
+        config.royaltyAddress
       )
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "amountLockedInGovernance",
@@ -309,7 +317,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "voteDirection",
@@ -318,7 +326,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "aye",
@@ -327,7 +335,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "nay",
@@ -336,7 +344,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "abstain",
@@ -345,7 +353,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "delegatedConvictionBalance",
@@ -354,7 +362,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "chanceAtEpic",
@@ -363,7 +371,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "chanceAtRare",
@@ -372,7 +380,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "chanceAtCommon",
@@ -381,7 +389,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "voter",
@@ -390,7 +398,7 @@ export const getTxsForVotes = async (
     );
     // txs.push(
     //   apiStatemine.tx.nfts.setAttribute(
-    //     config.newCollectionSymbol,
+    //     config.collectionId,
     //     i,
     //     "CollectionOwner",
     //     "dragonEquipped",
@@ -399,7 +407,7 @@ export const getTxsForVotes = async (
     // );
     // txs.push(
     //   apiStatemine.tx.nfts.setAttribute(
-    //     config.newCollectionSymbol,
+    //     config.collectionId,
     //     i,
     //     "CollectionOwner",
     //     "quizCorrect",
@@ -408,7 +416,7 @@ export const getTxsForVotes = async (
     // );
     // txs.push(
     //   apiStatemine.tx.nfts.setAttribute(
-    //     config.newCollectionSymbol,
+    //     config.collectionId,
     //     i,
     //     "CollectionOwner",
     //     "encointerScore",
@@ -417,7 +425,7 @@ export const getTxsForVotes = async (
     // );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "referendumIndex",
@@ -426,7 +434,7 @@ export const getTxsForVotes = async (
     );
     txs.push(
       apiStatemine.tx.nfts.setAttribute(
-        config.newCollectionSymbol,
+        config.collectionId,
         i,
         "CollectionOwner",
         "meetsRequirements",
@@ -438,7 +446,7 @@ export const getTxsForVotes = async (
       : attributes[chosenOption.rarity].direct) {
       txs.push(
         apiStatemine.tx.nfts.setAttribute(
-          config.newCollectionSymbol,
+          config.collectionId,
           i,
           "CollectionOwner",
           attribute.name,
@@ -446,16 +454,15 @@ export const getTxsForVotes = async (
         )
       );
     }
+
+    const ipfsIdentifier = `ipfs://ipfs/${metadataCid}`;
+
     txs.push(
-      apiStatemine.tx.nfts.setMetadata(
-        config.newCollectionSymbol,
-        i,
-        metadataCid
-      )
+      apiStatemine.tx.nfts.setMetadata(config.collectionId, i, ipfsIdentifier)
     );
     // txs.push(
     //   apiStatemine.tx.nfts.transfer(
-    //     config.newCollectionSymbol,
+    //     config.collectionId,
     //     i,
     //     vote.address.toString()
     //   )

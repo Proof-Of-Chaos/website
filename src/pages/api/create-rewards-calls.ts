@@ -113,17 +113,13 @@ const generateCalls = async (
   //initialize Pinata
   const apiPinata = await setupPinata();
 
-  //retrieve all votes for a given ref
-  const { referendum, totalIssuance, votes } = await getConvictionVoting(
-    parseInt(refIndex)
-  );
-  logger.info(
-    `⚙️  Processing ${votes.length} votes for referendum ${refIndex}`
-  );
-
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =
     await getDecoratedVotesWithInfo(config, kusamaChainDecimals, logger);
+
+  logger.info(
+    `⚙️  Processing ${decoratedVotes.length} votes for referendum ${refIndex}`
+  );
 
   //computing the actual calls is still WIP and likely to change
 

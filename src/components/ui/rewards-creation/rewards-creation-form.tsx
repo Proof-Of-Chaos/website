@@ -16,80 +16,6 @@ import {
 } from "../../../data/chain";
 import { getWalletBySource } from "@talismn/connect-wallets";
 
-function RewardsCreationRarityFields({ rarity, refConfig }) {
-  const { register } = useFormContext();
-
-  let optionIndex = refConfig.options.findIndex((opt) => opt.rarity === rarity);
-
-  return (
-    <div className={`flex flex-col p-5 form-fields-${rarity}`}>
-      <h3 className="text-xl">{rarity}</h3>
-      <label
-        htmlFor={`file-${rarity}`}
-        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-      >
-        Upload Image
-      </label>
-
-      <input
-        type="file"
-        {...register(`options[${optionIndex}].file`, {
-          validate: {},
-        })}
-        required
-      />
-
-      <label
-        htmlFor={`name-${rarity}`}
-        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-      >
-        Name of {rarity} NFT
-      </label>
-      <input
-        id={`name-${rarity}`}
-        className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-        placeholder={`Enter name of ${rarity} NFT`}
-        type="text"
-        {...register(`options[${optionIndex}].itemName`, {
-          validate: {},
-        })}
-      />
-
-      <label
-        htmlFor={`description-${rarity}`}
-        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-      >
-        Description of {rarity} NFT
-      </label>
-      <input
-        id={`description-${rarity}`}
-        className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-        placeholder={`Enter name of ${rarity} NFT`}
-        type="text"
-        {...register(`options[${optionIndex}].description`, {
-          validate: {},
-        })}
-      />
-
-      <label
-        htmlFor={`artist-${rarity}`}
-        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-      >
-        Artist of {rarity} NFT
-      </label>
-      <input
-        id={`artist-${rarity}`}
-        className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-        placeholder={`Enter name of ${rarity} NFT`}
-        type="text"
-        {...register(`options[${optionIndex}].artist`, {
-          validate: {},
-        })}
-      />
-    </div>
-  );
-}
-
 export function RewardsCreationForm() {
   const connectedAccountIndex = useAppStore(
     (state) => state.user.connectedAccount
@@ -102,6 +28,7 @@ export function RewardsCreationForm() {
 
   const [callData, setCallData] = useState<GenerateRewardsResult>();
   const [isCallDataLoading, setIsCallDataLoading] = useState(false);
+  const [isCreateNewCollection, setIsCreateNewCollection] = useState(false);
   const [error, setError] = useState({
     message: "",
     name: "",
@@ -292,34 +219,74 @@ export function RewardsCreationForm() {
           />
 
           <label
-            htmlFor="newCollectionName"
             className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+            htmlFor="createNewCollection"
           >
-            Collection Name
+            Create a new Collection
           </label>
           <input
-            className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-            placeholder="The name of your new collection"
-            type="text"
-            {...formMethods.register("newCollectionName", {
+            type="checkbox"
+            id="createNewCollection"
+            name="createNewCollection"
+            {...formMethods.register("royaltyAddress", {
               validate: {},
             })}
-          />
+            onChange={() => {
+              // change the isCreateNewCollection state based on the input
+              setIsCreateNewCollection(!isCreateNewCollection);
+            }}
+          ></input>
 
-          <label
-            htmlFor="newCollectionName"
-            className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-          >
-            Collection Description
-          </label>
-          <input
-            className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-            placeholder="The description of your new collection"
-            type="text"
-            {...formMethods.register("newCollectionDescription", {
-              validate: {},
-            })}
-          />
+          {isCreateNewCollection && (
+            <>
+              <label
+                htmlFor="newCollectionName"
+                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+              >
+                Collection Name
+              </label>
+              <input
+                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+                placeholder="The name of your new collection"
+                type="text"
+                {...formMethods.register("newCollectionName", {
+                  validate: {},
+                })}
+              />
+
+              <label
+                htmlFor="newCollectionName"
+                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+              >
+                Collection Description
+              </label>
+              <input
+                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+                placeholder="The description of your new collection"
+                type="text"
+                {...formMethods.register("newCollectionDescription", {
+                  validate: {},
+                })}
+              />
+            </>
+          )}
+
+          {!isCreateNewCollection && (
+            <>
+              <label
+                htmlFor="collectionId"
+                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+              ></label>
+              <input
+                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+                placeholder="The id of your existing collection"
+                type="text"
+                {...formMethods.register("collectionId", {
+                  validate: {},
+                })}
+              />
+            </>
+          )}
 
           <label className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white">
             NFTs
@@ -420,10 +387,10 @@ export function RewardsCreationForm() {
           )}
         </div>
       )}
-      {/* <pre className="text-[0.5rem]">
+      <pre className="text-[0.5rem]">
         file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
         form fields: {JSON.stringify(watchFormFields, null, 2)}
-      </pre> */}
+      </pre>
       {/* <pre className="text-[0.5rem]">
         call config:
         {JSON.stringify(callData?.config, null, 2)}
@@ -432,6 +399,80 @@ export function RewardsCreationForm() {
         preimage hex:
         {callData?.preimage}
       </pre> */}
+    </div>
+  );
+}
+
+function RewardsCreationRarityFields({ rarity, refConfig }) {
+  const { register } = useFormContext();
+
+  let optionIndex = refConfig.options.findIndex((opt) => opt.rarity === rarity);
+
+  return (
+    <div className={`flex flex-col p-5 form-fields-${rarity}`}>
+      <h3 className="text-xl">{rarity}</h3>
+      <label
+        htmlFor={`file-${rarity}`}
+        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+      >
+        Upload Image
+      </label>
+
+      <input
+        type="file"
+        {...register(`options[${optionIndex}].file`, {
+          validate: {},
+        })}
+        required
+      />
+
+      <label
+        htmlFor={`name-${rarity}`}
+        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+      >
+        Name of {rarity} NFT
+      </label>
+      <input
+        id={`name-${rarity}`}
+        className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+        placeholder={`Enter name of ${rarity} NFT`}
+        type="text"
+        {...register(`options[${optionIndex}].itemName`, {
+          validate: {},
+        })}
+      />
+
+      <label
+        htmlFor={`description-${rarity}`}
+        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+      >
+        Description of {rarity} NFT
+      </label>
+      <input
+        id={`description-${rarity}`}
+        className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+        placeholder={`Enter name of ${rarity} NFT`}
+        type="text"
+        {...register(`options[${optionIndex}].description`, {
+          validate: {},
+        })}
+      />
+
+      <label
+        htmlFor={`artist-${rarity}`}
+        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+      >
+        Artist of {rarity} NFT
+      </label>
+      <input
+        id={`artist-${rarity}`}
+        className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+        placeholder={`Enter name of ${rarity} NFT`}
+        type="text"
+        {...register(`options[${optionIndex}].artist`, {
+          validate: {},
+        })}
+      />
     </div>
   );
 }
