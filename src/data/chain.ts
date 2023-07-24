@@ -1,36 +1,24 @@
 import "@polkadot/rpc-augment";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 
-export const WS_ENDPOINTS = [
-  "wss://kusama-rpc.polkadot.io",
-  "wss://kusama.api.onfinality.io/public-ws",
-  "wss://kusama-rpc.dwellir.com",
-];
-
-export const WS_ENDPOINTS_KUSAMA = [
-  "wss://kusama-rpc.polkadot.io",
-  "wss://kusama.api.onfinality.io/public-ws",
-  "wss://kusama-rpc.dwellir.com",
-];
-
-export const WS_ENDPOINTS_STATEMINE = [
-  "wss://statemine-rpc.polkadot.io",
-  "wss://statemine.api.onfinality.io/public-ws",
-  "wss://statemine-rpc.dwellir.com",
-];
-
-export const WS_ENDPOINTS_ASSET_HUB_KUSAMA = [
-  "wss://kusama-asset-hub-rpc.polkadot.io",
-  "wss://statemine.api.onfinality.io%2Fpublic-ws",
-  "wss://rpc-asset-hub-kusama.luckyfriday.io",
-];
-
-export const WS_ENDPOINTS_ENCOINTER = [
-  "wss://encointer.api.onfinality.io/public-ws",
-  "wss://sys.ibp.network/encointer-kusama",
-  "wss://sys.dotters.network/encointer-kusama",
-  "wss://kusama.api.enointer.org",
-];
+export const WS_ENDPOINTS = {
+  KUSAMA: [
+    "wss://kusama-rpc.polkadot.io",
+    "wss://kusama.api.onfinality.io/public-ws",
+    "wss://kusama-rpc.dwellir.com",
+  ],
+  KUSAMA_ASSET_HUB: [
+    "wss://kusama-asset-hub-rpc.polkadot.io",
+    "wss://statemine.api.onfinality.io%2Fpublic-ws",
+    "wss://rpc-asset-hub-kusama.luckyfriday.io",
+  ],
+  ENCOINTER: [
+    "wss://encointer.api.onfinality.io/public-ws",
+    "wss://sys.ibp.network/encointer-kusama",
+    "wss://sys.dotters.network/encointer-kusama",
+    "wss://kusama.api.enointer.org",
+  ],
+};
 
 const MAX_RETRIES = 15;
 const WS_DISCONNECT_TIMEOUT_SECONDS = 20;
@@ -41,19 +29,16 @@ let healthCheckInProgress = false;
 
 /**
  * @see https://polkadot.js.org/docs/api/cookbook/tx
+ * @param {*} api
  * @param {*} tx
  * @param {*} signer
  * @param {*} address
  * @returns
  */
-export const sendAndFinalize = async (
-  tx,
-  signer,
-  address,
-  wsEndpoints = WS_ENDPOINTS
-) => {
+export const sendAndFinalize = async (api, tx, signer, address) => {
   return new Promise(async (resolve, reject) => {
-    const api = await getApi(wsEndpoints);
+    await api.isReady;
+
     try {
       const unsub = await tx.signAndSend(
         address,
@@ -65,7 +50,6 @@ export const sendAndFinalize = async (
             console.log(
               `Transaction included at blockHash ${status.asFinalized}`
             );
-            console.log(`Transaction hash ${txHash.toHex()}`);
 
             // Loop through Vec<EventRecord> to display all events
             if (dispatchError) {
@@ -82,8 +66,6 @@ export const sendAndFinalize = async (
                 reject(dispatchError.toString());
               }
             } else {
-              //store the user quiz answers locally
-              // onSuccess()
               resolve(`success signAndSend ${tx.name}`);
             }
             unsub();
@@ -98,11 +80,26 @@ export const sendAndFinalize = async (
 
 async function sleep(ms) {
   return new Promise((resolve) => {
-    setTimeout(() => resolve(), ms);
+    setTimeout(() => resolve(() => {}), ms);
   });
 }
 
-export async function getApi(wsEndpoints = WS_ENDPOINTS, retry = 0) {
+export async function getApiKusama(): Promise<ApiPromise> {
+  return getApi(WS_ENDPOINTS.KUSAMA);
+}
+
+export async function getApiKusamaAssetHub(): Promise<ApiPromise> {
+  return getApi(WS_ENDPOINTS.KUSAMA_ASSET_HUB);
+}
+
+export async function getApiEncointer(): Promise<ApiPromise> {
+  return getApi(WS_ENDPOINTS.ENCOINTER);
+}
+
+export async function getApi(
+  wsEndpoints: string[],
+  retry: number = 0
+): Promise<ApiPromise> {
   if (wsProvider && polkadotApi) {
     console.log("returning polkadot api");
     return polkadotApi;
@@ -127,7 +124,7 @@ export async function getApi(wsEndpoints = WS_ENDPOINTS, retry = 0) {
   }
 }
 
-async function getProvider(wsEndpoints) {
+async function getProvider(wsEndpoints: string[]) {
   const [primaryEndpoint, ...otherEndpoints] = wsEndpoints;
   if (wsProvider) return wsProvider;
   return await new Promise((resolve, reject) => {
@@ -161,7 +158,7 @@ async function getProvider(wsEndpoints) {
   });
 }
 
-async function providerHealthCheck(wsEndpoints) {
+async function providerHealthCheck(wsEndpoints: string[]) {
   const [primaryEndpoint, secondaryEndpoint, ...otherEndpoints] = wsEndpoints;
   console.log(
     `💗 Performing ${WS_DISCONNECT_TIMEOUT_SECONDS} seconds health check for WS Provider fro rpc ${primaryEndpoint}.`

@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { getApi } from "../data/chain";
+import { getApi, getApiKusama } from "../data/chain";
 import useAppStore from "../zustand";
 import { useIsMounted } from "./use-is-mounted";
 
@@ -9,23 +9,20 @@ import { useIsMounted } from "./use-is-mounted";
  */
 function useSubscribeChainHead() {
   const isMounted = useIsMounted();
-  const setCurrentBlock = useAppStore((state) => state.setCurrentBlock)
+  const setCurrentBlock = useAppStore((state) => state.setCurrentBlock);
 
   useEffect(() => {
-    const subscribeToHead = async() => {
-      const api = await getApi();
+    const subscribeToHead = async () => {
+      const api = await getApiKusama();
       api?.rpc.chain.subscribeNewHeads((header) => {
         const latestUnFinalizedHeight = header.number;
         if (isMounted) {
-          setCurrentBlock (latestUnFinalizedHeight);
+          setCurrentBlock(latestUnFinalizedHeight);
         }
       });
-    }
-    subscribeToHead()
-
+    };
+    subscribeToHead();
   }, [isMounted, setCurrentBlock]);
 }
 
-export {
-  useSubscribeChainHead,
-}
+export { useSubscribeChainHead };

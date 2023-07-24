@@ -9,9 +9,8 @@ import useAppStore from "../../../zustand";
 import style from "./rewards-creation-form.module.scss";
 import { GenerateRewardsResult } from "../../../pages/api/nft_sendout_script/types";
 import {
-  WS_ENDPOINTS_ASSET_HUB_KUSAMA,
-  WS_ENDPOINTS_STATEMINE,
   getApi,
+  getApiKusamaAssetHub,
   sendAndFinalize,
 } from "../../../data/chain";
 import { getWalletBySource } from "@talismn/connect-wallets";
@@ -90,7 +89,7 @@ export function RewardsCreationForm() {
     await wallet.enable("Proof of Chaos");
     const signer = wallet.signer;
 
-    const apiStatemine = await getApi(WS_ENDPOINTS_ASSET_HUB_KUSAMA);
+    const apiStatemine = await getApiKusamaAssetHub();
 
     const tx = apiStatemine.tx.system.remark(
       "Created with https://www.proofofchaos.app/referendum-rewards/"
