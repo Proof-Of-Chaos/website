@@ -12,7 +12,6 @@ import {
 } from "../types";
 import { BN, bnToBn } from "@polkadot/util";
 import PinataClient from "@pinata/sdk";
-import { createNewCollection } from "./_helpersVote";
 import { Logger } from "log4js";
 import { time } from "console";
 
@@ -44,22 +43,8 @@ export const getTxsReferendumRewards = async (
     Id: proxyWallet,
   };
 
-  //create collection if required
-  config.newCollectionMetadataCid = "";
-
-  if (config.createNewCollection) {
-    console.log("⚠️  will create new collection");
-    const txsCreateNewCollection = await getTxsCreateNewCollection(
-      apiKusamaAssetHub,
-      apiPinata,
-      config,
-      proxyWallet
-    );
-
-    txsKusamaAssetHub = [...txsCreateNewCollection];
-  } else {
-    // use a default collection
-  }
+  //todo setMetadata of Collection
+  //todo lock collection after mint if new collection
 
   const attributes = getNftAttributesForOptions(
     config.options,
@@ -216,32 +201,6 @@ const getTxsKusamaXCM = async (
   ];
 
   return txsKusama;
-};
-
-const getTxsCreateNewCollection = async (
-  apiKusamaAssetHub: ApiPromise,
-  apiPinata: PinataClient,
-  config: RewardConfiguration,
-  proxyWallet: string
-): Promise<any> => {
-  const txs = [];
-
-  txs.push(apiKusamaAssetHub.tx.nfts.create(config.collectionId, proxyWallet));
-  config.newCollectionMetadataCid = await createNewCollection(
-    apiPinata,
-    config
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.uniques.setCollectionMetadata(
-      config.collectionId,
-      config.newCollectionMetadataCid
-    )
-  );
-  // txs.push(apiKusamaAssetHub.tx.utility.dispatchAs(proxyWalletSignature, apiKusamaAssetHub.tx.uniques.create(config.collectionId, proxyWallet)))
-  // config.newCollectionMetadataCid = await createNewCollection(pinata, account.address, config);
-  // txs.push(apiKusamaAssetHub.tx.utility.dispatchAs(proxyWalletSignature, apiKusamaAssetHub.tx.uniques.setCollectionMetadata(config.collectionId, config.newCollectionMetadataCid, false)))
-
-  return txs;
 };
 
 export const getTxsForVotes = async (

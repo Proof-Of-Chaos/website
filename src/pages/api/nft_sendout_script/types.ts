@@ -250,6 +250,11 @@ export type PinImageAndMetadataForOptionsResult = {
   };
 };
 
+export type PinImageAndMetadataForCollectionResult = {
+  imageIpfsCid: string,
+  metadataIpfsCid: string
+};
+
 export type NftAttributesResult = {
   [key: string]: {
     direct: string;
@@ -285,6 +290,14 @@ export interface Bonuses {
   adults: DragonBonus[];
 }
 
+export interface CollectionConfiguration {
+  refIndex: string;
+  file: any;
+  name: string;
+  description: string;
+  metadataCid?: string | null;
+}
+
 export interface RewardConfiguration {
   refIndex: string;
   min: string;
@@ -292,12 +305,9 @@ export interface RewardConfiguration {
   first: number | null;
   blockCutOff: number | null;
   directOnly: boolean;
-  createNewCollection: boolean;
-  collectionId: number | null;
-  newCollectionPath: string;
-  newCollectionFile: string;
-  newCollectionName: string;
-  newCollectionDescription: string;
+  newCollection: boolean;
+  newCollectionConfig: CollectionConfiguration
+  collectionId: number;
   babyBonus: number;
   toddlerBonus: number;
   adolescentBonus: number;
@@ -314,7 +324,6 @@ export interface RewardConfiguration {
   median?: number | null;
   minVote?: number | null;
   maxVote?: number | null;
-  newCollectionMetadataCid?: string | null;
   sender?: string;
 }
 

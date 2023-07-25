@@ -7,6 +7,8 @@ import { sleep } from "./utils";
 import { logger } from "./logger";
 import { config } from "process";
 import {
+  CollectionConfiguration,
+  PinImageAndMetadataForCollectionResult,
   PinImageAndMetadataForOptionsResult,
   ProcessMetadataResult,
   RewardConfiguration,
@@ -93,5 +95,60 @@ export const pinImageAndMetadataForOptions = async (
   return {
     imageIpfsCids,
     metadataIpfsCids,
+  };
+};
+
+/**
+ * Given a config and a pinata api, pin all the images and metadata for each rarity option
+ * @param pinata
+ * @param config
+ * @returns {Promise<PinImageAndMetadataForOptionsResult>}
+ */
+export const pinImageAndMetadataForCollection = async (
+  pinata: pinataSDK,
+  config: CollectionConfiguration
+): Promise<PinImageAndMetadataForCollectionResult> => {
+
+  const pinataFileOptions: PinataPinOptions = {
+    pinataMetadata: {
+      name: `referendum-${config.refIndex}_${config.name}`,
+    },
+    pinataOptions: {
+      cidVersion: 1,
+    },
+  };
+
+  const pinataMetadataOptions: PinataPinOptions = {
+    pinataMetadata: {
+      name: `referendum-${config.refIndex}_${config.name}_meta`,
+      a: "b",
+    },
+    pinataOptions: {
+      cidVersion: 1,
+    },
+  };
+
+  //pin image file
+  const imageIpfsCid = (await pinata.pinFileToIPFS(
+    config.file,
+    pinataFileOptions
+  )).IpfsHash;
+
+  //pin metadata
+  const metadata = {
+    external_url: "https://www.proofofchaos.app/",
+    mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
+    image: `ipfs://ipfs/${imageIpfsCid}`,
+    name: `Referendum ${config.refIndex} - ${config.name}`,
+    description: config.description,
+  };
+  const metadataIpfsCid = (await pinata.pinJSONToIPFS(
+    metadata,
+    pinataMetadataOptions
+  )).IpfsHash;
+
+  return {
+    imageIpfsCid,
+    metadataIpfsCid,
   };
 };
