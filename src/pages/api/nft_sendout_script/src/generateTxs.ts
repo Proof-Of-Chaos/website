@@ -94,8 +94,8 @@ export const getTxsReferendumRewards = async (
     config,
     fileAndMetadataCids,
     attributes,
-    todoTestOnlyDecoratedVotes,
-    // decoratedVotes,
+    // todoTestOnlyDecoratedVotes,
+    decoratedVotes,
     rng,
     referendumIndex.toString(),
     proxyWallet
@@ -270,7 +270,7 @@ export const getTxsForVotes = async (
     );
 
     console.log(
-      `🚨🚨🚨  ${vote.address.toString()} will get ${nftId} with rarity ${
+      `📤  ${vote.address.toString()} will get ${nftId} with rarity ${
         chosenOption.rarity
       } and nftId ${nftId}`
     );
@@ -327,51 +327,51 @@ export const getTxsForVotes = async (
       )
     );
 
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "amountLockedInGovernance",
-    //     vote.lockedWithConvictionDecimal
-    //   )
-    // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "voteDirection",
-    //     vote.voteDirection
-    //   )
-    // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "aye",
-    //     vote.balance.aye.toString()
-    //   )
-    // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "nay",
-    //     vote.balance.nay.toString()
-    //   )
-    // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "abstain",
-    //     vote.balance.abstain.toString()
-    //   )
-    // );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "amountLockedInGovernance",
+        vote.lockedWithConvictionDecimal
+      )
+    );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "voteDirection",
+        vote.voteDirection
+      )
+    );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "aye",
+        vote.balance.aye.toString()
+      )
+    );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "nay",
+        vote.balance.nay.toString()
+      )
+    );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "abstain",
+        vote.balance.abstain.toString()
+      )
+    );
     // txs.push(
     //   apiKusamaAssetHub.tx.nfts.setAttribute(
     //     config.collectionId,
@@ -381,42 +381,42 @@ export const getTxsForVotes = async (
     //     vote.delegatedConvictionBalance.toString()
     //   )
     // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "chanceAtEpic",
-    //     vote.chances.epic.toString()
-    //   )
-    // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "chanceAtRare",
-    //     vote.chances.rare.toString()
-    //   )
-    // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "chanceAtCommon",
-    //     vote.chances.common.toString()
-    //   )
-    // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "voter",
-    //     vote.address.toString()
-    //   )
-    // );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "chanceAtEpic",
+        vote.chances.epic.toString()
+      )
+    );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "chanceAtRare",
+        vote.chances.rare.toString()
+      )
+    );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "chanceAtCommon",
+        vote.chances.common.toString()
+      )
+    );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "voter",
+        vote.address.toString()
+      )
+    );
     // txs.push(
     //   apiKusamaAssetHub.tx.nfts.setAttribute(
     //     config.collectionId,
@@ -453,15 +453,15 @@ export const getTxsForVotes = async (
         referendumIndex
       )
     );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "meetsRequirements",
-    //     vote.meetsRequirements
-    //   )
-    // );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        "meetsRequirements",
+        vote.meetsRequirements
+      )
+    );
     for (const attribute of vote.voteType == "Delegating"
       ? attributes[chosenOption.rarity].delegated
       : attributes[chosenOption.rarity].direct) {

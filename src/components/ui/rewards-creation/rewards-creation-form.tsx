@@ -328,18 +328,14 @@ export function RewardsCreationForm() {
               <Loader className="w-12 h-12" text="" />
               <p className="text-xs"></p>
               <ul className="text-xs">
+                <li>Pinning your images and NFT metadata to IPFS ...</li>
                 <li>
-                  - Creating a new collection with the name and description
-                  provided
-                </li>
-                <li>- Pinning your images and NFT metadata to IPFS</li>
-                <li>
-                  - Generating all required transactions to distribute the
-                  rewards to all voters of the selected referendum
+                  Generating all required transactions to distribute the rewards
+                  to all voters of the selected referendum ...
                 </li>
               </ul>
               <p className="text-xs mt-5">
-                Please stand by this may take a while...
+                Please stand by this may take a while ...
               </p>
             </>
           )}
@@ -356,15 +352,21 @@ export function RewardsCreationForm() {
               )}
               {callData && (
                 <div className="text-sm">
-                  <p>
-                    NFTs to send out:&nbsp;
-                    {JSON.stringify(callData.distribution)}
+                  <p className="mt-2">
+                    {Object.entries(callData.distribution).map(([k, v]) => {
+                      return (
+                        <p>
+                          {k} NFTs to send out: {v}
+                        </p>
+                      );
+                    })}
                   </p>
-                  <p>
-                    Estimated fees for your transactions:&nbsp;
-                    {JSON.stringify(callData.fees)}
+                  <p className="mt-2">
+                    Estimated fees for your transactions on Kusama Asset
+                    Hub:&nbsp;
+                    {callData.fees.nfts} KSM
                   </p>
-                  <p>Transaction Count: {JSON.stringify(callData.txsCount)}</p>
+                  <p>Transaction Count: {callData.txsCount.nfts}</p>
                 </div>
               )}
               <div className="button-wrap pt-5">

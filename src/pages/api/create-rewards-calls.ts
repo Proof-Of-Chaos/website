@@ -1,4 +1,4 @@
-import { BN } from "@polkadot/util";
+import { BN, formatBalance } from "@polkadot/util";
 import { logger } from "./nft_sendout_script/tools/logger";
 import {
   GenerateRewardsResult,
@@ -180,8 +180,16 @@ const generateCalls = async (
         call: "omitted",
         distribution: rarityDistribution,
         fees: {
-          kusama: infoKusamaCalls.partialFee.toHuman(),
-          nfts: infoNftCalls.partialFee.toHuman(),
+          kusama: formatBalance(infoKusamaCalls.partialFee, {
+            withSi: false,
+            forceUnit: "KSM",
+            decimals: kusamaChainDecimals.toNumber(),
+          }),
+          nfts: formatBalance(infoNftCalls.partialFee, {
+            withSi: false,
+            forceUnit: "KSM",
+            decimals: kusamaChainDecimals.toNumber(),
+          }),
         },
         txsCount: {
           kusama: txsKusama.length,
@@ -200,8 +208,17 @@ const generateCalls = async (
     kusamaAssetHubTxs: txsKusamaAssetHub,
     distribution: rarityDistribution,
     fees: {
-      kusama: infoKusamaCalls.partialFee.toHuman(),
-      nfts: infoNftCalls.partialFee.toHuman(),
+      kusama: formatBalance(infoKusamaCalls.partialFee, {
+        withSi: false,
+        forceUnit: "KSM",
+        decimals: kusamaChainDecimals.toNumber(),
+      }),
+      nfts: formatBalance(infoNftCalls.partialFee, {
+        withSi: false,
+        forceUnit: "KSM",
+        //TODO this could be wrong on other chains
+        decimals: kusamaChainDecimals.toNumber(),
+      }),
     },
     txsCount: {
       kusama: txsKusama.length,
