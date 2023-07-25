@@ -3,7 +3,7 @@ import type { Option } from "@polkadot/types";
 import type {
   PalletConvictionVotingVoteCasting,
   PalletConvictionVotingVoteVoting,
-  PalletReferendaReferendumInfoConvictionVotingTally,
+  PalletReferendaReferendumInfoConvictionVotingTally
 } from "@polkadot/types/lookup";
 import { BN, bnToBn } from "@polkadot/util";
 import type {
@@ -386,12 +386,12 @@ export const retrieveAccountLocks = async (
         const lockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-              userVote.endBlock
-                .sub(endBlockBN)
-                .muln(10)
-                .div(sevenDaysBlocks)
-                .toNumber() / 10
-            );
+            userVote.endBlock
+              .sub(endBlockBN)
+              .muln(10)
+              .div(sevenDaysBlocks)
+              .toNumber() / 10
+          );
         const matchingPeriod = LOCKPERIODS.reduce(
           (acc, curr, index) => (lockPeriods >= curr ? index : acc),
           0
@@ -402,8 +402,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-            BN.max(max, current)
-          )
+          BN.max(max, current)
+        )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -492,7 +492,7 @@ export async function useAccountLocksImpl(
   palletVote: PalletVote,
   accountId: string
 ): Promise<Lock[]> {
-  const locks: [BN, BN][] = await api.query.convictionVoting?.classLocksFor(
+  const locks: [BN, BN][] = await api.query[palletVote]?.classLocksFor(
     accountId
   );
   const lockClassesFormatted: BN[] = locks.map(([classId]) => classId);
