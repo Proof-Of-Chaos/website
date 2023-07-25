@@ -32,6 +32,20 @@ export const getTxsCollectionCreate = async (
     return { txsKusamaAssetHub };
 }
 
+export const getNewCollectionId = async (
+    apiKusamaAssetHub: ApiPromise,
+    address: string
+): Promise<number> => {
+    console.log("in")
+    const allUserCollections = await apiKusamaAssetHub.query.nfts.collectionAccount(
+        address, null
+    );
+    console.log("userCOllections", allUserCollections.toHuman())
+    //loop over user collections and get collection with highest ID -> latest created
+    
+    return 0;
+}
+
 export const getTxsCollectionSetMetadata = async (
     apiKusamaAssetHub: ApiPromise,
     apiPinata: PinataClient,
