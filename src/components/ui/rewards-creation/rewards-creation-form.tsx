@@ -14,8 +14,10 @@ import {
   sendAndFinalize,
 } from "../../../data/chain";
 import { getWalletBySource } from "@talismn/connect-wallets";
+import { useModal } from "../../modals/context";
 
 export function RewardsCreationForm() {
+  const { openModal, closeModal } = useModal();
   const connectedAccountIndex = useAppStore(
     (state) => state.user.connectedAccount
   );
@@ -166,6 +168,12 @@ export function RewardsCreationForm() {
     generatePreimage(formData);
   }
 
+  async function createNewCollection() {
+    openModal("NEW_NFT_COLLECTION", {
+      config: watchFormFields,
+    });
+  }
+
   return (
     <div className={style.formWrapper}>
       <FormProvider {...formMethods}>
@@ -213,8 +221,9 @@ export function RewardsCreationForm() {
             })}
             required
           />
+          <p className="form-helper">Where trading royalties should go to</p>
 
-          <label
+          {/* <label
             className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
             htmlFor="createNewCollection"
           >
@@ -231,7 +240,7 @@ export function RewardsCreationForm() {
               // change the isCreateNewCollection state based on the input
               setIsCreateNewCollection(!isCreateNewCollection);
             }}
-          ></input>
+          ></input> */}
 
           {isCreateNewCollection && (
             <>
@@ -272,15 +281,31 @@ export function RewardsCreationForm() {
               <label
                 htmlFor="collectionId"
                 className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-              ></label>
-              <input
-                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-                placeholder="The id of your existing collection"
-                type="text"
-                {...formMethods.register("collectionId", {
-                  validate: {},
-                })}
-              />
+              >
+                Collection Id
+              </label>
+              <div className="flex">
+                <input
+                  className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+                  placeholder="The id of your existing collection"
+                  type="text"
+                  {...formMethods.register("collectionId", {
+                    validate: {},
+                  })}
+                />
+                <Button
+                  className="mt-2 ml-2"
+                  onClick={createNewCollection}
+                  variant="primary"
+                  size="small"
+                >
+                  Create New Collection
+                </Button>
+              </div>
+              <p className="form-helper">
+                Either choose an existing collection to mint the NFTs into, or
+                create a new one
+              </p>
             </>
           )}
 
@@ -328,18 +353,14 @@ export function RewardsCreationForm() {
               <Loader className="w-12 h-12" text="" />
               <p className="text-xs"></p>
               <ul className="text-xs">
+                <li>Pinning your images and NFT metadata to IPFS ...</li>
                 <li>
-                  - Creating a new collection with the name and description
-                  provided
-                </li>
-                <li>- Pinning your images and NFT metadata to IPFS</li>
-                <li>
-                  - Generating all required transactions to distribute the
-                  rewards to all voters of the selected referendum
+                  Generating all required transactions to distribute the rewards
+                  to all voters of the selected referendum ...
                 </li>
               </ul>
               <p className="text-xs mt-5">
-                Please stand by this may take a while...
+                Please stand by this may take a while ...
               </p>
             </>
           )}
@@ -356,15 +377,21 @@ export function RewardsCreationForm() {
               )}
               {callData && (
                 <div className="text-sm">
-                  <p>
-                    NFTs to send out:&nbsp;
-                    {JSON.stringify(callData.distribution)}
+                  <p className="mt-2">
+                    {Object.entries(callData.distribution).map(([k, v]) => {
+                      return (
+                        <p>
+                          {k} NFTs to send out: {v}
+                        </p>
+                      );
+                    })}
                   </p>
-                  <p>
-                    Estimated fees for your transactions:&nbsp;
-                    {JSON.stringify(callData.fees)}
+                  <p className="mt-2">
+                    Estimated fees for your transactions on Kusama Asset
+                    Hub:&nbsp;
+                    {callData.fees.nfts} KSM
                   </p>
-                  <p>Transaction Count: {JSON.stringify(callData.txsCount)}</p>
+                  <p>Transaction Count: {callData.txsCount.nfts}</p>
                 </div>
               )}
               <div className="button-wrap pt-5">

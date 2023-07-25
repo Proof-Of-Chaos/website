@@ -438,3 +438,8 @@ form label::first-letter {
 input[type="file"] {
   font-size: 0.8rem;
 }
+
+.form-helper {
+  font-size: 0.7rem;
+  @apply text-gray-700 mt-1;
+}

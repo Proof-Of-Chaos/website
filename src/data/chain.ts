@@ -134,7 +134,7 @@ export async function getApi(chain: string, retry = 0): Promise<ApiPromise> {
   const chainApi = apis[chain];
 
   if (chainProvider && chainApi) {
-    console.log("returning api from cache for chain", chain);
+    // console.log("returning api from cache for chain", chain);
     return chainApi;
   }
 
