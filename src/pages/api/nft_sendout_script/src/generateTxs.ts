@@ -94,8 +94,8 @@ export const getTxsReferendumRewards = async (
     config,
     fileAndMetadataCids,
     attributes,
-    // todoTestOnlyDecoratedVotes,
-    decoratedVotes,
+    todoTestOnlyDecoratedVotes,
+    // decoratedVotes,
     rng,
     referendumIndex.toString(),
     proxyWallet
@@ -269,7 +269,7 @@ export const getTxsForVotes = async (
       `${config.refIndex}${rarityIndex}${Math.floor(Math.random() * 100000)}`
     );
 
-    console.log(
+    console.info(
       `📤  ${vote.address.toString()} will get ${nftId} with rarity ${
         chosenOption.rarity
       } and nftId ${nftId}`
@@ -292,11 +292,6 @@ export const getTxsForVotes = async (
     // console.info("selectedMetadata", selectedMetadata);
     // console.info("metadataCid", metadataCid);
 
-    const randRoyaltyInRange = Math.floor(
-      rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
-        chosenOption.minRoyalty
-    );
-
     if (!metadataCid) {
       console.error(`metadataCid is null. exiting.`);
       return;
@@ -311,199 +306,28 @@ export const getTxsForVotes = async (
       )
     );
 
-    const imageCid = `ipfs://ipfs/${
-      fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
-        vote.voteType == "Delegating" ? "delegated" : "direct"
-      ]
-    }`;
-
     txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
+      getAllSetAttributeTxs(
+        apiKusamaAssetHub,
+        config,
+        fileAndMetadataCids,
+        attributes,
+        vote,
         nftId,
-        "CollectionOwner",
-        "image",
-        imageCid
-      )
-    );
-
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "amountLockedInGovernance",
-        vote.lockedWithConvictionDecimal
-      )
-    );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "voteDirection",
-        vote.voteDirection
-      )
-    );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "aye",
-        vote.balance.aye.toString()
-      )
-    );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "nay",
-        vote.balance.nay.toString()
-      )
-    );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "abstain",
-        vote.balance.abstain.toString()
-      )
-    );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "delegatedConvictionBalance",
-    //     vote.delegatedConvictionBalance.toString()
-    //   )
-    // );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "chanceAtEpic",
-        vote.chances.epic.toString()
-      )
-    );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "chanceAtRare",
-        vote.chances.rare.toString()
-      )
-    );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "chanceAtCommon",
-        vote.chances.common.toString()
-      )
-    );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "voter",
-        vote.address.toString()
-      )
-    );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "dragonEquipped",
-    //     vote.dragonEquipped
-    //   )
-    // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "quizCorrect",
-    //     vote.quizCorrect.toString()
-    //   )
-    // );
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setAttribute(
-    //     config.collectionId,
-    //     nftId,
-    //     "CollectionOwner",
-    //     "encointerScore",
-    //     vote.encointerScore
-    //   )
-    // );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "referendum",
-        referendumIndex
-      )
-    );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "meetsRequirements",
-        vote.meetsRequirements
-      )
-    );
-    for (const attribute of vote.voteType == "Delegating"
-      ? attributes[chosenOption.rarity].delegated
-      : attributes[chosenOption.rarity].direct) {
-      txs.push(
-        apiKusamaAssetHub.tx.nfts.setAttribute(
-          config.collectionId,
-          nftId,
-          "CollectionOwner",
-          attribute.name,
-          attribute.value
-        )
-      );
-    }
-
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "royaltyPercentFloat",
-        vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty
-      )
-    );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
-        nftId,
-        "CollectionOwner",
-        "royaltyReceiver",
-        config.royaltyAddress
+        chosenOption,
+        rng
       )
     );
 
     const ipfsIdentifier = `ipfs://ipfs/${metadataCid}`;
 
-    // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.setMetadata(
-    //     config.collectionId,
-    //     nftId,
-    //     ipfsIdentifier
-    //   )
-    // );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setMetadata(
+        config.collectionId,
+        nftId,
+        ipfsIdentifier
+      )
+    );
     // txs.push(
     //   apiKusamaAssetHub.tx.nfts.transfer(
     //     config.collectionId,
@@ -514,4 +338,208 @@ export const getTxsForVotes = async (
   }
 
   return txs;
+};
+
+const getAllSetAttributeTxs = (
+  apiKusamaAssetHub: ApiPromise,
+  config: RewardConfiguration,
+  fileAndMetadataCids: PinImageAndMetadataForOptionsResult,
+  attributes,
+  vote: VoteConviction,
+  nftId,
+  chosenOption,
+  rng: RNG
+) => {
+  let txs = [];
+
+  const { refIndex: referendumIndex } = config;
+
+  const randRoyaltyInRange = Math.floor(
+    rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
+      chosenOption.minRoyalty
+  );
+
+  const imageCid = `ipfs://ipfs/${
+    fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
+      vote.voteType == "Delegating" ? "delegated" : "direct"
+    ]
+  }`;
+
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "image",
+      imageCid
+    )
+  );
+
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "amountLockedInGovernance",
+      vote.lockedWithConvictionDecimal
+    )
+  );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "voteDirection",
+      vote.voteDirection
+    )
+  );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "aye",
+      vote.balance.aye.toString()
+    )
+  );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "nay",
+      vote.balance.nay.toString()
+    )
+  );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "abstain",
+      vote.balance.abstain.toString()
+    )
+  );
+  // txs.push(
+  //   apiKusamaAssetHub.tx.nfts.setAttribute(
+  //     config.collectionId,
+  //     nftId,
+  //     "CollectionOwner",
+  //     "delegatedConvictionBalance",
+  //     vote.delegatedConvictionBalance.toString()
+  //   )
+  // );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "chanceAtEpic",
+      vote.chances.epic.toString()
+    )
+  );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "chanceAtRare",
+      vote.chances.rare.toString()
+    )
+  );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "chanceAtCommon",
+      vote.chances.common.toString()
+    )
+  );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "voter",
+      vote.address.toString()
+    )
+  );
+  // txs.push(
+  //   apiKusamaAssetHub.tx.nfts.setAttribute(
+  //     config.collectionId,
+  //     nftId,
+  //     "CollectionOwner",
+  //     "dragonEquipped",
+  //     vote.dragonEquipped
+  //   )
+  // );
+  // txs.push(
+  //   apiKusamaAssetHub.tx.nfts.setAttribute(
+  //     config.collectionId,
+  //     nftId,
+  //     "CollectionOwner",
+  //     "quizCorrect",
+  //     vote.quizCorrect.toString()
+  //   )
+  // );
+  // txs.push(
+  //   apiKusamaAssetHub.tx.nfts.setAttribute(
+  //     config.collectionId,
+  //     nftId,
+  //     "CollectionOwner",
+  //     "encointerScore",
+  //     vote.encointerScore
+  //   )
+  // );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "referendum",
+      referendumIndex
+    )
+  );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "meetsRequirements",
+      vote.meetsRequirements
+    )
+  );
+  for (const attribute of vote.voteType == "Delegating"
+    ? attributes[chosenOption.rarity].delegated
+    : attributes[chosenOption.rarity].direct) {
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionId,
+        nftId,
+        "CollectionOwner",
+        attribute.name,
+        attribute.value
+      )
+    );
+  }
+
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "royaltyPercentFloat",
+      vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty
+    )
+  );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.collectionId,
+      nftId,
+      "CollectionOwner",
+      "royaltyReceiver",
+      config.royaltyAddress
+    )
+  );
 };
