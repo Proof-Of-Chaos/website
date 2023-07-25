@@ -23,17 +23,25 @@ export type GenerateRewardsResult = {
   kusamaAssetHubTxs: string[] | undefined;
   distribution: RarityDistribution | undefined;
   fees:
-    | {
-        kusama: string;
-        nfts: string;
-      }
-    | undefined;
+  | {
+    kusama: string;
+    nfts: string;
+  }
+  | undefined;
   txsCount:
-    | {
-        kusama: number;
-        nfts: number;
-      }
-    | undefined;
+  | {
+    kusama: number;
+    nfts: number;
+  }
+  | undefined;
+};
+
+export type CreateCollectionResult = {
+  call: string | undefined;
+  kusamaAssetHubCall: string | undefined;
+  kusamaAssetHubTxs: string[] | undefined;
+  fees: string | undefined;
+  txsCount: number | undefined;
 };
 
 export interface VoteConvictionDragon extends VoteConviction {
@@ -206,12 +214,12 @@ export interface RarityDistribution {
 
 interface Attribute {
   name:
-    | "rarity"
-    | "totalSupply"
-    | "artist"
-    | "creativeDirector"
-    | "name"
-    | "typeOfVote";
+  | "rarity"
+  | "totalSupply"
+  | "artist"
+  | "creativeDirector"
+  | "name"
+  | "typeOfVote";
   value: string | Uint8Array | Bytes;
 }
 
