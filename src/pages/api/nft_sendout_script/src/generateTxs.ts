@@ -64,9 +64,10 @@ export const getTxsReferendumRewards = async (
   // logger.info("NFT attributes", JSON.stringify(attributes, null, 2));
 
   const todoTestOnlyDecoratedVotes = decoratedVotes.filter((vote) =>
-    ["DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m"].includes(
-      vote.address.toString()
-    )
+    [
+      "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
+      "FF4KRpru9a1r2nfWeLmZRk6N8z165btsWYaWvqaVgR6qVic",
+    ].includes(vote.address.toString())
   );
 
   logger.info(
