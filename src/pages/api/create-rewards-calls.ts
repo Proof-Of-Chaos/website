@@ -26,7 +26,6 @@ import {
   getApiKusamaAssetHub,
   getChainDecimals,
 } from "../../data/chain";
-import { getNewCollectionId } from "./nft_sendout_script/src/createCollection";
 
 /**
  * Handler for the /api/create-rewards-calls endpoint
@@ -89,7 +88,6 @@ const generateCalls = async (
 
   //get Kusama Asset Hub API
   const apiKusamaAssetHub = await getApiKusamaAssetHub();
-  getNewCollectionId(apiKusamaAssetHub, "D3iNikJw3cPq6SasyQCy3k4Y77ZeecgdweTWoSegomHznG3");
   //seed the randomizer
   const rng = seedrandom(seed.toString());
 
