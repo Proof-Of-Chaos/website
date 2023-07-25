@@ -89,34 +89,14 @@ export function RewardsCreationForm() {
     await wallet.enable("Proof of Chaos");
     const signer = wallet.signer;
 
-    const apiStatemine = await getApiKusamaAssetHub();
+    const apiKusamaAssetHub = await getApiKusamaAssetHub();
 
-    const tx = apiStatemine.tx.system.remark(
-      "Created with https://www.proofofchaos.app/referendum-rewards/"
-    );
+    // const tx = apiKusamaAssetHub.tx.system.remark(
+    //   "Created with https://www.proofofchaos.app/referendum-rewards/"
+    // );
 
-    console.log("aaa", signer, walletAddress, tx, callData.statemineTxs);
-
-    apiStatemine.tx.system
-      .remark("Created with https://www.proofofchaos.app/referendum-rewards/")
-      .signAndSend(walletAddress, { signer: wallet.signer }, ({ status }) => {
-        if (status.isReady) {
-        } else if (status.isInBlock) {
-          console.log(
-            `Completed at block hash #${status.asInBlock.toString()}`
-          );
-        } else if (status.isFinalized) {
-          console.log(`Current status: ${status.type}`);
-        } else {
-          console.log(`Current status: ${status.type}`);
-        }
-      })
-      .catch((error) => {
-        console.log(":( transaction failed", error);
-      });
-
-    // apiStatemine.tx.utility
-    //   .batchAll(callData.statemineTxs)
+    // apiKusamaAssetHub.tx.system
+    //   .remark("Created with https://www.proofofchaos.app/referendum-rewards/")
     //   .signAndSend(walletAddress, { signer: wallet.signer }, ({ status }) => {
     //     if (status.isReady) {
     //     } else if (status.isInBlock) {
@@ -133,15 +113,32 @@ export function RewardsCreationForm() {
     //     console.log(":( transaction failed", error);
     //   });
 
-    // sendAndFinalize(
-    // callData.statemineTxs,
-    // apiStatemine.tx.system.remark(
-    //   "Created with https://www.proofofchaos.app/referendum-rewards/"
-    // ),
-    //   walletAddress,
-    //   signer,
-    //   WS_ENDPOINTS_STATEMINE
-    // );
+    // apiKusamaAssetHub.tx.utility
+    //   .batchAll(
+    //     callData.kusamaAssetHubTxs.map((tx) => apiKusamaAssetHub.tx(tx))
+    //   )
+    //   .signAndSend(walletAddress, { signer: wallet.signer }, ({ status }) => {
+    //     if (status.isReady) {
+    //     } else if (status.isInBlock) {
+    //       console.log(
+    //         `Completed at block hash #${status.asInBlock.toString()}`
+    //       );
+    //     } else if (status.isFinalized) {
+    //       console.log(`Current status: ${status.type}`);
+    //     } else {
+    //       console.log(`Current status: ${status.type}`);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(":( transaction failed", error);
+    //   });
+
+    sendAndFinalize(
+      apiKusamaAssetHub,
+      callData.kusamaAssetHubTxs.map((tx) => apiKusamaAssetHub.tx(tx)),
+      signer,
+      walletAddress
+    );
   }
 
   async function onSubmit(data) {

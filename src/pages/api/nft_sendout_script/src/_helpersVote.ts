@@ -24,12 +24,13 @@ import type {
   FetchReputableVotersParams,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
-import { getApiAt, getDecimal } from "../tools/substrateUtils";
+import { getApiAt, getDecimal } from "../../../../data/chain";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils";
 import { Logger } from "log4js";
 import { pinSingleMetadataFromDir } from "../tools/pinataUtils";
 import { ApiPromise } from "@polkadot/api";
+import { GraphQLClient } from "graphql-request";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -564,7 +565,7 @@ export const createNewCollection = async (pinata, settings) => {
 
 // Function to create a config NFT
 const createConfigNFT = async (
-  apiStatemine,
+  apiKusamaAssetHub,
   config,
   metadataCidSettings,
   referendumIndex,
@@ -573,14 +574,14 @@ const createConfigNFT = async (
   const txs = [];
 
   txs.push(
-    apiStatemine.tx.uniques.mint(
+    apiKusamaAssetHub.tx.uniques.mint(
       config.settingsCollectionSymbol,
       referendumIndex,
       proxyWallet
     )
   );
   txs.push(
-    apiStatemine.tx.uniques.setAttribute(
+    apiKusamaAssetHub.tx.uniques.setAttribute(
       config.settingsCollectionSymbol,
       referendumIndex,
       "seed",
@@ -588,7 +589,7 @@ const createConfigNFT = async (
     )
   );
   txs.push(
-    apiStatemine.tx.uniques.setMetadata(
+    apiKusamaAssetHub.tx.uniques.setMetadata(
       config.settingsCollectionSymbol,
       referendumIndex,
       metadataCidSettings,

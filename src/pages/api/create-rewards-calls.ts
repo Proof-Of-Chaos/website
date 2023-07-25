@@ -10,11 +10,6 @@ import seedrandom from "seedrandom";
 import fs from "fs";
 
 import {
-  getApiKusama,
-  getApiStatemine,
-  getChainDecimals,
-} from "./nft_sendout_script/tools/substrateUtils";
-import {
   getBlockNumber,
   setupPinata,
 } from "./nft_sendout_script/src/_helpersApi";
@@ -26,6 +21,11 @@ import {
 import { getTxsReferendumRewards } from "./nft_sendout_script/src/generateTxs";
 import { Readable } from "stream";
 import formidable, { errors as formidableErrors } from "formidable";
+import {
+  getApiKusama,
+  getApiKusamaAssetHub,
+  getChainDecimals,
+} from "../../data/chain";
 
 async function buffer(readable: Readable) {
   const chunks = [];
@@ -94,8 +94,8 @@ const generateCalls = async (
   const apiKusama = await getApiKusama();
   const kusamaChainDecimals = await getChainDecimals("kusama");
 
-  //get Statemine API
-  const apiStatemine = await getApiStatemine();
+  //get Kusama Asset Hub API
+  const apiKusamaAssetHub = await getApiKusamaAssetHub();
 
   //seed the randomizer
   const rng = seedrandom(seed.toString());
@@ -125,8 +125,8 @@ const generateCalls = async (
 
   // get all transactions that are needed for the distribution
   // TODO --- warning we slice by 10 here
-  let { txsStatemine, txsKusama } = await getTxsReferendumRewards(
-    apiStatemine,
+  let { txsKusamaAssetHub, txsKusama } = await getTxsReferendumRewards(
+    apiKusamaAssetHub,
     apiKusama,
     apiPinata,
     config,
@@ -136,13 +136,13 @@ const generateCalls = async (
     logger
   );
 
-  const nftCalls = apiStatemine.tx.utility
-    .batchAll(txsStatemine)
+  const nftCalls = apiKusamaAssetHub.tx.utility
+    .batchAll(txsKusamaAssetHub)
     .method.toHex();
   const kusamaCalls = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
 
   logger.info(
-    `📊 Generated ${txsStatemine.length} txs for minting NFTs on Statemine and ${txsKusama.length} txs for Kusama XCM calls`
+    `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama) and ${txsKusama.length} txs for Kusama XCM calls`
   );
 
   logger.info("💵 Calculating fees for sender", config.sender);
@@ -151,8 +151,8 @@ const generateCalls = async (
     .batchAll(txsKusama)
     .paymentInfo(config.sender);
 
-  const infoNftCalls = await apiStatemine.tx.utility
-    .batchAll(txsStatemine)
+  const infoNftCalls = await apiKusamaAssetHub.tx.utility
+    .batchAll(txsKusamaAssetHub)
     .paymentInfo(config.sender);
 
   logger.info("🎉 All Done");
@@ -165,7 +165,7 @@ const generateCalls = async (
     `./log/tmp_transactions_${config.refIndex}_xcm.json`,
     JSON.stringify(
       {
-        nfts: txsStatemine.map((tx) => tx.toHuman()),
+        nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
         xcm: txsKusama.map((tx) => tx.toHuman()),
       },
       null,
@@ -185,7 +185,7 @@ const generateCalls = async (
         },
         txsCount: {
           kusama: txsKusama.length,
-          nfts: txsStatemine.length,
+          nfts: txsKusamaAssetHub.length,
         },
       },
       null,
@@ -196,8 +196,8 @@ const generateCalls = async (
   return {
     call: "omitted",
     kusamaCall: JSON.stringify(kusamaCalls),
-    statemineCall: JSON.stringify(nftCalls),
-    statemineTxs: txsStatemine,
+    kusamaAssetHubCall: JSON.stringify(nftCalls),
+    kusamaAssetHubTxs: txsKusamaAssetHub,
     distribution: rarityDistribution,
     fees: {
       kusama: infoKusamaCalls.partialFee.toHuman(),
@@ -205,7 +205,7 @@ const generateCalls = async (
     },
     txsCount: {
       kusama: txsKusama.length,
-      nfts: txsStatemine.length,
+      nfts: txsKusamaAssetHub.length,
     },
   };
 

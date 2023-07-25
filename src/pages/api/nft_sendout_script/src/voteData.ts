@@ -1,4 +1,4 @@
-import { getApiAt, getApiKusama, getDenom } from "../tools/substrateUtils";
+import { getApiAt, getApiKusama, getDenom } from "../../../../data/chain";
 import {
   ConvictionDelegation,
   ConvictionVote,

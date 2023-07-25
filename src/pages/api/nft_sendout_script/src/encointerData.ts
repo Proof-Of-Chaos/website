@@ -7,7 +7,7 @@ import {
   getApiAt,
   getApiEncointer,
   getApiKusama,
-} from "../tools/substrateUtils";
+} from "../../../../data/chain";
 import { u8aToU8a } from "@polkadot/util";
 
 /**

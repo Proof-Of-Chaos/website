@@ -1,4 +1,3 @@
-import pLimit from "p-limit";
 import { Readable } from "stream";
 import fs from "fs";
 import { PinataPinOptions } from "@pinata/sdk";

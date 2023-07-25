@@ -19,8 +19,8 @@ export interface VoteConviction extends ConvictionVote {
 export type GenerateRewardsResult = {
   call: string | undefined;
   kusamaCall: string | undefined;
-  statemineCall: string | undefined;
-  statemineTxs: any;
+  kusamaAssetHubCall: string | undefined;
+  kusamaAssetHubTxs: string[] | undefined;
   distribution: RarityDistribution | undefined;
   fees:
     | {
