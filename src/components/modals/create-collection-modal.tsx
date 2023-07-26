@@ -9,9 +9,17 @@ import { getWalletBySource } from "@talismn/connect-wallets";
 import { watch } from "fs";
 import { FormProvider, useForm } from "react-hook-form";
 import { useState } from "react";
+import { getApiKusamaAssetHub, sendAndFinalize } from "../../data/chain";
 
-export default function CreateNFTCollectionModal({ config }) {
+export default function CreateNFTCollectionModal({ config, sender }) {
   const { openModal, closeModal } = useModal();
+
+  const connectedAccountIndex = useAppStore(
+    (state) => state.user.connectedAccount
+  );
+  const connectedAccount = useAppStore(
+    (state) => state.user.connectedAccounts?.[connectedAccountIndex]
+  );
 
   const formMethods = useForm({
     defaultValues: {
@@ -40,32 +48,65 @@ export default function CreateNFTCollectionModal({ config }) {
     console.table(data);
 
     const formData = new FormData();
+
     formData.append(
       "data",
       JSON.stringify({
         collectionName: data.collectionName,
         collectionDescription: data.collectionDescription,
+        sender,
       })
     );
 
     formData.append("imageFile", data.imageFile[0]);
 
-    const res = await fetch("/api/create-new-collection", {
+    console.log("hello");
+
+    const res = await fetch("/api/create-new-collection/", {
       method: "POST",
       body: formData,
     });
-
-    const jsonRes = await res.json();
-    console.log("result from api ", jsonRes);
-
-    if (jsonRes.name === "Error") {
-      console.log(" frontend", jsonRes);
-      setError(jsonRes);
+    const { tx, name, message } = await res.json();
+    if (name === "Error") {
+      console.log(" frontend error", name, message);
+      setError({ name, message });
     }
 
+    console.log("result from api ", tx);
+
+    const signResults = await signTx(tx);
+
+    console.log("signResults", signResults);
+
     setIsLoading(false);
-    setData(jsonRes);
+    setData(tx);
   };
+
+  async function signTx(tx) {
+    const walletAddress = connectedAccount?.address;
+    const wallet = getWalletBySource(connectedAccount?.source);
+    await wallet.enable("Proof of Chaos");
+    const signer = wallet.signer;
+
+    if (!walletAddress) {
+      setError({
+        message: "Please connect your wallet to continue.",
+        name: "Wallet not connected",
+      });
+      return;
+    }
+
+    const apiKusamaAssetHub = await getApiKusamaAssetHub();
+
+    const signatureRes = await sendAndFinalize(
+      apiKusamaAssetHub,
+      tx,
+      signer,
+      walletAddress
+    );
+
+    return signatureRes;
+  }
 
   return (
     <div className="overflow-scroll">
@@ -75,7 +116,7 @@ export default function CreateNFTCollectionModal({ config }) {
 
       <Dialog.Panel>
         <FormProvider {...formMethods}>
-          <form onSubmit={formMethods.handleSubmit(onSubmit)}>
+          <form className="p-1" onSubmit={formMethods.handleSubmit(onSubmit)}>
             <label
               htmlFor="newCollectionName"
               className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"

@@ -171,6 +171,7 @@ export function RewardsCreationForm() {
   async function createNewCollection() {
     openModal("NEW_NFT_COLLECTION", {
       config: watchFormFields,
+      sender: walletAddress,
     });
   }
 

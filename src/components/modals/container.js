@@ -5,7 +5,7 @@ import { useModal } from "./context";
 import PastReferendumModal from "./past-ref-modal";
 import ReferendumQuizModal from "./referendum-quiz";
 import ReferendumVoteModal from "./referendum-vote";
-import CreateNFTCollectionModal from "./create-collection";
+import CreateNFTCollectionModal from "./create-collection-modal";
 
 function renderModalContent(view, props = {}) {
   switch (view) {

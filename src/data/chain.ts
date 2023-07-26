@@ -13,14 +13,14 @@ const CHAIN = {
 
 export const WS_ENDPOINTS = {
   [CHAIN.KUSAMA]: [
-    "wss://kusama-rpc.polkadot.io",
     "wss://kusama.api.onfinality.io/public-ws",
     "wss://kusama-rpc.dwellir.com",
+    "wss://kusama-rpc.polkadot.io",
   ],
   [CHAIN.KUSAMA_ASSET_HUB]: [
+    "wss://rpc-asset-hub-kusama.luckyfriday.io",
     "wss://kusama-asset-hub-rpc.polkadot.io",
     "wss://statemine.api.onfinality.io/public-ws",
-    "wss://rpc-asset-hub-kusama.luckyfriday.io",
   ],
   [CHAIN.ENCOINTER]: [
     "wss://kusama.api.enointer.org",
@@ -68,8 +68,24 @@ export const sendAndFinalize = async (
   return new Promise(async (resolve, reject) => {
     await api.isReady;
 
-    const txs = Array.isArray(tx) ? tx : [tx];
-    const call = Array.isArray(tx) ? api.tx.utility.batchAll(txs) : tx;
+    // if someone passes a hex encoded tx we need to decode it
+    const maybeHexTxToSubmittable = (tx) => {
+      if (typeof tx === "string") {
+        return api.tx(tx);
+      }
+      return tx;
+    };
+
+    let call;
+
+    if (Array.isArray(tx)) {
+      const txs = tx.map(maybeHexTxToSubmittable);
+      call = api.tx.utility.batchAll(txs);
+    } else {
+      call = maybeHexTxToSubmittable(tx);
+    }
+
+    console.log("call", call);
 
     try {
       const unsub = await call.signAndSend(
