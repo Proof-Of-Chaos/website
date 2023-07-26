@@ -1,5 +1,6 @@
 import { ApiPromise } from "@polkadot/api";
 import { pinImageAndMetadataForOptions } from "../tools/pinataUtils";
+import crypto from 'crypto';
 
 import {
   VoteConviction,
@@ -204,6 +205,26 @@ const getTxsKusamaXCM = async (
   return txsKusama;
 };
 
+const bigIntMod = (hash: string, mod: number): number => {
+  let result = 0;
+  
+  for (let i = 0; i < hash.length; i++) {
+    result = (result * 16 + parseInt(hash[i], 16)) % mod;
+  }
+  
+  return result;
+}
+
+const generateNFTId = (senderAddress: string, referendum: string, timestamp: number, index: number): number => {
+  // Combine the inputs into a single string
+  const inputString = `${senderAddress}-${referendum}-${timestamp.toString()}-${index.toString()}`;
+  // Generate a SHA256 hash of the input string
+  const hash = crypto.createHash('sha256').update(inputString).digest('hex');
+  // Convert the hash to a 32-bit unsigned integer
+  const id = bigIntMod(hash, Math.pow(2, 32));
+  return id;
+}
+
 export const getTxsForVotes = async (
   apiKusamaAssetHub: ApiPromise,
   config: RewardConfiguration,
@@ -225,13 +246,10 @@ export const getTxsForVotes = async (
       (option) => option.rarity == chosenOption.rarity
     );
 
-    const nftId = bnToBn(
-      `${config.refIndex}${rarityIndex}${Math.floor(Math.random() * 100000)}`
-    );
-
+    const nftId = generateNFTId(vote.address.toString(), referendumIndex, Date.now(), i)
+    
     console.info(
-      `📤  ${vote.address.toString()} will get ${nftId} with rarity ${
-        chosenOption.rarity
+      `📤  ${vote.address.toString()} will get ${nftId} with rarity ${chosenOption.rarity
       } and nftId ${nftId}`
     );
 
@@ -316,14 +334,13 @@ const getAllSetAttributeTxs = (
 
   const randRoyaltyInRange = Math.floor(
     rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
-      chosenOption.minRoyalty
+    chosenOption.minRoyalty
   );
 
-  const imageCid = `ipfs://ipfs/${
-    fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
-      vote.voteType == "Delegating" ? "delegated" : "direct"
+  const imageCid = `ipfs://ipfs/${fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
+    vote.voteType == "Delegating" ? "delegated" : "direct"
     ]
-  }`;
+    }`;
 
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
