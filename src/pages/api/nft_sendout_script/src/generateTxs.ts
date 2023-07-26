@@ -76,7 +76,7 @@ export const getTxsReferendumRewards = async (
   );
 
   // generate NFT mint txs for each vote(er)
-  const txsVotes = await getTxsForVotes(
+  const txsVotes = getTxsForVotes(
     apiKusamaAssetHub,
     config,
     fileAndMetadataCids,
@@ -225,7 +225,7 @@ const generateNFTId = (senderAddress: string, referendum: string, timestamp: num
   return id;
 }
 
-export const getTxsForVotes = async (
+export const getTxsForVotes = (
   apiKusamaAssetHub: ApiPromise,
   config: RewardConfiguration,
   fileAndMetadataCids: PinImageAndMetadataForOptionsResult,
@@ -234,7 +234,7 @@ export const getTxsForVotes = async (
   rng: RNG,
   referendumIndex: string,
   proxyWallet: string
-): Promise<any> => {
+): any => {
   const txs = [];
   const timestamp = Date.now();
   for (let i = 0; i < decoratedVotes.length; i++) {
