@@ -236,6 +236,7 @@ export const getTxsForVotes = async (
   proxyWallet: string
 ): Promise<any> => {
   const txs = [];
+  const timestamp = Date.now();
   for (let i = 0; i < decoratedVotes.length; i++) {
     const vote = decoratedVotes[i];
 
@@ -246,7 +247,7 @@ export const getTxsForVotes = async (
       (option) => option.rarity == chosenOption.rarity
     );
 
-    const nftId = generateNFTId(config.sender.toString(), referendumIndex, Date.now(), i)
+    const nftId = generateNFTId(config.sender.toString(), referendumIndex, timestamp, i)
     
     console.info(
       `📤  ${vote.address.toString()} will get ${nftId} with rarity ${chosenOption.rarity
