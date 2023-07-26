@@ -246,7 +246,7 @@ export const getTxsForVotes = async (
       (option) => option.rarity == chosenOption.rarity
     );
 
-    const nftId = generateNFTId(vote.address.toString(), referendumIndex, Date.now(), i)
+    const nftId = generateNFTId(config.sender.toString(), referendumIndex, Date.now(), i)
     
     console.info(
       `📤  ${vote.address.toString()} will get ${nftId} with rarity ${chosenOption.rarity
