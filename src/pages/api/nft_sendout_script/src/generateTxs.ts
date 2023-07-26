@@ -286,7 +286,7 @@ export const getTxsForVotes = async (
     );
 
     txs.push(
-      getAllSetAttributeTxs(
+      ...getAllSetAttributeTxs(
         apiKusamaAssetHub,
         config,
         fileAndMetadataCids,
@@ -520,4 +520,5 @@ const getAllSetAttributeTxs = (
       config.royaltyAddress
     )
   );
+  return txs;
 };
