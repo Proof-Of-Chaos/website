@@ -358,5 +358,14 @@ export interface RewardOption {
 export interface SendAndFinalizeResult {
   status: string;
   message: string;
-  resultHex: string;
+  txHash?: string;
+  events?: any[];
+  toast?: ToastType;
 }
+
+export type ToastType =
+  | undefined
+  | {
+      title: string;
+      messages: string[];
+    };

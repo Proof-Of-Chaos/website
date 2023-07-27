@@ -7,7 +7,10 @@ import { defaultReferendumRewardsConfig } from "../../../data/default-referendum
 import useAppStore from "../../../zustand";
 
 import style from "./rewards-creation-form.module.scss";
-import { GenerateRewardsResult } from "../../../pages/api/nft_sendout_script/types";
+import {
+  CollectionConfiguration,
+  GenerateRewardsResult,
+} from "../../../pages/api/nft_sendout_script/types";
 import {
   getApi,
   getApiKusamaAssetHub,
@@ -42,6 +45,7 @@ export function RewardsCreationForm() {
 
   const {
     watch,
+    setValue,
     formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
 
@@ -168,10 +172,16 @@ export function RewardsCreationForm() {
     generatePreimage(formData);
   }
 
+  // function is passed to the modal in order to change the state of the form fields
+  function setCollectionConfig(collectionConfig: CollectionConfiguration) {
+    setValue("newCollectionConfig", collectionConfig);
+  }
+
   async function createNewCollection() {
     openModal("NEW_NFT_COLLECTION", {
       config: watchFormFields,
       sender: walletAddress,
+      setCollectionConfig,
     });
   }
 
@@ -290,7 +300,7 @@ export function RewardsCreationForm() {
                   className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
                   placeholder="The id of your existing collection"
                   type="text"
-                  {...formMethods.register("collectionId", {
+                  {...formMethods.register("newCollectionConfig.collectionId", {
                     validate: {},
                   })}
                 />

@@ -9,10 +9,18 @@ import { getWalletBySource } from "@talismn/connect-wallets";
 import { watch } from "fs";
 import { FormProvider, useForm } from "react-hook-form";
 import { useState } from "react";
-import { getApiKusamaAssetHub, sendAndFinalize } from "../../data/chain";
+import {
+  defaultToastMessages,
+  getApiKusamaAssetHub,
+  sendAndFinalize,
+} from "../../data/chain";
 import { SendAndFinalizeResult } from "../../pages/api/nft_sendout_script/types";
 
-export default function CreateNFTCollectionModal({ config, sender }) {
+export default function CreateNFTCollectionModal({
+  config,
+  sender,
+  setCollectionConfig,
+}) {
   const { openModal, closeModal } = useModal();
 
   const connectedAccountIndex = useAppStore(
@@ -36,7 +44,6 @@ export default function CreateNFTCollectionModal({ config, sender }) {
     formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
 
-  const [data, setData] = useState(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({
     message: "",
@@ -76,18 +83,27 @@ export default function CreateNFTCollectionModal({ config, sender }) {
 
     console.log("result from api ", tx);
 
-    const signResults = await signTx(tx);
+    const { status, events } = await signTx(tx);
 
-    console.log("signResults", signResults);
+    const newCollectionIdEvent = events.find(
+      (e) => e.event.section === "nfts" && e.event.method === "Created"
+    );
 
-    if (signResults.status === "success") {
-      console.log("success");
-      toast.success("Success! Your NFT collection is created.");
+    const newCollectionId = newCollectionIdEvent?.event?.data[0];
+
+    if (status === "success") {
+      console.log("success", newCollectionId.toPrimitive());
       closeModal();
     }
 
     setIsLoading(false);
-    setData(tx);
+
+    setCollectionConfig({
+      collectionId: newCollectionId.toPrimitive(),
+      collectionName: data.collectionName,
+      collectionDescription: data.collectionDescription,
+      file: data.imageFile,
+    });
   };
 
   async function signTx(tx): Promise<SendAndFinalizeResult> {
@@ -110,7 +126,11 @@ export default function CreateNFTCollectionModal({ config, sender }) {
       apiKusamaAssetHub,
       tx,
       signer,
-      walletAddress
+      walletAddress,
+      {
+        title: "Creating NFT collection",
+        messages: defaultToastMessages,
+      }
     );
 
     return signatureRes;
@@ -138,6 +158,7 @@ export default function CreateNFTCollectionModal({ config, sender }) {
               {...register("collectionName", {
                 validate: {},
               })}
+              required
             />
 
             <label
@@ -153,6 +174,7 @@ export default function CreateNFTCollectionModal({ config, sender }) {
               {...register("collectionDescription", {
                 validate: {},
               })}
+              required
             />
 
             <label
@@ -170,6 +192,14 @@ export default function CreateNFTCollectionModal({ config, sender }) {
             />
             <Button type="submit" variant="primary" className="w-full mt-4">
               Create Collection
+            </Button>
+            <Button
+              variant="calm"
+              type="button"
+              onClick={closeModal}
+              className="w-full mt-2"
+            >
+              Cancel
             </Button>
             {error.message && (
               <div className="text-red-500">{error.message}</div>

@@ -4,7 +4,11 @@ import { BN } from "@polkadot/util";
 import { Block } from "@polkadot/types/interfaces";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
-import { SendAndFinalizeResult } from "../pages/api/nft_sendout_script/types";
+import {
+  SendAndFinalizeResult,
+  ToastType,
+} from "../pages/api/nft_sendout_script/types";
+import { toast as hotToast, Toast, ToastOptions } from "react-hot-toast";
 
 const CHAIN = {
   KUSAMA: "kusama",
@@ -14,14 +18,14 @@ const CHAIN = {
 
 export const WS_ENDPOINTS = {
   [CHAIN.KUSAMA]: [
-    "wss://kusama.api.onfinality.io/public-ws",
-    "wss://kusama-rpc.dwellir.com",
     "wss://kusama-rpc.polkadot.io",
+    "wss://kusama-rpc.dwellir.com",
+    "wss://kusama.api.onfinality.io/public-ws",
   ],
   [CHAIN.KUSAMA_ASSET_HUB]: [
-    "wss://rpc-asset-hub-kusama.luckyfriday.io",
     "wss://kusama-asset-hub-rpc.polkadot.io",
     "wss://statemine.api.onfinality.io/public-ws",
+    "wss://rpc-asset-hub-kusama.luckyfriday.io",
   ],
   [CHAIN.ENCOINTER]: [
     "wss://kusama.api.enointer.org",
@@ -52,6 +56,13 @@ let healthCheckInProgress = {
   [CHAIN.ENCOINTER]: false,
 };
 
+export const defaultToastMessages = [
+  `(1/3) Awaiting your signature`,
+  `(2/3) Waiting for transaction to enter block`,
+  `(3/3) Waiting for block finalization`,
+  `Transaction successful`,
+];
+
 /**
  * @see https://polkadot.js.org/docs/api/cookbook/tx
  * @param {*} api
@@ -64,8 +75,21 @@ export const sendAndFinalize = async (
   api,
   tx: SubmittableExtrinsic<any>[] | SubmittableExtrinsic<any>,
   signer,
-  address
+  address,
+  toast: ToastType = {
+    title: "Processing Transaction",
+    messages: defaultToastMessages,
+  }
 ): Promise<SendAndFinalizeResult> => {
+  let toastId;
+  if (toast) {
+    toastId = hotToast.loading(toast.messages[0], {
+      // @ts-ignore
+      title: toast.title,
+      className: "toaster",
+    });
+  }
+
   return new Promise(async (resolve, reject) => {
     await api.isReady;
 
@@ -85,55 +109,76 @@ export const sendAndFinalize = async (
     } else {
       call = maybeHexTxToSubmittable(tx);
     }
-
-    console.log("call", call);
-
-    try {
-      const unsub = await call.signAndSend(
-        address,
-        { signer: signer },
-        (result) => {
-          const { status, dispatchError, events = [], txHash } = result;
-          console.log("result", result);
-          if (status.isInBlock) {
+    const unsub = await call
+      .signAndSend(address, { signer: signer }, (result) => {
+        const { status, dispatchError, events = [], txHash } = result;
+        console.log("result", result);
+        if (status.isReady) {
+          if (toastId) {
+            hotToast.loading(toast.messages[1], {
+              id: toastId,
+            });
+          }
+        } else if (status.isInBlock) {
+          if (toastId) {
+            hotToast.loading(toast.messages[2], {
+              id: toastId,
+            });
+          } else {
             console.log("transaction in block waiting for finalization");
-          } else if (status.isFinalized) {
+          }
+        } else if (status.isFinalized) {
+          if (toastId) {
+            hotToast.success(toast.messages[3], {
+              id: toastId,
+              duration: 4000,
+            });
+          } else {
             console.log(
               `Transaction included at blockHash ${status.asFinalized}`
             );
-            events.forEach(({ phase, event: { data, method, section } }) => {
-              console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
-            });
-
-            // Loop through Vec<EventRecord> to display all events
-            if (dispatchError) {
-              if (dispatchError.isModule) {
-                // for module errors, we have the section indexed, lookup
-                const decoded = api.registry.findMetaError(
-                  dispatchError.asModule
-                );
-                const { docs, name, section } = decoded;
-
-                reject(docs.join(" "));
-              } else {
-                // Other, CannotLookup, BadOrigin, no extra info
-                reject({ status: "error", message: dispatchError.toString() });
-              }
-            } else {
-              resolve({
-                status: "success",
-                message: `success signAndSend ${tx.toString()}`,
-                result: status,
-              });
-            }
-            unsub();
           }
+          // events.forEach(({ phase, event: { data, method, section } }) => {
+          //   console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
+          // });
+
+          if (dispatchError) {
+            if (dispatchError.isModule) {
+              // for module errors, we have the section indexed, lookup
+              const decoded = api.registry.findMetaError(
+                dispatchError.asModule
+              );
+              const { docs, name, section } = decoded;
+
+              console.log("here we are");
+
+              reject(docs.join(" "));
+            } else {
+              // Other, CannotLookup, BadOrigin, no extra info
+              reject({ status: "error", message: dispatchError.toString() });
+            }
+          } else {
+            console.log("here we are 2");
+            resolve({
+              status: "success",
+              message: `success signAndSend ${tx.toString()}`,
+              events,
+              txHash,
+            });
+          }
+          unsub();
         }
-      );
-    } catch (err) {
-      console.error(err);
-      reject({ status: "error", message: "signAndSend cancelled" });
-    }
+      })
+      .catch((error) => {
+        console.log("error", toastId, error);
+        if (toastId) {
+          hotToast.dismiss(toastId);
+        } else {
+          console.error(error);
+        }
+
+        reject({ status: "error", message: "signAndSend cancelled" });
+      });
   });
 };
 
