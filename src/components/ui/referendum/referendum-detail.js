@@ -5,7 +5,7 @@ import { faClock, faCube, faChartLine, faSliders } from "@fortawesome/free-solid
 import { ChevronDownIcon, ChevronUpIcon} from '@heroicons/react/20/solid'
 import ReactMarkdown from 'react-markdown'
 import Tippy from "@tippyjs/react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import classNames from "classnames";
 
 import Button from "../button"

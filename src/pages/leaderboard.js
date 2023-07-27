@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import Leaderboard, { DragonLeaderboard } from '../components/nft/leaderboard'
 import Layout from '../layouts/layout'
 import { Tab } from "@headlessui/react";

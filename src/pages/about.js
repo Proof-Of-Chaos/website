@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import FAQ from '../components/ui/faq'
 import Team from '../components/ui/team'
 import Layout from '../layouts/layout'

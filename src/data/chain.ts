@@ -4,6 +4,7 @@ import { BN } from "@polkadot/util";
 import { Block } from "@polkadot/types/interfaces";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
+import { SendAndFinalizeResult } from "../pages/api/nft_sendout_script/types";
 
 const CHAIN = {
   KUSAMA: "kusama",
@@ -64,7 +65,7 @@ export const sendAndFinalize = async (
   tx: SubmittableExtrinsic<any>[] | SubmittableExtrinsic<any>,
   signer,
   address
-) => {
+): Promise<SendAndFinalizeResult> => {
   return new Promise(async (resolve, reject) => {
     await api.isReady;
 
@@ -91,13 +92,18 @@ export const sendAndFinalize = async (
       const unsub = await call.signAndSend(
         address,
         { signer: signer },
-        ({ status, dispatchError }) => {
+        (result) => {
+          const { status, dispatchError, events = [], txHash } = result;
+          console.log("result", result);
           if (status.isInBlock) {
             console.log("transaction in block waiting for finalization");
           } else if (status.isFinalized) {
             console.log(
               `Transaction included at blockHash ${status.asFinalized}`
             );
+            events.forEach(({ phase, event: { data, method, section } }) => {
+              console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
+            });
 
             // Loop through Vec<EventRecord> to display all events
             if (dispatchError) {
@@ -111,10 +117,14 @@ export const sendAndFinalize = async (
                 reject(docs.join(" "));
               } else {
                 // Other, CannotLookup, BadOrigin, no extra info
-                reject(dispatchError.toString());
+                reject({ status: "error", message: dispatchError.toString() });
               }
             } else {
-              resolve(`success signAndSend ${tx.toString()}`);
+              resolve({
+                status: "success",
+                message: `success signAndSend ${tx.toString()}`,
+                result: status,
+              });
             }
             unsub();
           }
@@ -122,7 +132,7 @@ export const sendAndFinalize = async (
       );
     } catch (err) {
       console.error(err);
-      reject("signAndSend cancelled");
+      reject({ status: "error", message: "signAndSend cancelled" });
     }
   });
 };

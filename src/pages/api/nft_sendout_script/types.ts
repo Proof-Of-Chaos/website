@@ -23,17 +23,17 @@ export type GenerateRewardsResult = {
   kusamaAssetHubTxs: string[] | undefined;
   distribution: RarityDistribution | undefined;
   fees:
-  | {
-    kusama: string;
-    nfts: string;
-  }
-  | undefined;
+    | {
+        kusama: string;
+        nfts: string;
+      }
+    | undefined;
   txsCount:
-  | {
-    kusama: number;
-    nfts: number;
-  }
-  | undefined;
+    | {
+        kusama: number;
+        nfts: number;
+      }
+    | undefined;
 };
 
 export type CreateCollectionResult = {
@@ -214,12 +214,12 @@ export interface RarityDistribution {
 
 interface Attribute {
   name:
-  | "rarity"
-  | "totalSupply"
-  | "artist"
-  | "creativeDirector"
-  | "name"
-  | "typeOfVote";
+    | "rarity"
+    | "totalSupply"
+    | "artist"
+    | "creativeDirector"
+    | "name"
+    | "typeOfVote";
   value: string | Uint8Array | Bytes;
 }
 
@@ -259,8 +259,8 @@ export type PinImageAndMetadataForOptionsResult = {
 };
 
 export type PinImageAndMetadataForCollectionResult = {
-  imageIpfsCid: string,
-  metadataIpfsCid: string
+  imageIpfsCid: string;
+  metadataIpfsCid: string;
 };
 
 export type NftAttributesResult = {
@@ -314,7 +314,7 @@ export interface RewardConfiguration {
   blockCutOff: number | null;
   directOnly: boolean;
   newCollection: boolean;
-  newCollectionConfig: CollectionConfiguration
+  newCollectionConfig: CollectionConfiguration;
   collectionId: number;
   babyBonus: number;
   toddlerBonus: number;
@@ -353,4 +353,10 @@ export interface RewardOption {
   metadataCidDirect?: string;
   metadataCidDelegated?: string;
   file?: any;
+}
+
+export interface SendAndFinalizeResult {
+  status: string;
+  message: string;
+  resultHex: string;
 }

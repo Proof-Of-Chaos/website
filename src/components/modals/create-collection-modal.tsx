@@ -10,6 +10,7 @@ import { watch } from "fs";
 import { FormProvider, useForm } from "react-hook-form";
 import { useState } from "react";
 import { getApiKusamaAssetHub, sendAndFinalize } from "../../data/chain";
+import { SendAndFinalizeResult } from "../../pages/api/nft_sendout_script/types";
 
 export default function CreateNFTCollectionModal({ config, sender }) {
   const { openModal, closeModal } = useModal();
@@ -62,6 +63,7 @@ export default function CreateNFTCollectionModal({ config, sender }) {
 
     console.log("hello");
 
+    //
     const res = await fetch("/api/create-new-collection/", {
       method: "POST",
       body: formData,
@@ -78,11 +80,17 @@ export default function CreateNFTCollectionModal({ config, sender }) {
 
     console.log("signResults", signResults);
 
+    if (signResults.status === "success") {
+      console.log("success");
+      toast.success("Success! Your NFT collection is created.");
+      closeModal();
+    }
+
     setIsLoading(false);
     setData(tx);
   };
 
-  async function signTx(tx) {
+  async function signTx(tx): Promise<SendAndFinalizeResult> {
     const walletAddress = connectedAccount?.address;
     const wallet = getWalletBySource(connectedAccount?.source);
     await wallet.enable("Proof of Chaos");
