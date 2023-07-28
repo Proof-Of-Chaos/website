@@ -24,12 +24,14 @@ import type {
   FetchReputableVotersParams,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
-import { getApiAt, getDecimal } from "../../../../data/chain";
+import { getApiAt, getDecimal, getNetworkPrefix, initAccount } from "../../../../data/chain";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils";
 import { Logger } from "log4js";
 import { ApiPromise } from "@polkadot/api";
 import { GraphQLClient } from "graphql-request";
+import { encodeAddress } from "@polkadot/util-crypto";
+import { generateNFTId } from "./generateTxs";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -551,18 +553,20 @@ export const createConfigNFT = async (
   referendumIndex: string,
 ) => {
   const txs = [];
-  let ouraddress = "1234";
 
-  const nftId = Date.now()
+  const account = initAccount();
 
-  // txs.push(
-  //   apiKusamaAssetHub.tx.nfts.mint(
-  //     config.collectionId,
-  //     nftId,
-  //     ouraddress,
-  //     null
-  //   )
-  // )
+  const nftId = generateNFTId(Date.now());
+
+  const kusamaNetworkPrefix = await getNetworkPrefix("kusama");
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.mint(
+      config.collectionId,
+      nftId,
+      encodeAddress(account.address, kusamaNetworkPrefix),
+      null
+    )
+  )
 
   //add all attributes for all config variables other than the newCollectionConfig and options
   //filter out all attributes other tan the newCollectionConfig and options

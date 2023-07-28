@@ -15,7 +15,6 @@ import { BN, bnToBn } from "@polkadot/util";
 import PinataClient from "@pinata/sdk";
 import { Logger } from "log4js";
 import { time } from "console";
-import { createConfigNFT } from "./_helpersVote";
 
 export const getTxsReferendumRewards = async (
   apiKusamaAssetHub: ApiPromise,
@@ -76,10 +75,6 @@ export const getTxsReferendumRewards = async (
     `🚨🚨🚨  TESTING, filtered votes to only send to ${todoTestOnlyDecoratedVotes.length} votes for referendum ${referendumIndex}`
   );
 
-  //generate config NFT
-
-  const txsConfig = await createConfigNFT(apiKusamaAssetHub, config, referendumIndex.toString());
-
   // generate NFT mint txs for each vote(er)
   const txsVotes = getTxsForVotes(
     apiKusamaAssetHub,
@@ -93,7 +88,7 @@ export const getTxsReferendumRewards = async (
     proxyWallet
   );
 
-  txsKusamaAssetHub = [...txsKusamaAssetHub, ...txsVotes, ...txsConfig];
+  txsKusamaAssetHub = [...txsKusamaAssetHub, ...txsVotes];
 
   // txsKusamaAssetHub = [
   //   apiKusamaAssetHub.tx.system.remark(
@@ -220,9 +215,27 @@ const bigIntMod = (hash: string, mod: number): number => {
   return result;
 }
 
-const generateNFTId = (senderAddress: string, referendum: string, timestamp: number, index: number): number => {
-  // Combine the inputs into a single string
-  const inputString = `${senderAddress}-${referendum}-${timestamp.toString()}-${index.toString()}`;
+export const generateNFTId = (timestamp: number, senderAddress?: string, referendum?: string, index?: number): number => {
+  // Create an array to store the input components
+  const inputComponents = [];
+
+  // Push non-null arguments to the inputComponents array
+  if (senderAddress !== undefined) {
+    inputComponents.push(senderAddress);
+  }
+  if (referendum !== undefined) {
+    inputComponents.push(referendum);
+  }
+
+  // Timestamp is always required, no need to check for null
+  inputComponents.push(timestamp.toString());
+
+  if (index !== undefined) {
+    inputComponents.push(index.toString());
+  }
+
+  // Combine the input components into a single string
+  const inputString = inputComponents.join('-');
   // Generate a SHA256 hash of the input string
   const hash = crypto.createHash('sha256').update(inputString).digest('hex');
   // Convert the hash to a 32-bit unsigned integer
@@ -252,7 +265,7 @@ export const getTxsForVotes = (
       (option) => option.rarity == chosenOption.rarity
     );
 
-    const nftId = generateNFTId(config.sender.toString(), referendumIndex, timestamp, i)
+    const nftId = generateNFTId(timestamp, config.sender.toString(), referendumIndex, i)
     
     console.info(
       `📤  ${vote.address.toString()} will get ${nftId} with rarity ${chosenOption.rarity

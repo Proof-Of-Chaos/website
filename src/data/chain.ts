@@ -184,7 +184,7 @@ export const sendAndFinalize = async (
 
 async function sleep(ms) {
   return new Promise((resolve) => {
-    setTimeout(() => resolve(() => {}), ms);
+    setTimeout(() => resolve(() => { }), ms);
   });
 }
 
@@ -353,6 +353,25 @@ export const getChainDecimals = async (network: string) => {
   }
   return new BN(api.registry.chainDecimals);
 };
+
+export const getNetworkPrefix = async (network: string) => {
+  let api;
+  switch (network) {
+    case "kusama":
+      api = await getApiKusama();
+      break;
+    case "encointer":
+      api = await getApiEncointer();
+      break;
+    case "statemine":
+      api = await getApiKusamaAssetHub();
+      break;
+    default:
+      break;
+  }
+  const { ss58Format } = await api.rpc.system.properties();
+  return Number(ss58Format);
+}
 
 // Returns the denomination of the chain. Used for formatting planck denomianted amounts
 export const getDenom = async (): Promise<number> => {
