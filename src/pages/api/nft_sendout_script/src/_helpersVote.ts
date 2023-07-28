@@ -545,38 +545,69 @@ export async function useAccountLocksImpl(
 // TODO ------ are these still needed??
 
 // Function to create a config NFT
-const createConfigNFT = async (
-  apiKusamaAssetHub,
-  config,
-  metadataCidSettings,
-  referendumIndex,
-  proxyWallet
+export const createConfigNFT = async (
+  apiKusamaAssetHub: ApiPromise,
+  config: RewardConfiguration,
+  referendumIndex: string,
 ) => {
   const txs = [];
+  let ouraddress = "1234";
 
-  txs.push(
-    apiKusamaAssetHub.tx.uniques.mint(
-      config.settingsCollectionSymbol,
-      referendumIndex,
-      proxyWallet
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.uniques.setAttribute(
-      config.settingsCollectionSymbol,
-      referendumIndex,
-      "seed",
-      config.seed
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.uniques.setMetadata(
-      config.settingsCollectionSymbol,
-      referendumIndex,
-      metadataCidSettings,
-      true
-    )
-  );
+  const nftId = Date.now()
+
+  // txs.push(
+  //   apiKusamaAssetHub.tx.nfts.mint(
+  //     config.collectionId,
+  //     nftId,
+  //     ouraddress,
+  //     null
+  //   )
+  // )
+
+  //add all attributes for all config variables other than the newCollectionConfig and options
+  //filter out all attributes other tan the newCollectionConfig and options
+  const { newCollectionConfig, options, ...configAttributes } = config;
+  for (const attribute in configAttributes) {
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.settingsCollectionId,
+        referendumIndex,
+        "CollectionOwner",
+        attribute,
+        config[attribute]
+      )
+    );
+  }
+
+  //add attributes for all the new collection config
+  for (const attribute in newCollectionConfig) {
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.settingsCollectionId,
+        referendumIndex,
+        "CollectionOwner",
+        attribute,
+        newCollectionConfig[attribute]
+      )
+    );
+  }
+
+  let optionIndex = 0;
+  //add attributes for all the reward options
+  for (const option of options) {
+    for (const attribute in option) {
+      txs.push(
+        apiKusamaAssetHub.tx.nfts.setAttribute(
+          config.settingsCollectionId,
+          referendumIndex,
+          "CollectionOwner",
+          "option" + optionIndex + attribute,
+          option[attribute]
+        )
+      );
+    }
+    optionIndex++;
+  }
 
   return txs;
 };

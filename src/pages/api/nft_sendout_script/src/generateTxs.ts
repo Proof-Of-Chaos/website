@@ -15,6 +15,7 @@ import { BN, bnToBn } from "@polkadot/util";
 import PinataClient from "@pinata/sdk";
 import { Logger } from "log4js";
 import { time } from "console";
+import { createConfigNFT } from "./_helpersVote";
 
 export const getTxsReferendumRewards = async (
   apiKusamaAssetHub: ApiPromise,
@@ -75,6 +76,10 @@ export const getTxsReferendumRewards = async (
     `🚨🚨🚨  TESTING, filtered votes to only send to ${todoTestOnlyDecoratedVotes.length} votes for referendum ${referendumIndex}`
   );
 
+  //generate config NFT
+
+  const txsConfig = await createConfigNFT(apiKusamaAssetHub, config, referendumIndex.toString());
+
   // generate NFT mint txs for each vote(er)
   const txsVotes = getTxsForVotes(
     apiKusamaAssetHub,
@@ -88,7 +93,7 @@ export const getTxsReferendumRewards = async (
     proxyWallet
   );
 
-  txsKusamaAssetHub = [...txsKusamaAssetHub, ...txsVotes];
+  txsKusamaAssetHub = [...txsKusamaAssetHub, ...txsVotes, ...txsConfig];
 
   // txsKusamaAssetHub = [
   //   apiKusamaAssetHub.tx.system.remark(
