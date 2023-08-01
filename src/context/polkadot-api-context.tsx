@@ -4,7 +4,7 @@ import { ApiPromise } from "@polkadot/api";
 
 export const PolkadotApiContext = createContext({
   apiKusama: null,
-  getApiKusamaAssetHub: null,
+  apiKusamaAssetHub: null,
 });
 
 const PolkadotApiProvider = (props) => {

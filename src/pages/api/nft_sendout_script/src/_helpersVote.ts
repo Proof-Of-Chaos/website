@@ -1,10 +1,13 @@
 import seedrandom from "seedrandom";
 import type { Option } from "@polkadot/types";
-import type {
-  PalletConvictionVotingVoteCasting,
-  PalletConvictionVotingVoteVoting,
-  PalletReferendaReferendumInfoConvictionVotingTally
-} from "@polkadot/types/lookup";
+
+//TODO
+// import type {
+//   PalletConvictionVotingVoteCasting,
+//   PalletConvictionVotingVoteVoting,
+//   PalletReferendaReferendumInfoConvictionVotingTally,
+// } from "@polkadot/types";
+
 import { BN, bnToBn } from "@polkadot/util";
 import type {
   Lock,
@@ -24,12 +27,19 @@ import type {
   FetchReputableVotersParams,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
-import { getApiAt, getDecimal } from "../../../../data/chain";
+import {
+  getApiAt,
+  getDecimal,
+  getNetworkPrefix,
+  initAccount,
+} from "../../../../data/chain";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils";
 import { Logger } from "log4js";
 import { ApiPromise } from "@polkadot/api";
 import { GraphQLClient } from "graphql-request";
+import { encodeAddress } from "@polkadot/util-crypto";
+import { generateNFTId } from "./generateTxs";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -47,7 +57,9 @@ const getRefParams = (
   votes?: [
     classId: BN,
     refIds: BN[],
-    casting: PalletConvictionVotingVoteCasting
+    //TODO this has to be fixed
+    //casting: PalletConvictionVotingVoteCasting
+    casting: any
   ][]
 ): [BN[]] | undefined => {
   if (votes && votes.length) {
@@ -385,12 +397,12 @@ export const retrieveAccountLocks = async (
         const lockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-            userVote.endBlock
-              .sub(endBlockBN)
-              .muln(10)
-              .div(sevenDaysBlocks)
-              .toNumber() / 10
-          );
+              userVote.endBlock
+                .sub(endBlockBN)
+                .muln(10)
+                .div(sevenDaysBlocks)
+                .toNumber() / 10
+            );
         const matchingPeriod = LOCKPERIODS.reduce(
           (acc, curr, index) => (lockPeriods >= curr ? index : acc),
           0
@@ -401,8 +413,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-          BN.max(max, current)
-        )
+            BN.max(max, current)
+          )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -418,11 +430,14 @@ const getLocks = (
   votes: [
     classId: BN,
     refIds: BN[],
-    casting: PalletConvictionVotingVoteCasting
+    // TODO
+    // casting: PalletConvictionVotingVoteCasting
+    casting: any
   ][],
-  referenda: [BN, PalletReferendaReferendumInfoConvictionVotingTally][]
+  // referenda: [BN, PalletReferendaReferendumInfoConvictionVotingTally][]
+  referenda: [BN, any][]
 ): Lock[] => {
-  const lockPeriod = api.consts[palletVote].voteLockingPeriod as BN;
+  const lockPeriod = api.consts[palletVote].voteLockingPeriod as unknown as BN;
   const locks: Lock[] = [];
 
   votes.forEach(([classId, , casting]) => {
@@ -491,6 +506,7 @@ export async function useAccountLocksImpl(
   palletVote: PalletVote,
   accountId: string
 ): Promise<Lock[]> {
+  //@ts-ignore
   const locks: [BN, BN][] = await api.query[palletVote]?.classLocksFor(
     accountId
   );
@@ -500,10 +516,14 @@ export async function useAccountLocksImpl(
     lockClassesFormatted
   );
   let [params]: [[string, BN][]] = voteParams;
-  const votes: PalletConvictionVotingVoteVoting[] =
-    await api.query.convictionVoting?.votingFor.multi(params);
+  // TODO
+  // const votes: PalletConvictionVotingVoteVoting[] =
+  const votes: any[] = await api.query.convictionVoting?.votingFor.multi(
+    params
+  );
   const votesFormatted = votes
-    .map((v, index): null | [BN, BN[], PalletConvictionVotingVoteCasting] => {
+    .map((v, index): null | [BN, BN[], any] => {
+      // .map((v, index): null | [BN, BN[], PalletConvictionVotingVoteCasting] => {
       if (!v.isCasting) {
         return null;
       }
@@ -512,7 +532,9 @@ export async function useAccountLocksImpl(
 
       return [params[index][1], casting.votes.map(([refId]) => refId), casting];
     })
-    .filter((v): v is [BN, BN[], PalletConvictionVotingVoteCasting] => !!v);
+    //TODO
+    // .filter((v): v is [BN, BN[], PalletConvictionVotingVoteCasting] => !!v);
+    .filter((v): v is [BN, BN[], any] => !!v);
 
   if (votesFormatted.length === 0) {
     return [];
@@ -523,7 +545,9 @@ export async function useAccountLocksImpl(
   }
 
   const [paramsref]: [BN[]] = refParams;
-  const optTally: Option<PalletReferendaReferendumInfoConvictionVotingTally>[] =
+  //TODO
+  // const optTally: Option<PalletReferendaReferendumInfoConvictionVotingTally>[] =
+  const optTally: Option<any>[] =
     await api.query.referenda?.referendumInfoFor.multi(paramsref);
 
   const referendaFormatted = optTally
@@ -531,11 +555,14 @@ export async function useAccountLocksImpl(
       (
         v,
         index
-      ): null | [BN, PalletReferendaReferendumInfoConvictionVotingTally] =>
-        v.isSome ? [paramsref[index], v.unwrap()] : null
+        // TODO
+        // ): null | [BN, PalletReferendaReferendumInfoConvictionVotingTally] =>
+      ): null | [BN, any] => (v.isSome ? [paramsref[index], v.unwrap()] : null)
     )
     .filter(
-      (v): v is [BN, PalletReferendaReferendumInfoConvictionVotingTally] => !!v
+      // TODO
+      // (v): v is [BN, PalletReferendaReferendumInfoConvictionVotingTally] => !!v
+      (v): v is [BN, any] => !!v
     );
 
   // Combine the referenda outcomes and the votes into locks
@@ -545,38 +572,71 @@ export async function useAccountLocksImpl(
 // TODO ------ are these still needed??
 
 // Function to create a config NFT
-const createConfigNFT = async (
-  apiKusamaAssetHub,
-  config,
-  metadataCidSettings,
-  referendumIndex,
-  proxyWallet
+export const createConfigNFT = async (
+  apiKusamaAssetHub: ApiPromise,
+  config: RewardConfiguration,
+  referendumIndex: string
 ) => {
   const txs = [];
 
+  const account = initAccount();
+
+  const nftId = generateNFTId(Date.now());
+
+  const kusamaNetworkPrefix = await getNetworkPrefix("kusama");
   txs.push(
-    apiKusamaAssetHub.tx.uniques.mint(
-      config.settingsCollectionSymbol,
-      referendumIndex,
-      proxyWallet
+    apiKusamaAssetHub.tx.nfts.mint(
+      config.collectionId,
+      nftId,
+      encodeAddress(account.address, kusamaNetworkPrefix),
+      null
     )
   );
-  txs.push(
-    apiKusamaAssetHub.tx.uniques.setAttribute(
-      config.settingsCollectionSymbol,
-      referendumIndex,
-      "seed",
-      config.seed
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.uniques.setMetadata(
-      config.settingsCollectionSymbol,
-      referendumIndex,
-      metadataCidSettings,
-      true
-    )
-  );
+
+  //add all attributes for all config variables other than the newCollectionConfig and options
+  //filter out all attributes other tan the newCollectionConfig and options
+  const { newCollectionConfig, options, ...configAttributes } = config;
+  for (const attribute in configAttributes) {
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.settingsCollectionId,
+        referendumIndex,
+        "CollectionOwner",
+        attribute,
+        config[attribute]
+      )
+    );
+  }
+
+  //add attributes for all the new collection config
+  for (const attribute in newCollectionConfig) {
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.settingsCollectionId,
+        referendumIndex,
+        "CollectionOwner",
+        attribute,
+        newCollectionConfig[attribute]
+      )
+    );
+  }
+
+  let optionIndex = 0;
+  //add attributes for all the reward options
+  for (const option of options) {
+    for (const attribute in option) {
+      txs.push(
+        apiKusamaAssetHub.tx.nfts.setAttribute(
+          config.settingsCollectionId,
+          referendumIndex,
+          "CollectionOwner",
+          "option" + optionIndex + attribute,
+          option[attribute]
+        )
+      );
+    }
+    optionIndex++;
+  }
 
   return txs;
 };

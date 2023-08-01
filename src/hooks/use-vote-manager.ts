@@ -116,6 +116,7 @@ export function useVoteManager(queryClient = null) {
 
     updateVoteState(refId, vote);
     const toastId = toast.loading(`(1/3) Awaiting your signature`, {
+      //@ts-ignore
       title: `Vote on Referendum ${refId}`,
       className: "toaster",
     });

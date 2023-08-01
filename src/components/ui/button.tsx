@@ -1,3 +1,4 @@
+import React, { PropsWithChildren } from "react";
 import { forwardRef } from "react";
 import cn from "classnames";
 
@@ -41,7 +42,7 @@ const classes = {
   },
 };
 
-const Button = forwardRef(
+const Button = forwardRef<HTMLButtonElement, PropsWithChildren<any>>(
   (
     {
       children,

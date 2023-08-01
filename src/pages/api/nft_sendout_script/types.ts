@@ -315,6 +315,7 @@ export interface RewardConfiguration {
   directOnly: boolean;
   newCollection: boolean;
   newCollectionConfig: CollectionConfiguration;
+  settingsCollectionId: number;
   collectionId: number;
   babyBonus: number;
   toddlerBonus: number;

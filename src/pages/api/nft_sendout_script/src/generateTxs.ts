@@ -215,14 +215,32 @@ const bigIntMod = (hash: string, mod: number): number => {
   return result;
 };
 
-const generateNFTId = (
-  senderAddress: string,
-  referendum: string,
+export const generateNFTId = (
   timestamp: number,
-  index: number
+  senderAddress?: string,
+  referendum?: string,
+  index?: number
 ): number => {
-  // Combine the inputs into a single string
-  const inputString = `${senderAddress}-${referendum}-${timestamp.toString()}-${index.toString()}`;
+  // Create an array to store the input components
+  const inputComponents = [];
+
+  // Push non-null arguments to the inputComponents array
+  if (senderAddress !== undefined) {
+    inputComponents.push(senderAddress);
+  }
+  if (referendum !== undefined) {
+    inputComponents.push(referendum);
+  }
+
+  // Timestamp is always required, no need to check for null
+  inputComponents.push(timestamp.toString());
+
+  if (index !== undefined) {
+    inputComponents.push(index.toString());
+  }
+
+  // Combine the input components into a single string
+  const inputString = inputComponents.join("-");
   // Generate a SHA256 hash of the input string
   const hash = crypto.createHash("sha256").update(inputString).digest("hex");
   // Convert the hash to a 32-bit unsigned integer
@@ -253,9 +271,9 @@ export const getTxsForVotes = (
     );
 
     const nftId = generateNFTId(
+      timestamp,
       config.sender.toString(),
       referendumIndex,
-      timestamp,
       i
     );
 

@@ -37,7 +37,7 @@ const microToKSMFormatted = (microKSM) => {
 };
 
 const KSMFormatted = (KSM) => {
-  return `${parseFloat(KSM / 1000).toFixed(2)} K KSM`;
+  return `${(KSM / 1000).toFixed(2)} K KSM`;
 };
 
 const trimAddress = (address, length = 3) => {

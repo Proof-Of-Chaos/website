@@ -232,7 +232,10 @@ export function RewardsCreationForm() {
             })}
             required
           />
-          <p className="form-helper">Where trading royalties should go to</p>
+          <p className="form-helper">
+            Where trading royalties should go to (Kusama / Asset Hub). Support
+            us by leaving the default Proof of Chaos wallet.
+          </p>
 
           {/* <label
             className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
@@ -323,6 +326,12 @@ export function RewardsCreationForm() {
           <label className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white">
             NFTs
           </label>
+          <p className="form-helper">
+            You can create 3 different NFTs of different rarity by uploading an
+            image and providing metadata. The mapping of voter -&gt; rarity is
+            performed by the POC algorithm taking several metrics + randomness
+            into account.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
             {["common", "rare", "epic"].map((rarity, index) => {
               // const fields = watchFormFields.options[index];
@@ -391,7 +400,7 @@ export function RewardsCreationForm() {
                   <p className="mt-2">
                     {Object.entries(callData.distribution).map(([k, v]) => {
                       return (
-                        <p>
+                        <p key={k}>
                           {k} NFTs to send out: {v}
                         </p>
                       );
