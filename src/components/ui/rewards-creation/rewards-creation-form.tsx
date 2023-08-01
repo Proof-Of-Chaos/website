@@ -92,7 +92,7 @@ export function RewardsCreationForm() {
   }
 
   async function signAndSend() {
-    await wallet.enable("Proof of Chaos");
+    await wallet?.enable("Proof of Chaos");
     const signer = wallet.signer;
 
     const apiKusamaAssetHub = await getApiKusamaAssetHub();

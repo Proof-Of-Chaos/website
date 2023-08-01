@@ -89,7 +89,7 @@ export function useVoteManager(queryClient = null) {
   };
 
   const voteOnRef = async (refId, voteChoice, balances, conviction = 1.0) => {
-    await wallet.enable("Proof of Chaos");
+    await wallet?.enable("Proof of Chaos");
     const api = await getApiKusama();
 
     const voteBalances = {
