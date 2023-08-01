@@ -16,6 +16,10 @@ export const defaultReferendumRewardsConfig: {
   newCollectionName: "",
   newCollectionDescription: "",
   collectionId: 34, //the collection to mint into, if it exists
+  newCollectionConfig: {
+    collectionName: "",
+    collectionDescription: "",
+  },
   babyBonus: 7,
   toddlerBonus: 13,
   adolescentBonus: 16,
