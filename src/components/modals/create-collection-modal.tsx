@@ -110,6 +110,7 @@ export default function CreateNFTCollectionModal({
     const walletAddress = connectedAccount?.address;
     const wallet = getWalletBySource(connectedAccount?.source);
     await wallet?.enable("Proof of Chaos");
+    //
     const signer = wallet?.signer;
 
     if (!walletAddress) {
