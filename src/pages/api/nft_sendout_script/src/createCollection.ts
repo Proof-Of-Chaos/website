@@ -62,7 +62,7 @@ export const getTxsCollectionSetMetadata = async (
   //create collection
   txsKusamaAssetHub.push(
     apiKusamaAssetHub.tx.nfts.setMetadata(
-      config.collectionId,
+      config.newCollectionConfig.id,
       config.newCollectionConfig.metadataCid
     )
   );

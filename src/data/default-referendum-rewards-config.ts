@@ -11,14 +11,10 @@ export const defaultReferendumRewardsConfig: {
   blockCutOff: null,
   directOnly: true,
   createNewCollection: false,
-  newCollectionPath: "/public/collections",
-  newCollectionFile: "test.png",
-  newCollectionName: "",
-  newCollectionDescription: "",
-  collectionId: 34, //the collection to mint into, if it exists
   newCollectionConfig: {
-    collectionName: "",
-    collectionDescription: "",
+    id: 34, //the collection to mint into, if it exists
+    name: "",
+    description: "",
   },
   babyBonus: 7,
   toddlerBonus: 13,

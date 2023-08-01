@@ -301,6 +301,7 @@ export interface Bonuses {
 export interface CollectionConfiguration {
   refIndex: string;
   file: any;
+  id: number;
   name: string;
   description: string;
   metadataCid?: string | null;

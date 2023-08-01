@@ -307,7 +307,7 @@ export const getTxsForVotes = (
 
     txs.push(
       apiKusamaAssetHub.tx.nfts.mint(
-        config.collectionId,
+        config.newCollectionConfig.id,
         nftId,
         vote.address.toString(),
         null
@@ -331,14 +331,14 @@ export const getTxsForVotes = (
 
     txs.push(
       apiKusamaAssetHub.tx.nfts.setMetadata(
-        config.collectionId,
+        config.newCollectionConfig.id,
         nftId,
         ipfsIdentifier
       )
     );
     // txs.push(
     //   apiKusamaAssetHub.tx.nfts.transfer(
-    //     config.collectionId,
+    //     config.newCollectionConfig.id,
     //     nftId,
     //     vote.address.toString()
     //   )
@@ -375,7 +375,7 @@ const getAllSetAttributeTxs = (
 
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "image",
@@ -385,7 +385,7 @@ const getAllSetAttributeTxs = (
 
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "amountLockedInGovernance",
@@ -394,7 +394,7 @@ const getAllSetAttributeTxs = (
   );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "voteDirection",
@@ -403,7 +403,7 @@ const getAllSetAttributeTxs = (
   );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "aye",
@@ -412,7 +412,7 @@ const getAllSetAttributeTxs = (
   );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "nay",
@@ -421,7 +421,7 @@ const getAllSetAttributeTxs = (
   );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "abstain",
@@ -430,7 +430,7 @@ const getAllSetAttributeTxs = (
   );
   // txs.push(
   //   apiKusamaAssetHub.tx.nfts.setAttribute(
-  //     config.collectionId,
+  //     config.newCollectionConfig.id,
   //     nftId,
   //     "CollectionOwner",
   //     "delegatedConvictionBalance",
@@ -439,7 +439,7 @@ const getAllSetAttributeTxs = (
   // );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "chanceAtEpic",
@@ -448,7 +448,7 @@ const getAllSetAttributeTxs = (
   );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "chanceAtRare",
@@ -457,7 +457,7 @@ const getAllSetAttributeTxs = (
   );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "chanceAtCommon",
@@ -466,7 +466,7 @@ const getAllSetAttributeTxs = (
   );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "voter",
@@ -475,7 +475,7 @@ const getAllSetAttributeTxs = (
   );
   // txs.push(
   //   apiKusamaAssetHub.tx.nfts.setAttribute(
-  //     config.collectionId,
+  //     config.newCollectionConfig.id,
   //     nftId,
   //     "CollectionOwner",
   //     "dragonEquipped",
@@ -484,7 +484,7 @@ const getAllSetAttributeTxs = (
   // );
   // txs.push(
   //   apiKusamaAssetHub.tx.nfts.setAttribute(
-  //     config.collectionId,
+  //     config.newCollectionConfig.id,
   //     nftId,
   //     "CollectionOwner",
   //     "quizCorrect",
@@ -493,7 +493,7 @@ const getAllSetAttributeTxs = (
   // );
   // txs.push(
   //   apiKusamaAssetHub.tx.nfts.setAttribute(
-  //     config.collectionId,
+  //     config.newCollectionConfig.id,
   //     nftId,
   //     "CollectionOwner",
   //     "encointerScore",
@@ -502,7 +502,7 @@ const getAllSetAttributeTxs = (
   // );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "referendum",
@@ -511,7 +511,7 @@ const getAllSetAttributeTxs = (
   );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "meetsRequirements",
@@ -523,7 +523,7 @@ const getAllSetAttributeTxs = (
     : attributes[chosenOption.rarity].direct) {
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionId,
+        config.newCollectionConfig.id,
         nftId,
         "CollectionOwner",
         attribute.name,
@@ -534,7 +534,7 @@ const getAllSetAttributeTxs = (
 
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "royaltyPercentFloat",
@@ -543,7 +543,7 @@ const getAllSetAttributeTxs = (
   );
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       "CollectionOwner",
       "royaltyReceiver",

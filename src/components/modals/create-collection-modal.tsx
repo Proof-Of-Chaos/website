@@ -32,8 +32,8 @@ export default function CreateNFTCollectionModal({
 
   const formMethods = useForm({
     defaultValues: {
-      collectionName: "",
-      collectionDescription: "",
+      name: "",
+      description: "",
       imageFile: null,
     },
   });
@@ -61,14 +61,12 @@ export default function CreateNFTCollectionModal({
       "data",
       JSON.stringify({
         collectionName: data.collectionName,
-        collectionDescription: data.collectionDescription,
+        description: data.description,
         sender,
       })
     );
 
     formData.append("imageFile", data.imageFile[0]);
-
-    console.log("hello");
 
     //
     const res = await fetch("/api/create-new-collection/", {
@@ -99,8 +97,8 @@ export default function CreateNFTCollectionModal({
     setIsLoading(false);
 
     setCollectionConfig({
-      collectionId: newCollectionId.toPrimitive(),
-      collectionName: data.collectionName,
+      id: newCollectionId.toPrimitive(),
+      name: data.name,
       collectionDescription: data.collectionDescription,
       file: data.imageFile,
     });
@@ -156,7 +154,7 @@ export default function CreateNFTCollectionModal({
               className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
               placeholder="The name of your new collection"
               type="text"
-              {...register("collectionName", {
+              {...register("name", {
                 validate: {},
               })}
               required
@@ -172,7 +170,7 @@ export default function CreateNFTCollectionModal({
               className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
               placeholder="The description of your new collection"
               type="text"
-              {...register("collectionDescription", {
+              {...register("description", {
                 validate: {},
               })}
               required

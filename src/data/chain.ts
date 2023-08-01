@@ -112,7 +112,6 @@ export const sendAndFinalize = async (
     const unsub = await call
       .signAndSend(address, { signer: signer }, (result) => {
         const { status, dispatchError, events = [], txHash } = result;
-        console.log("result", result);
         if (status.isReady) {
           if (toastId) {
             hotToast.loading(toast.messages[1], {
@@ -184,7 +183,7 @@ export const sendAndFinalize = async (
 
 async function sleep(ms) {
   return new Promise((resolve) => {
-    setTimeout(() => resolve(() => { }), ms);
+    setTimeout(() => resolve(() => {}), ms);
   });
 }
 
@@ -371,7 +370,7 @@ export const getNetworkPrefix = async (network: string) => {
   }
   const { ss58Format } = await api.rpc.system.properties();
   return Number(ss58Format);
-}
+};
 
 // Returns the denomination of the chain. Used for formatting planck denomianted amounts
 export const getDenom = async (): Promise<number> => {

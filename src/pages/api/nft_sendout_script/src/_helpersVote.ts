@@ -586,7 +586,7 @@ export const createConfigNFT = async (
   const kusamaNetworkPrefix = await getNetworkPrefix("kusama");
   txs.push(
     apiKusamaAssetHub.tx.nfts.mint(
-      config.collectionId,
+      config.newCollectionConfig.id,
       nftId,
       encodeAddress(account.address, kusamaNetworkPrefix),
       null
