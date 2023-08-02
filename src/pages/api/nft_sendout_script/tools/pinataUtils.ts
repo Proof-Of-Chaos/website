@@ -106,12 +106,12 @@ export const pinImageAndMetadataForOptions = async (
  */
 export const pinImageAndMetadataForCollection = async (
   pinata: pinataSDK,
-  config: CollectionConfiguration
+  config: RewardConfiguration
 ): Promise<PinImageAndMetadataForCollectionResult> => {
-
+  const { collectionConfig } = config;
   const pinataFileOptions: PinataPinOptions = {
     pinataMetadata: {
-      name: `referendum-${config.refIndex}_${config.name}`,
+      name: `referendum-${config.refIndex}_${collectionConfig.name}`,
     },
     pinataOptions: {
       cidVersion: 1,
@@ -120,7 +120,7 @@ export const pinImageAndMetadataForCollection = async (
 
   const pinataMetadataOptions: PinataPinOptions = {
     pinataMetadata: {
-      name: `referendum-${config.refIndex}_${config.name}_meta`,
+      name: `referendum-${config.refIndex}_${collectionConfig.name}_meta`,
       a: "b",
     },
     pinataOptions: {
@@ -129,23 +129,21 @@ export const pinImageAndMetadataForCollection = async (
   };
 
   //pin image file
-  const imageIpfsCid = (await pinata.pinFileToIPFS(
-    config.file,
-    pinataFileOptions
-  )).IpfsHash;
+  const imageIpfsCid = (
+    await pinata.pinFileToIPFS(collectionConfig.file, pinataFileOptions)
+  ).IpfsHash;
 
   //pin metadata
   const metadata = {
     external_url: "https://www.proofofchaos.app/",
     mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
     image: `ipfs://ipfs/${imageIpfsCid}`,
-    name: `Referendum ${config.refIndex} - ${config.name}`,
-    description: config.description,
+    name: `Referendum ${config.refIndex} - ${collectionConfig.name}`,
+    description: `${collectionConfig.description}\n\nThis collection was created with proofofchaos.app/referendum-rewards`,
   };
-  const metadataIpfsCid = (await pinata.pinJSONToIPFS(
-    metadata,
-    pinataMetadataOptions
-  )).IpfsHash;
+  const metadataIpfsCid = (
+    await pinata.pinJSONToIPFS(metadata, pinataMetadataOptions)
+  ).IpfsHash;
 
   return {
     imageIpfsCid,

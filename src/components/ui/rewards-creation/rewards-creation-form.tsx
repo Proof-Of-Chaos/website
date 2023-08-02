@@ -80,9 +80,10 @@ export function RewardsCreationForm() {
         console.log(" frontend", jsonRes);
         setError(jsonRes);
         setIsCallDataLoading(false);
+      } else {
+        setCallData(jsonRes);
       }
 
-      setCallData(jsonRes);
       setIsCallDataLoading(false);
     } catch (error) {
       console.log(" frontend", error);
@@ -166,15 +167,30 @@ export function RewardsCreationForm() {
     // that are appended to the form data in respective key value pairs
     // e.g. commonFile => FileObject
     data.options.forEach((option) => {
-      formData.append(`${option.rarity}File`, option.file[0], "somename.jpg");
+      formData.append(
+        `${option.rarity}File`,
+        option.file[0],
+        option.file[0].name
+      );
     });
+
+    if (data.collectionConfig.isNew) {
+      formData.append(
+        "collectionImage",
+        data.collectionConfig.file[0],
+        data.collectionConfig.file[0].name
+      );
+    }
 
     generatePreimage(formData);
   }
 
   // function is passed to the modal in order to change the state of the form fields
   function setCollectionConfig(collectionConfig: CollectionConfiguration) {
-    setValue("newCollectionConfig", collectionConfig);
+    setValue("collectionConfig", {
+      ...watchFormFields.collectionConfig,
+      ...collectionConfig,
+    });
   }
 
   async function createNewCollection() {
@@ -303,7 +319,7 @@ export function RewardsCreationForm() {
                   className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
                   placeholder="The id of your existing collection"
                   type="text"
-                  {...formMethods.register("newCollectionConfig.id", {
+                  {...formMethods.register("collectionConfig.id", {
                     validate: {},
                   })}
                 />
@@ -398,13 +414,14 @@ export function RewardsCreationForm() {
               {callData && (
                 <div className="text-sm">
                   <p className="mt-2">
-                    {Object.entries(callData.distribution).map(([k, v]) => {
-                      return (
-                        <p key={k}>
-                          {k} NFTs to send out: {v}
-                        </p>
-                      );
-                    })}
+                    {callData.distribution &&
+                      Object.entries(callData.distribution).map(([k, v]) => {
+                        return (
+                          <p key={k}>
+                            {k} NFTs to send out: {v}
+                          </p>
+                        );
+                      })}
                   </p>
                   <p className="mt-2">
                     Estimated fees for your transactions on Kusama Asset

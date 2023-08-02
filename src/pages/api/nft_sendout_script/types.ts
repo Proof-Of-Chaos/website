@@ -299,12 +299,12 @@ export interface Bonuses {
 }
 
 export interface CollectionConfiguration {
-  refIndex: string;
   file: any;
   id: number;
   name: string;
   description: string;
   metadataCid?: string | null;
+  isNew?: boolean;
 }
 
 export interface RewardConfiguration {
@@ -314,10 +314,8 @@ export interface RewardConfiguration {
   first: number | null;
   blockCutOff: number | null;
   directOnly: boolean;
-  newCollection: boolean;
-  newCollectionConfig: CollectionConfiguration;
+  collectionConfig: CollectionConfiguration;
   settingsCollectionId: number;
-  collectionId: number;
   babyBonus: number;
   toddlerBonus: number;
   adolescentBonus: number;

@@ -1,21 +1,23 @@
-import { RewardOption } from "../pages/api/nft_sendout_script/types";
+import {
+  RewardConfiguration,
+  RewardOption,
+} from "../pages/api/nft_sendout_script/types";
 
-export const defaultReferendumRewardsConfig: {
-  [key: string]: any;
-  options: RewardOption[];
-} = {
-  refIndex: 99,
+export const defaultReferendumRewardsConfig: RewardConfiguration = {
+  refIndex: "99",
   min: "1200000000000",
   max: "100000000000000000000000000000000000000000",
   first: null,
   blockCutOff: null,
   directOnly: true,
-  createNewCollection: false,
-  newCollectionConfig: {
-    id: 34, //the collection to mint into, if it exists
-    name: "",
-    description: "",
+  collectionConfig: {
+    id: 70, //the collection to mint into, if it exists
+    name: "New Collection Test",
+    description: "👀👀👀👀👀👀",
+    isNew: true,
+    file: undefined,
   },
+  settingsCollectionId: undefined,
   babyBonus: 7,
   toddlerBonus: 13,
   adolescentBonus: 16,

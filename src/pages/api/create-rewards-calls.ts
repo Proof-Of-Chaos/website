@@ -1,6 +1,7 @@
 import { BN, formatBalance } from "@polkadot/util";
 import { logger } from "./nft_sendout_script/tools/logger";
 import {
+  CollectionConfiguration,
   GenerateRewardsResult,
   RewardConfiguration,
 } from "./nft_sendout_script/types";
@@ -33,7 +34,7 @@ import {
  * @param res
  */
 export default async function handler(req, res) {
-  let config;
+  let config: RewardConfiguration;
 
   // Parse the form data: files and fields
   const form = formidable({});
@@ -49,11 +50,17 @@ export default async function handler(req, res) {
       const readableFileStream = fs.createReadStream(file.filepath);
       option.file = readableFileStream;
     });
+
+    if (config.collectionConfig.isNew) {
+      const file = files["collectionImage"][0];
+      const readableFileStream = fs.createReadStream(file.filepath);
+      config.collectionConfig.file = readableFileStream;
+    }
   } catch (err) {
     console.log("error parsing form", err);
   }
 
-  console.log("api endpoint received", config);
+  console.log("api endpoint received", config, files);
 
   try {
     const callResult: GenerateRewardsResult = await generateCalls(config);

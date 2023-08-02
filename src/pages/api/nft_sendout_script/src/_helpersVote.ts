@@ -586,16 +586,16 @@ export const createConfigNFT = async (
   const kusamaNetworkPrefix = await getNetworkPrefix("kusama");
   txs.push(
     apiKusamaAssetHub.tx.nfts.mint(
-      config.newCollectionConfig.id,
+      config.collectionConfig.id,
       nftId,
       encodeAddress(account.address, kusamaNetworkPrefix),
       null
     )
   );
 
-  //add all attributes for all config variables other than the newCollectionConfig and options
-  //filter out all attributes other tan the newCollectionConfig and options
-  const { newCollectionConfig, options, ...configAttributes } = config;
+  //add all attributes for all config variables other than the collectionConfig and options
+  //filter out all attributes other tan the collectionConfig and options
+  const { collectionConfig, options, ...configAttributes } = config;
   for (const attribute in configAttributes) {
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
@@ -609,14 +609,14 @@ export const createConfigNFT = async (
   }
 
   //add attributes for all the new collection config
-  for (const attribute in newCollectionConfig) {
+  for (const attribute in collectionConfig) {
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
         config.settingsCollectionId,
         referendumIndex,
         "CollectionOwner",
         attribute,
-        newCollectionConfig[attribute]
+        collectionConfig[attribute]
       )
     );
   }

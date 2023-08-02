@@ -4,6 +4,12 @@ import PinataClient from "@pinata/sdk";
 import { pinImageAndMetadataForCollection } from "../tools/pinataUtils";
 import { BN } from "@polkadot/util";
 
+/**
+ * Will get the txs for creating a collection but NOT adding the metadata
+ * @param apiKusamaAssetHub
+ * @param rewardConfig
+ * @returns
+ */
 export const getTxCollectionCreate = async (
   apiKusamaAssetHub: ApiPromise,
   rewardConfig: RewardConfiguration
@@ -44,6 +50,13 @@ export const getUserLatestCollectionId = async (
     .toString();
 };
 
+/**
+ * Get the txs for setting the metadata for a collection
+ * @param apiKusamaAssetHub
+ * @param apiPinata
+ * @param config
+ * @returns
+ */
 export const getTxsCollectionSetMetadata = async (
   apiKusamaAssetHub: ApiPromise,
   apiPinata: PinataClient,
@@ -52,18 +65,16 @@ export const getTxsCollectionSetMetadata = async (
   txsKusamaAssetHub: any[];
 }> => {
   let txsKusamaAssetHub = [];
-  console.log("getting collection create call");
-  config.newCollectionConfig.metadataCid = (
-    await pinImageAndMetadataForCollection(
-      apiPinata,
-      config.newCollectionConfig
-    )
+  config.collectionConfig.metadataCid = (
+    await pinImageAndMetadataForCollection(apiPinata, config)
   ).metadataIpfsCid;
-  //create collection
+
+  const ipfsIdentifier = `ipfs://ipfs/${config.collectionConfig.metadataCid}`;
+
   txsKusamaAssetHub.push(
-    apiKusamaAssetHub.tx.nfts.setMetadata(
-      config.newCollectionConfig.id,
-      config.newCollectionConfig.metadataCid
+    apiKusamaAssetHub.tx.nfts.setCollectionMetadata(
+      config.collectionConfig.id,
+      ipfsIdentifier
     )
   );
   return { txsKusamaAssetHub };

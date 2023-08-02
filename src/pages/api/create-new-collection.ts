@@ -4,7 +4,8 @@ import { getTxCollectionCreate } from "./nft_sendout_script/src/createCollection
 import { getApiKusamaAssetHub } from "../../data/chain";
 
 /**
- * Handler for the /api/create-new-collection endpoint
+ * Handler for the /api/create-new-collection endpoint. It will only create the collection, not add the metadata.
+ * The metadata will be added in the next step (see /api/create-reward-calls.ts)
  * @param req The request object encoded as URLSearchParams
  * @param res
  */
@@ -14,19 +15,11 @@ export default async function handler(req, res) {
   const form = formidable({});
   let fields;
   let files;
-  let imageFile;
   try {
     [fields, files] = await form.parse(req);
 
     // all the config that came from the frontend
     config = JSON.parse(fields.data);
-
-    const file = files["imageFile"][0];
-
-    console.log("aaaaa api endpoint received", config, "files", files);
-
-    const readableFileStream = fs.createReadStream(file.filepath);
-    imageFile = readableFileStream;
 
     const apiKusamaAssetHub = await getApiKusamaAssetHub();
 

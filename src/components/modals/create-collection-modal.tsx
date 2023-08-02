@@ -52,6 +52,14 @@ export default function CreateNFTCollectionModal({
 
   const watchFormFields = watch();
 
+  const onCancel = () => {
+    setCollectionConfig({
+      file: watchFormFields.imageFile,
+    });
+
+    closeModal();
+  };
+
   const onSubmit = async (data) => {
     console.table(data);
 
@@ -90,7 +98,7 @@ export default function CreateNFTCollectionModal({
     const newCollectionId = newCollectionIdEvent?.event?.data[0];
 
     if (status === "success") {
-      console.log("success", newCollectionId.toPrimitive());
+      console.log("success colletion create", newCollectionId.toPrimitive());
       closeModal();
     }
 
@@ -101,6 +109,7 @@ export default function CreateNFTCollectionModal({
       name: data.name,
       collectionDescription: data.collectionDescription,
       file: data.imageFile,
+      isNew: true,
     });
   };
 
@@ -195,7 +204,7 @@ export default function CreateNFTCollectionModal({
             <Button
               variant="calm"
               type="button"
-              onClick={closeModal}
+              onClick={onCancel}
               className="w-full mt-2"
             >
               Cancel
