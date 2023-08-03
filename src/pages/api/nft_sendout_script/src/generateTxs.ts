@@ -127,11 +127,20 @@ const getNftAttributesForOptions = (
     const nftAttributes = [
       { name: "rarity", value: option.rarity },
       { name: "totalSupply", value: rarityDistribution[option.rarity] },
-      { name: "artist", value: option.artist },
-      { name: "creativeDirector", value: option.creativeDirector },
       { name: "name", value: option.itemName },
       { name: "description", value: option.description },
     ];
+
+    if (option.artist) {
+      nftAttributes.push({ name: "artist", value: option.artist });
+    }
+
+    if (option.creativeDirector) {
+      nftAttributes.push({
+        name: "creativeDirector",
+        value: option.creativeDirector,
+      });
+    }
 
     const attributesDirect = [
       ...nftAttributes,
@@ -273,10 +282,6 @@ export const getTxsForVotes = (
 
     // the rarity option that was chosen for the voter
     const { chosenOption } = vote;
-
-    const rarityIndex = config.options.findIndex(
-      (option) => option.rarity == chosenOption.rarity
-    );
 
     const nftId = generateNFTId(
       timestamp,

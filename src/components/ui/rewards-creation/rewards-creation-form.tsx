@@ -308,7 +308,10 @@ export function RewardsCreationForm() {
         <div className={style.overlay}>
           {isCallDataLoading && (
             <>
-              <Loader className="w-12 h-12" text="" />
+              <Loader
+                className="w-12 h-12"
+                text="Creating transactions for reward distribution"
+              />
               <p className="text-xs"></p>
               <ul className="text-xs">
                 <li>Pinning your images and NFT metadata to IPFS ...</li>

@@ -80,6 +80,28 @@ export const pinImageAndMetadataForOptions = async (
       image: `ipfs://ipfs/${imageIpfsCid.IpfsHash}`,
       name: option.itemName,
       description: option.description,
+      attributes: [
+        {
+          trait_type: "Rarity",
+          value: option.rarity,
+        },
+        {
+          trait_type: "name",
+          value: option.itemName,
+        },
+        {
+          trait_type: "description",
+          value: option.description,
+        },
+        {
+          trait_type: "artist",
+          value: option.artist,
+        },
+        {
+          trait_type: "creativeDirector",
+          value: option.creativeDirector,
+        },
+      ],
     };
     const metadataIpfsCid = await pinata.pinJSONToIPFS(
       metadata,
@@ -139,7 +161,7 @@ export const pinImageAndMetadataForCollection = async (
     mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
     image: `ipfs://ipfs/${imageIpfsCid}`,
     name: `Referendum ${config.refIndex} - ${collectionConfig.name}`,
-    description: `${collectionConfig.description}\n\nThis collection was created with proofofchaos.app/referendum-rewards`,
+    description: `${collectionConfig.description}\n\n_This collection was created with proofofchaos.app/referendum-rewards_`,
   };
   const metadataIpfsCid = (
     await pinata.pinJSONToIPFS(metadata, pinataMetadataOptions)
