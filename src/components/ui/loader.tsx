@@ -3,9 +3,14 @@ import styles from "../../../styles/Loader.module.scss";
 
 export default function Loader({
   text = "loading",
-  width = 64,
-  height = 128,
+  width = 80,
+  height = 80,
   className,
+}: {
+  text?: string;
+  width?: number;
+  height?: number;
+  className?: string;
 }) {
   return (
     <div className={styles.loader}>

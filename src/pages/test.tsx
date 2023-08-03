@@ -1,32 +1,20 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { streamToJSON } from "../utils";
+import LoadingComponent from "../components/ui/loadingComponent";
 
 export function Test(): React.ReactElement {
   const [state, setState] = useState({ step: 0 });
 
-  useEffect(() => {
-    const callApi = async () => {
-      const data = await fetch("/api/hello", { method: "post" });
-
-      const stream = data.body;
-
-      if (!stream) {
-        return;
-      }
-
-      for await (const message of streamToJSON(stream)) {
-        console.log("message", message);
-        setState(JSON.parse(message));
-      }
-    };
-
-    callApi();
-  }, []);
-
   return (
     <main>
-      <div>Current step is: {state.step}</div>
+      <LoadingComponent
+        className="w-52"
+        isLoading={true}
+        loaderText="Creating new NFT collection"
+      >
+        <div>hello</div>
+      </LoadingComponent>
     </main>
   );
 }

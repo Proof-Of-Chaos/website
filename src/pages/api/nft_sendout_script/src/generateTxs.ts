@@ -1,6 +1,7 @@
 import { ApiPromise } from "@polkadot/api";
 import { pinImageAndMetadataForOptions } from "../tools/pinataUtils";
 import crypto from "crypto";
+import { websiteConfig } from "../../../../data/website-config";
 
 import {
   VoteConviction,
@@ -73,22 +74,15 @@ export const getTxsReferendumRewards = async (
     config
   );
 
-  // logger.info(
-  //   "File And Metadata Cids",
-  //   JSON.stringify(fileAndMetadataCids, null, 2)
-  // );
-  // logger.info("NFT attributes", JSON.stringify(attributes, null, 2));
+  if (websiteConfig.rewards_sendout_filter.length > 0) {
+    decoratedVotes = decoratedVotes.filter((vote) =>
+      websiteConfig.rewards_sendout_filter.includes(vote.address.toString())
+    );
 
-  const todoTestOnlyDecoratedVotes = decoratedVotes.filter((vote) =>
-    [
-      "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
-      "FF4KRpru9a1r2nfWeLmZRk6N8z165btsWYaWvqaVgR6qVic",
-    ].includes(vote.address.toString())
-  );
-
-  logger.info(
-    `🚨🚨🚨  TESTING, filtered votes to only send to ${todoTestOnlyDecoratedVotes.length} votes for referendum ${referendumIndex}`
-  );
+    logger.info(
+      `🚨🚨🚨  TESTING, filtered votes to only send to ${decoratedVotes.length} votes for referendum ${referendumIndex}`
+    );
+  }
 
   // generate NFT mint txs for each vote(er)
   const txsVotes = getTxsForVotes(
@@ -96,8 +90,7 @@ export const getTxsReferendumRewards = async (
     config,
     fileAndMetadataCids,
     attributes,
-    todoTestOnlyDecoratedVotes,
-    // decoratedVotes,
+    decoratedVotes,
     rng,
     referendumIndex.toString(),
     proxyWallet
@@ -388,151 +381,47 @@ const getAllSetAttributeTxs = (
     ]
   }`;
 
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "image",
-      imageCid
-    )
-  );
+  let attributesToSet = [
+    ["image", imageCid],
+    ["referendum", referendumIndex],
+    ["meetsRequirements", vote.meetsRequirements],
+    ["voter", vote.address.toString()],
+    ["amountLockedInGovernance", vote.lockedWithConvictionDecimal],
+    ["voteDirection", vote.voteDirection],
+    ["delegatedConvictionBalance", vote.delegatedConvictionBalance.toString()],
 
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "amountLockedInGovernance",
-      vote.lockedWithConvictionDecimal
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "voteDirection",
-      vote.voteDirection
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "aye",
-      vote.balance.aye.toString()
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "nay",
-      vote.balance.nay.toString()
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "abstain",
-      vote.balance.abstain.toString()
-    )
-  );
-  // txs.push(
-  //   apiKusamaAssetHub.tx.nfts.setAttribute(
-  //     config.collectionConfig.id,
-  //     nftId,
-  //     "CollectionOwner",
-  //     "delegatedConvictionBalance",
-  //     vote.delegatedConvictionBalance.toString()
-  //   )
-  // );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "chanceAtEpic",
-      vote.chances.epic.toString()
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "chanceAtRare",
-      vote.chances.rare.toString()
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "chanceAtCommon",
-      vote.chances.common.toString()
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "voter",
-      vote.address.toString()
-    )
-  );
-  // txs.push(
-  //   apiKusamaAssetHub.tx.nfts.setAttribute(
-  //     config.collectionConfig.id,
-  //     nftId,
-  //     "CollectionOwner",
-  //     "dragonEquipped",
-  //     vote.dragonEquipped
-  //   )
-  // );
-  // txs.push(
-  //   apiKusamaAssetHub.tx.nfts.setAttribute(
-  //     config.collectionConfig.id,
-  //     nftId,
-  //     "CollectionOwner",
-  //     "quizCorrect",
-  //     vote.quizCorrect.toString()
-  //   )
-  // );
-  // txs.push(
-  //   apiKusamaAssetHub.tx.nfts.setAttribute(
-  //     config.collectionConfig.id,
-  //     nftId,
-  //     "CollectionOwner",
-  //     "encointerScore",
-  //     vote.encointerScore
-  //   )
-  // );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "referendum",
-      referendumIndex
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "meetsRequirements",
-      vote.meetsRequirements
-    )
-  );
+    // single account royalties (kodadot friendly)
+    ["royalty", vote.meetsRequirements ? randRoyaltyInRange : 0],
+    ["recipient", config.royaltyAddress],
+
+    // ["aye", vote.balance.aye.toString()],
+    // ["nay", vote.balance.nay.toString()],
+    // ["abstain", vote.balance.abstain.toString()],
+    // ["chanceAtEpic", vote.chances.epic.toString()],
+    // ["chanceAtRare", vote.chances.rare.toString()],
+    // ["chanceAtCommon", vote.chances.common.toString()],
+
+    // ["dragonEquipped", vote.dragonEquipped],
+    // ["quizCorrect", vote.quizCorrect.toString()],
+    // ["encointerScore", vote.encointerScore],
+
+    // TODO this was rmrk style ?
+    // ["royaltyPercentFloat", vote.meetsRequirements ? randRoyaltyInRange : 0],
+    // ["royaltyReceiver", config.royaltyAddress],
+  ];
+
+  for (const [key, value] of attributesToSet) {
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.collectionConfig.id,
+        nftId,
+        "CollectionOwner",
+        key,
+        value
+      )
+    );
+  }
+
   for (const attribute of vote.voteType == "Delegating"
     ? attributes[chosenOption.rarity].delegated
     : attributes[chosenOption.rarity].direct) {
@@ -547,23 +436,5 @@ const getAllSetAttributeTxs = (
     );
   }
 
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "royaltyPercentFloat",
-      vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty
-    )
-  );
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.collectionConfig.id,
-      nftId,
-      "CollectionOwner",
-      "royaltyReceiver",
-      config.royaltyAddress
-    )
-  );
   return txs;
 };

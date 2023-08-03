@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 
 import Button from "../button";
-import Loader from "../loader";
+import Loader, { InlineLoader } from "../loader";
 import { defaultReferendumRewardsConfig } from "../../../data/default-referendum-rewards-config";
 import useAppStore from "../../../zustand";
 
@@ -32,12 +32,14 @@ export function RewardsCreationForm() {
 
   const [callData, setCallData] = useState<GenerateRewardsResult>();
   const [isCallDataLoading, setIsCallDataLoading] = useState(false);
-  const [isCreateNewCollection, setIsCreateNewCollection] = useState(false);
+
+  const [isNewCollectionLoading, setIsNewCollectionLoading] = useState(false);
   const [error, setError] = useState({
     message: "",
     name: "",
   });
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   const formMethods = useForm({
     defaultValues: defaultReferendumRewardsConfig,
@@ -98,54 +100,21 @@ export function RewardsCreationForm() {
 
     const apiKusamaAssetHub = await getApiKusamaAssetHub();
 
-    // const tx = apiKusamaAssetHub.tx.system.remark(
-    //   "Created with https://www.proofofchaos.app/referendum-rewards/"
-    // );
-
-    // apiKusamaAssetHub.tx.system
-    //   .remark("Created with https://www.proofofchaos.app/referendum-rewards/")
-    //   .signAndSend(walletAddress, { signer: wallet.signer }, ({ status }) => {
-    //     if (status.isReady) {
-    //     } else if (status.isInBlock) {
-    //       console.log(
-    //         `Completed at block hash #${status.asInBlock.toString()}`
-    //       );
-    //     } else if (status.isFinalized) {
-    //       console.log(`Current status: ${status.type}`);
-    //     } else {
-    //       console.log(`Current status: ${status.type}`);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(":( transaction failed", error);
-    //   });
-
-    // apiKusamaAssetHub.tx.utility
-    //   .batchAll(
-    //     callData.kusamaAssetHubTxs.map((tx) => apiKusamaAssetHub.tx(tx))
-    //   )
-    //   .signAndSend(walletAddress, { signer: wallet.signer }, ({ status }) => {
-    //     if (status.isReady) {
-    //     } else if (status.isInBlock) {
-    //       console.log(
-    //         `Completed at block hash #${status.asInBlock.toString()}`
-    //       );
-    //     } else if (status.isFinalized) {
-    //       console.log(`Current status: ${status.type}`);
-    //     } else {
-    //       console.log(`Current status: ${status.type}`);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(":( transaction failed", error);
-    //   });
-
-    sendAndFinalize(
+    const { status } = await sendAndFinalize(
       apiKusamaAssetHub,
       callData.kusamaAssetHubTxs.map((tx) => apiKusamaAssetHub.tx(tx)),
       signer,
       walletAddress
     );
+
+    if (status === "success") {
+      setIsComplete(true);
+    }
+  }
+
+  function onCancel() {
+    setIsOverlayVisible(false);
+    setIsComplete(false);
   }
 
   async function onSubmit(data) {
@@ -198,6 +167,7 @@ export function RewardsCreationForm() {
       config: watchFormFields,
       sender: walletAddress,
       setCollectionConfig,
+      setIsNewCollectionLoading,
     });
   }
 
@@ -253,91 +223,43 @@ export function RewardsCreationForm() {
             us by leaving the default Proof of Chaos wallet.
           </p>
 
-          {/* <label
-            className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-            htmlFor="createNewCollection"
-          >
-            Create a new Collection
-          </label>
-          <input
-            type="checkbox"
-            id="createNewCollection"
-            name="createNewCollection"
-            {...formMethods.register("royaltyAddress", {
-              validate: {},
-            })}
-            onChange={() => {
-              // change the isCreateNewCollection state based on the input
-              setIsCreateNewCollection(!isCreateNewCollection);
-            }}
-          ></input> */}
-
-          {isCreateNewCollection && (
-            <>
-              <label
-                htmlFor="newCollectionName"
-                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-              >
-                Collection Name
-              </label>
+          <>
+            <label
+              htmlFor="collectionId"
+              className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+            >
+              Collection Id
+            </label>
+            <div className="flex">
               <input
                 className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-                placeholder="The name of your new collection"
+                placeholder="The id of your existing collection"
                 type="text"
-                {...formMethods.register("newCollectionName", {
+                {...formMethods.register("collectionConfig.id", {
                   validate: {},
                 })}
+                disabled={isNewCollectionLoading}
               />
-
-              <label
-                htmlFor="newCollectionName"
-                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+              <Button
+                className="mt-2 ml-2"
+                onClick={createNewCollection}
+                variant="primary"
+                size="small"
               >
-                Collection Description
-              </label>
-              <input
-                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-                placeholder="The description of your new collection"
-                type="text"
-                {...formMethods.register("newCollectionDescription", {
-                  validate: {},
-                })}
-              />
-            </>
-          )}
-
-          {!isCreateNewCollection && (
-            <>
-              <label
-                htmlFor="collectionId"
-                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-              >
-                Collection Id
-              </label>
-              <div className="flex">
-                <input
-                  className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-                  placeholder="The id of your existing collection"
-                  type="text"
-                  {...formMethods.register("collectionConfig.id", {
-                    validate: {},
-                  })}
-                />
-                <Button
-                  className="mt-2 ml-2"
-                  onClick={createNewCollection}
-                  variant="primary"
-                  size="small"
-                >
-                  Create New Collection
-                </Button>
-              </div>
-              <p className="form-helper">
-                Either choose an existing collection to mint the NFTs into, or
-                create a new one
-              </p>
-            </>
-          )}
+                {isNewCollectionLoading ? (
+                  <>
+                    Creating new Collection <InlineLoader></InlineLoader>
+                  </>
+                ) : (
+                  "Create New Collection"
+                )}
+              </Button>
+            </div>
+            <p className="form-helper">
+              Either choose an existing collection to mint the NFTs into, or
+              create a new one
+            </p>
+          </>
 
           <label className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white">
             NFTs
@@ -413,6 +335,10 @@ export function RewardsCreationForm() {
               )}
               {callData && (
                 <div className="text-sm">
+                  <p>
+                    will mint to collection{" "}
+                    {watchFormFields.collectionConfig.id}
+                  </p>
                   <p className="mt-2">
                     {callData.distribution &&
                       Object.entries(callData.distribution).map(([k, v]) => {
@@ -432,25 +358,31 @@ export function RewardsCreationForm() {
                 </div>
               )}
               <div className="button-wrap pt-5">
-                <Button
-                  className="mr-4"
-                  onClick={() => setIsOverlayVisible(false)}
-                  variant="cancel"
-                >
-                  Cancel
+                <Button className="mr-4" onClick={onCancel} variant="cancel">
+                  {isComplete ? "Close" : "Cancel"}
                 </Button>
-                <Button onClick={signAndSend} variant="primary">
-                  Sign and Send
-                </Button>
+                {!isComplete && (
+                  <Button onClick={signAndSend} variant="primary">
+                    Sign and Send
+                  </Button>
+                )}
+                {isComplete && (
+                  <a
+                    href={`https://kodadot.xyz/stmn/collection/${watchFormFields.collectionConfig.id}`}
+                    target="_blank"
+                  >
+                    <Button variant="primary">🎉 View on Kodadot</Button>
+                  </a>
+                )}
               </div>
             </>
           )}
         </div>
       )}
-      <pre className="text-[0.5rem]">
+      {/* <pre className="text-[0.5rem]">
         file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
         form fields: {JSON.stringify(watchFormFields, null, 2)}
-      </pre>
+      </pre> */}
       {/* <pre className="text-[0.5rem]">
         call config:
         {JSON.stringify(callData?.config, null, 2)}
@@ -508,11 +440,10 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
       >
         Description of {rarity} NFT
       </label>
-      <input
+      <textarea
         id={`description-${rarity}`}
-        className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-        placeholder={`Enter name of ${rarity} NFT`}
-        type="text"
+        className="form-control mt-2 block h-20 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+        placeholder={`Enter description of ${rarity} NFT`}
         {...register(`options[${optionIndex}].description`, {
           validate: {},
         })}
@@ -527,7 +458,7 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
       <input
         id={`artist-${rarity}`}
         className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-        placeholder={`Enter name of ${rarity} NFT`}
+        placeholder={`Enter artist of ${rarity} NFT`}
         type="text"
         {...register(`options[${optionIndex}].artist`, {
           validate: {},

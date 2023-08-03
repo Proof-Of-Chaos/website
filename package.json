@@ -83,7 +83,7 @@
     "react-use": "^17.4.0",
     "sass": "^1.60.0",
     "seedrandom": "^3.0.5",
-    "styled-components": "^5.3.9",
+    "styled-components": "^6.0.6",
     "tailwindcss": "^3.2.7",
     "tippy.js": "^6.3.7",
     "typescript": "^5.0.4",

@@ -176,7 +176,7 @@ export const sendAndFinalize = async (
           console.error(error);
         }
 
-        reject({ status: "error", message: "signAndSend cancelled" });
+        reject({ status: "cancel", message: "signAndSend cancelled" });
       });
   });
 };

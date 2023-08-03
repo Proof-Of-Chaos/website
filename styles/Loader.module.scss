@@ -11,12 +11,12 @@
   .text {
     margin-top: 1rem;
     letter-spacing: 0.3rem;
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    max-width: 300px;
+    font-size: 1rem;
+    max-width: 400px;
     text-align: center;
-    line-height: 1.5rem;
+    line-height: 1.2rem;
     align-self: center;
+    padding: 0 0.5rem;
   }
 
   img {
@@ -27,6 +27,7 @@
     animation-timing-function: ease-in-out;
     height: 100px;
     width: auto;
+    object-fit: contain;
   }
 
   @keyframes spin {
@@ -40,7 +41,7 @@
 
   .char {
     animation: loading01 2500ms infinite;
-    @for $i from 0 through 30 {
+    @for $i from 0 through 300 {
       &:nth-child(#{$i+1}) {
         animation-delay: #{$i*.1}s;
       }

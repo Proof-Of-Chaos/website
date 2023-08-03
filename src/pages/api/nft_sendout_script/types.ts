@@ -341,7 +341,6 @@ export interface RewardOption {
   minProbability: number | null;
   transferable: number;
   symbol: string;
-  text: string;
   artist: string;
   creativeDirector: string;
   main: string;
