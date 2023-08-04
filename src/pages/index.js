@@ -22,10 +22,10 @@ function Home({ nfts }) {
           <div className="relative px-6 py-20 sm:px-10 mb-10 overflow-visible">
             <div className="relative z-10 mx-auto py-3 text-left md:text-center max-w-screen-xl overflow-hidden pointer-events-none">
               <h1 className="z-90 mb-6 text-4xl font-extrabold max-w-5xl mx-auto tracking-normal text-gray-900 sm:text-6xl md:text-6xl lg:text-7xl md:tracking-tight lg:leading-tight"> We <span className="w-full text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 lg:inline">incentivize voting</span> to decentralize Kusama</h1>
-              <p className="px-0 mb-12 text-lg text-gray-600 md:text-xl lg:px-24">The items in the collection are airdropped 100% free of charge to voters of Kusama referenda. Each time a wallet votes on a Referendum, a new Item is airdropped to its wallet.</p>
-              <Link href="/about" style={{ textDecoration: 'none' }}>
+              <p className="px-0 mb-12 text-lg text-gray-600 md:text-xl lg:px-24">Send customizable NFTs to voters with just a few clicks.</p>
+              <Link href="/referendum-rewards" style={{ textDecoration: 'none' }}>
                 <Button className="mr-5 pointer-events-auto" variant="black">
-                  <span className="pr-2">Learn More</span><FontAwesomeIcon icon={ faLightbulb} />
+                  <span className="pr-2">Create voting rewards</span><FontAwesomeIcon icon={ faLightbulb} />
                 </Button>
               </Link>
               <Link href="/vote" style={{ textDecoration: 'none' }}>
@@ -50,7 +50,7 @@ function Home({ nfts }) {
           <div className="max-w-6xl mx-auto border-t md:py-8 py-8 sm:py-10 px-8 sm:px-12 flex md:flex-row flex-col p-4">
               <div className="md:w-1/2 flex flex-col items-center md:max-w-full md:mx-0 mx-auto max-w-sm md:items-start md:text-left text-left sm:text-center justify-center">
                   <h2 className="font-black text-2xl sm:text-3xl w-full">Our Mission</h2>
-                  <p className="text-gray-500 sm:text-base text-sm mb-5 mt-4">Through increased participation in our governance systems, we are making the network more secure and resilient to attacks. We have designed a system where we actively incentivise more users to make educated votes with more funds. Read below how that looks in practice.</p>
+                  <p className="text-gray-500 sm:text-base text-sm mb-5 mt-4">Through increased participation in our governance systems, we are making the network more secure and resilient to attacks. We have designed a system where we incentivise tokenholders to participate in governance. Read below how that looks in practice.</p>
                   <Link href="/about">
                     <Button href="#_" variant="black">
                       Read more about us and see the roadmap →
