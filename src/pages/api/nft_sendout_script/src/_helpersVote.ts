@@ -575,7 +575,8 @@ export async function useAccountLocksImpl(
 export const createConfigNFT = async (
   apiKusamaAssetHub: ApiPromise,
   config: RewardConfiguration,
-  referendumIndex: string
+  referendumIndex: string,
+  nftIds: string[]
 ) => {
   const txs = [];
 
@@ -637,6 +638,16 @@ export const createConfigNFT = async (
     }
     optionIndex++;
   }
+
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setAttribute(
+      config.settingsCollectionId,
+      referendumIndex,
+      "CollectionOwner",
+      "nftIds",
+      nftIds
+    )
+  );
 
   return txs;
 };
