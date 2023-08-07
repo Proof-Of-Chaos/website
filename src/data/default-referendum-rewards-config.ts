@@ -9,7 +9,7 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
   max: "100000000000000000000000000000000000000000",
   first: null,
   blockCutOff: null,
-  directOnly: true,
+  directOnly: false,
   collectionConfig: {
     id: 34, //the collection to mint into, if it exists
     name: "",
@@ -17,7 +17,7 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
     isNew: false,
     file: undefined,
   },
-  settingsCollectionId: undefined,
+  settingsCollectionId: 86,
   babyBonus: 7,
   toddlerBonus: 13,
   adolescentBonus: 16,

@@ -25,13 +25,17 @@ import type {
   Bonuses,
   EncointerCommunity,
   FetchReputableVotersParams,
+  DirectVoteLock,
+  DelegatingData,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
 import {
   getApiAt,
+  getApiKusamaAssetHub,
   getDecimal,
   getNetworkPrefix,
   initAccount,
+  sendAndFinalize,
 } from "../../../../data/chain";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils";
@@ -39,7 +43,10 @@ import { Logger } from "log4js";
 import { ApiPromise } from "@polkadot/api";
 import { GraphQLClient } from "graphql-request";
 import { encodeAddress } from "@polkadot/util-crypto";
-import { generateNFTId } from "./generateTxs";
+import { generateNFTId, usedIds } from "./generateTxs";
+import { Signer, SignerResult } from '@polkadot/api/types';
+import { hexToU8a, u8aToHex } from '@polkadot/util';
+import { KeyringPair } from '@polkadot/keyring/types';
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -103,7 +110,7 @@ export const getDecoratedVotesWithInfo = async (
   // TODO rename all below to decorateWith...
 
   // 1. decorate `lockedWithConviction` - relevant info we consider instead of the vote * locked
-  votes = await retrieveAccountLocks(votes, referendum.confirmationBlockNumber);
+  votes = await retrieveAccountLocks(votes, referendum.confirmationBlockNumber, referendum.track);
 
   // 2. decorate with bonuses
   votes = applyBonusesFor("encointer", votes);
@@ -371,50 +378,81 @@ export const checkVotesMeetingRequirements = async (
  */
 export const retrieveAccountLocks = async (
   votes: ConvictionVote[],
-  endBlock: number
+  endBlock: number,
+  track: number
 ): Promise<VoteConviction[]> => {
   const api = await getApiAt("kusama", endBlock);
-  const LOCKS = [1, 10, 20, 30, 40, 50, 60];
-  const LOCKPERIODS = [0, 1, 2, 4, 8, 16, 32];
-  const sevenDaysBlocks = api.consts.convictionVoting.voteLockingPeriod;
+  const locks = [1, 10, 20, 30, 40, 50, 60];
+  const lockPeriods = [0, 1, 2, 4, 8, 16, 32];
+  const convictionOptions: string[] = ["None", "Locked1x", "Locked2x", "Locked3x", "Locked4x", "Locked5x", "Locked6x"];
+  const sevenDaysBlocks: BN = api.consts.convictionVoting.voteLockingPeriod;
 
-  const endBlockBN = new BN(endBlock);
+  const endBlockBN = new BN(endBlock)//.addn(1);
   const promises = votes.map(async (vote) => {
-    const userVotes = await useAccountLocksImpl(
+    let directLocks = await useAccountLocksImpl(
       api,
       "referenda",
       "convictionVoting",
       vote.address.toString()
     );
 
-    const userLockedBalancesWithConviction = userVotes
+    // get userDelegations for this track
+    const accountVotes = await api.query.convictionVoting?.votingFor(vote.address.toString(), track);
+
+    const parsedAccountVotes = (accountVotes).toJSON() //as DelegatingData;
+    const delegating = parsedAccountVotes?.delegating;
+
+    let delegatedLock: Lock;
+    if (delegating) {
+      // Find the lock period corresponding to the conviction
+      const convictionIndex = convictionOptions.indexOf(delegating.conviction);
+      const lockPeriod = lockPeriods[convictionIndex];
+      // Calculate the end block
+      const endBlock: BN = sevenDaysBlocks.mul(new BN(lockPeriod)).add(endBlockBN);
+
+      // Check if the balance is in hexadecimal format and convert if necessary
+      let balanceValue = delegating.balance.toString();
+      if (balanceValue.startsWith("0x")) {
+        balanceValue = parseInt(balanceValue, 16).toString();
+      }
+      const total: BN = new BN(balanceValue);
+
+      delegatedLock = { endBlock, total };
+    }
+
+    //add the delegationBalanceWithConviction
+    const userLocks = delegatedLock?.endBlock && delegatedLock?.total
+      ? [...directLocks, delegatedLock]
+      : directLocks;
+
+    const userLockedBalancesWithConviction = userLocks
       .filter(
         (userVote) =>
           userVote.endBlock.sub(endBlockBN).gte(new BN(0)) ||
           userVote.endBlock.eqn(0)
       )
       .map((userVote) => {
-        const lockPeriods = userVote.endBlock.eqn(0)
+        const userLockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-              userVote.endBlock
-                .sub(endBlockBN)
-                .muln(10)
-                .div(sevenDaysBlocks)
-                .toNumber() / 10
-            );
-        const matchingPeriod = LOCKPERIODS.reduce(
-          (acc, curr, index) => (lockPeriods >= curr ? index : acc),
+            userVote.endBlock
+              .sub(endBlockBN)
+              .muln(10)
+              .div(sevenDaysBlocks)
+              .toNumber() / 10
+          );
+        const matchingPeriod = lockPeriods.reduce(
+          (acc, curr, index) => (userLockPeriods >= curr ? index : acc),
           0
         );
-        return userVote.total.muln(LOCKS[matchingPeriod]).div(new BN(10));
+        return userVote.total.muln(locks[matchingPeriod]).div(new BN(10));
       });
 
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-            BN.max(max, current)
-          )
+          BN.max(max, current)
+        )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -436,9 +474,9 @@ const getLocks = (
   ][],
   // referenda: [BN, PalletReferendaReferendumInfoConvictionVotingTally][]
   referenda: [BN, any][]
-): Lock[] => {
+): DirectVoteLock[] => {
   const lockPeriod = api.consts[palletVote].voteLockingPeriod as unknown as BN;
-  const locks: Lock[] = [];
+  const locks: DirectVoteLock[] = [];
 
   votes.forEach(([classId, , casting]) => {
     casting.votes.forEach(([refId, accountVote]) => {
@@ -505,7 +543,7 @@ export async function useAccountLocksImpl(
   palletReferenda: PalletReferenda,
   palletVote: PalletVote,
   accountId: string
-): Promise<Lock[]> {
+): Promise<DirectVoteLock[]> {
   //@ts-ignore
   const locks: [BN, BN][] = await api.query[palletVote]?.classLocksFor(
     accountId
@@ -573,11 +611,10 @@ export async function useAccountLocksImpl(
 
 // Function to create a config NFT
 export const createConfigNFT = async (
-  apiKusamaAssetHub: ApiPromise,
-  config: RewardConfiguration,
-  referendumIndex: string,
-  nftIds: string[]
+  config: RewardConfiguration
 ) => {
+  const apiKusamaAssetHub = await getApiKusamaAssetHub();
+
   const txs = [];
 
   const account = initAccount();
@@ -601,7 +638,7 @@ export const createConfigNFT = async (
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
         config.settingsCollectionId,
-        referendumIndex,
+        config.refIndex,
         "CollectionOwner",
         attribute,
         config[attribute]
@@ -614,7 +651,7 @@ export const createConfigNFT = async (
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
         config.settingsCollectionId,
-        referendumIndex,
+        config.refIndex,
         "CollectionOwner",
         attribute,
         collectionConfig[attribute]
@@ -629,7 +666,7 @@ export const createConfigNFT = async (
       txs.push(
         apiKusamaAssetHub.tx.nfts.setAttribute(
           config.settingsCollectionId,
-          referendumIndex,
+          config.refIndex,
           "CollectionOwner",
           "option" + optionIndex + attribute,
           option[attribute]
@@ -642,14 +679,21 @@ export const createConfigNFT = async (
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
       config.settingsCollectionId,
-      referendumIndex,
+      config.refIndex,
       "CollectionOwner",
       "nftIds",
-      nftIds
+      usedIds
     )
   );
 
-  return txs;
+  // //send transactions using our account
+  // const { status } = await sendAndFinalize(
+  //   apiKusamaAssetHub,
+  //   txs.map((tx) => apiKusamaAssetHub.tx(tx)),
+  //   signer,
+  //   account.address
+  // );
+  return status;
 };
 
 const fetchReputableVoters = async (
