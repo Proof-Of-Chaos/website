@@ -35,7 +35,7 @@ import {
   getDecimal,
   getNetworkPrefix,
   initAccount,
-  sendAndFinalize,
+  sendAndFinalizeKeyPair,
 } from "../../../../data/chain";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils";
@@ -624,7 +624,7 @@ export const createConfigNFT = async (
   const kusamaNetworkPrefix = await getNetworkPrefix("kusama");
   txs.push(
     apiKusamaAssetHub.tx.nfts.mint(
-      config.collectionConfig.id,
+      config.settingsCollectionId,
       nftId,
       encodeAddress(account.address, kusamaNetworkPrefix),
       null
@@ -638,7 +638,7 @@ export const createConfigNFT = async (
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
         config.settingsCollectionId,
-        config.refIndex,
+        nftId,
         "CollectionOwner",
         attribute,
         config[attribute]
@@ -651,7 +651,7 @@ export const createConfigNFT = async (
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
         config.settingsCollectionId,
-        config.refIndex,
+        nftId,
         "CollectionOwner",
         attribute,
         collectionConfig[attribute]
@@ -666,7 +666,7 @@ export const createConfigNFT = async (
       txs.push(
         apiKusamaAssetHub.tx.nfts.setAttribute(
           config.settingsCollectionId,
-          config.refIndex,
+          nftId,
           "CollectionOwner",
           "option" + optionIndex + attribute,
           option[attribute]
@@ -679,21 +679,22 @@ export const createConfigNFT = async (
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
       config.settingsCollectionId,
-      config.refIndex,
+      nftId,
       "CollectionOwner",
       "nftIds",
       usedIds
     )
   );
 
-  // //send transactions using our account
-  // const { status } = await sendAndFinalize(
-  //   apiKusamaAssetHub,
-  //   txs.map((tx) => apiKusamaAssetHub.tx(tx)),
-  //   signer,
-  //   account.address
-  // );
-  return status;
+  const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
+
+  //send transactions using our account
+  const { block, hash, success } = await sendAndFinalizeKeyPair(
+    apiKusamaAssetHub,
+    batch,
+    account
+  );
+  return success;
 };
 
 const fetchReputableVoters = async (

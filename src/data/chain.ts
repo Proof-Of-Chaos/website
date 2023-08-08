@@ -9,6 +9,7 @@ import {
   ToastType,
 } from "../pages/api/nft_sendout_script/types";
 import { toast as hotToast, Toast, ToastOptions } from "react-hot-toast";
+import { ISubmittableResult } from "@polkadot/types/types";
 
 const CHAIN = {
   KUSAMA: "kusama",
@@ -178,6 +179,55 @@ export const sendAndFinalize = async (
 
         reject({ status: "cancel", message: "signAndSend cancelled" });
       });
+  });
+};
+
+export const sendAndFinalizeKeyPair = async (
+  api,
+  tx: SubmittableExtrinsic<"promise", ISubmittableResult>,
+  account: KeyringPair
+): Promise<{
+  block: number;
+  success: boolean;
+  hash: string;
+  included: any[];
+  finalized: any[];
+}> => {
+  return new Promise(async (resolve) => {
+    let success = false;
+    let included = [];
+    let finalized = [];
+    let block = 0;
+    const unsubscribe = await tx.signAndSend(
+      account,
+      async ({ events = [], status, dispatchError }) => {
+        if (status.isInBlock) {
+          console.log(`status: ${status}`);
+
+          success = dispatchError ? false : true;
+          console.log(
+            `📀 Transaction ${tx.meta.name} included at blockHash ${status.asInBlock} [success = ${success}]`
+          );
+          const signedBlock = await api.rpc.chain.getBlock(status.asInBlock);
+          block = signedBlock.block.header.number.toNumber();
+          included = [...events];
+        } else if (status.isBroadcast) {
+          console.log(`🚀 Transaction broadcasted.`);
+        } else if (status.isFinalized) {
+          console.log(
+            `💯 Transaction ${tx.meta.name}(..) Finalized at blockHash ${status.asFinalized}`
+          );
+          finalized = [...events];
+          const hash = tx.hash.toHex();
+          unsubscribe();
+          resolve({ success, hash, included, finalized, block });
+        } else if (status.isReady) {
+          // let's not be too noisy..
+        } else {
+          console.log(`🤷 Other status ${status}`);
+        }
+      }
+    );
   });
 };
 

@@ -16,6 +16,7 @@ import {
 } from "./nft_sendout_script/src/_helpersApi";
 import { getConvictionVoting } from "./nft_sendout_script/src/voteData";
 import {
+  createConfigNFT,
   getDecoratedVotesWithInfo,
   retrieveAccountLocks,
 } from "./nft_sendout_script/src/_helpersVote";
@@ -64,6 +65,9 @@ export default async function handler(req, res) {
 
   try {
     const callResult: GenerateRewardsResult = await generateCalls(config);
+    console.log("callsdone")
+    //mint configNFT
+    console.log('Status:' + await createConfigNFT(config))
     res.status(200).json(callResult);
   } catch (error) {
     // Sends error to the client side
