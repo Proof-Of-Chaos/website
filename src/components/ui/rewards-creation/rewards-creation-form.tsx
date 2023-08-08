@@ -81,7 +81,6 @@ export function RewardsCreationForm() {
       if (jsonRes.name === "Error") {
         console.log(" frontend", jsonRes);
         setError(jsonRes);
-        setIsCallDataLoading(false);
       } else {
         setCallData(jsonRes);
       }
@@ -100,15 +99,20 @@ export function RewardsCreationForm() {
 
     const apiKusamaAssetHub = await getApiKusamaAssetHub();
 
-    const { status } = await sendAndFinalize(
-      apiKusamaAssetHub,
-      callData.kusamaAssetHubTxs.map((tx) => apiKusamaAssetHub.tx(tx)),
-      signer,
-      walletAddress
-    );
+    try {
+      const { status } = await sendAndFinalize(
+        apiKusamaAssetHub,
+        callData.kusamaAssetHubTxs.map((tx) => apiKusamaAssetHub.tx(tx)),
+        signer,
+        walletAddress
+      );
 
-    if (status === "success") {
-      setIsComplete(true);
+      if (status === "success") {
+        setIsComplete(true);
+      }
+    } catch (error) {
+      console.log("error sending tx", error);
+      setError(error);
     }
   }
 
@@ -325,14 +329,18 @@ export function RewardsCreationForm() {
               </p>
             </>
           )}
-          {!isCallDataLoading && callData && (
+          {!isCallDataLoading && (
             <>
-              <h3 className="text-lg">
-                🛠️ Your transactions were successfully created ⛓️
-              </h3>
+              {callData && (
+                <h3 className="text-lg">
+                  🛠️ Your transactions were successfully created ⛓️
+                </h3>
+              )}
               {error.message !== "" && (
                 <div>
-                  <p>Error generating your calls, please try again.</p>
+                  <h3 className="text-lg">
+                    ⚠️ Error generating your calls, please try again.
+                  </h3>
                   <p className="text-red-500">{error.message}</p>
                 </div>
               )}
@@ -362,11 +370,11 @@ export function RewardsCreationForm() {
               )}
               <div className="button-wrap pt-5">
                 <Button className="mr-4" onClick={onCancel} variant="cancel">
-                  {isComplete ? "Close" : "Cancel"}
+                  {isComplete || !callData ? "Close" : "Cancel"}
                 </Button>
-                {!isComplete && (
+                {!isComplete && callData && (
                   <Button onClick={signAndSend} variant="primary">
-                    Sign and Send
+                    🔏 Sign and Send 📤
                   </Button>
                 )}
                 {isComplete && (

@@ -131,3 +131,5 @@
     delegated: 'ipfs://ipfs/bafkreibgf57g6lkwbniu7z5wshucieq5sf3umniluuynwf6v2zn2xvdoau'
   }
 }
+[2023-08-04T15:04:25.724] [ERROR] api - Referendum is still ongoing: Error: No response received from RPC endpoint in 60s
+[2023-08-04T15:04:25.724] [ERROR] api - Referendum is still ongoing: Error: Referendum is still ongoing: Error: No response received from RPC endpoint in 60s

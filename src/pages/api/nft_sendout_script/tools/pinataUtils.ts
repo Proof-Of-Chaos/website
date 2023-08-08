@@ -161,7 +161,7 @@ export const pinImageAndMetadataForCollection = async (
     mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
     image: `ipfs://ipfs/${imageIpfsCid}`,
     name: `Referendum ${config.refIndex} - ${collectionConfig.name}`,
-    description: `${collectionConfig.description}\n\n_This collection was created with proofofchaos.app/referendum-rewards_`,
+    description: `${collectionConfig.description}\n\n_This collection was created on [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
   };
   const metadataIpfsCid = (
     await pinata.pinJSONToIPFS(metadata, pinataMetadataOptions)
