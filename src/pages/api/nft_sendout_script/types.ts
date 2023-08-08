@@ -23,17 +23,17 @@ export type GenerateRewardsResult = {
   kusamaAssetHubTxs: string[] | undefined;
   distribution: RarityDistribution | undefined;
   fees:
-    | {
-        kusama: string;
-        nfts: string;
-      }
-    | undefined;
+  | {
+    kusama: string;
+    nfts: string;
+  }
+  | undefined;
   txsCount:
-    | {
-        kusama: number;
-        nfts: number;
-      }
-    | undefined;
+  | {
+    kusama: number;
+    nfts: number;
+  }
+  | undefined;
 };
 
 export type CreateCollectionResult = {
@@ -77,11 +77,35 @@ export type PalletVote =
   | "fellowshipCollective";
 
 export interface Lock {
+  endBlock: BN;
+  total: BN;
+}
+
+export interface DirectVoteLock extends Lock {
   classId: BN;
   endBlock: BN;
   locked: string;
   refId: BN;
   total: BN;
+}
+
+export type LockResult = Record<string, LockResultItem[]>;
+
+export interface LockResultItem {
+  classId: BN;
+}
+
+export type DelegatingData = {
+  delegating: {
+    balance: number,
+    target: string,
+    conviction: string,
+    delegations: {
+      votes: number,
+      capital: number,
+    },
+    prior: number[],
+  }
 }
 
 export type ConvictionVote = {
@@ -214,12 +238,12 @@ export interface RarityDistribution {
 
 interface Attribute {
   name:
-    | "rarity"
-    | "totalSupply"
-    | "artist"
-    | "creativeDirector"
-    | "name"
-    | "typeOfVote";
+  | "rarity"
+  | "totalSupply"
+  | "artist"
+  | "creativeDirector"
+  | "name"
+  | "typeOfVote";
   value: string | Uint8Array | Bytes;
 }
 
@@ -365,6 +389,6 @@ export interface SendAndFinalizeResult {
 export type ToastType =
   | undefined
   | {
-      title: string;
-      messages: string[];
-    };
+    title: string;
+    messages: string[];
+  };

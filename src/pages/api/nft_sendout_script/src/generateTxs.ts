@@ -21,6 +21,8 @@ import {
   getTxsCollectionSetMetadata,
 } from "./createCollection";
 
+export let usedIds = [];
+
 export const getTxsReferendumRewards = async (
   apiKusamaAssetHub: ApiPromise,
   apiKusama: ApiPromise,
@@ -277,6 +279,7 @@ export const getTxsForVotes = (
 ): any => {
   const txs = [];
   const timestamp = Date.now();
+  const ids = [];
   for (let i = 0; i < decoratedVotes.length; i++) {
     const vote = decoratedVotes[i];
 
@@ -289,6 +292,8 @@ export const getTxsForVotes = (
       referendumIndex,
       i
     );
+
+    ids.push(nftId);
 
     console.info(
       `📤  ${vote.address.toString()} will get ${nftId} with rarity ${
@@ -357,7 +362,7 @@ export const getTxsForVotes = (
     //   )
     // );
   }
-
+  usedIds = ids;
   return txs;
 };
 

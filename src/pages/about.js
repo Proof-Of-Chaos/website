@@ -21,7 +21,7 @@ function About() {
 
           <div className="w-full mt-5 md:mt-0 md:w-4/5 md:pl-2">
             <p className="text-base font-normal text-gray-700">
-              Through increased participation in our governance systems, we are making the network more secure and resilient to attacks. We have designed a system where we actively incentivise more users to make educated votes with more funds. Read below how that looks in practice.
+              Through increased participation in our governance systems, we are making the network more secure and resilient to attacks. We have designed a system that incentivises token holders to participate in governance. Read below how that looks in practice.
             </p>
           </div>
         </div>
@@ -34,16 +34,16 @@ function About() {
           <div className="w-full mt-5 md:mt-0 md:w-4/5 md:pl-2">
             <h4 className=" font-bold">Free NFTs</h4>
             <p className="text-base font-normal text-gray-700">
-            We incentivise governance participation by air-dropping free NFTs to all voters for each referendum.
+            We built a UI that allows anyone to send customizable NFTs to voters of any past referendum.
             </p>
             <h4 className=" font-bold pt-4">Bigger vote = rarer NFT</h4>
             <p className="text-base font-normal text-gray-700">
             For each referendum there are multiple types of NFTs with different rarities that voters will receive. The type of NFT each voter will receive depends on a “luck factor”. This “luck factor” can be influenced by a voter to a given extent. Wallets with more funds locked in democracy for longer periods are more likely to receive one of the rarer NFTs.
             </p>
-            <h4 className=" font-bold pt-4">Educated vote = rarer NFT</h4>
+            {/* <h4 className=" font-bold pt-4">Educated vote = rarer NFT</h4>
             <p className="text-base font-normal text-gray-700">
             Another way to increase your chance at the rarer NFTs is by correctly answering the referendum quiz on this site. Getting all answers correct gives voters a higher chance at receiving epic and rare NFTs! We want to encourage educated votes!
-            </p>
+            </p> */}
             <h4 className=" font-bold pt-4">Minimum voting requirement</h4>
             <p className="text-base font-normal text-gray-700">
             Wallets that do not meet the minimum KSM requirements will receive the least rare NFTs with a 90% royalty.
