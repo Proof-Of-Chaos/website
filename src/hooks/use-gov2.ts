@@ -7,6 +7,7 @@ import { microToKSM } from "../utils";
 import { useMemo } from "react";
 import { BN_ZERO } from "@polkadot/util";
 import { isNull, some } from "lodash";
+import { ApiPromise } from "@polkadot/api";
 
 // Inspired by and simplified from subsquare and polkadot.js
 // https://github.com/opensquare-network/subsquare/tree/83a1a03a72aac36220c28e088ffe10621458be9a/packages/next-common/context/post/gov2
@@ -175,4 +176,34 @@ async function activeIssuanceFetcher() {
 
 export const useIssuance = () => {
   return useQuery(["active-issuance"], activeIssuanceFetcher);
+};
+
+export const usePastReferendaIndices = () => {
+  return useQuery(["past-referenda"], getPastReferendaIndices);
+};
+
+export const getPastReferendaIndices = async (): Promise<string[]> => {
+  const apiKusama = await getApiKusama();
+  const referenda = await apiKusama.query.referenda.referendumInfoFor.entries();
+
+  const pastReferenda: string[] = referenda
+    .map(([key, info]) => {
+      const refJSON = info.toJSON();
+      if (
+        refJSON["approved"] ||
+        refJSON["cancelled"] ||
+        refJSON["rejected"] ||
+        refJSON["timedOut"]
+      ) {
+        return key.args[0].toString();
+      }
+      return null;
+    })
+    .filter((info): info is string => info !== null);
+
+  const sortedPastReferenda = pastReferenda.sort(
+    (a, b) => parseInt(b) - parseInt(a)
+  );
+
+  return sortedPastReferenda;
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 
 import Button from "../button";
@@ -18,6 +18,7 @@ import {
 } from "../../../data/chain";
 import { getWalletBySource } from "@talismn/connect-wallets";
 import { useModal } from "../../modals/context";
+import { usePastReferendaIndices } from "../../../hooks/use-gov2";
 
 export function RewardsCreationForm() {
   const { openModal, closeModal } = useModal();
@@ -45,11 +46,19 @@ export function RewardsCreationForm() {
     defaultValues: defaultReferendumRewardsConfig,
   });
 
+  const { data: pastReferendaIndices, isLoading: isPastRefIndicesLoading } =
+    usePastReferendaIndices();
+
   const {
     watch,
     setValue,
     formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
+
+  useEffect(() => {
+    if (pastReferendaIndices?.length)
+      setValue("refIndex", pastReferendaIndices[0]);
+  }, [pastReferendaIndices]);
 
   const watchFormFields = watch();
 
@@ -200,12 +209,20 @@ export function RewardsCreationForm() {
               validate: {},
             })}
           >
-            <option value="99">99</option>
-            <option value="201">201</option>
-            <option value="200">200</option>
-            <option value="199">199</option>
-            <option value="198">198</option>
+            {}
+            {isPastRefIndicesLoading ? (
+              <option>Loading ...</option>
+            ) : (
+              pastReferendaIndices?.map((refIdx) => (
+                <option key={refIdx} value={refIdx}>
+                  {refIdx}
+                </option>
+              ))
+            )}
           </select>
+          <p className="form-helper">
+            Select any <b>past</b> referendum to prepare the NFT sendouts for
+          </p>
 
           <label
             htmlFor="royaltyAddress"

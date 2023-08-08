@@ -70,27 +70,3 @@ export const getBlockNumber = async (
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
 };
-
-export const getPastReferenda = async (apiKusama: ApiPromise): Promise<string[]> => {
-
-  const referenda = await apiKusama.query.referenda.referendumInfoFor.entries();
-
-  const pastReferenda: string[] = referenda
-    .map(([key, info]) => {
-      const refJSON = info.toJSON();
-      if (
-        refJSON["approved"] ||
-        refJSON["cancelled"] ||
-        refJSON["rejected"] ||
-        refJSON["timedOut"]
-      ){
-        return key.args[0].toString();
-      }
-      return null;
-    })
-    .filter((info): info is string => info !== null);
-
-  const sortedPastReferenda = pastReferenda.sort((a, b) => parseInt(a) - parseInt(b));
-
-  return sortedPastReferenda;
-}
