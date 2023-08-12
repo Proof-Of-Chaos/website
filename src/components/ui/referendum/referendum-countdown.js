@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import Countdown, { zeroPad } from 'react-countdown';
-import { getApi } from '../../../data/chain';
-import { useEndDate } from '../../../hooks/use-referendums';
-import { getEndDateByBlock } from '../../../utils';
-import { InlineLoader } from '../loader';
+import React, { useEffect, useState } from "react";
+import Countdown, { zeroPad } from "react-countdown";
+import { getApi } from "../../../data/chain";
+import { useEndDate } from "../../../hooks/use-referendums";
+import { getEndDateByBlock } from "../../../utils/utils";
+import { InlineLoader } from "../loader";
 
 const renderer = ({ days, hours, minutes, seconds, completed }) => {
   if (completed) {
@@ -46,14 +46,26 @@ const renderer = ({ days, hours, minutes, seconds, completed }) => {
   }
 };
 
-export default function ReferendumCountdown({endBlock, className}) {
-  const { data:endDate, isLoading } = useEndDate( endBlock )
+export default function ReferendumCountdown({ endBlock, className }) {
+  const { data: endDate, isLoading } = useEndDate(endBlock);
 
-  if ( isLoading ) {
-    return <div className={ className }><InlineLoader /></div>
+  if (isLoading) {
+    return (
+      <div className={className}>
+        <InlineLoader />
+      </div>
+    );
   }
 
-  return <div className={ className }>
-    { endDate && <Countdown date={ endDate } renderer={renderer} className="justify-center" /> }
-  </div>
+  return (
+    <div className={className}>
+      {endDate && (
+        <Countdown
+          date={endDate}
+          renderer={renderer}
+          className="justify-center"
+        />
+      )}
+    </div>
+  );
 }

@@ -340,12 +340,6 @@ async function providerHealthCheck(chain: string) {
   }
 }
 
-export const initAccount = (): KeyringPair => {
-  const keyring = new Keyring({ type: "sr25519" });
-  const account = keyring.addFromUri(process.env.MNEMONIC);
-  return account;
-};
-
 export const getLatestFinalizedBlock = async (
   api: ApiPromise
 ): Promise<number> => {

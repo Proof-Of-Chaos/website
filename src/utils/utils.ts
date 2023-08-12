@@ -2,7 +2,7 @@ import { merge, values, keyBy } from "lodash";
 import {
   Chances,
   RewardConfiguration,
-} from "./pages/api/nft_sendout_script/types";
+} from "../pages/api/nft_sendout_script/types";
 const BLOCK_DURATION = 6000;
 const EXPONENT_CONSTANTS = [3, 0.4];
 

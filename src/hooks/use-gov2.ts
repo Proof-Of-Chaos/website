@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { websiteConfig } from "../data/website-config";
 import { getApi, getApiKusama } from "../data/chain";
 import { GET_GOV2_REF_TITLE_AND_CONTENT } from "./queries";
-import { microToKSM } from "../utils";
+import { microToKSM } from "../utils/utils";
 import { useMemo } from "react";
 import { BN_ZERO } from "@polkadot/util";
 import { isNull, some } from "lodash";

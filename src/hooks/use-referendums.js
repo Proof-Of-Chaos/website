@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, gql as agql } from "@apollo/client";
 import { useQuery } from "@tanstack/react-query";
 
 import { websiteConfig } from "../data/website-config";
-import { microToKSM, getEndDateByBlock } from "../utils";
+import { microToKSM, getEndDateByBlock } from "../utils/utils";
 import { getApi, getApiKusama } from "../data/chain";
 import {
   useLatestQuizForRef,
