@@ -47,6 +47,8 @@ import { Signer, SignerResult } from "@polkadot/api/types";
 import { hexToU8a, u8aToHex } from "@polkadot/util";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { initAccount } from "../../../../utils/server-utils";
+import { pinMetadataForConfigNFT } from "../tools/pinataUtils.js";
+import PinataClient from "@pinata/sdk";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -628,7 +630,10 @@ export async function useAccountLocksImpl(
 // TODO ------ are these still needed??
 
 // Function to create a config NFT
-export const createConfigNFT = async (config: RewardConfiguration) => {
+export const createConfigNFT = async (
+  apiPinata: PinataClient,
+  config: RewardConfiguration
+) => {
   const apiKusamaAssetHub = await getApiKusamaAssetHub();
 
   const txs = [];
@@ -702,15 +707,31 @@ export const createConfigNFT = async (config: RewardConfiguration) => {
     )
   );
 
-  const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
+  // pin metadata and file for config NFT to Pinata
+  config.configNFT.metadataCid = (await pinMetadataForConfigNFT(
+    apiPinata,
+    config
+  )).metadataIpfsCid;
 
-  //send transactions using our account
-  const { block, hash, success } = await sendAndFinalizeKeyPair(
-    apiKusamaAssetHub,
-    batch,
-    account
+  const ipfsIdentifier = `ipfs://ipfs/${config.configNFT.metadataCid}`;
+
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.setMetadata(
+      config.settingsCollectionId,
+      nftId,
+      ipfsIdentifier
+    )
   );
-  return success;
+
+  // const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
+
+  // //send transactions using our account
+  // const { block, hash, success } = await sendAndFinalizeKeyPair(
+  //   apiKusamaAssetHub,
+  //   batch,
+  //   account
+  // );
+  // return success;
 };
 
 const fetchReputableVoters = async (

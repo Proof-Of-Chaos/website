@@ -9,6 +9,7 @@ import { config } from "process";
 import {
   CollectionConfiguration,
   PinImageAndMetadataForCollectionResult,
+  PinImageAndMetadataForConfigNFTResult,
   PinImageAndMetadataForOptionsResult,
   ProcessMetadataResult,
   RewardConfiguration,
@@ -162,6 +163,59 @@ export const pinImageAndMetadataForCollection = async (
     image: `ipfs://ipfs/${imageIpfsCid}`,
     name: `Referendum ${config.refIndex} - ${collectionConfig.name}`,
     description: `${collectionConfig.description}\n\n_This collection was created on [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
+  };
+  const metadataIpfsCid = (
+    await pinata.pinJSONToIPFS(metadata, pinataMetadataOptions)
+  ).IpfsHash;
+
+  return {
+    imageIpfsCid,
+    metadataIpfsCid,
+  };
+};
+
+/**
+ * Given a config and a pinata api, pin all the images and metadata for each rarity option
+ * @param pinata
+ * @param config
+ * @returns {Promise<PinImageAndMetadataForConfigNFTResult>}
+ */
+export const pinMetadataForConfigNFT = async (
+  pinata: pinataSDK,
+  config: RewardConfiguration
+): Promise<PinImageAndMetadataForConfigNFTResult> => {
+  const { configNFT } = config;
+  const pinataFileOptions: PinataPinOptions = {
+    pinataMetadata: {
+      name: `referendum-${config.refIndex}_configNFT`,
+    },
+    pinataOptions: {
+      cidVersion: 1,
+    },
+  };
+
+  const pinataMetadataOptions: PinataPinOptions = {
+    pinataMetadata: {
+      name: `referendum-${config.refIndex}_configNFT_meta`,
+      a: "b",
+    },
+    pinataOptions: {
+      cidVersion: 1,
+    },
+  };
+
+  //pin image file
+  const imageIpfsCid = (
+    await pinata.pinFileToIPFS(configNFT.file, pinataFileOptions)
+  ).IpfsHash;
+
+  //pin metadata
+  const metadata = {
+    external_url: "https://www.proofofchaos.app/",
+    mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
+    image: `ipfs://ipfs/${imageIpfsCid}`,
+    name: `Referendum ${config.refIndex} - Config NFT`,
+    description: `${configNFT.description}\n\n_This NFT was created with proofofchaos.app/referendum-rewards_`,
   };
   const metadataIpfsCid = (
     await pinata.pinJSONToIPFS(metadata, pinataMetadataOptions)

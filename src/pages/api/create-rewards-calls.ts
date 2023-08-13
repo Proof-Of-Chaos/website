@@ -28,6 +28,7 @@ import {
   getApiKusamaAssetHub,
   getChainDecimals,
 } from "../../data/chain";
+import PinataClient from "@pinata/sdk";
 
 /**
  * Handler for the /api/create-rewards-calls endpoint
@@ -63,11 +64,14 @@ export default async function handler(req, res) {
 
   console.log("api endpoint received", config, files);
 
+  //initialize Pinata
+  const apiPinata = await setupPinata();
+
   try {
-    const callResult: GenerateRewardsResult = await generateCalls(config);
+    const callResult: GenerateRewardsResult = await generateCalls(apiPinata, config);
     console.log("callsdone")
     //mint configNFT
-    console.log('Status:' + await createConfigNFT(config))
+    console.log('Status:' + await createConfigNFT(apiPinata, config))
     res.status(200).json(callResult);
   } catch (error) {
     // Sends error to the client side
@@ -80,6 +84,7 @@ export default async function handler(req, res) {
 }
 
 const generateCalls = async (
+  apiPinata: PinataClient,
   config: RewardConfiguration,
   seed: number = 0
 ): Promise<GenerateRewardsResult> => {
@@ -112,8 +117,7 @@ const generateCalls = async (
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
 
-  //initialize Pinata
-  const apiPinata = await setupPinata();
+  
 
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =

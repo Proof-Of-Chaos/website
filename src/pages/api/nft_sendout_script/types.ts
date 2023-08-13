@@ -287,6 +287,11 @@ export type PinImageAndMetadataForCollectionResult = {
   metadataIpfsCid: string;
 };
 
+export type PinImageAndMetadataForConfigNFTResult = {
+  imageIpfsCid: string;
+  metadataIpfsCid: string;
+};
+
 export type NftAttributesResult = {
   [key: string]: {
     direct: string;
@@ -331,6 +336,12 @@ export interface CollectionConfiguration {
   isNew?: boolean;
 }
 
+export interface ConfigNFT {
+  file: any;
+  description: string;
+  metadataCid?: string | null;
+}
+
 export interface RewardConfiguration {
   refIndex: string;
   min: string;
@@ -339,6 +350,7 @@ export interface RewardConfiguration {
   blockCutOff: number | null;
   directOnly: boolean;
   collectionConfig: CollectionConfiguration;
+  configNFT: ConfigNFT;
   settingsCollectionId: number;
   babyBonus: number;
   toddlerBonus: number;

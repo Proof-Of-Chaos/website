@@ -10,6 +10,10 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
   first: null,
   blockCutOff: null,
   directOnly: false,
+  configNFT: {
+    file: undefined,
+    description: "This is the config NFT for the referendum rewards. You can use this NFT to verify the configuration that was used for the specific sendout.",
+  },
   collectionConfig: {
     id: 34, //the collection to mint into, if it exists
     name: "",
