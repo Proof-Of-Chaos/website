@@ -1,14 +1,7 @@
 import seedrandom from "seedrandom";
 import type { Option } from "@polkadot/types";
 
-//TODO
-// import type {
-//   PalletConvictionVotingVoteCasting,
-//   PalletConvictionVotingVoteVoting,
-//   PalletReferendaReferendumInfoConvictionVotingTally,
-// } from "@polkadot/types";
-
-import { BN, bnToBn } from "@polkadot/util";
+import { BN } from "@polkadot/util";
 import type {
   Lock,
   PalletReferenda,
@@ -26,7 +19,6 @@ import type {
   EncointerCommunity,
   FetchReputableVotersParams,
   DirectVoteLock,
-  DelegatingData,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
 import {
@@ -34,7 +26,6 @@ import {
   getApiKusamaAssetHub,
   getDecimal,
   getNetworkPrefix,
-  sendAndFinalizeKeyPair,
 } from "../../../../data/chain";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils/utils";
@@ -43,12 +34,14 @@ import { ApiPromise } from "@polkadot/api";
 import { GraphQLClient } from "graphql-request";
 import { encodeAddress } from "@polkadot/util-crypto";
 import { generateNFTId, usedIds } from "./generateTxs";
-import { Signer, SignerResult } from "@polkadot/api/types";
-import { hexToU8a, u8aToHex } from "@polkadot/util";
-import { KeyringPair } from "@polkadot/keyring/types";
 import { initAccount } from "../../../../utils/server-utils";
 import PinataClient from "@pinata/sdk";
 import { pinMetadataForConfigNFT } from "../tools/pinataUtils";
+import {
+  PalletConvictionVotingVoteCasting,
+  PalletConvictionVotingVoteVoting,
+  PalletReferendaReferendumInfoConvictionVotingTally,
+} from "@polkadot/types/lookup";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -66,9 +59,7 @@ const getRefParams = (
   votes?: [
     classId: BN,
     refIds: BN[],
-    //TODO this has to be fixed
-    //casting: PalletConvictionVotingVoteCasting
-    casting: any
+    casting: PalletConvictionVotingVoteCasting
   ][]
 ): [BN[]] | undefined => {
   if (votes && votes.length) {
@@ -488,12 +479,9 @@ const getLocks = (
   votes: [
     classId: BN,
     refIds: BN[],
-    // TODO
-    // casting: PalletConvictionVotingVoteCasting
-    casting: any
+    casting: PalletConvictionVotingVoteCasting
   ][],
-  // referenda: [BN, PalletReferendaReferendumInfoConvictionVotingTally][]
-  referenda: [BN, any][]
+  referenda: [BN, PalletReferendaReferendumInfoConvictionVotingTally][]
 ): DirectVoteLock[] => {
   const lockPeriod = api.consts[palletVote].voteLockingPeriod as unknown as BN;
   const locks: DirectVoteLock[] = [];
@@ -575,13 +563,10 @@ export async function useAccountLocksImpl(
   );
   let [params]: [[string, BN][]] = voteParams;
   // TODO
-  // const votes: PalletConvictionVotingVoteVoting[] =
-  const votes: any[] = await api.query.convictionVoting?.votingFor.multi(
-    params
-  );
+  const votes: PalletConvictionVotingVoteVoting[] =
+    await api.query.convictionVoting?.votingFor.multi(params);
   const votesFormatted = votes
-    .map((v, index): null | [BN, BN[], any] => {
-      // .map((v, index): null | [BN, BN[], PalletConvictionVotingVoteCasting] => {
+    .map((v, index): null | [BN, BN[], PalletConvictionVotingVoteCasting] => {
       if (!v.isCasting) {
         return null;
       }
@@ -590,9 +575,7 @@ export async function useAccountLocksImpl(
 
       return [params[index][1], casting.votes.map(([refId]) => refId), casting];
     })
-    //TODO
-    // .filter((v): v is [BN, BN[], PalletConvictionVotingVoteCasting] => !!v);
-    .filter((v): v is [BN, BN[], any] => !!v);
+    .filter((v): v is [BN, BN[], PalletConvictionVotingVoteCasting] => !!v);
 
   if (votesFormatted.length === 0) {
     return [];
@@ -603,9 +586,7 @@ export async function useAccountLocksImpl(
   }
 
   const [paramsref]: [BN[]] = refParams;
-  //TODO
-  // const optTally: Option<PalletReferendaReferendumInfoConvictionVotingTally>[] =
-  const optTally: Option<any>[] =
+  const optTally: Option<PalletReferendaReferendumInfoConvictionVotingTally>[] =
     await api.query.referenda?.referendumInfoFor.multi(paramsref);
 
   const referendaFormatted = optTally
@@ -614,13 +595,11 @@ export async function useAccountLocksImpl(
         v,
         index
         // TODO
-        // ): null | [BN, PalletReferendaReferendumInfoConvictionVotingTally] =>
-      ): null | [BN, any] => (v.isSome ? [paramsref[index], v.unwrap()] : null)
+      ): null | [BN, PalletReferendaReferendumInfoConvictionVotingTally] =>
+        v.isSome ? [paramsref[index], v.unwrap()] : null
     )
     .filter(
-      // TODO
-      // (v): v is [BN, PalletReferendaReferendumInfoConvictionVotingTally] => !!v
-      (v): v is [BN, any] => !!v
+      (v): v is [BN, PalletReferendaReferendumInfoConvictionVotingTally] => !!v
     );
 
   // Combine the referenda outcomes and the votes into locks
