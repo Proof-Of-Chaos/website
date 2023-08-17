@@ -7,7 +7,7 @@ import { websiteConfig } from "../data/website-config";
 import Button from "../components/ui/button";
 import Layout from "../layouts/layout";
 import { nftFeedData } from "../data/nft-feed-data";
-import NftFeed from "../components/nft/nft-feed";
+import NftFeed from "../components/nft/nft-stats";
 import NFTSnippets from "../components/nft/nft-snippets";
 import { RewardsCreationForm } from "../components/ui/rewards-creation/rewards-creation-form";
 

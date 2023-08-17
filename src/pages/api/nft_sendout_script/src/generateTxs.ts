@@ -8,18 +8,12 @@ import {
   RewardConfiguration,
   RNG,
   RarityDistribution,
-  ProcessMetadataResult,
   RewardOption,
   PinImageAndMetadataForOptionsResult,
 } from "../types";
-import { BN, bnToBn } from "@polkadot/util";
 import PinataClient from "@pinata/sdk";
 import { Logger } from "log4js";
-import { time } from "console";
-import {
-  getTxCollectionCreate,
-  getTxsCollectionSetMetadata,
-} from "./createCollection";
+import { getTxsCollectionSetMetadata } from "./createCollection";
 
 export let usedIds = [];
 
