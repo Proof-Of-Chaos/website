@@ -1,7 +1,7 @@
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { useQuery } from "@tanstack/react-query";
 import { getApi, getApiKusama } from "../data/chain";
-import { getEndDateByBlock } from "../utils";
+import { getEndDateByBlock } from "../utils/utils";
 
 const ENDPOINT_RMRK_NFT_UPDATED_PREFIX =
   "https://singular.app/api/rmrk2/nft-updated/";

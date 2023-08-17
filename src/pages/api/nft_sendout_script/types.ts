@@ -237,13 +237,7 @@ export interface RarityDistribution {
 }
 
 interface Attribute {
-  name:
-    | "rarity"
-    | "totalSupply"
-    | "artist"
-    | "creativeDirector"
-    | "name"
-    | "typeOfVote";
+  name: "rarity" | "totalSupply" | "artist" | "name" | "typeOfVote";
   value: string | Uint8Array | Bytes;
 }
 
@@ -379,7 +373,6 @@ export interface RewardOption {
   transferable: number;
   symbol: string;
   artist: string;
-  creativeDirector: string;
   main: string;
   thumb: string;
   rarity: string;

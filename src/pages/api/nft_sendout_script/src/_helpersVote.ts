@@ -37,7 +37,7 @@ import {
   sendAndFinalizeKeyPair,
 } from "../../../../data/chain";
 import { getConvictionVoting } from "./voteData";
-import { lucksForConfig, weightedRandom } from "../../../../utils/utils.js";
+import { lucksForConfig, weightedRandom } from "../../../../utils/utils";
 import { Logger } from "log4js";
 import { ApiPromise } from "@polkadot/api";
 import { GraphQLClient } from "graphql-request";
@@ -47,8 +47,8 @@ import { Signer, SignerResult } from "@polkadot/api/types";
 import { hexToU8a, u8aToHex } from "@polkadot/util";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { initAccount } from "../../../../utils/server-utils";
-import { pinMetadataForConfigNFT } from "../tools/pinataUtils.js";
 import PinataClient from "@pinata/sdk";
+import { pinMetadataForConfigNFT } from "../tools/pinataUtils";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -708,10 +708,9 @@ export const createConfigNFT = async (
   );
 
   // pin metadata and file for config NFT to Pinata
-  config.configNFT.metadataCid = (await pinMetadataForConfigNFT(
-    apiPinata,
-    config
-  )).metadataIpfsCid;
+  config.configNFT.metadataCid = (
+    await pinMetadataForConfigNFT(apiPinata, config)
+  ).metadataIpfsCid;
 
   const ipfsIdentifier = `ipfs://ipfs/${config.configNFT.metadataCid}`;
 

@@ -1,4 +1,5 @@
 import "@polkadot/rpc-augment";
+import "@polkadot/api-augment/kusama";
 import { ApiPromise, Keyring, WsProvider } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import { Block } from "@polkadot/types/interfaces";

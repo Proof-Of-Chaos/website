@@ -5,7 +5,7 @@ import { getApi, getApiKusama } from "../data/chain";
 import { GET_GOV2_REF_TITLE_AND_CONTENT } from "./queries";
 import { microToKSM } from "../utils/utils";
 import { useMemo } from "react";
-import { BN_ZERO } from "@polkadot/util";
+import { BN, BN_ZERO } from "@polkadot/util";
 import { isNull, some } from "lodash";
 import { ApiPromise } from "@polkadot/api";
 
@@ -138,7 +138,7 @@ async function getTitleAndContentForRef(refId) {
     var myHeaders = new Headers();
     myHeaders.append("x-network", "kusama");
 
-    var requestOptions = {
+    var requestOptions: RequestInit = {
       method: "GET",
       headers: myHeaders,
       redirect: "follow",

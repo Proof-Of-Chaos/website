@@ -4,7 +4,6 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faCube } from "@fortawesome/free-solid-svg-icons";
 
-import { trimAddress } from "../../utils";
 import Button from "../ui/button";
 import Loader, { InlineLoader } from "../ui/loader";
 import LoadingImage from "../ui/loading-image";
@@ -21,6 +20,7 @@ import {
 
 import styles from "./styles/leaderboard.module.scss";
 import { PolkadotApiContext } from "../../context/polkadot-api-context";
+import { trimAddress } from "../../utils/utils";
 
 const SINGULAR_SHELF_BASE_URL =
   "https://singular.app/collectibles/kusama/3208723ec6f65df810-SHELF/";

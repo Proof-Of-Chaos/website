@@ -137,13 +137,6 @@ const getNftAttributesForOptions = (
       nftAttributes.push({ name: "artist", value: option.artist });
     }
 
-    if (option.creativeDirector) {
-      nftAttributes.push({
-        name: "creativeDirector",
-        value: option.creativeDirector,
-      });
-    }
-
     const attributesDirect = [
       ...nftAttributes,
       { name: "typeOfVote", value: "direct" },

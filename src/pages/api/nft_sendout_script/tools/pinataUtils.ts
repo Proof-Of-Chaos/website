@@ -98,10 +98,6 @@ export const pinImageAndMetadataForOptions = async (
           trait_type: "artist",
           value: option.artist,
         },
-        {
-          trait_type: "creativeDirector",
-          value: option.creativeDirector,
-        },
       ],
     };
     const metadataIpfsCid = await pinata.pinJSONToIPFS(
