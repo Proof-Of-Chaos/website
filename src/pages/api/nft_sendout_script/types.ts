@@ -241,7 +241,6 @@ interface Attribute {
   | "rarity"
   | "totalSupply"
   | "artist"
-  | "creativeDirector"
   | "name"
   | "typeOfVote";
   value: string | Uint8Array | Bytes;
@@ -378,7 +377,6 @@ export interface RewardOption {
   transferable: number;
   symbol: string;
   artist: string;
-  creativeDirector: string;
   main: string;
   thumb: string;
   rarity: string;
