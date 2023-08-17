@@ -23,17 +23,17 @@ export type GenerateRewardsResult = {
   kusamaAssetHubTxs: string[] | undefined;
   distribution: RarityDistribution | undefined;
   fees:
-  | {
-    kusama: string;
-    nfts: string;
-  }
-  | undefined;
+    | {
+        kusama: string;
+        nfts: string;
+      }
+    | undefined;
   txsCount:
-  | {
-    kusama: number;
-    nfts: number;
-  }
-  | undefined;
+    | {
+        kusama: number;
+        nfts: number;
+      }
+    | undefined;
 };
 
 export type CreateCollectionResult = {
@@ -97,16 +97,16 @@ export interface LockResultItem {
 
 export type DelegatingData = {
   delegating: {
-    balance: number,
-    target: string,
-    conviction: string,
+    balance: number;
+    target: string;
+    conviction: string;
     delegations: {
-      votes: number,
-      capital: number,
-    },
-    prior: number[],
-  }
-}
+      votes: number;
+      capital: number;
+    };
+    prior: number[];
+  };
+};
 
 export type ConvictionVote = {
   // The particular governance track
@@ -238,12 +238,12 @@ export interface RarityDistribution {
 
 interface Attribute {
   name:
-  | "rarity"
-  | "totalSupply"
-  | "artist"
-  | "creativeDirector"
-  | "name"
-  | "typeOfVote";
+    | "rarity"
+    | "totalSupply"
+    | "artist"
+    | "creativeDirector"
+    | "name"
+    | "typeOfVote";
   value: string | Uint8Array | Bytes;
 }
 
@@ -339,6 +339,7 @@ export interface CollectionConfiguration {
 export interface ConfigNFT {
   file: any;
   description: string;
+  imageCid?: string;
   metadataCid?: string | null;
 }
 
@@ -401,6 +402,6 @@ export interface SendAndFinalizeResult {
 export type ToastType =
   | undefined
   | {
-    title: string;
-    messages: string[];
-  };
+      title: string;
+      messages: string[];
+    };

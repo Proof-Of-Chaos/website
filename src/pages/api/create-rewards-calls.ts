@@ -68,10 +68,13 @@ export default async function handler(req, res) {
   const apiPinata = await setupPinata();
 
   try {
-    const callResult: GenerateRewardsResult = await generateCalls(apiPinata, config);
-    console.log("callsdone")
+    const callResult: GenerateRewardsResult = await generateCalls(
+      apiPinata,
+      config
+    );
+    console.log("callsdone");
     //mint configNFT
-    console.log('Status:' + await createConfigNFT(apiPinata, config))
+    console.log("Status:" + (await createConfigNFT(apiPinata, config)));
     res.status(200).json(callResult);
   } catch (error) {
     // Sends error to the client side
@@ -116,8 +119,6 @@ const generateCalls = async (
     logger.error(`Referendum is still ongoing: ${e}`);
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
-
-  
 
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =
