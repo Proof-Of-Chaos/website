@@ -99,6 +99,7 @@ const generateCalls = async (
   // logger.info("with config", config);
 
   await cryptoWaitReady();
+
   const referendumIndex = new BN(config.refIndex);
 
   //get Kusama API
@@ -112,6 +113,7 @@ const generateCalls = async (
 
   //get ref ended block number
   let blockNumber;
+  logger.info(`ℹ️  Getting block number for referendum ${refIndex}`);
   try {
     blockNumber = await getBlockNumber(apiKusama, referendumIndex);
     if (!blockNumber) throw new Error("Referendum is still ongoing");
@@ -120,6 +122,7 @@ const generateCalls = async (
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
 
+  logger.info(`ℹ️  Getting all voting wallets for ${refIndex}`);
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =
     await getDecoratedVotesWithInfo(config, kusamaChainDecimals, logger);

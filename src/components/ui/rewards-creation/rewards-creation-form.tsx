@@ -19,6 +19,7 @@ import {
 import { getWalletBySource } from "@talismn/connect-wallets";
 import { useModal } from "../../modals/context";
 import { usePastReferendaIndices } from "../../../hooks/use-gov2";
+import { useIsMounted } from "../../../hooks/use-is-mounted";
 
 export function RewardsCreationForm() {
   const { openModal, closeModal } = useModal();
@@ -41,6 +42,8 @@ export function RewardsCreationForm() {
   });
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+
+  const isMounted = useIsMounted();
 
   const formMethods = useForm({
     defaultValues: defaultReferendumRewardsConfig,
@@ -186,145 +189,154 @@ export function RewardsCreationForm() {
 
   return (
     <div className={style.formWrapper}>
-      <FormProvider {...formMethods}>
-        <form
-          onSubmit={formMethods.handleSubmit(onSubmit)}
-          className={style.form}
-        >
-          <h1 className="text-2xl">Create Rewards for a Referendum</h1>
-          <p className="text-xs">
-            Here you can create a signable transactions for sending out NFTs to
-            users who voted on a referendum.
-          </p>
-          <p className="text-xs">Just fill in the form and click submit.</p>
-          <label
-            htmlFor="refIndex"
-            className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-          >
-            Referendum Index
-          </label>
-          <select
-            className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-            {...formMethods.register("refIndex", {
-              validate: {},
-            })}
-          >
-            {}
-            {isPastRefIndicesLoading ? (
-              <option>Loading ...</option>
-            ) : (
-              pastReferendaIndices?.map((refIdx) => (
-                <option key={refIdx} value={refIdx}>
-                  {refIdx}
-                </option>
-              ))
-            )}
-          </select>
-          <p className="form-helper">
-            Select any <b>past</b> referendum to prepare the NFT sendouts for
-          </p>
-
-          <label
-            htmlFor="royaltyAddress"
-            className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-          >
-            Royalty Address
-          </label>
-          <input
-            className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-            placeholder="0"
-            type="text"
-            {...formMethods.register("royaltyAddress", {
-              validate: {},
-            })}
-            required
-          />
-          <p className="form-helper">
-            Where trading royalties should go to (Kusama / Asset Hub). Support
-            us by leaving the default Proof of Chaos wallet.
-          </p>
-
-          <>
-            <label
-              htmlFor="collectionId"
-              className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+      {isMounted && (
+        <FormProvider {...formMethods}>
+          {!walletAddress ? (
+            <div>Please connect your wallet to proceed</div>
+          ) : (
+            <form
+              onSubmit={formMethods.handleSubmit(onSubmit)}
+              className={style.form}
             >
-              Collection Id
-            </label>
-            <div className="flex">
-              <input
+              <h1 className="text-2xl">Create Rewards for a Referendum</h1>
+              <p className="text-xs">
+                Here you can create a signable transactions for sending out NFTs
+                to users who voted on a referendum.
+              </p>
+              <p className="text-xs">Just fill in the form and click submit.</p>
+              <label
+                htmlFor="refIndex"
+                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+              >
+                Referendum Index
+              </label>
+              <select
                 className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-                placeholder="The id of your existing collection"
-                type="text"
-                {...formMethods.register("collectionConfig.id", {
+                {...formMethods.register("refIndex", {
                   validate: {},
                 })}
-                disabled={isNewCollectionLoading}
-              />
-              <Button
-                className="mt-2 ml-2"
-                onClick={createNewCollection}
-                variant="primary"
-                size="small"
               >
-                {isNewCollectionLoading ? (
-                  <>
-                    Creating new Collection <InlineLoader></InlineLoader>
-                  </>
+                {}
+                {isPastRefIndicesLoading ? (
+                  <option>Loading ...</option>
                 ) : (
-                  "Create New Collection"
+                  pastReferendaIndices?.map((refIdx) => (
+                    <option key={refIdx} value={refIdx}>
+                      {refIdx}
+                    </option>
+                  ))
                 )}
-              </Button>
-            </div>
-            <p className="form-helper">
-              Either choose an existing collection to mint the NFTs into, or
-              create a new one
-            </p>
-          </>
-
-          <label className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white">
-            NFTs
-          </label>
-          <p className="form-helper">
-            You can create 3 different NFTs of different rarity by uploading an
-            image and providing metadata. The mapping of voter -&gt; rarity is
-            performed by the POC algorithm taking several metrics + randomness
-            into account.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
-            {["common", "rare", "epic"].map((rarity, index) => {
-              // const fields = watchFormFields.options[index];
-              return (
-                <RewardsCreationRarityFields
-                  key={rarity}
-                  rarity={rarity}
-                  refConfig={watchFormFields}
-                />
-              );
-            })}
-          </div>
-
-          {errors["refIndex"] &&
-            errors["refIndex"].type === "positiveNumber" && (
-              <p className="form-error">
-                Your vote amount must be a positive number
+              </select>
+              <p className="form-helper">
+                Select any <b>past</b> referendum to prepare the NFT sendouts
+                for
               </p>
-            )}
-          {errors["refIndex"] &&
-            errors["refIndex"].type === "hasEnoughFunds" && (
-              <p className="form-error">You do not have enough available KSM</p>
-            )}
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full mt-4"
-            disabled={isCallDataLoading}
-          >
-            Submit Referendum Rewards
-          </Button>
-        </form>
-      </FormProvider>
+              <label
+                htmlFor="royaltyAddress"
+                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+              >
+                Royalty Address
+              </label>
+              <input
+                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+                placeholder="0"
+                type="text"
+                {...formMethods.register("royaltyAddress", {
+                  validate: {},
+                })}
+                required
+              />
+              <p className="form-helper">
+                Where trading royalties should go to (Kusama / Asset Hub).
+                Support us by leaving the default Proof of Chaos wallet.
+              </p>
+
+              <>
+                <label
+                  htmlFor="collectionId"
+                  className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
+                >
+                  Collection Id
+                </label>
+                <div className="flex">
+                  <input
+                    className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+                    placeholder="The id of your existing collection"
+                    type="text"
+                    {...formMethods.register("collectionConfig.id", {
+                      validate: {},
+                    })}
+                    disabled={isNewCollectionLoading}
+                  />
+                  <Button
+                    className="mt-2 ml-2"
+                    onClick={createNewCollection}
+                    variant="primary"
+                    size="small"
+                  >
+                    {isNewCollectionLoading ? (
+                      <>
+                        Creating new Collection <InlineLoader></InlineLoader>
+                      </>
+                    ) : (
+                      "Create New Collection"
+                    )}
+                  </Button>
+                </div>
+                <p className="form-helper">
+                  Either choose an existing collection to mint the NFTs into, or
+                  create a new one
+                </p>
+              </>
+
+              <label className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white">
+                NFTs
+              </label>
+              <p className="form-helper">
+                You can create 3 different NFTs of different rarity by uploading
+                an image and providing metadata. The mapping of voter -&gt;
+                rarity is performed by the POC algorithm taking several metrics
+                + randomness into account.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
+                {["common", "rare", "epic"].map((rarity, index) => {
+                  // const fields = watchFormFields.options[index];
+                  return (
+                    <RewardsCreationRarityFields
+                      key={rarity}
+                      rarity={rarity}
+                      refConfig={watchFormFields}
+                    />
+                  );
+                })}
+              </div>
+
+              {errors["refIndex"] &&
+                errors["refIndex"].type === "positiveNumber" && (
+                  <p className="form-error">
+                    Your vote amount must be a positive number
+                  </p>
+                )}
+              {errors["refIndex"] &&
+                errors["refIndex"].type === "hasEnoughFunds" && (
+                  <p className="form-error">
+                    You do not have enough available KSM
+                  </p>
+                )}
+
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-full mt-4"
+                disabled={isCallDataLoading}
+              >
+                Submit Referendum Rewards
+              </Button>
+            </form>
+          )}
+        </FormProvider>
+      )}
       {isOverlayVisible && (
         <div className={style.overlay}>
           {isCallDataLoading && (
@@ -408,9 +420,9 @@ export function RewardsCreationForm() {
         </div>
       )}
       {/* <pre className="text-[0.5rem]">
-        file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
-        form fields: {JSON.stringify(watchFormFields, null, 2)}
-      </pre> */}
+          file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
+          form fields: {JSON.stringify(watchFormFields, null, 2)}
+        </pre> */}
       {/* <pre className="text-[0.5rem]">
         call config:
         {JSON.stringify(callData?.config, null, 2)}

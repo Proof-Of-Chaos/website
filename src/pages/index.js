@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { NextSeo } from "next-seo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLightbulb } from "@fortawesome/free-solid-svg-icons";
+import { faGift } from "@fortawesome/free-solid-svg-icons";
 
 import { websiteConfig } from "../data/website-config";
 import Button from "../components/ui/button";
@@ -35,7 +35,7 @@ function Home({ nfts }) {
             <Link href="/referendum-rewards" style={{ textDecoration: "none" }}>
               <Button className="mr-5 pointer-events-auto" variant="black">
                 <span className="pr-2">Create voting rewards</span>
-                <FontAwesomeIcon icon={faLightbulb} />
+                <FontAwesomeIcon icon={faGift} />
               </Button>
             </Link>
             <Link href="/vote" style={{ textDecoration: "none" }}>

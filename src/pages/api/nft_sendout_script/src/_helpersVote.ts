@@ -79,6 +79,7 @@ const applyBonusesFor = (
   bonusName: String,
   votes: VoteConviction[]
 ): VoteConviction[] => {
+  //TODO this is a stub
   return votes;
 };
 
@@ -95,12 +96,18 @@ export const getDecoratedVotesWithInfo = async (
   decoratedVotes: VoteConviction[];
   distribution: RarityDistribution;
 }> => {
+  logger.info(`↪ Getting referendum details and all voting wallets`);
+
   let { referendum, totalIssuance, votes } = await getConvictionVoting(
     parseInt(config.refIndex)
   );
 
   // start decorating the votes with additional information
   // TODO rename all below to decorateWith...
+
+  logger.info(
+    `↪ Getting locks for referendum ${config.refIndex} with ${votes.length} votes.`
+  );
 
   // 1. decorate `lockedWithConviction` - relevant info we consider instead of the vote * locked
   votes = await retrieveAccountLocks(
@@ -109,10 +116,16 @@ export const getDecoratedVotesWithInfo = async (
     referendum.track
   );
 
+  logger.info(`↪ Applying bonuses for referendum ${config.refIndex}.`);
+
   // 2. decorate with bonuses
   votes = applyBonusesFor("encointer", votes);
   votes = applyBonusesFor("dragon", votes);
   votes = applyBonusesFor("quiz", votes);
+
+  logger.info(
+    `↪ Checking for votes meeting requirements for referendum ${config.refIndex} with ${votes.length} votes.`
+  );
 
   // 3. decorate `meetsRequirements` - whether vote > threshold
   votes = await checkVotesMeetingRequirements(
@@ -120,6 +133,10 @@ export const getDecoratedVotesWithInfo = async (
     totalIssuance,
     config,
     chainDecimals
+  );
+
+  logger.info(
+    `↪ calculating distribution for referendum ${config.refIndex} with ${votes.length} votes.`
   );
 
   // 4. get global min, max, median values for calculating the final rarity
@@ -139,7 +156,7 @@ export const getDecoratedVotesWithInfo = async (
   );
 
   // 5. decorate with chances. E.g. chances: { common: 0.5, rare: 0.3, epic 0.2}
-
+  logger.info(`🎲 Calculating NFT probabilities and distribution`);
   const decoratedWithChancesVotes = decorateWithChances(
     votes,
     config,
@@ -178,8 +195,6 @@ const decorateWithChances = (
   seed: number = 0,
   logger: Logger
 ): { votesWithChances: VoteConviction[]; distribution: RarityDistribution } => {
-  logger.info(`🎲 Calculating NFT probabilities and distribution`);
-
   //seed the randomizer
   const rng = seedrandom(seed.toString());
 
@@ -217,15 +232,10 @@ const decorateWithChances = (
     logger.info(
       `✅ Distribution invariant holds for ${JSON.stringify(
         rarityDistribution
-      )}`
+      )} after ${seed} iterations.`
     );
     return { votesWithChances, distribution: rarityDistribution };
   } else {
-    logger.info(
-      `⚠️  Distribution invariant does not hold for ${JSON.stringify(
-        rarityDistribution
-      )} retrying with seed ${seed + 1}...`
-    );
     return decorateWithChances(
       votes,
       config,
