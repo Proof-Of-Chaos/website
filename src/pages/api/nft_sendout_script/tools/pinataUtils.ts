@@ -201,9 +201,15 @@ export const pinMetadataForConfigNFT = async (
   };
 
   //pin image file
-  const imageIpfsCid = (
-    await pinata.pinFileToIPFS(configNFT.file, pinataFileOptions)
-  ).IpfsHash;
+  let imageIpfsCid;
+
+  if (configNFT.imageCid) {
+    imageIpfsCid = configNFT.imageCid;
+  } else {
+    imageIpfsCid = (
+      await pinata.pinFileToIPFS(configNFT.file, pinataFileOptions)
+    ).IpfsHash;
+  }
 
   //pin metadata
   const metadata = {
