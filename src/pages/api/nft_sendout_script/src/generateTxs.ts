@@ -70,6 +70,11 @@ export const getTxsReferendumRewards = async (
     config
   );
 
+  //overwrite file attribute in config with the cid from pinata
+  config.options.forEach((option) => {
+    option.file = "ipfs://ipfs/" + fileAndMetadataCids.imageIpfsCids[option.rarity].direct;
+  });
+
   if (websiteConfig.rewards_sendout_filter.length > 0) {
     decoratedVotes = decoratedVotes.filter((vote) =>
       websiteConfig.rewards_sendout_filter.includes(vote.address.toString())
@@ -350,6 +355,7 @@ export const getTxsForVotes = (
     // );
   }
   usedIds = ids;
+  console.log("usedIds", usedIds)
   return txs;
 };
 
