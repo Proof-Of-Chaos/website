@@ -335,6 +335,7 @@ export interface ConfigNFT {
   description: string;
   imageCid?: string;
   metadataCid?: string | null;
+  settingsCollectionId: number;
 }
 
 export interface RewardConfiguration {
@@ -346,7 +347,6 @@ export interface RewardConfiguration {
   directOnly: boolean;
   collectionConfig: CollectionConfiguration;
   configNFT: ConfigNFT;
-  settingsCollectionId: number;
   babyBonus: number;
   toddlerBonus: number;
   adolescentBonus: number;

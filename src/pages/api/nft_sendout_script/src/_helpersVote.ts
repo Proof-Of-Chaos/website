@@ -26,6 +26,7 @@ import {
   getApiKusamaAssetHub,
   getDecimal,
   getNetworkPrefix,
+  sendAndFinalizeKeyPair,
 } from "../../../../data/chain";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils/utils";
@@ -634,7 +635,7 @@ export const createConfigNFT = async (
   const kusamaNetworkPrefix = await getNetworkPrefix("kusama");
   txs.push(
     apiKusamaAssetHub.tx.nfts.mint(
-      config.settingsCollectionId,
+      config.configNFT.settingsCollectionId,
       nftId,
       encodeAddress(account.address, kusamaNetworkPrefix),
       null
@@ -647,7 +648,7 @@ export const createConfigNFT = async (
   for (const attribute in configAttributes) {
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.settingsCollectionId,
+        config.configNFT.settingsCollectionId,
         nftId,
         "CollectionOwner",
         attribute,
@@ -660,7 +661,7 @@ export const createConfigNFT = async (
   for (const attribute in collectionConfig) {
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.settingsCollectionId,
+        config.configNFT.settingsCollectionId,
         nftId,
         "CollectionOwner",
         attribute,
@@ -675,7 +676,7 @@ export const createConfigNFT = async (
     for (const attribute in option) {
       txs.push(
         apiKusamaAssetHub.tx.nfts.setAttribute(
-          config.settingsCollectionId,
+          config.configNFT.settingsCollectionId,
           nftId,
           "CollectionOwner",
           "option" + optionIndex + attribute,
@@ -688,7 +689,7 @@ export const createConfigNFT = async (
 
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.settingsCollectionId,
+      config.configNFT.settingsCollectionId,
       nftId,
       "CollectionOwner",
       "nftIds",
@@ -705,21 +706,21 @@ export const createConfigNFT = async (
 
   txs.push(
     apiKusamaAssetHub.tx.nfts.setMetadata(
-      config.settingsCollectionId,
+      config.configNFT.settingsCollectionId,
       nftId,
       ipfsIdentifier
     )
   );
 
-  // const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
+  const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
 
-  // //send transactions using our account
-  // const { block, hash, success } = await sendAndFinalizeKeyPair(
-  //   apiKusamaAssetHub,
-  //   batch,
-  //   account
-  // );
-  // return success;
+  //send transactions using our account
+  const { block, hash, success } = await sendAndFinalizeKeyPair(
+    apiKusamaAssetHub,
+    batch,
+    account
+  );
+  return success;
 };
 
 const fetchReputableVoters = async (

@@ -217,7 +217,7 @@ export const pinMetadataForConfigNFT = async (
     mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
     image: `ipfs://ipfs/${imageIpfsCid}`,
     name: `Referendum ${config.refIndex} - Config NFT`,
-    description: `${configNFT.description}\n\n_This NFT was created with proofofchaos.app/referendum-rewards_`,
+    description: `${configNFT.description}\n\n_This NFT was created with [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
   };
   const metadataIpfsCid = (
     await pinata.pinJSONToIPFS(metadata, pinataMetadataOptions)

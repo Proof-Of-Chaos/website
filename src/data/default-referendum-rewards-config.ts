@@ -11,6 +11,7 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
   blockCutOff: null,
   directOnly: false,
   configNFT: {
+    settingsCollectionId: 86,
     file: undefined,
     imageCid: "QmZX9JAhur4ozT2mbHBVAWNRFZGfFRQLgkRgd1yyE35eme",
     description:
@@ -23,7 +24,6 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
     isNew: false,
     file: undefined,
   },
-  settingsCollectionId: 86,
   babyBonus: 7,
   toddlerBonus: 13,
   adolescentBonus: 16,

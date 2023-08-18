@@ -269,6 +269,7 @@ export function RewardsCreationForm() {
                     })}
                     disabled={isNewCollectionLoading}
                   />
+                  <div className="flex pl-4 pr-2 items-center">or</div>
                   <Button
                     className="mt-2 ml-2"
                     onClick={createNewCollection}
