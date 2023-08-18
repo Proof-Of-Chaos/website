@@ -43,6 +43,8 @@ import {
   PalletConvictionVotingVoteVoting,
   PalletReferendaReferendumInfoConvictionVotingTally,
 } from "@polkadot/types/lookup";
+import fs from "fs";
+
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -457,12 +459,12 @@ export const retrieveAccountLocks = async (
         const userLockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-              userVote.endBlock
-                .sub(endBlockBN)
-                .muln(10)
-                .div(sevenDaysBlocks)
-                .toNumber() / 10
-            );
+            userVote.endBlock
+              .sub(endBlockBN)
+              .muln(10)
+              .div(sevenDaysBlocks)
+              .toNumber() / 10
+          );
         const matchingPeriod = lockPeriods.reduce(
           (acc, curr, index) => (userLockPeriods >= curr ? index : acc),
           0
@@ -473,8 +475,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-            BN.max(max, current)
-          )
+          BN.max(max, current)
+        )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -644,7 +646,7 @@ export const createConfigNFT = async (
 
   //add all attributes for all config variables other than the collectionConfig and options
   //filter out all attributes other tan the collectionConfig and options
-  const { collectionConfig, options, ...configAttributes } = config;
+  const { collectionConfig, configNFT, options, ...configAttributes } = config;
   for (const attribute in configAttributes) {
     txs.push(
       apiKusamaAssetHub.tx.nfts.setAttribute(
@@ -652,11 +654,10 @@ export const createConfigNFT = async (
         nftId,
         "CollectionOwner",
         attribute,
-        config[attribute]
+        configAttributes[attribute] ? configAttributes[attribute].toString() : ""
       )
     );
   }
-
   //add attributes for all the new collection config
   for (const attribute in collectionConfig) {
     txs.push(
@@ -665,7 +666,20 @@ export const createConfigNFT = async (
         nftId,
         "CollectionOwner",
         attribute,
-        collectionConfig[attribute]
+        collectionConfig[attribute] ? collectionConfig[attribute].toString() : ""
+      )
+    );
+  }
+
+  //add attributes for all the configNFT stuff
+  for (const attribute in configNFT) {
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.setAttribute(
+        config.configNFT.settingsCollectionId,
+        nftId,
+        "CollectionOwner",
+        attribute,
+        configNFT[attribute] ? configNFT[attribute].toString() : ""
       )
     );
   }
@@ -680,13 +694,14 @@ export const createConfigNFT = async (
           nftId,
           "CollectionOwner",
           "option" + optionIndex + attribute,
-          option[attribute]
+          option[attribute] ? option[attribute].toString() : ""
         )
       );
     }
     optionIndex++;
   }
 
+  console.log(usedIds)
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
       config.configNFT.settingsCollectionId,
@@ -712,15 +727,24 @@ export const createConfigNFT = async (
     )
   );
 
-  const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
-
-  //send transactions using our account
-  const { block, hash, success } = await sendAndFinalizeKeyPair(
-    apiKusamaAssetHub,
-    batch,
-    account
+  fs.writeFileSync(
+    `./log/tmp_config_transactions_${config.refIndex}_xcm.json`,
+    JSON.stringify(
+      txs.map((tx) => tx.toHuman()),
+      null,
+      2
+    )
   );
-  return success;
+
+  // const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
+
+  // //send transactions using our account
+  // const { block, hash, success } = await sendAndFinalizeKeyPair(
+  //   apiKusamaAssetHub,
+  //   batch,
+  //   account
+  // );
+  // return success;
 };
 
 const fetchReputableVoters = async (
