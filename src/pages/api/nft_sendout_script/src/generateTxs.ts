@@ -64,6 +64,8 @@ export const getTxsReferendumRewards = async (
     rarityDistribution
   );
 
+  console.log("💎💎💎 your nft attributes are", JSON.stringify(attributes));
+
   // pin metadata and file for each rarity option to Pinata and get nft attributes
   const fileAndMetadataCids = await pinImageAndMetadataForOptions(
     apiPinata,
