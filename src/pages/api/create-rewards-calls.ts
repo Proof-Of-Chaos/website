@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     );
     console.log("callsdone");
     //mint configNFT
-    console.log("Status:" + (await createConfigNFT(apiPinata, config)));
+    // console.log("Status:" + (await createConfigNFT(apiPinata, config)));
     res.status(200).json(callResult);
   } catch (error) {
     // Sends error to the client side
