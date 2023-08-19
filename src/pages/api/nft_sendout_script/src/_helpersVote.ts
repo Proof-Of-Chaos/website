@@ -416,7 +416,7 @@ export const retrieveAccountLocks = async (
   ];
   const sevenDaysBlocks: BN = api.consts.convictionVoting.voteLockingPeriod;
 
-  const endBlockBN = new BN(endBlock); //.addn(1);
+  const endBlockBN = new BN(endBlock);
   const promises = votes.map(async (vote) => {
     let directLocks = await useAccountLocksImpl(
       api,
