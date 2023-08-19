@@ -358,11 +358,13 @@ export interface RewardConfiguration {
   defaultRoyalty: number;
   royaltyAddress: string;
   options: RewardOption[];
-  minValue?: number | null;
-  maxValue?: number | null;
-  median?: number | null;
-  minVote?: number | null;
-  maxVote?: number | null;
+  lowerLimitOfCurve?: number | null;
+  upperLimitOfCurve?: number | null;
+  medianOfCurve?: number | null;
+  minRequiredLockedWithConvicition?: number | null;
+  maxAllowedLockedWithConvicition?: number | null;
+  maxLockedWithConviction?: number | null;
+  minLockedWithConviction?: number | null;
   sender?: string;
   seed?: string;
 }

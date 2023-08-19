@@ -132,11 +132,11 @@ export default function PastReferendumModal({ id }) {
     return <Loader />;
   }
 
-  const isVoteBelowMinValue = values.ksm < refConfig?.minValue;
+  const isVoteBelowLowerLimit = values.ksm < refConfig?.lowerLimitOfCurve;
   const currentLuckMultiplier = getLuckMultiplier(values.dragon, refConfig);
   const lucks = lucksForConfig(values.ksm, refConfig, currentLuckMultiplier);
 
-  const chartData = !isVoteBelowMinValue
+  const chartData = !isVoteBelowLowerLimit
     ? [
         {
           x: `common\n${parseFloat(lucks["common"]).toFixed(2)}%`,
@@ -292,7 +292,7 @@ export default function PastReferendumModal({ id }) {
                 </FormHelperText>
                 <div className="pt-5">
                   Vote Amount With Conviction
-                  {isVoteBelowMinValue && (
+                  {isVoteBelowLowerLimit && (
                     <FormHelperText>
                       Your chance of getting a common NFT is 100% as your vote
                       amount considered is below the minValue set for this

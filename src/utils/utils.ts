@@ -136,7 +136,7 @@ const lucksForConfig = (
 ): Record<string, number> => {
   const lucks: Record<string, number> = {};
 
-  if (ksm < refConfig.minValue) {
+  if (ksm < refConfig.lowerLimitOfCurve) {
     return {
       common: 100,
       rare: 0,
@@ -152,11 +152,11 @@ const lucksForConfig = (
   );
 
   optionsToConsider?.forEach((option) => {
-    if (ksm < refConfig.median) {
+    if (ksm < refConfig.medianOfCurve) {
       lucks[`${option.rarity}`] = calculateLuck(
         ksm,
-        refConfig.minValue,
-        refConfig.median,
+        refConfig.lowerLimitOfCurve,
+        refConfig.medianOfCurve,
         option.minProbability,
         //this was before the sweetspot probability
         (option.maxProbability + option.minProbability) / 2,
@@ -166,8 +166,8 @@ const lucksForConfig = (
     } else {
       lucks[`${option.rarity}`] = calculateLuck(
         ksm,
-        refConfig.median,
-        refConfig.maxValue,
+        refConfig.medianOfCurve,
+        refConfig.upperLimitOfCurve,
         (option.maxProbability + option.minProbability) / 2,
         option.maxProbability,
         EXPONENT_CONSTANTS[1],

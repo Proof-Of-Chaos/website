@@ -146,16 +146,24 @@ export const getDecoratedVotesWithInfo = async (
   const {
     votesMeetingRequirements,
     votesNotMeetingRequirements,
-    minVoteValue,
-    maxVoteValue,
-    medianVoteValue,
+    lowerLimitOfCurve,
+    upperLimitOfCurve,
+    medianOfCurve,
+    minLockedWithConviction,
+    maxLockedWithConviction
   } = getVoteInfo(votes, config);
 
   logger.info(
     `📊 Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
   );
   logger.info(
-    `📊 Min vote value: ${minVoteValue}, max vote value: ${maxVoteValue}, median vote value: ${medianVoteValue}`
+    `📊 Max locked with conviction meeting requirements: ${maxLockedWithConviction}KSM, min locked with conviction meeting requirements: ${minLockedWithConviction}KSM`
+  );
+  logger.info(
+    `📊 This is the range of values used to compute the median as well as lower and upper limits of the 'luck' curve`
+  );
+  logger.info(
+    `📊 Computed lower limit of curve: ${lowerLimitOfCurve}KSM, upper limit of curve: ${upperLimitOfCurve}KSM, median of curve: ${medianOfCurve}KSM`
   );
 
   // 5. decorate with chances. E.g. chances: { common: 0.5, rare: 0.3, epic 0.2}
@@ -163,9 +171,9 @@ export const getDecoratedVotesWithInfo = async (
   const decoratedWithChancesVotes = decorateWithChances(
     votes,
     config,
-    minVoteValue,
-    maxVoteValue,
-    medianVoteValue,
+    lowerLimitOfCurve,
+    upperLimitOfCurve,
+    medianOfCurve,
     0,
     logger
   );
@@ -192,18 +200,18 @@ export const getDecoratedVotesWithInfo = async (
 const decorateWithChances = (
   votes: VoteConviction[],
   config: RewardConfiguration,
-  minVoteValue: number,
-  maxVoteValue: number,
-  medianVoteValue: number,
+  lowerLimitOfCurve: number,
+  upperLimitOfCurve: number,
+  medianOfCurve: number,
   seed: number = 0,
   logger: Logger
 ): { votesWithChances: VoteConviction[]; distribution: RarityDistribution } => {
   //seed the randomizer
   const rng = seedrandom(seed.toString());
 
-  config.minValue = minVoteValue;
-  config.maxValue = maxVoteValue;
-  config.median = medianVoteValue;
+  config.lowerLimitOfCurve = lowerLimitOfCurve;
+  config.upperLimitOfCurve = upperLimitOfCurve;
+  config.medianOfCurve = medianOfCurve;
 
   const rarityDistribution = {};
 
@@ -243,9 +251,9 @@ const decorateWithChances = (
     return decorateWithChances(
       votes,
       config,
-      minVoteValue,
-      maxVoteValue,
-      medianVoteValue,
+      lowerLimitOfCurve,
+      upperLimitOfCurve,
+      medianOfCurve,
       ++seed,
       logger
     );
@@ -258,9 +266,11 @@ const getVoteInfo = (
 ): {
   votesMeetingRequirements: VoteConviction[];
   votesNotMeetingRequirements: VoteConviction[];
-  minVoteValue: number;
-  maxVoteValue: number;
-  medianVoteValue: number;
+  lowerLimitOfCurve: number;
+  upperLimitOfCurve: number;
+  medianOfCurve: number;
+  minLockedWithConviction: number;
+  maxLockedWithConviction: number;
 } => {
   const votesMeetingRequirements = votes.filter((vote) => {
     return vote.meetsRequirements;
@@ -270,17 +280,11 @@ const getVoteInfo = (
     return !vote.meetsRequirements;
   });
 
-  const minVoteValue = votesMeetingRequirements.reduce((prev, curr) =>
-    prev.lockedWithConviction.lt(curr.lockedWithConviction) ? prev : curr
-  )?.lockedWithConviction;
 
-  const maxVoteValue = votesMeetingRequirements.reduce((prev, curr) =>
-    prev.lockedWithConviction.gt(curr.lockedWithConviction) ? prev : curr
-  )?.lockedWithConviction;
 
   // Get the median and normalize min vote to threshold
   const threshold = config.minAmount;
-  const { minValue, maxValue, median } = getMinMaxMedian(
+  const { generatedLowerLimit: lowerLimitOfCurve, generatedUpperLimit: upperLimitOfCurve, median: medianOfCurve, min: minLockedWithConviction, max: maxLockedWithConviction } = getLimitsAndMinMaxMedian(
     votesMeetingRequirements.map((vote) => vote.lockedWithConvictionDecimal),
     threshold
   );
@@ -288,9 +292,11 @@ const getVoteInfo = (
   return {
     votesMeetingRequirements,
     votesNotMeetingRequirements,
-    minVoteValue: minValue,
-    maxVoteValue: maxValue,
-    medianVoteValue: median,
+    lowerLimitOfCurve,
+    upperLimitOfCurve,
+    medianOfCurve,
+    minLockedWithConviction,
+    maxLockedWithConviction
   };
 };
 
@@ -300,21 +306,25 @@ const getVoteInfo = (
  * @param criticalValue The critical value to filter the vote amounts.
  * @returns An object containing the minimum, maximum, and median values.
  */
-export const getMinMaxMedian = (
+export const getLimitsAndMinMaxMedian = (
   voteAmounts: number[],
   criticalValue: number
-): { minValue: number; maxValue: number; median: number } => {
+): { generatedUpperLimit: number, generatedLowerLimit: number, min: number; max: number; median: number } => {
+  const min = Math.min(...voteAmounts);
+  const max = Math.max(...voteAmounts);
   if (voteAmounts.length < 4) {
     return {
-      minValue: Math.min(...voteAmounts),
-      maxValue: Math.max(...voteAmounts),
+      generatedUpperLimit: max,
+      generatedLowerLimit: min,
+      max,
+      min,
       median: voteAmounts[Math.floor(voteAmounts.length / 2)],
     };
   }
 
   const filteredVotes = voteAmounts.filter((vote) => vote > criticalValue);
 
-  let values, q1, q3, iqr, maxValue, minValue, median;
+  let values, q1, q3, iqr, generatedLowerLimit, generatedUpperLimit, median;
 
   values = filteredVotes.slice().sort((a, b) => a - b); // Copy array and sort
   if ((values.length / 4) % 1 === 0) {
@@ -337,10 +347,10 @@ export const getMinMaxMedian = (
   }
 
   iqr = q3 - q1;
-  maxValue = q3 + iqr * 1.5;
-  minValue = Math.max(q1 - iqr * 1.5, criticalValue);
+  generatedUpperLimit = q3 + iqr * 1.5;
+  generatedLowerLimit = Math.max(q1 - iqr * 1.5, criticalValue);
 
-  return { minValue, maxValue, median };
+  return { generatedLowerLimit, generatedUpperLimit,  min, max, median };
 };
 
 /**
@@ -356,16 +366,16 @@ export const checkVotesMeetingRequirements = async (
   config: RewardConfiguration,
   chainDecimals: BN
 ): Promise<VoteConvictionRequirements[]> => {
-  const minVote = BN.max(new BN(config.min), new BN("0"));
-  const maxVote = BN.min(new BN(config.max), new BN(totalIssuance));
+  const minRequiredLockedWithConvicition = BN.max(new BN(config.min), new BN("0"));
+  const maxAllowedLockedWithConvicition = BN.min(new BN(config.max), new BN(totalIssuance));
 
-  config.minVote = getDecimal(minVote.toString(), chainDecimals);
-  config.maxVote = getDecimal(maxVote.toString(), chainDecimals);
+  config.minRequiredLockedWithConvicition = getDecimal(minRequiredLockedWithConvicition.toString(), chainDecimals);
+  config.maxAllowedLockedWithConvicition = getDecimal(maxAllowedLockedWithConvicition.toString(), chainDecimals);
 
   const filtered: VoteConvictionRequirements[] = votes.map((vote, i) => {
     const meetsRequirements = !(
-      vote.lockedWithConviction.lt(minVote) ||
-      vote.lockedWithConviction.gt(maxVote) ||
+      vote.lockedWithConviction.lt(minRequiredLockedWithConvicition) ||
+      vote.lockedWithConviction.gt(maxAllowedLockedWithConvicition) ||
       (config.directOnly && vote.voteType === "Delegating") ||
       (config.first !== null && i > config.first)
     );
