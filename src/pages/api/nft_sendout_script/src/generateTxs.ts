@@ -393,6 +393,7 @@ const getAllSetAttributeTxs = (
     ["amountLockedInGovernance", vote.lockedWithConvictionDecimal],
     ["voteDirection", vote.voteDirection],
     ["delegatedConvictionBalance", vote.delegatedConvictionBalance.toString()],
+    ["delegatedTo", vote.delegatedTo?.toString()],
 
     // single account royalties (kodadot friendly)
     ["royalty", vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty],
