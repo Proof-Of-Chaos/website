@@ -168,7 +168,7 @@ export const getConvictionVoting = async (referendumIndex: number) => {
   // for (const [finishedRefIndex, referendum] of finishedReferenda.entries()) {
   const apiAt = await getApiAt(
     "kusama",
-    referendum.confirmationBlockNumber - 1
+    referendum.confirmationBlockNumber
   );
 
   const votingForAtEnd = await apiAt.query.convictionVoting.votingFor.entries();
