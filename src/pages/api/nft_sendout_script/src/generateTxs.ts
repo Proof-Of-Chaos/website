@@ -273,7 +273,7 @@ export const getTxsForVotes = (
 ): any => {
   const txs = [];
   const timestamp = Date.now();
-  const ids = [];
+  let ids = [];
   for (let i = 0; i < decoratedVotes.length; i++) {
     const vote = decoratedVotes[i];
 
@@ -357,7 +357,6 @@ export const getTxsForVotes = (
     // );
   }
   usedIds = ids;
-  console.log("usedIds", usedIds)
   return txs;
 };
 
@@ -396,7 +395,7 @@ const getAllSetAttributeTxs = (
     ["delegatedConvictionBalance", vote.delegatedConvictionBalance.toString()],
 
     // single account royalties (kodadot friendly)
-    ["royalty", vote.meetsRequirements ? randRoyaltyInRange : 0],
+    ["royalty", vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty],
     ["recipient", config.royaltyAddress],
 
     // ["aye", vote.balance.aye.toString()],

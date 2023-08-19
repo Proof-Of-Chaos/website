@@ -214,8 +214,8 @@ export const pinMetadataForConfigNFT = async (
   //pin metadata
   const metadata = {
     external_url: "https://www.proofofchaos.app/",
-    mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
-    image: `ipfs://ipfs/${imageIpfsCid}`,
+    mediaUri: imageIpfsCid,
+    image: imageIpfsCid,
     name: `Referendum ${config.refIndex} - Config NFT`,
     description: `${configNFT.description}\n\n_This NFT was created with [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
   };

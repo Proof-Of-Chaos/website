@@ -347,13 +347,13 @@ export interface RewardConfiguration {
   directOnly: boolean;
   collectionConfig: CollectionConfiguration;
   configNFT: ConfigNFT;
-  babyBonus: number;
-  toddlerBonus: number;
-  adolescentBonus: number;
-  adultBonus: null;
-  quizBonus: number;
-  identityBonus: null;
-  encointerBonus: number;
+  // babyBonus: number;
+  // toddlerBonus: number;
+  // adolescentBonus: number;
+  // adultBonus: null;
+  // quizBonus: number;
+  // identityBonus: null;
+  // encointerBonus: number;
   minAmount: number;
   defaultRoyalty: number;
   royaltyAddress: string;
@@ -364,17 +364,15 @@ export interface RewardConfiguration {
   minVote?: number | null;
   maxVote?: number | null;
   sender?: string;
+  seed?: string;
 }
 
 export interface RewardOption {
   description: String;
   maxProbability: number | null;
   minProbability: number | null;
-  transferable: number;
-  symbol: string;
+  transferable: boolean;
   artist: string;
-  main: string;
-  thumb: string;
   rarity: string;
   itemName: string;
   minRoyalty: number;

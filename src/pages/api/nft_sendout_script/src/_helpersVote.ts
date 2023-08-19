@@ -237,6 +237,7 @@ const decorateWithChances = (
         rarityDistribution
       )} after ${seed} iterations.`
     );
+    config.seed = seed.toString()
     return { votesWithChances, distribution: rarityDistribution };
   } else {
     return decorateWithChances(
@@ -665,7 +666,7 @@ export const createConfigNFT = async (
         config.configNFT.settingsCollectionId,
         nftId,
         "CollectionOwner",
-        attribute,
+        "collection_" + attribute,
         collectionConfig[attribute] ? collectionConfig[attribute].toString() : ""
       )
     );
@@ -678,7 +679,7 @@ export const createConfigNFT = async (
         config.configNFT.settingsCollectionId,
         nftId,
         "CollectionOwner",
-        attribute,
+        "configNFT_" + attribute,
         configNFT[attribute] ? configNFT[attribute].toString() : ""
       )
     );
@@ -693,7 +694,7 @@ export const createConfigNFT = async (
           config.configNFT.settingsCollectionId,
           nftId,
           "CollectionOwner",
-          "option" + optionIndex + attribute,
+          "option_" + optionIndex + "_" + attribute,
           option[attribute] ? option[attribute].toString() : ""
         )
       );
@@ -701,29 +702,28 @@ export const createConfigNFT = async (
     optionIndex++;
   }
 
-  console.log(usedIds)
   txs.push(
     apiKusamaAssetHub.tx.nfts.setAttribute(
       config.configNFT.settingsCollectionId,
       nftId,
       "CollectionOwner",
       "nftIds",
-      usedIds
+      usedIds.toString()
     )
   );
 
   // pin metadata and file for config NFT to Pinata
-  config.configNFT.metadataCid = (
+  const configMetadataCid = (
     await pinMetadataForConfigNFT(apiPinata, config)
   ).metadataIpfsCid;
 
-  const ipfsIdentifier = `ipfs://ipfs/${config.configNFT.metadataCid}`;
+  config.configNFT.metadataCid = `ipfs://ipfs/${configMetadataCid}`;
 
   txs.push(
     apiKusamaAssetHub.tx.nfts.setMetadata(
       config.configNFT.settingsCollectionId,
       nftId,
-      ipfsIdentifier
+      config.configNFT.metadataCid
     )
   );
 
