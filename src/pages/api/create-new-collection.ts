@@ -1,7 +1,7 @@
 import formidable, { errors as formidableErrors } from "formidable";
 import fs from "fs";
 import { getTxCollectionCreate } from "./nft_sendout_script/src/createCollection";
-import { getApiKusamaAssetHub } from "../../data/chain";
+import { getApiKusamaAssetHub } from "../../data/getApi";
 
 /**
  * Handler for the /api/create-new-collection endpoint. It will only create the collection, not add the metadata.

@@ -20,14 +20,14 @@ const CHAIN = {
 
 export const WS_ENDPOINTS = {
   [CHAIN.KUSAMA]: [
-    "wss://kusama-rpc.polkadot.io",
     "wss://kusama-rpc.dwellir.com",
+    "wss://kusama-rpc.polkadot.io",
     "wss://kusama.api.onfinality.io/public-ws",
   ],
   [CHAIN.KUSAMA_ASSET_HUB]: [
+    "wss://rpc-asset-hub-kusama.luckyfriday.io",
     "wss://kusama-asset-hub-rpc.polkadot.io",
     "wss://statemine.api.onfinality.io/public-ws",
-    "wss://rpc-asset-hub-kusama.luckyfriday.io",
   ],
   [CHAIN.ENCOINTER]: [
     "wss://kusama.api.enointer.org",
@@ -37,8 +37,8 @@ export const WS_ENDPOINTS = {
   ],
 };
 
-const MAX_RETRIES = 15;
-const WS_DISCONNECT_TIMEOUT_SECONDS = 20;
+const MAX_RETRIES = 10;
+const WS_DISCONNECT_TIMEOUT_SECONDS = 10;
 
 let wsProviders = {
   [CHAIN.KUSAMA]: undefined,
@@ -254,8 +254,12 @@ export async function getApi(chain: string, retry = 0): Promise<ApiPromise> {
   const chainProvider = wsProviders[chain];
   const chainApi = apis[chain];
 
-  if (chainProvider && chainApi) {
-    // console.log("returning api from cache for chain", chain);
+  if (chainProvider && chainApi && chainApi.isConnected) {
+    console.log(
+      "returning api from cache for chain",
+      chain,
+      " because it is connected"
+    );
     return chainApi;
   }
 
@@ -268,13 +272,19 @@ export async function getApi(chain: string, retry = 0): Promise<ApiPromise> {
     await apis[chain].isReady;
     return apis[chain];
   } catch (error) {
+    console.log("error in getApi -> getProvider", error);
     if (retry < MAX_RETRIES) {
+      console.log("⎋ rotating endpoints");
+
+      console.log("before", WS_ENDPOINTS[chain]);
       // If we have reached maximum number of retries on the primaryEndpoint, let's move it to the end of array and try the secondary endpoint
       WS_ENDPOINTS[chain] = [
         secondaryEndpoint,
         ...otherEndpoints,
         primaryEndpoint,
       ];
+
+      console.log("after", WS_ENDPOINTS[chain]);
       return await getApi(chain, retry + 1);
     } else {
       return apis[chain];
@@ -288,12 +298,12 @@ async function getProvider(chain: string, endpointIndex = 0) {
   if (wsProviders[chain]) return wsProviders[chain];
 
   return await new Promise((resolve, reject) => {
-    wsProviders[chain] = new WsProvider(primaryEndpoint);
+    wsProviders[chain] = new WsProvider(primaryEndpoint, 1000);
     wsProviders[chain].on("disconnected", async () => {
       console.log(`⛓️  WS provider for rpc ${primaryEndpoint} disconnected!`);
-      if (!healthCheckInProgress) {
+      if (!healthCheckInProgress[chain]) {
         try {
-          await providerHealthCheck(primaryEndpoint);
+          await providerHealthCheck(chain);
           resolve(wsProviders[chain]);
         } catch (error) {
           reject(error);
@@ -306,9 +316,9 @@ async function getProvider(chain: string, endpointIndex = 0) {
     });
     wsProviders[chain].on("error", async () => {
       console.log(`Error thrown for rpc ${primaryEndpoint}`);
-      if (!healthCheckInProgress) {
+      if (!healthCheckInProgress[chain]) {
         try {
-          await providerHealthCheck(primaryEndpoint);
+          await providerHealthCheck(chain);
           resolve(wsProviders[chain]);
         } catch (error) {
           reject(error);
@@ -320,7 +330,7 @@ async function getProvider(chain: string, endpointIndex = 0) {
 
 async function providerHealthCheck(chain: string) {
   console.log(
-    `💗 Performing ${WS_DISCONNECT_TIMEOUT_SECONDS} seconds health check for WS Provider fro rpc ${chain}.`
+    `💗 Performing ${WS_DISCONNECT_TIMEOUT_SECONDS} seconds health check for WS Provider for rpc ${chain}.`
   );
   healthCheckInProgress[chain] = true;
   await sleep(WS_DISCONNECT_TIMEOUT_SECONDS * 1000);
@@ -467,3 +477,13 @@ const getBlockHash = async (
   }
   return (await api.rpc.chain.getBlockHash(blockNumber)).toString();
 };
+
+export async function getNFTCollectionDeposit(api: ApiPromise): Promise<BN> {
+  const deposit = await api.consts.nfts?.collectionDeposit.toString();
+  return deposit;
+}
+
+export async function getNFTItemDeposit(api: ApiPromise) {
+  const deposit = await api.consts.nfts?.itemDeposit.toString();
+  return deposit;
+}

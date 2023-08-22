@@ -1,4 +1,5 @@
-import { getApiAt, getApiKusama, getDenom } from "../../../../data/chain";
+import { getApiAt, getDenom } from "../../../../data/chain";
+import { getApiKusama } from "../../../../data/getApi";
 import {
   ConvictionDelegation,
   ConvictionVote,
@@ -166,10 +167,7 @@ export const getConvictionVoting = async (referendumIndex: number) => {
   // FINISHED REFERENDA
   // Query the delegations for finished referenda at previous block heights
   // for (const [finishedRefIndex, referendum] of finishedReferenda.entries()) {
-  const apiAt = await getApiAt(
-    "kusama",
-    referendum.confirmationBlockNumber
-  );
+  const apiAt = await getApiAt("kusama", referendum.confirmationBlockNumber);
 
   const votingForAtEnd = await apiAt.query.convictionVoting.votingFor.entries();
 

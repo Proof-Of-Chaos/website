@@ -23,11 +23,11 @@ import type {
 import { ApiDecoration } from "@polkadot/api/types";
 import {
   getApiAt,
-  getApiKusamaAssetHub,
   getDecimal,
   getNetworkPrefix,
   sendAndFinalizeKeyPair,
 } from "../../../../data/chain";
+import { getApiKusamaAssetHub } from "../../../../data/getApi";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils/utils";
 import { Logger } from "log4js";
@@ -44,7 +44,6 @@ import {
   PalletReferendaReferendumInfoConvictionVotingTally,
 } from "@polkadot/types/lookup";
 import fs from "fs";
-
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -150,7 +149,7 @@ export const getDecoratedVotesWithInfo = async (
     upperLimitOfCurve,
     medianOfCurve,
     minLockedWithConviction,
-    maxLockedWithConviction
+    maxLockedWithConviction,
   } = getVoteInfo(votes, config);
 
   logger.info(
@@ -245,7 +244,7 @@ const decorateWithChances = (
         rarityDistribution
       )} after ${seed} iterations.`
     );
-    config.seed = seed.toString()
+    config.seed = seed.toString();
     return { votesWithChances, distribution: rarityDistribution };
   } else {
     return decorateWithChances(
@@ -280,11 +279,15 @@ const getVoteInfo = (
     return !vote.meetsRequirements;
   });
 
-
-
   // Get the median and normalize min vote to threshold
   const threshold = config.minAmount;
-  const { generatedLowerLimit: lowerLimitOfCurve, generatedUpperLimit: upperLimitOfCurve, median: medianOfCurve, min: minLockedWithConviction, max: maxLockedWithConviction } = getLimitsAndMinMaxMedian(
+  const {
+    generatedLowerLimit: lowerLimitOfCurve,
+    generatedUpperLimit: upperLimitOfCurve,
+    median: medianOfCurve,
+    min: minLockedWithConviction,
+    max: maxLockedWithConviction,
+  } = getLimitsAndMinMaxMedian(
     votesMeetingRequirements.map((vote) => vote.lockedWithConvictionDecimal),
     threshold
   );
@@ -296,7 +299,7 @@ const getVoteInfo = (
     upperLimitOfCurve,
     medianOfCurve,
     minLockedWithConviction,
-    maxLockedWithConviction
+    maxLockedWithConviction,
   };
 };
 
@@ -309,7 +312,13 @@ const getVoteInfo = (
 export const getLimitsAndMinMaxMedian = (
   voteAmounts: number[],
   criticalValue: number
-): { generatedUpperLimit: number, generatedLowerLimit: number, min: number; max: number; median: number } => {
+): {
+  generatedUpperLimit: number;
+  generatedLowerLimit: number;
+  min: number;
+  max: number;
+  median: number;
+} => {
   const min = Math.min(...voteAmounts);
   const max = Math.max(...voteAmounts);
   if (voteAmounts.length < 4) {
@@ -350,7 +359,7 @@ export const getLimitsAndMinMaxMedian = (
   generatedUpperLimit = q3 + iqr * 1.5;
   generatedLowerLimit = Math.max(q1 - iqr * 1.5, criticalValue);
 
-  return { generatedLowerLimit, generatedUpperLimit,  min, max, median };
+  return { generatedLowerLimit, generatedUpperLimit, min, max, median };
 };
 
 /**
@@ -366,11 +375,23 @@ export const checkVotesMeetingRequirements = async (
   config: RewardConfiguration,
   chainDecimals: BN
 ): Promise<VoteConvictionRequirements[]> => {
-  const minRequiredLockedWithConvicition = BN.max(new BN(config.min), new BN("0"));
-  const maxAllowedLockedWithConvicition = BN.min(new BN(config.max), new BN(totalIssuance));
+  const minRequiredLockedWithConvicition = BN.max(
+    new BN(config.min),
+    new BN("0")
+  );
+  const maxAllowedLockedWithConvicition = BN.min(
+    new BN(config.max),
+    new BN(totalIssuance)
+  );
 
-  config.minRequiredLockedWithConvicition = getDecimal(minRequiredLockedWithConvicition.toString(), chainDecimals);
-  config.maxAllowedLockedWithConvicition = getDecimal(maxAllowedLockedWithConvicition.toString(), chainDecimals);
+  config.minRequiredLockedWithConvicition = getDecimal(
+    minRequiredLockedWithConvicition.toString(),
+    chainDecimals
+  );
+  config.maxAllowedLockedWithConvicition = getDecimal(
+    maxAllowedLockedWithConvicition.toString(),
+    chainDecimals
+  );
 
   const filtered: VoteConvictionRequirements[] = votes.map((vote, i) => {
     const meetsRequirements = !(
@@ -470,12 +491,12 @@ export const retrieveAccountLocks = async (
         const userLockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-            userVote.endBlock
-              .sub(endBlockBN)
-              .muln(10)
-              .div(sevenDaysBlocks)
-              .toNumber() / 10
-          );
+              userVote.endBlock
+                .sub(endBlockBN)
+                .muln(10)
+                .div(sevenDaysBlocks)
+                .toNumber() / 10
+            );
         const matchingPeriod = lockPeriods.reduce(
           (acc, curr, index) => (userLockPeriods >= curr ? index : acc),
           0
@@ -486,8 +507,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-          BN.max(max, current)
-        )
+            BN.max(max, current)
+          )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -665,7 +686,9 @@ export const createConfigNFT = async (
         nftId,
         "CollectionOwner",
         attribute,
-        configAttributes[attribute] ? configAttributes[attribute].toString() : ""
+        configAttributes[attribute]
+          ? configAttributes[attribute].toString()
+          : ""
       )
     );
   }
@@ -677,7 +700,9 @@ export const createConfigNFT = async (
         nftId,
         "CollectionOwner",
         "collection_" + attribute,
-        collectionConfig[attribute] ? collectionConfig[attribute].toString() : ""
+        collectionConfig[attribute]
+          ? collectionConfig[attribute].toString()
+          : ""
       )
     );
   }
@@ -723,9 +748,8 @@ export const createConfigNFT = async (
   );
 
   // pin metadata and file for config NFT to Pinata
-  const configMetadataCid = (
-    await pinMetadataForConfigNFT(apiPinata, config)
-  ).metadataIpfsCid;
+  const configMetadataCid = (await pinMetadataForConfigNFT(apiPinata, config))
+    .metadataIpfsCid;
 
   config.configNFT.metadataCid = `ipfs://ipfs/${configMetadataCid}`;
 

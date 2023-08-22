@@ -11,17 +11,17 @@ const PolkadotApiProvider = (props) => {
   const [apiKusama, setApiKusama] = useState<ApiPromise>();
   const [apiKusamaAssetHub, setApiKusamaAssetHub] = useState<ApiPromise>();
 
-  useEffect(() => {
-    (async () => {
-      const api = await getApiKusama();
-      setApiKusama(api);
-    })().catch(console.error);
+  // useEffect(() => {
+  //   (async () => {
+  //     const api = await getApiKusama();
+  //     setApiKusama(api);
+  //   })().catch(console.error);
 
-    (async () => {
-      const api = await getApiKusamaAssetHub();
-      setApiKusamaAssetHub(api);
-    })().catch(console.error);
-  });
+  //   (async () => {
+  //     const api = await getApiKusamaAssetHub();
+  //     setApiKusamaAssetHub(api);
+  //   })().catch(console.error);
+  // }, []);
 
   return (
     <PolkadotApiContext.Provider value={{ apiKusama, apiKusamaAssetHub }}>
