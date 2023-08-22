@@ -478,7 +478,7 @@ const getBlockHash = async (
   return (await api.rpc.chain.getBlockHash(blockNumber)).toString();
 };
 
-export async function getNFTCollectionDeposit(api: ApiPromise): Promise<BN> {
+export async function getNFTCollectionDeposit(api: ApiPromise) {
   const deposit = await api.consts.nfts?.collectionDeposit.toString();
   return deposit;
 }
