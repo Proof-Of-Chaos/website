@@ -214,11 +214,43 @@ export const pinMetadataForConfigNFT = async (
   let attributes = [];
 
   for (const attribute in configAttributes) {
-    attributes.push({
-      trait_type: attribute,
-      value: configAttributes[attribute] ? configAttributes[attribute].toString() : "",
-    });
+    if (attribute === "nftIds" && Array.isArray(configAttributes[attribute])) {
+      // Convert the array to a string
+      let ids = configAttributes[attribute].map(id => id.toString());
+
+      let counter = 1;
+      let chunk = "";
+
+      for (let id of ids) {
+        // Check if adding the next ID would exceed 254 characters
+        if (chunk.length + id.length + 1 > 254) {
+          // Push the current chunk and reset it
+          attributes.push({
+            trait_type: attribute + "_" + counter,
+            value: chunk.slice(0, -1) // Remove trailing comma
+          });
+          chunk = "";
+          counter++;
+        }
+
+        chunk += id + ",";
+      }
+
+      // Handle any remaining IDs
+      if (chunk) {
+        attributes.push({
+          trait_type: attribute + "_" + counter,
+          value: chunk.slice(0, -1) // Remove trailing comma
+        });
+      }
+    } else {
+      attributes.push({
+        trait_type: attribute,
+        value: configAttributes[attribute] ? configAttributes[attribute].toString() : ""
+      });
+    }
   }
+
   //add attributes for all the new collection config
   for (const attribute in collectionConfig) {
     attributes.push({
@@ -254,6 +286,7 @@ export const pinMetadataForConfigNFT = async (
     image: imageIpfsCid,
     name: `Referendum ${config.refIndex} - Config NFT`,
     description: `${configNFT.description}\n\n_This NFT was created with [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
+    attributes
   };
   const metadataIpfsCid = (
     await pinata.pinJSONToIPFS(metadata, pinataMetadataOptions)

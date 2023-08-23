@@ -491,12 +491,12 @@ export const retrieveAccountLocks = async (
         const userLockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-              userVote.endBlock
-                .sub(endBlockBN)
-                .muln(10)
-                .div(sevenDaysBlocks)
-                .toNumber() / 10
-            );
+            userVote.endBlock
+              .sub(endBlockBN)
+              .muln(10)
+              .div(sevenDaysBlocks)
+              .toNumber() / 10
+          );
         const matchingPeriod = lockPeriods.reduce(
           (acc, curr, index) => (userLockPeriods >= curr ? index : acc),
           0
@@ -507,8 +507,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-            BN.max(max, current)
-          )
+          BN.max(max, current)
+        )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -679,19 +679,60 @@ export const createConfigNFT = async (
   //add all attributes for all config variables other than the collectionConfig and options
   //filter out all attributes other tan the collectionConfig and options
   const { collectionConfig, configNFT, options, ...configAttributes } = config;
+
   for (const attribute in configAttributes) {
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.configNFT.settingsCollectionId,
-        nftId,
-        "CollectionOwner",
-        attribute,
-        configAttributes[attribute]
-          ? configAttributes[attribute].toString()
-          : ""
-      )
-    );
+    if (attribute === "nftIds" && Array.isArray(configAttributes[attribute])) {
+      // Convert the array to a string
+      let ids = configAttributes[attribute].map(id => id.toString());
+
+      let counter = 1;
+      let chunk = "";
+
+      for (let id of ids) {
+        // Check if adding the next ID would exceed 254 characters
+        if (chunk.length + id.length + 1 > 254) {
+          // Push the current chunk and reset it
+          txs.push(
+            apiKusamaAssetHub.tx.nfts.setAttribute(
+              config.configNFT.settingsCollectionId,
+              nftId,
+              "CollectionOwner",
+              attribute + "_" + counter,
+              chunk.slice(0, -1) // Remove trailing comma
+            )
+          );
+          chunk = "";
+          counter++;
+        }
+
+        chunk += id + ",";
+      }
+
+      // Handle any remaining IDs
+      if (chunk) {
+        txs.push(
+          apiKusamaAssetHub.tx.nfts.setAttribute(
+            config.configNFT.settingsCollectionId,
+            nftId,
+            "CollectionOwner",
+            attribute + "_" + counter,
+            chunk.slice(0, -1) // Remove trailing comma
+          )
+        );
+      }
+    } else {
+      txs.push(
+        apiKusamaAssetHub.tx.nfts.setAttribute(
+          config.configNFT.settingsCollectionId,
+          nftId,
+          "CollectionOwner",
+          attribute,
+          configAttributes[attribute] ? configAttributes[attribute].toString() : ""
+        )
+      );
+    }
   }
+
   //add attributes for all the new collection config
   for (const attribute in collectionConfig) {
     txs.push(
