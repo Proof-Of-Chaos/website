@@ -4,7 +4,7 @@ import {
   getTxCollectionCreate,
   getUserLatestCollectionId,
 } from "./nft_sendout_script/src/createCollection";
-import { getApiKusamaAssetHub } from "../../data/chain";
+import { getApiKusamaAssetHub } from "../../data/getApi";
 
 /**
  * Retrieve the latest collection ID for a given account

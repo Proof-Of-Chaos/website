@@ -62,8 +62,6 @@ export const getTxsReferendumRewards = async (
     rarityDistribution
   );
 
-  console.log("💎💎💎 your nft attributes are", JSON.stringify(attributes));
-
   // pin metadata and file for each rarity option to Pinata and get nft attributes
   const fileAndMetadataCids = await pinImageAndMetadataForOptions(
     apiPinata,
@@ -72,7 +70,8 @@ export const getTxsReferendumRewards = async (
 
   //overwrite file attribute in config with the cid from pinata
   config.options.forEach((option) => {
-    option.file = "ipfs://ipfs/" + fileAndMetadataCids.imageIpfsCids[option.rarity].direct;
+    option.file =
+      "ipfs://ipfs/" + fileAndMetadataCids.imageIpfsCids[option.rarity].direct;
   });
 
   if (websiteConfig.rewards_sendout_filter.length > 0) {
@@ -394,7 +393,10 @@ const getAllSetAttributeTxs = (
     ["delegatedTo", vote.delegatedTo?.toString()],
 
     // single account royalties (kodadot friendly)
-    ["royalty", vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty],
+    [
+      "royalty",
+      vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty,
+    ],
     ["recipient", config.royaltyAddress],
 
     // ["aye", vote.balance.aye.toString()],

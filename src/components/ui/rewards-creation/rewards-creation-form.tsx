@@ -20,6 +20,7 @@ import { getWalletBySource } from "@talismn/connect-wallets";
 import { useModal } from "../../modals/context";
 import { usePastReferendaIndices } from "../../../hooks/use-gov2";
 import { useIsMounted } from "../../../hooks/use-is-mounted";
+import { bnToBn, formatBalance } from "@polkadot/util";
 
 export function RewardsCreationForm() {
   const { openModal, closeModal } = useModal();
@@ -32,6 +33,7 @@ export function RewardsCreationForm() {
   const walletAddress = connectedAccount?.address;
   const wallet = getWalletBySource(connectedAccount?.source);
 
+  const [isMoreInfo, setIsMoreInfo] = useState(false);
   const [callData, setCallData] = useState<GenerateRewardsResult>();
   const [isCallDataLoading, setIsCallDataLoading] = useState(false);
 
@@ -44,6 +46,11 @@ export function RewardsCreationForm() {
   const [isComplete, setIsComplete] = useState(false);
 
   const isMounted = useIsMounted();
+
+  const totalNFTs =
+    callData?.distribution?.common +
+    callData?.distribution?.rare +
+    callData?.distribution?.epic;
 
   const formMethods = useForm({
     defaultValues: defaultReferendumRewardsConfig,
@@ -287,7 +294,8 @@ export function RewardsCreationForm() {
                 </div>
                 <p className="form-helper">
                   Either choose an existing collection to mint the NFTs into, or
-                  create a new one
+                  create a new one (34 is the default id for the Proof of Chaos
+                  public collection)
                 </p>
               </>
 
@@ -325,7 +333,10 @@ export function RewardsCreationForm() {
                     You do not have enough available KSM
                   </p>
                 )}
-
+              <p className="form-helper pt-2 text-center">
+                Hitting Submit will create the transactions for sending NFTs to
+                all voters and can be signed in a next step.
+              </p>
               <Button
                 type="submit"
                 variant="primary"
@@ -361,10 +372,20 @@ export function RewardsCreationForm() {
           )}
           {!isCallDataLoading && (
             <>
-              {callData && (
-                <h3 className="text-lg">
-                  🛠️ Your transactions were successfully created ⛓️
-                </h3>
+              {callData && !isComplete && (
+                <>
+                  <h3 className="text-lg">
+                    🎉🛠️ Your transactions were successfully created ⛓️🎉
+                  </h3>
+                  {/* <Button
+                    className="mt-2"
+                    size="mini"
+                    variant="secondary"
+                    onClick={() => setIsMoreInfo(!isMoreInfo)}
+                  >
+                    {isMoreInfo ? "⬆️ Less Info" : "💡 More Info"}
+                  </Button> */}
+                </>
               )}
               {error.message !== "" && (
                 <div>
@@ -374,31 +395,33 @@ export function RewardsCreationForm() {
                   <p className="text-red-500">{error.message}</p>
                 </div>
               )}
-              {callData && (
+              {callData && callData.distribution && !isComplete && (
                 <div className="text-sm">
-                  <p>
-                    will mint to collection{" "}
-                    {watchFormFields.collectionConfig.id}
+                  <p className="mt-8">
+                    The txs you sign will mint <b>{totalNFTs} NFTs</b> (
+                    {callData?.distribution?.common} common,{" "}
+                    {callData?.distribution?.rare} rare,{" "}
+                    {callData?.distribution?.epic} epic) to{" "}
+                    <b>collection {watchFormFields.collectionConfig.id}</b>
                   </p>
                   <p className="mt-2">
-                    {callData.distribution &&
-                      Object.entries(callData.distribution).map(([k, v]) => {
-                        return (
-                          <p key={k}>
-                            {k} NFTs to send out: {v}
-                          </p>
-                        );
-                      })}
+                    Fees (Kusama Asset Hub): {callData.fees.nfts} KSM
                   </p>
-                  <p className="mt-2">
-                    Estimated fees for your transactions on Kusama Asset
-                    Hub:&nbsp;
-                    {callData.fees.nfts} KSM
+                  <p className="">
+                    Locked Deposit (Kusama Asset Hub): {callData.fees.deposit}
+                    KSM
                   </p>
                   <p>Transaction Count: {callData.txsCount.nfts}</p>
                 </div>
               )}
-              <div className="button-wrap pt-5">
+              {callData && isComplete && (
+                <div>
+                  <h3 className="text-2xl">
+                    🚀 The txs you signed minted <b>{totalNFTs} NFTs</b> 🚀
+                  </h3>
+                </div>
+              )}
+              <div className="button-wrap pt-8">
                 <Button className="mr-4" onClick={onCancel} variant="cancel">
                   {isComplete || !callData ? "Close" : "Cancel"}
                 </Button>

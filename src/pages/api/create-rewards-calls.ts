@@ -1,4 +1,6 @@
-import { BN, formatBalance } from "@polkadot/util";
+import "@polkadot/rpc-augment";
+import "@polkadot/api-augment/kusama";
+import { BN, bnToBn, formatBalance } from "@polkadot/util";
 import { logger } from "./nft_sendout_script/tools/logger";
 import {
   CollectionConfiguration,
@@ -24,10 +26,11 @@ import { getTxsReferendumRewards } from "./nft_sendout_script/src/generateTxs";
 import { Readable } from "stream";
 import formidable, { errors as formidableErrors } from "formidable";
 import {
-  getApiKusama,
-  getApiKusamaAssetHub,
   getChainDecimals,
+  getNFTCollectionDeposit,
+  getNFTItemDeposit,
 } from "../../data/chain";
+import { getApiKusama, getApiKusamaAssetHub } from "../../data/getApi";
 import PinataClient from "@pinata/sdk";
 
 /**
@@ -165,6 +168,20 @@ const generateCalls = async (
     .batchAll(txsKusamaAssetHub)
     .paymentInfo(config.sender);
 
+  const collectionDeposit = await getNFTCollectionDeposit(apiKusamaAssetHub);
+  const itemDeposit = await getNFTItemDeposit(apiKusamaAssetHub);
+
+  const totalNFTs =
+    rarityDistribution?.common +
+    rarityDistribution?.rare +
+    rarityDistribution?.epic;
+
+  const totalDeposit = config.collectionConfig.isNew
+    ? new BN(collectionDeposit)
+        .add(new BN(itemDeposit).muln(totalNFTs))
+        .toString()
+    : new BN(itemDeposit).muln(totalNFTs).toString();
+
   logger.info("🎉 All Done");
 
   logger.info(
@@ -177,6 +194,10 @@ const generateCalls = async (
       {
         nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
         xcm: txsKusama.map((tx) => tx.toHuman()),
+        deposits: {
+          collectionDeposit,
+          itemDeposit,
+        },
       },
       null,
       2
@@ -200,6 +221,10 @@ const generateCalls = async (
             forceUnit: "KSM",
             decimals: kusamaChainDecimals.toNumber(),
           }),
+          deposits: {
+            collectionDeposit,
+            itemDeposit,
+          },
         },
         txsCount: {
           kusama: txsKusama.length,
@@ -227,6 +252,11 @@ const generateCalls = async (
         withSi: false,
         forceUnit: "KSM",
         //TODO this could be wrong on other chains
+        decimals: kusamaChainDecimals.toNumber(),
+      }),
+      deposit: formatBalance(totalDeposit, {
+        withSi: false,
+        forceUnit: "KSM",
         decimals: kusamaChainDecimals.toNumber(),
       }),
     },

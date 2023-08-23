@@ -22,18 +22,15 @@ export type GenerateRewardsResult = {
   kusamaAssetHubCall: string | undefined;
   kusamaAssetHubTxs: string[] | undefined;
   distribution: RarityDistribution | undefined;
-  fees:
-    | {
-        kusama: string;
-        nfts: string;
-      }
-    | undefined;
-  txsCount:
-    | {
-        kusama: number;
-        nfts: number;
-      }
-    | undefined;
+  fees?: {
+    kusama?: string;
+    nfts?: string;
+    deposit?: string;
+  };
+  txsCount?: {
+    kusama?: number;
+    nfts?: number;
+  };
 };
 
 export type CreateCollectionResult = {
