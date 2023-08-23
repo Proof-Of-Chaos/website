@@ -188,21 +188,21 @@ const generateCalls = async (
     "📄 Writing transactions to",
     `./log/tmp_transactions_${config.refIndex}_xcm.json`
   );
-  fs.writeFileSync(
-    `./log/tmp_transactions_${config.refIndex}_xcm.json`,
-    JSON.stringify(
-      {
-        nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
-        xcm: txsKusama.map((tx) => tx.toHuman()),
-        deposits: {
-          collectionDeposit,
-          itemDeposit,
-        },
-      },
-      null,
-      2
-    )
-  );
+  // fs.writeFileSync(
+  //   `./log/tmp_transactions_${config.refIndex}_xcm.json`,
+  //   JSON.stringify(
+  //     {
+  //       nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
+  //       xcm: txsKusama.map((tx) => tx.toHuman()),
+  //       deposits: {
+  //         collectionDeposit,
+  //         itemDeposit,
+  //       },
+  //     },
+  //     null,
+  //     2
+  //   )
+  // );
 
   logger.info(
     "returning",

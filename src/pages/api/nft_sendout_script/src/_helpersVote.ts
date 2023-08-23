@@ -792,14 +792,14 @@ export const createConfigNFT = async (
     )
   );
 
-  fs.writeFileSync(
-    `./log/tmp_config_transactions_${config.refIndex}_xcm.json`,
-    JSON.stringify(
-      txs.map((tx) => tx.toHuman()),
-      null,
-      2
-    )
-  );
+  // fs.writeFileSync(
+  //   `./log/tmp_config_transactions_${config.refIndex}_xcm.json`,
+  //   JSON.stringify(
+  //     txs.map((tx) => tx.toHuman()),
+  //     null,
+  //     2
+  //   )
+  // );
 
   const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
 
