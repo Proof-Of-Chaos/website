@@ -367,6 +367,7 @@ export interface RewardConfiguration {
   minLockedWithConviction?: number | null;
   sender?: string;
   seed?: string;
+  nftIds?: number[];
 }
 
 export interface RewardOption {

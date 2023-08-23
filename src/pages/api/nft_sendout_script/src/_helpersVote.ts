@@ -34,7 +34,7 @@ import { Logger } from "log4js";
 import { ApiPromise } from "@polkadot/api";
 import { GraphQLClient } from "graphql-request";
 import { encodeAddress } from "@polkadot/util-crypto";
-import { generateNFTId, usedIds } from "./generateTxs";
+import { generateNFTId } from "./generateTxs";
 import { initAccount } from "../../../../utils/server-utils";
 import PinataClient from "@pinata/sdk";
 import { pinMetadataForConfigNFT } from "../tools/pinataUtils";
@@ -712,16 +712,6 @@ export const createConfigNFT = async (
     optionIndex++;
   }
 
-  txs.push(
-    apiKusamaAssetHub.tx.nfts.setAttribute(
-      config.configNFT.settingsCollectionId,
-      nftId,
-      "CollectionOwner",
-      "nftIds",
-      usedIds.toString()
-    )
-  );
-
   // pin metadata and file for config NFT to Pinata
   const configMetadataCid = (
     await pinMetadataForConfigNFT(apiPinata, config)
@@ -746,15 +736,15 @@ export const createConfigNFT = async (
     )
   );
 
-  // const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
+  const batch = apiKusamaAssetHub.tx.utility.batchAll(txs);
 
-  // //send transactions using our account
-  // const { block, hash, success } = await sendAndFinalizeKeyPair(
-  //   apiKusamaAssetHub,
-  //   batch,
-  //   account
-  // );
-  // return success;
+  //send transactions using our account
+  const { block, hash, success } = await sendAndFinalizeKeyPair(
+    apiKusamaAssetHub,
+    batch,
+    account
+  );
+  return success;
 };
 
 const fetchReputableVoters = async (

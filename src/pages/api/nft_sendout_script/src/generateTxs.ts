@@ -15,8 +15,6 @@ import PinataClient from "@pinata/sdk";
 import { Logger } from "log4js";
 import { getTxsCollectionSetMetadata } from "./createCollection";
 
-export let usedIds = [];
-
 export const getTxsReferendumRewards = async (
   apiKusamaAssetHub: ApiPromise,
   apiKusama: ApiPromise,
@@ -356,7 +354,7 @@ export const getTxsForVotes = (
     //   )
     // );
   }
-  usedIds = ids;
+  config.nftIds = ids;
   return txs;
 };
 

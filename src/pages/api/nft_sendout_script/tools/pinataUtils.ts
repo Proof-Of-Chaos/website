@@ -180,7 +180,7 @@ export const pinMetadataForConfigNFT = async (
   pinata: pinataSDK,
   config: RewardConfiguration
 ): Promise<PinImageAndMetadataForConfigNFTResult> => {
-  const { configNFT } = config;
+  const { collectionConfig, configNFT, options, ...configAttributes } = config;
   const pinataFileOptions: PinataPinOptions = {
     pinataMetadata: {
       name: `referendum-${config.refIndex}_configNFT`,
@@ -209,6 +209,42 @@ export const pinMetadataForConfigNFT = async (
     imageIpfsCid = (
       await pinata.pinFileToIPFS(configNFT.file, pinataFileOptions)
     ).IpfsHash;
+  }
+
+  let attributes = [];
+
+  for (const attribute in configAttributes) {
+    attributes.push({
+      trait_type: attribute,
+      value: configAttributes[attribute] ? configAttributes[attribute].toString() : "",
+    });
+  }
+  //add attributes for all the new collection config
+  for (const attribute in collectionConfig) {
+    attributes.push({
+      trait_type: "collection_" + attribute,
+      value: collectionConfig[attribute] ? collectionConfig[attribute].toString() : "",
+    });
+  }
+
+  //add attributes for all the configNFT stuff
+  for (const attribute in configNFT) {
+    attributes.push({
+      trait_type: "configNFT_" + attribute,
+      value: configNFT[attribute] ? configNFT[attribute].toString() : "",
+    });
+  }
+
+  let optionIndex = 0;
+  //add attributes for all the reward options
+  for (const option of options) {
+    for (const attribute in option) {
+      attributes.push({
+        trait_type: "option_" + optionIndex + "_" + attribute,
+        value: option[attribute] ? option[attribute].toString() : "",
+      });
+    }
+    optionIndex++;
   }
 
   //pin metadata
