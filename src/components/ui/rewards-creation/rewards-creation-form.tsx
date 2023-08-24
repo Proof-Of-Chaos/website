@@ -128,6 +128,11 @@ export function RewardsCreationForm() {
 
       if (status === "success") {
         setIsComplete(true);
+        const createConfigRes = await fetch("/api/create-config-nft", {
+          method: "POST",
+          body: JSON.stringify(watchFormFields),
+        });
+        console.log("create Config NFT result", createConfigRes);
       }
     } catch (error) {
       console.info("error sending tx", error);

@@ -75,9 +75,7 @@ export default async function handler(req, res) {
       apiPinata,
       config
     );
-    // console.log("callsdone")
-    //mint configNFT
-    console.log("Status:" + (await createConfigNFT(apiPinata, config)));
+
     res.status(200).json(callResult);
   } catch (error) {
     // Sends error to the client side
@@ -184,10 +182,10 @@ const generateCalls = async (
 
   console.info("🎉 All Done");
 
-  console.info(
-    `📄 Writing transactions to
-    ./log/tmp_transactions_${config.refIndex}_xcm.json`
-  );
+  // console.info(
+  //   `📄 Writing transactions to
+  //   ./log/tmp_transactions_${config.refIndex}_xcm.json`
+  // );
 
   // fs.writeFileSync(
   //   `./log/tmp_transactions_${config.refIndex}_xcm.json`,
