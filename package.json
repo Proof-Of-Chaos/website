@@ -67,7 +67,6 @@
     "log4js": "^6.9.1",
     "next": "^13.4.19",
     "next-auth": "^4.20.1",
-    "next-axiom": "^1.0.0-rc.1",
     "next-seo": "^5.15.0",
     "object-hash": "^3.0.0",
     "postcss": "^8.4.21",

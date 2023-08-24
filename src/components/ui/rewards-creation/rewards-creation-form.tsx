@@ -6,8 +6,6 @@ import Loader, { InlineLoader } from "../loader";
 import { defaultReferendumRewardsConfig } from "../../../data/default-referendum-rewards-config";
 import useAppStore from "../../../zustand";
 
-import { log } from "next-axiom";
-
 import style from "./rewards-creation-form.module.scss";
 import {
   CollectionConfiguration,
@@ -97,10 +95,10 @@ export function RewardsCreationForm() {
       });
 
       const jsonRes = await res.json();
-      log.info("result from api ", jsonRes);
+      console.info("result from api ", jsonRes);
 
       if (jsonRes.name === "Error") {
-        log.info(" frontend", jsonRes);
+        console.info(" frontend", jsonRes);
         setError(jsonRes);
       } else {
         setCallData(jsonRes);
@@ -108,7 +106,7 @@ export function RewardsCreationForm() {
 
       setIsCallDataLoading(false);
     } catch (error) {
-      log.info(" frontend", error);
+      console.info(" frontend", error);
       setError(error);
       setIsCallDataLoading(false);
     }
@@ -132,7 +130,7 @@ export function RewardsCreationForm() {
         setIsComplete(true);
       }
     } catch (error) {
-      log.info("error sending tx", error);
+      console.info("error sending tx", error);
       setError(error);
     }
   }
@@ -473,7 +471,7 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
         htmlFor={`file-${rarity}`}
         className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
       >
-        Upload Image
+        Upload Image (max 2MB)
       </label>
 
       <input

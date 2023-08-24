@@ -1,7 +1,6 @@
 import "@polkadot/rpc-augment";
 import "@polkadot/api-augment/kusama";
 import { BN, bnToBn, formatBalance } from "@polkadot/util";
-import { log } from "next-axiom";
 import {
   CollectionConfiguration,
   GenerateRewardsResult,
@@ -97,10 +96,10 @@ const generateCalls = async (
 ): Promise<GenerateRewardsResult> => {
   const { refIndex, sender } = config;
 
-  log.info(
+  console.info(
     `🚀 Generating calls for reward distribution of referendum ${refIndex}`
   );
-  log.info("with config", config);
+  console.info("with config", config);
 
   await cryptoWaitReady();
 
@@ -117,7 +116,7 @@ const generateCalls = async (
 
   //get ref ended block number
   let blockNumber;
-  log.info(`ℹ️  Getting block number for referendum ${refIndex}`);
+  console.info(`ℹ️  Getting block number for referendum ${refIndex}`);
   try {
     blockNumber = await getBlockNumber(apiKusama, referendumIndex);
     if (!blockNumber) throw new Error("Referendum is still ongoing");
@@ -126,12 +125,12 @@ const generateCalls = async (
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
 
-  log.info(`ℹ️  Getting all voting wallets for ${refIndex}`);
+  console.info(`ℹ️  Getting all voting wallets for ${refIndex}`);
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =
     await getDecoratedVotesWithInfo(config, kusamaChainDecimals);
 
-  log.info(
+  console.info(
     `⚙️  Processing ${decoratedVotes.length} votes for referendum ${refIndex}`
   );
 
@@ -155,11 +154,11 @@ const generateCalls = async (
     .method.toHex();
   const kusamaCalls = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
 
-  log.info(
+  console.info(
     `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama) and ${txsKusama.length} txs for Kusama XCM calls`
   );
 
-  log.info(`💵 Calculating fees for sender ${config.sender}`);
+  console.info(`💵 Calculating fees for sender ${config.sender}`);
 
   const infoKusamaCalls = await apiKusama.tx.utility
     .batchAll(txsKusama)
@@ -183,9 +182,9 @@ const generateCalls = async (
         .toString()
     : new BN(itemDeposit).muln(totalNFTs).toString();
 
-  log.info("🎉 All Done");
+  console.info("🎉 All Done");
 
-  log.info(
+  console.info(
     `📄 Writing transactions to
     ./log/tmp_transactions_${config.refIndex}_xcm.json`
   );
@@ -206,7 +205,7 @@ const generateCalls = async (
   //   )
   // );
 
-  log.info(
+  console.info(
     `returning
     ${JSON.stringify(
       {
