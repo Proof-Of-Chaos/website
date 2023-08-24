@@ -1,7 +1,7 @@
 import "@polkadot/rpc-augment";
 import "@polkadot/api-augment/kusama";
 import { BN, bnToBn, formatBalance } from "@polkadot/util";
-// import { logger } from "./nft_sendout_script/tools/logger";
+import { log } from "next-axiom";
 import {
   CollectionConfiguration,
   GenerateRewardsResult,
@@ -96,8 +96,8 @@ const generateCalls = async (
 ): Promise<GenerateRewardsResult> => {
   const { refIndex, sender } = config;
 
-  // logger.info(`🚀 Generating calls for reward distribution of referendum ${refIndex}`);
-  // // logger.info("with config", config)
+  log.info(`🚀 Generating calls for reward distribution of referendum ${refIndex}`);
+  log.info("with config", config)
 
   await cryptoWaitReady();
 
@@ -114,7 +114,7 @@ const generateCalls = async (
 
   //get ref ended block number
   let blockNumber;
-  // logger.info(`ℹ️  Getting block number for referendum ${refIndex}`)
+  log.info(`ℹ️  Getting block number for referendum ${refIndex}`)
   try {
     blockNumber = await getBlockNumber(apiKusama, referendumIndex);
     if (!blockNumber) throw new Error("Referendum is still ongoing");
@@ -123,12 +123,12 @@ const generateCalls = async (
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
 
-  // logger.info(`ℹ️  Getting all voting wallets for ${refIndex}`)
+  log.info(`ℹ️  Getting all voting wallets for ${refIndex}`)
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =
     await getDecoratedVotesWithInfo(config, kusamaChainDecimals);
 
-  // logger.info(`⚙️  Processing ${decoratedVotes.length} votes for referendum ${refIndex}`);
+  log.info(`⚙️  Processing ${decoratedVotes.length} votes for referendum ${refIndex}`);
 
   //computing the actual calls is still WIP and likely to change
 
@@ -141,7 +141,7 @@ const generateCalls = async (
     config,
     decoratedVotes,
     rarityDistribution,
-    rng,
+    rng
     // logger
   );
 
@@ -150,11 +150,11 @@ const generateCalls = async (
     .method.toHex();
   const kusamaCalls = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
 
-  // logger.info(
+  log.info(
   //   `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama) and ${txsKusama.length} txs for Kusama XCM calls`
   // );
 
-  // logger.info("💵 Calculating fees for sender", config.sender)
+  log.info("💵 Calculating fees for sender", config.sender)
 
   const infoKusamaCalls = await apiKusama.tx.utility
     .batchAll(txsKusama)
@@ -178,9 +178,9 @@ const generateCalls = async (
         .toString()
     : new BN(itemDeposit).muln(totalNFTs).toString();
 
-  // logger.info("🎉 All Done")
+  log.info("🎉 All Done")
 
-  // logger.info(
+  log.info(
   //   "📄 Writing transactions to",
   //   `./log/tmp_transactions_${config.refIndex}_xcm.json`
   // );
@@ -200,7 +200,7 @@ const generateCalls = async (
   //   )
   // );
 
-  // logger.info(
+  log.info(
   //   "returning",
   //   JSON.stringify(
   //     {
@@ -267,7 +267,7 @@ const generateCalls = async (
   //write config to chain
   // distributionAndConfigRemarks.push('PROOFOFCHAOS2::' + referendumIndex.toString() + '::CONFIG::' + JSON.stringify(config))
   // if (!settings.isTest) {
-  //     logger.info("distributionAndConfigRemarks: ", JSON.stringify(distributionAndConfigRemarks))
+  log.info("distributionAndConfigRemarks: ", JSON.stringify(distributionAndConfigRemarks))
   // }
 };
 

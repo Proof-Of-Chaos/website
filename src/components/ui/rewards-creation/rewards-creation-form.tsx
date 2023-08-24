@@ -6,6 +6,8 @@ import Loader, { InlineLoader } from "../loader";
 import { defaultReferendumRewardsConfig } from "../../../data/default-referendum-rewards-config";
 import useAppStore from "../../../zustand";
 
+import { log } from "next-axiom";
+
 import style from "./rewards-creation-form.module.scss";
 import {
   CollectionConfiguration,
@@ -95,10 +97,10 @@ export function RewardsCreationForm() {
       });
 
       const jsonRes = await res.json();
-      // console.log("result from api ", jsonRes)
+      log("result from api ", jsonRes)
 
       if (jsonRes.name === "Error") {
-        // console.log(" frontend", jsonRes)
+        log(" frontend", jsonRes)
         setError(jsonRes);
       } else {
         setCallData(jsonRes);
@@ -106,7 +108,7 @@ export function RewardsCreationForm() {
 
       setIsCallDataLoading(false);
     } catch (error) {
-      // console.log(" frontend", error)
+      log(" frontend", error)
       setError(error);
       setIsCallDataLoading(false);
     }
@@ -130,7 +132,7 @@ export function RewardsCreationForm() {
         setIsComplete(true);
       }
     } catch (error) {
-      // console.log("error sending tx", error)
+      log("error sending tx", error)
       setError(error);
     }
   }

@@ -13,6 +13,8 @@ import { Analytics } from "@vercel/analytics/react";
 
 import "../../styles/globals.scss";
 
+export { reportWebVitals } from "next-axiom";
+
 function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(() => new QueryClient());
   const getLayout = Component.getLayout ?? ((page) => page);
