@@ -93,12 +93,12 @@ const applyBonusesFor = (
 export const getDecoratedVotesWithInfo = async (
   config: RewardConfiguration,
   chainDecimals: BN,
-  logger: Logger
+  // logger: Logger
 ): Promise<{
   decoratedVotes: VoteConviction[];
   distribution: RarityDistribution;
 }> => {
-  logger.info(`↪ Getting referendum details and all voting wallets`);
+  // logger.info(`↪ Getting referendum details and all voting wallets`)
 
   let { referendum, totalIssuance, votes } = await getConvictionVoting(
     parseInt(config.refIndex)
@@ -107,9 +107,7 @@ export const getDecoratedVotesWithInfo = async (
   // start decorating the votes with additional information
   // TODO rename all below to decorateWith...
 
-  logger.info(
-    `↪ Getting locks for referendum ${config.refIndex} with ${votes.length} votes.`
-  );
+  // logger.info(`↪ Getting locks for referendum ${config.refIndex} with ${votes.length} votes.`);
 
   // 1. decorate `lockedWithConviction` - relevant info we consider instead of the vote * locked
   votes = await retrieveAccountLocks(
@@ -118,16 +116,14 @@ export const getDecoratedVotesWithInfo = async (
     referendum.track
   );
 
-  logger.info(`↪ Applying bonuses for referendum ${config.refIndex}.`);
+  // logger.info(`↪ Applying bonuses for referendum ${config.refIndex}.`)
 
   // 2. decorate with bonuses
   votes = applyBonusesFor("encointer", votes);
   votes = applyBonusesFor("dragon", votes);
   votes = applyBonusesFor("quiz", votes);
 
-  logger.info(
-    `↪ Checking for votes meeting requirements for referendum ${config.refIndex} with ${votes.length} votes.`
-  );
+  // logger.info(`↪ Checking for votes meeting requirements for referendum ${config.refIndex} with ${votes.length} votes.`);
 
   // 3. decorate `meetsRequirements` - whether vote > threshold
   votes = await checkVotesMeetingRequirements(
@@ -137,9 +133,7 @@ export const getDecoratedVotesWithInfo = async (
     chainDecimals
   );
 
-  logger.info(
-    `↪ calculating distribution for referendum ${config.refIndex} with ${votes.length} votes.`
-  );
+  // logger.info(`↪ calculating distribution for referendum ${config.refIndex} with ${votes.length} votes.`);
 
   // 4. get global min, max, median values for calculating the final rarity
   const {
@@ -152,21 +146,21 @@ export const getDecoratedVotesWithInfo = async (
     maxLockedWithConviction,
   } = getVoteInfo(votes, config);
 
-  logger.info(
-    `📊 Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
-  );
-  logger.info(
-    `📊 Max locked with conviction meeting requirements: ${maxLockedWithConviction}KSM, min locked with conviction meeting requirements: ${minLockedWithConviction}KSM`
-  );
-  logger.info(
-    `📊 This is the range of values used to compute the median as well as lower and upper limits of the 'luck' curve`
-  );
-  logger.info(
-    `📊 Computed lower limit of curve: ${lowerLimitOfCurve}KSM, upper limit of curve: ${upperLimitOfCurve}KSM, median of curve: ${medianOfCurve}KSM`
-  );
+  // logger.info(
+  //   `📊 Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
+  // );
+  // logger.info(
+  //   `📊 Max locked with conviction meeting requirements: ${maxLockedWithConviction}KSM, min locked with conviction meeting requirements: ${minLockedWithConviction}KSM`
+  // );
+  // logger.info(
+  //   `📊 This is the range of values used to compute the median as well as lower and upper limits of the 'luck' curve`
+  // );
+  // logger.info(
+  //   `📊 Computed lower limit of curve: ${lowerLimitOfCurve}KSM, upper limit of curve: ${upperLimitOfCurve}KSM, median of curve: ${medianOfCurve}KSM`
+  // );
 
   // 5. decorate with chances. E.g. chances: { common: 0.5, rare: 0.3, epic 0.2}
-  logger.info(`🎲 Calculating NFT probabilities and distribution`);
+  // logger.info(`🎲 Calculating NFT probabilities and distribution`)
   const decoratedWithChancesVotes = decorateWithChances(
     votes,
     config,
@@ -174,7 +168,7 @@ export const getDecoratedVotesWithInfo = async (
     upperLimitOfCurve,
     medianOfCurve,
     0,
-    logger
+    // logger
   );
   votes = decoratedWithChancesVotes.votesWithChances;
 
@@ -203,7 +197,7 @@ const decorateWithChances = (
   upperLimitOfCurve: number,
   medianOfCurve: number,
   seed: number = 0,
-  logger: Logger
+  // logger: Logger
 ): { votesWithChances: VoteConviction[]; distribution: RarityDistribution } => {
   //seed the randomizer
   const rng = seedrandom(seed.toString());
@@ -239,11 +233,11 @@ const decorateWithChances = (
     rarityDistribution["rare"] > rarityDistribution["epic"] * 2;
 
   if (invariantHolds) {
-    logger.info(
-      `✅ Distribution invariant holds for ${JSON.stringify(
-        rarityDistribution
-      )} after ${seed} iterations.`
-    );
+    // logger.info(
+    //   `✅ Distribution invariant holds for ${JSON.stringify(
+    //     rarityDistribution
+    //   )} after ${seed} iterations.`
+    // );
     config.seed = seed.toString();
     return { votesWithChances, distribution: rarityDistribution };
   } else {
@@ -254,7 +248,7 @@ const decorateWithChances = (
       upperLimitOfCurve,
       medianOfCurve,
       ++seed,
-      logger
+      // logger
     );
   }
 };
@@ -951,7 +945,7 @@ const addQuizCorrectToVotes = (
     );
 
     if (someAnswersMissingCorrect) {
-      console.log("Some answers are missing correct answer");
+      // console.log("Some answers are missing correct answer")
       return { ...vote, quizCorrect: 0 };
     }
 

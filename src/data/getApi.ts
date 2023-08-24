@@ -74,7 +74,7 @@ const providerHealthCheck = async (chain: string) => {
   healthCheckInProgress[chain] = true;
   await sleep(WS_DISCONNECT_TIMEOUT_SECONDS * 1000);
   if (wsProviders[chain].isConnected) {
-    console.log(`All good. Connected back to ${primaryEndpoint}`);
+    // console.log(`All good. Connected back to ${primaryEndpoint}`)
     healthCheckInProgress[chain] = false;
     return true;
   } else {
@@ -99,7 +99,7 @@ const getProvider = async (chain: string) => {
   return await new Promise<WsProvider | undefined>((resolve, reject) => {
     wsProviders[chain] = new WsProvider(primaryEndpoint);
     wsProviders[chain].on("disconnected", async () => {
-      console.log(`WS provider for rpc ${primaryEndpoint} disconnected!`);
+      // console.log(`WS provider for rpc ${primaryEndpoint} disconnected!`)
       if (!healthCheckInProgress[chain]) {
         try {
           await providerHealthCheck(chain);
@@ -110,11 +110,11 @@ const getProvider = async (chain: string) => {
       }
     });
     wsProviders[chain].on("connected", () => {
-      console.log(`WS provider for rpc ${primaryEndpoint} connected`);
+      // console.log(`WS provider for rpc ${primaryEndpoint} connected`)
       resolve(wsProviders[chain]);
     });
     wsProviders[chain].on("error", async () => {
-      console.log(`Error thrown for rpc ${primaryEndpoint}`);
+      // console.log(`Error thrown for rpc ${primaryEndpoint}`)
       if (!healthCheckInProgress[chain]) {
         try {
           await providerHealthCheck(chain);
@@ -164,7 +164,7 @@ export const getApi = async (chain: string, retry = 0): Promise<ApiPromise> => {
         primaryEndpoint,
       ];
 
-      console.log("will retry getApi with", chain, WS_ENDPOINTS[chain][0]);
+      // console.log("will retry getApi with", chain, WS_ENDPOINTS[chain][0])
 
       return await getApi(chain, retry + 1);
     } else {

@@ -8,7 +8,7 @@ export function Test(): React.ReactElement {
 
   const secret = process.env.NEXT_PUBLIC_VERY_SECRET;
 
-  console.log("very secret", secret);
+  // console.log("very secret", secret)
 
   return (
     <main>

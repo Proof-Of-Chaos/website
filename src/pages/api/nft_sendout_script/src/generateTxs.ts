@@ -12,7 +12,7 @@ import {
   PinImageAndMetadataForOptionsResult,
 } from "../types";
 import PinataClient from "@pinata/sdk";
-import { Logger } from "log4js";
+// import { Logger } from "log4js";
 import { getTxsCollectionSetMetadata } from "./createCollection";
 
 export const getTxsReferendumRewards = async (
@@ -23,7 +23,7 @@ export const getTxsReferendumRewards = async (
   decoratedVotes: VoteConviction[],
   rarityDistribution: RarityDistribution,
   rng: RNG,
-  logger: Logger
+  // logger: Logger
 ): Promise<{
   txsKusamaAssetHub: any[];
   txsKusama: any[];
@@ -79,9 +79,9 @@ export const getTxsReferendumRewards = async (
       websiteConfig.rewards_sendout_filter.includes(vote.address.toString())
     );
 
-    logger.info(
-      `🚨🚨🚨  TESTING, filtered votes to only send to ${decoratedVotes.length} votes for referendum ${referendumIndex}`
-    );
+    // logger.info(
+    //   `🚨🚨🚨  TESTING, filtered votes to only send to ${decoratedVotes.length} votes for referendum ${referendumIndex}`
+    // );
   }
 
   // generate NFT mint txs for each vote(er)

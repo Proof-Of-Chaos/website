@@ -89,11 +89,11 @@ export default function CreateNFTCollectionModal({
     });
     const { tx, name, message } = await res.json();
     if (name === "Error") {
-      console.log(" frontend error", name, message);
+      // console.log(" frontend error", name, message)
       setError({ name, message });
     }
 
-    console.log("result from api ", tx);
+    // console.log("result from api ", tx)
 
     try {
       const { status, events } = await signTx(tx);

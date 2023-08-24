@@ -4,7 +4,7 @@ import { PinataPinOptions } from "@pinata/sdk";
 import { sleep } from "./utils";
 // import { params } from '../config.js';
 // import { Metadata } from 'rmrk-tools/dist/tools/types';
-import { logger } from "./logger";
+// import { logger } from "./logger";
 import { config } from "process";
 import {
   CollectionConfiguration,
@@ -23,7 +23,6 @@ const defaultOptions: Partial<PinataPinOptions> = {
   },
 };
 
-const fsPromises = fs.promises;
 export type StreamPinata = Readable & {
   path?: string;
 };

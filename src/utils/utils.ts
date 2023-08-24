@@ -176,7 +176,7 @@ const lucksForConfig = (
     }
   });
 
-  // console.log("final lucks before normalization:", lucks);
+  // // console.log("final lucks before normalization:", lucks)
 
   lucks.rare = ((100 - lucks.epic) / 100) * lucks.rare;
   lucks.common = 100 - lucks.rare - lucks.epic;
@@ -260,7 +260,7 @@ async function* streamToJSON(
 
   while (true) {
     const { value, done } = await reader.read();
-    console.log("streamToJson", value, done);
+    // console.log("streamToJson", value, done)
     if (done) {
       break;
     }

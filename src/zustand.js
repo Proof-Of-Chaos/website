@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 const log = (config) => (set, get, api) =>
   config(
     (...args) => {
-      console.log("  applying", args);
+      // console.log("  applying", args)
       set(...args);
       console.log("  new state", get());
     },

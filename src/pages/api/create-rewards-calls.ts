@@ -1,7 +1,7 @@
 import "@polkadot/rpc-augment";
 import "@polkadot/api-augment/kusama";
 import { BN, bnToBn, formatBalance } from "@polkadot/util";
-import { logger } from "./nft_sendout_script/tools/logger";
+// import { logger } from "./nft_sendout_script/tools/logger";
 import {
   CollectionConfiguration,
   GenerateRewardsResult,
@@ -62,10 +62,10 @@ export default async function handler(req, res) {
       config.collectionConfig.file = readableFileStream;
     }
   } catch (err) {
-    console.log("error parsing form", err);
+    // console.log("error parsing form", err)
   }
 
-  console.log("api endpoint received", config, files);
+  // console.log("api endpoint received", config, files)
 
   //initialize Pinata
   const apiPinata = await setupPinata();
@@ -75,7 +75,7 @@ export default async function handler(req, res) {
       apiPinata,
       config
     );
-    console.log("callsdone");
+    // console.log("callsdone")
     //mint configNFT
     // console.log("Status:" + (await createConfigNFT(apiPinata, config)));
     res.status(200).json(callResult);
@@ -96,10 +96,8 @@ const generateCalls = async (
 ): Promise<GenerateRewardsResult> => {
   const { refIndex, sender } = config;
 
-  logger.info(
-    `🚀 Generating calls for reward distribution of referendum ${refIndex}`
-  );
-  // logger.info("with config", config);
+  // logger.info(`🚀 Generating calls for reward distribution of referendum ${refIndex}`);
+  // // logger.info("with config", config)
 
   await cryptoWaitReady();
 
@@ -116,23 +114,21 @@ const generateCalls = async (
 
   //get ref ended block number
   let blockNumber;
-  logger.info(`ℹ️  Getting block number for referendum ${refIndex}`);
+  // logger.info(`ℹ️  Getting block number for referendum ${refIndex}`)
   try {
     blockNumber = await getBlockNumber(apiKusama, referendumIndex);
     if (!blockNumber) throw new Error("Referendum is still ongoing");
   } catch (e) {
-    logger.error(`Referendum is still ongoing: ${e}`);
+    // logger.error(`Referendum is still ongoing: ${e}`)
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
 
-  logger.info(`ℹ️  Getting all voting wallets for ${refIndex}`);
+  // logger.info(`ℹ️  Getting all voting wallets for ${refIndex}`)
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =
-    await getDecoratedVotesWithInfo(config, kusamaChainDecimals, logger);
+    await getDecoratedVotesWithInfo(config, kusamaChainDecimals);
 
-  logger.info(
-    `⚙️  Processing ${decoratedVotes.length} votes for referendum ${refIndex}`
-  );
+  // logger.info(`⚙️  Processing ${decoratedVotes.length} votes for referendum ${refIndex}`);
 
   //computing the actual calls is still WIP and likely to change
 
@@ -146,7 +142,7 @@ const generateCalls = async (
     decoratedVotes,
     rarityDistribution,
     rng,
-    logger
+    // logger
   );
 
   const nftCalls = apiKusamaAssetHub.tx.utility
@@ -154,11 +150,11 @@ const generateCalls = async (
     .method.toHex();
   const kusamaCalls = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
 
-  logger.info(
-    `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama) and ${txsKusama.length} txs for Kusama XCM calls`
-  );
+  // logger.info(
+  //   `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama) and ${txsKusama.length} txs for Kusama XCM calls`
+  // );
 
-  logger.info("💵 Calculating fees for sender", config.sender);
+  // logger.info("💵 Calculating fees for sender", config.sender)
 
   const infoKusamaCalls = await apiKusama.tx.utility
     .batchAll(txsKusama)
@@ -182,12 +178,12 @@ const generateCalls = async (
         .toString()
     : new BN(itemDeposit).muln(totalNFTs).toString();
 
-  logger.info("🎉 All Done");
+  // logger.info("🎉 All Done")
 
-  logger.info(
-    "📄 Writing transactions to",
-    `./log/tmp_transactions_${config.refIndex}_xcm.json`
-  );
+  // logger.info(
+  //   "📄 Writing transactions to",
+  //   `./log/tmp_transactions_${config.refIndex}_xcm.json`
+  // );
   // fs.writeFileSync(
   //   `./log/tmp_transactions_${config.refIndex}_xcm.json`,
   //   JSON.stringify(
@@ -204,37 +200,37 @@ const generateCalls = async (
   //   )
   // );
 
-  logger.info(
-    "returning",
-    JSON.stringify(
-      {
-        call: "omitted",
-        distribution: rarityDistribution,
-        fees: {
-          kusama: formatBalance(infoKusamaCalls.partialFee, {
-            withSi: false,
-            forceUnit: "KSM",
-            decimals: kusamaChainDecimals.toNumber(),
-          }),
-          nfts: formatBalance(infoNftCalls.partialFee, {
-            withSi: false,
-            forceUnit: "KSM",
-            decimals: kusamaChainDecimals.toNumber(),
-          }),
-          deposits: {
-            collectionDeposit,
-            itemDeposit,
-          },
-        },
-        txsCount: {
-          kusama: txsKusama.length,
-          nfts: txsKusamaAssetHub.length,
-        },
-      },
-      null,
-      2
-    )
-  );
+  // logger.info(
+  //   "returning",
+  //   JSON.stringify(
+  //     {
+  //       call: "omitted",
+  //       distribution: rarityDistribution,
+  //       fees: {
+  //         kusama: formatBalance(infoKusamaCalls.partialFee, {
+  //           withSi: false,
+  //           forceUnit: "KSM",
+  //           decimals: kusamaChainDecimals.toNumber(),
+  //         }),
+  //         nfts: formatBalance(infoNftCalls.partialFee, {
+  //           withSi: false,
+  //           forceUnit: "KSM",
+  //           decimals: kusamaChainDecimals.toNumber(),
+  //         }),
+  //         deposits: {
+  //           collectionDeposit,
+  //           itemDeposit,
+  //         },
+  //       },
+  //       txsCount: {
+  //         kusama: txsKusama.length,
+  //         nfts: txsKusamaAssetHub.length,
+  //       },
+  //     },
+  //     null,
+  //     2
+  //   )
+  // );
 
   return {
     call: "omitted",

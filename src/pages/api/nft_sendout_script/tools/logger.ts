@@ -31,4 +31,4 @@ log4js.configure({
   },
 });
 
-export const logger = log4js.getLogger(apiFileCategory);
+// export const logger = log4js.getLogger(apiFileCategory);

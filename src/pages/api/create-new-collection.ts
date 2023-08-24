@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       tx: createCollectionTx,
     });
   } catch (err) {
-    console.log("error parsing form", err);
+    // console.log("error parsing form", err)
     res.status(400).json({
       name: err.name,
       message: err.message,

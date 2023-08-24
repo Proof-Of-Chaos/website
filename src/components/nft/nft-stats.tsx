@@ -25,7 +25,7 @@ export function NftStatsSingle({ name, symbol, balance }) {
 export function NftStats() {
   const { data, error } = useCollectionData();
 
-  console.log("data", data);
+  // console.log("data", data)
 
   let totalNFTs = 0;
   let owners = 0;

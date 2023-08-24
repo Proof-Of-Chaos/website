@@ -31,7 +31,7 @@ ReferendumRewards.getLayout = function getLayout(page) {
 //     "./api/nft_sendout_script/src/generateCalls"
 //   );
 //   const preimage = await generateCalls(defaultConfig);
-//   console.log("done", preimage);
+//   // console.log("done", preimage)
 //   return { props: { test: "123" } };
 // };
 

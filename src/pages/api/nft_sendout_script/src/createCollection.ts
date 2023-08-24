@@ -15,7 +15,7 @@ export const getTxCollectionCreate = async (
   rewardConfig: RewardConfiguration
 ): Promise<any> => {
   let txsKusamaAssetHub = [];
-  console.log("getting collection create call");
+  // console.log("getting collection create call")
   //create collection
   const admin = {
     Id: rewardConfig.sender,

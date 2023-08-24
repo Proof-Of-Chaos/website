@@ -140,7 +140,7 @@ export function useVoteManager(queryClient = null) {
               id: toastId,
             });
           } else if (status.isFinalized) {
-            console.log(`Current status: ${status.type}`);
+            // console.log(`Current status: ${status.type}`)
             toast.success("Vote successfully recorded 🗳️", {
               id: toastId,
               duration: 4000,
@@ -148,12 +148,12 @@ export function useVoteManager(queryClient = null) {
             removeVoteState(refId);
             optimisticUpdateVotes(voteChoice, voteBalances, conviction, refId);
           } else {
-            console.log(`Current status: ${status.type}`);
+            // console.log(`Current status: ${status.type}`)
           }
         }
       )
       .catch((error) => {
-        console.log(":( transaction failed", error);
+        // console.log(":( transaction failed", error)
         removeVoteState(refId);
         toast.dismiss(toastId);
       });

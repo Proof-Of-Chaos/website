@@ -2,7 +2,7 @@ import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import PinataClient from "@pinata/sdk";
 
-import { logger } from "../tools/logger";
+// import { logger } from "../tools/logger";
 import pinataSDK from "@pinata/sdk";
 
 /**
@@ -16,10 +16,10 @@ export const setupPinata = async (): Promise<PinataClient | null> => {
   );
   try {
     const result = await pinata.testAuthentication();
-    logger.info("🤖 Successfully authenticated with Pinata");
+    // logger.info("🤖 Successfully authenticated with Pinata")
     return pinata;
   } catch (err) {
-    logger.info(err);
+    // logger.info(err)
     throw new Error("Pinata setup failed");
   }
 };
@@ -62,11 +62,11 @@ export const getBlockNumber = async (
       }
       return confirmationBlockNumber;
     } else {
-      logger.error(`Referendum is still ongoing.`);
+      // logger.error(`Referendum is still ongoing.`)
       return null;
     }
   } catch (e) {
-    logger.error(`Referendum is still ongoing: ${e}`);
+    // logger.error(`Referendum is still ongoing: ${e}`)
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
 };

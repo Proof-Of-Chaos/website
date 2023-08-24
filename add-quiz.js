@@ -64,7 +64,7 @@ function tryToQuit() {
 
       askQuestion(`Question ${questionNo}: `);
     } else {
-      console.log("\nAdd at least 1 question / answer");
+      // console.log("\nAdd at least 1 question / answer")
     }
   } else {
 

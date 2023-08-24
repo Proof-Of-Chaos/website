@@ -95,10 +95,10 @@ export function RewardsCreationForm() {
       });
 
       const jsonRes = await res.json();
-      console.log("result from api ", jsonRes);
+      // console.log("result from api ", jsonRes)
 
       if (jsonRes.name === "Error") {
-        console.log(" frontend", jsonRes);
+        // console.log(" frontend", jsonRes)
         setError(jsonRes);
       } else {
         setCallData(jsonRes);
@@ -106,7 +106,7 @@ export function RewardsCreationForm() {
 
       setIsCallDataLoading(false);
     } catch (error) {
-      console.log(" frontend", error);
+      // console.log(" frontend", error)
       setError(error);
       setIsCallDataLoading(false);
     }
@@ -130,7 +130,7 @@ export function RewardsCreationForm() {
         setIsComplete(true);
       }
     } catch (error) {
-      console.log("error sending tx", error);
+      // console.log("error sending tx", error)
       setError(error);
     }
   }

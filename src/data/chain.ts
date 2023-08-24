@@ -126,7 +126,7 @@ export const sendAndFinalize = async (
               id: toastId,
             });
           } else {
-            console.log("transaction in block waiting for finalization");
+            // console.log("transaction in block waiting for finalization")
           }
         } else if (status.isFinalized) {
           if (toastId) {
@@ -140,7 +140,7 @@ export const sendAndFinalize = async (
             );
           }
           // events.forEach(({ phase, event: { data, method, section } }) => {
-          //   console.log(`\t' ${phase}: ${section}.${method}:: ${data}`);
+          //   // console.log(`\t' ${phase}: ${section}.${method}:: ${data}`)
           // });
 
           if (dispatchError) {
@@ -151,7 +151,7 @@ export const sendAndFinalize = async (
               );
               const { docs, name, section } = decoded;
 
-              console.log("here we are");
+              // console.log("here we are")
 
               reject(docs.join(" "));
             } else {
@@ -159,7 +159,7 @@ export const sendAndFinalize = async (
               reject({ status: "error", message: dispatchError.toString() });
             }
           } else {
-            console.log("here we are 2");
+            // console.log("here we are 2")
             resolve({
               status: "success",
               message: `success signAndSend ${tx.toString()}`,
@@ -171,7 +171,7 @@ export const sendAndFinalize = async (
         }
       })
       .catch((error) => {
-        console.log("error", toastId, error);
+        // console.log("error", toastId, error)
         if (toastId) {
           hotToast.dismiss(toastId);
         } else {
@@ -203,7 +203,7 @@ export const sendAndFinalizeKeyPair = async (
       account,
       async ({ events = [], status, dispatchError }) => {
         if (status.isInBlock) {
-          console.log(`status: ${status}`);
+          // console.log(`status: ${status}`)
 
           success = dispatchError ? false : true;
           console.log(
@@ -213,7 +213,7 @@ export const sendAndFinalizeKeyPair = async (
           block = signedBlock.block.header.number.toNumber();
           included = [...events];
         } else if (status.isBroadcast) {
-          console.log(`🚀 Transaction broadcasted.`);
+          // console.log(`🚀 Transaction broadcasted.`)
         } else if (status.isFinalized) {
           console.log(
             `💯 Transaction ${tx.meta.name}(..) Finalized at blockHash ${status.asFinalized}`
@@ -225,7 +225,7 @@ export const sendAndFinalizeKeyPair = async (
         } else if (status.isReady) {
           // let's not be too noisy..
         } else {
-          console.log(`🤷 Other status ${status}`);
+          // console.log(`🤷 Other status ${status}`)
         }
       }
     );
@@ -272,11 +272,11 @@ export async function getApi(chain: string, retry = 0): Promise<ApiPromise> {
     await apis[chain].isReady;
     return apis[chain];
   } catch (error) {
-    console.log("error in getApi -> getProvider", error);
+    // console.log("error in getApi -> getProvider", error)
     if (retry < MAX_RETRIES) {
-      console.log("⎋ rotating endpoints");
+      // console.log("⎋ rotating endpoints")
 
-      console.log("before", WS_ENDPOINTS[chain]);
+      // console.log("before", WS_ENDPOINTS[chain])
       // If we have reached maximum number of retries on the primaryEndpoint, let's move it to the end of array and try the secondary endpoint
       WS_ENDPOINTS[chain] = [
         secondaryEndpoint,
@@ -284,7 +284,7 @@ export async function getApi(chain: string, retry = 0): Promise<ApiPromise> {
         primaryEndpoint,
       ];
 
-      console.log("after", WS_ENDPOINTS[chain]);
+      // console.log("after", WS_ENDPOINTS[chain])
       return await getApi(chain, retry + 1);
     } else {
       return apis[chain];
@@ -300,7 +300,7 @@ async function getProvider(chain: string, endpointIndex = 0) {
   return await new Promise((resolve, reject) => {
     wsProviders[chain] = new WsProvider(primaryEndpoint, 1000);
     wsProviders[chain].on("disconnected", async () => {
-      console.log(`⛓️  WS provider for rpc ${primaryEndpoint} disconnected!`);
+      // console.log(`⛓️  WS provider for rpc ${primaryEndpoint} disconnected!`)
       if (!healthCheckInProgress[chain]) {
         try {
           await providerHealthCheck(chain);
@@ -311,11 +311,11 @@ async function getProvider(chain: string, endpointIndex = 0) {
       }
     });
     wsProviders[chain].on("connected", () => {
-      console.log(`WS provider for rpc ${primaryEndpoint} connected`);
+      // console.log(`WS provider for rpc ${primaryEndpoint} connected`)
       resolve(wsProviders[chain]);
     });
     wsProviders[chain].on("error", async () => {
-      console.log(`Error thrown for rpc ${primaryEndpoint}`);
+      // console.log(`Error thrown for rpc ${primaryEndpoint}`)
       if (!healthCheckInProgress[chain]) {
         try {
           await providerHealthCheck(chain);
@@ -335,7 +335,7 @@ async function providerHealthCheck(chain: string) {
   healthCheckInProgress[chain] = true;
   await sleep(WS_DISCONNECT_TIMEOUT_SECONDS * 1000);
   if (wsProviders[chain].isConnected) {
-    console.log(`All good. Connected back to ${chain}`);
+    // console.log(`All good. Connected back to ${chain}`)
     healthCheckInProgress[chain] = false;
     return true;
   } else {
