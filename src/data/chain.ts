@@ -12,7 +12,7 @@ import {
 import { toast as hotToast, Toast, ToastOptions } from "react-hot-toast";
 import { ISubmittableResult } from "@polkadot/types/types";
 
-const CHAIN = {
+export const CHAIN = {
   KUSAMA: "kusama",
   KUSAMA_ASSET_HUB: "kusamaAssetHub",
   ENCOINTER: "encointer",

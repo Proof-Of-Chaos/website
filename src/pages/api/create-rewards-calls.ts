@@ -26,6 +26,7 @@ import { getTxsReferendumRewards } from "./nft_sendout_script/src/generateTxs";
 import { Readable } from "stream";
 import formidable, { errors as formidableErrors } from "formidable";
 import {
+  CHAIN,
   getChainDecimals,
   getNFTCollectionDeposit,
   getNFTItemDeposit,
@@ -96,8 +97,10 @@ const generateCalls = async (
 ): Promise<GenerateRewardsResult> => {
   const { refIndex, sender } = config;
 
-  log.info(`🚀 Generating calls for reward distribution of referendum ${refIndex}`);
-  log.info("with config", config)
+  log.info(
+    `🚀 Generating calls for reward distribution of referendum ${refIndex}`
+  );
+  log.info("with config", config);
 
   await cryptoWaitReady();
 
@@ -105,7 +108,7 @@ const generateCalls = async (
 
   //get Kusama API
   const apiKusama = await getApiKusama();
-  const kusamaChainDecimals = await getChainDecimals("kusama");
+  const kusamaChainDecimals = await getChainDecimals(CHAIN.KUSAMA);
 
   //get Kusama Asset Hub API
   const apiKusamaAssetHub = await getApiKusamaAssetHub();
@@ -114,7 +117,7 @@ const generateCalls = async (
 
   //get ref ended block number
   let blockNumber;
-  log.info(`ℹ️  Getting block number for referendum ${refIndex}`)
+  log.info(`ℹ️  Getting block number for referendum ${refIndex}`);
   try {
     blockNumber = await getBlockNumber(apiKusama, referendumIndex);
     if (!blockNumber) throw new Error("Referendum is still ongoing");
@@ -123,12 +126,14 @@ const generateCalls = async (
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
 
-  log.info(`ℹ️  Getting all voting wallets for ${refIndex}`)
+  log.info(`ℹ️  Getting all voting wallets for ${refIndex}`);
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =
     await getDecoratedVotesWithInfo(config, kusamaChainDecimals);
 
-  log.info(`⚙️  Processing ${decoratedVotes.length} votes for referendum ${refIndex}`);
+  log.info(
+    `⚙️  Processing ${decoratedVotes.length} votes for referendum ${refIndex}`
+  );
 
   //computing the actual calls is still WIP and likely to change
 
@@ -151,10 +156,10 @@ const generateCalls = async (
   const kusamaCalls = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
 
   log.info(
-  //   `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama) and ${txsKusama.length} txs for Kusama XCM calls`
-  // );
+    `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama) and ${txsKusama.length} txs for Kusama XCM calls`
+  );
 
-  log.info("💵 Calculating fees for sender", config.sender)
+  log.info(`💵 Calculating fees for sender ${config.sender}`);
 
   const infoKusamaCalls = await apiKusama.tx.utility
     .batchAll(txsKusama)
@@ -178,12 +183,13 @@ const generateCalls = async (
         .toString()
     : new BN(itemDeposit).muln(totalNFTs).toString();
 
-  log.info("🎉 All Done")
+  log.info("🎉 All Done");
 
   log.info(
-  //   "📄 Writing transactions to",
-  //   `./log/tmp_transactions_${config.refIndex}_xcm.json`
-  // );
+    `📄 Writing transactions to
+    ./log/tmp_transactions_${config.refIndex}_xcm.json`
+  );
+
   // fs.writeFileSync(
   //   `./log/tmp_transactions_${config.refIndex}_xcm.json`,
   //   JSON.stringify(
@@ -201,36 +207,36 @@ const generateCalls = async (
   // );
 
   log.info(
-  //   "returning",
-  //   JSON.stringify(
-  //     {
-  //       call: "omitted",
-  //       distribution: rarityDistribution,
-  //       fees: {
-  //         kusama: formatBalance(infoKusamaCalls.partialFee, {
-  //           withSi: false,
-  //           forceUnit: "KSM",
-  //           decimals: kusamaChainDecimals.toNumber(),
-  //         }),
-  //         nfts: formatBalance(infoNftCalls.partialFee, {
-  //           withSi: false,
-  //           forceUnit: "KSM",
-  //           decimals: kusamaChainDecimals.toNumber(),
-  //         }),
-  //         deposits: {
-  //           collectionDeposit,
-  //           itemDeposit,
-  //         },
-  //       },
-  //       txsCount: {
-  //         kusama: txsKusama.length,
-  //         nfts: txsKusamaAssetHub.length,
-  //       },
-  //     },
-  //     null,
-  //     2
-  //   )
-  // );
+    `returning
+    ${JSON.stringify(
+      {
+        call: "omitted",
+        distribution: rarityDistribution,
+        fees: {
+          kusama: formatBalance(infoKusamaCalls.partialFee, {
+            withSi: false,
+            forceUnit: "KSM",
+            decimals: kusamaChainDecimals.toNumber(),
+          }),
+          nfts: formatBalance(infoNftCalls.partialFee, {
+            withSi: false,
+            forceUnit: "KSM",
+            decimals: kusamaChainDecimals.toNumber(),
+          }),
+          deposits: {
+            collectionDeposit,
+            itemDeposit,
+          },
+        },
+        txsCount: {
+          kusama: txsKusama.length,
+          nfts: txsKusamaAssetHub.length,
+        },
+      },
+      null,
+      2
+    )}`
+  );
 
   return {
     call: "omitted",
@@ -261,14 +267,6 @@ const generateCalls = async (
       nfts: txsKusamaAssetHub.length,
     },
   };
-
-  //write distribution to chain
-  // distributionAndConfigRemarks.push('PROOFOFCHAOS2::' + referendumIndex.toString() + '::DISTRIBUTION::' + JSON.stringify(distribution))
-  //write config to chain
-  // distributionAndConfigRemarks.push('PROOFOFCHAOS2::' + referendumIndex.toString() + '::CONFIG::' + JSON.stringify(config))
-  // if (!settings.isTest) {
-  log.info("distributionAndConfigRemarks: ", JSON.stringify(distributionAndConfigRemarks))
-  // }
 };
 
 export const config = {

@@ -65,7 +65,7 @@
     "latest": "^0.2.0",
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
-    "next": "13.2.4",
+    "next": "^13.4.19",
     "next-auth": "^4.20.1",
     "next-axiom": "^1.0.0-rc.1",
     "next-seo": "^5.15.0",
@@ -89,6 +89,7 @@
     "tippy.js": "^6.3.7",
     "typescript": "^5.0.4",
     "victory": "^36.6.8",
+    "web-vitals": "^3.4.0",
     "yup": "^1.0.2",
     "zustand": "^4.3.6"
   }
