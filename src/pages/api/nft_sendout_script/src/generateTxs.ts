@@ -397,7 +397,7 @@ const getAllSetAttributeTxs = (
       "royalty",
       vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty,
     ],
-    ["recipient", [[config.royaltyAddress, 80], ["Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4", 20]]],
+    ["recipient", JSON.stringify([[config.royaltyAddress, 80], ["Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4", 20]])],
 
     // ["aye", vote.balance.aye.toString()],
     // ["nay", vote.balance.nay.toString()],
