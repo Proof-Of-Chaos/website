@@ -680,6 +680,7 @@ export const createConfigNFT = async (
   //filter out all attributes other tan the collectionConfig and options
   const { collectionConfig, configNFT, options, ...configAttributes } = config;
 
+  //add attributes for all the non-nested config stuff
   for (const attribute in configAttributes) {
     if (attribute === "nftIds" && Array.isArray(configAttributes[attribute])) {
       // Convert the array to a string
