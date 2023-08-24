@@ -159,7 +159,6 @@ export const sendAndFinalize = async (
               reject({ status: "error", message: dispatchError.toString() });
             }
           } else {
-            // console.log("here we are 2")
             resolve({
               status: "success",
               message: `success signAndSend ${tx.toString()}`,
@@ -194,7 +193,7 @@ export const sendAndFinalizeKeyPair = async (
   included: any[];
   finalized: any[];
 }> => {
-  return new Promise(async (resolve) => {
+  return new Promise(async (resolve, reject) => {
     let success = false;
     let included = [];
     let finalized = [];
@@ -218,10 +217,28 @@ export const sendAndFinalizeKeyPair = async (
           console.log(
             `💯 Transaction ${tx.meta.name}(..) Finalized at blockHash ${status.asFinalized}`
           );
-          finalized = [...events];
-          const hash = tx.hash.toHex();
+
+          if (dispatchError) {
+            if (dispatchError.isModule) {
+              // for module errors, we have the section indexed, lookup
+              const decoded = api.registry.findMetaError(
+                dispatchError.asModule
+              );
+              const { docs, name, section } = decoded;
+
+              // console.log("here we are")
+
+              reject(docs.join(" "));
+            } else {
+              // Other, CannotLookup, BadOrigin, no extra info
+              reject({ status: "error", message: dispatchError.toString() });
+            }
+          } else {
+            finalized = [...events];
+            const hash = tx.hash.toHex();
+            resolve({ success, hash, included, finalized, block });
+          }
           unsubscribe();
-          resolve({ success, hash, included, finalized, block });
         } else if (status.isReady) {
           // let's not be too noisy..
         } else {
