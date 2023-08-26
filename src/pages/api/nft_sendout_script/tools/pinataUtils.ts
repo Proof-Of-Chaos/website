@@ -79,7 +79,7 @@ export const pinImageAndMetadataForOptions = async (
       mediaUri: `ipfs://ipfs/${imageIpfsCid.IpfsHash}`,
       image: `ipfs://ipfs/${imageIpfsCid.IpfsHash}`,
       name: option.itemName,
-      description: option.description,
+      description: `${option.description}\n\n_This NFT was created with [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
       attributes: [
         {
           trait_type: "Rarity",
