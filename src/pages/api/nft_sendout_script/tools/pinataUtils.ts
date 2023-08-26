@@ -245,7 +245,7 @@ export const pinMetadataForConfigNFT = async (
     } else {
       attributes.push({
         trait_type: attribute,
-        value: configAttributes[attribute] ? configAttributes[attribute].toString() : ""
+        value: configAttributes.hasOwnProperty(attribute) ? configAttributes[attribute].toString() : ""
       });
     }
   }
@@ -254,7 +254,10 @@ export const pinMetadataForConfigNFT = async (
   for (const attribute in collectionConfig) {
     attributes.push({
       trait_type: "collection_" + attribute,
-      value: collectionConfig[attribute] ? collectionConfig[attribute].toString() : "",
+      value: (collectionConfig.hasOwnProperty(attribute))
+        ? collectionConfig[attribute].toString()
+        : ""
+      ,
     });
   }
 
@@ -262,7 +265,7 @@ export const pinMetadataForConfigNFT = async (
   for (const attribute in configNFT) {
     attributes.push({
       trait_type: "configNFT_" + attribute,
-      value: configNFT[attribute] ? configNFT[attribute].toString() : "",
+      value: configNFT.hasOwnProperty(attribute) ? configNFT[attribute].toString() : "",
     });
   }
 
@@ -272,7 +275,7 @@ export const pinMetadataForConfigNFT = async (
     for (const attribute in option) {
       attributes.push({
         trait_type: "option_" + optionIndex + "_" + attribute,
-        value: option[attribute] ? option[attribute].toString() : "",
+        value: option.hasOwnProperty(attribute) ? option[attribute].toString() : "",
       });
     }
     optionIndex++;
