@@ -18,6 +18,7 @@ export interface VoteConviction extends ConvictionVote {
 
 export type GenerateRewardsResult = {
   call: string | undefined;
+  config: RewardConfiguration;
   kusamaCall: string | undefined;
   kusamaAssetHubCall: string | undefined;
   kusamaAssetHubTxs: string[] | undefined;

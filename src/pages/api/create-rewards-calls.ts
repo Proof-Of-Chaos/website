@@ -237,6 +237,7 @@ const generateCalls = async (
 
   return {
     call: "omitted",
+    config,
     kusamaCall: JSON.stringify(kusamaCalls),
     kusamaAssetHubCall: JSON.stringify(nftCalls),
     kusamaAssetHubTxs: txsKusamaAssetHub,
