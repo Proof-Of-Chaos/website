@@ -140,7 +140,7 @@ export function RewardsCreationForm() {
         setIsComplete(true);
         const createConfigRes = await fetch("/api/create-config-nft", {
           method: "POST",
-          body: JSON.stringify(watchFormFields),
+          body: JSON.stringify(callData.config),
         });
         console.log("create Config NFT result", createConfigRes);
       }
