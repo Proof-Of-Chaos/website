@@ -33,6 +33,16 @@ import {
 import { getApiKusama, getApiKusamaAssetHub } from "../../data/getApi";
 import PinataClient from "@pinata/sdk";
 
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
+
 /**
  * Handler for the /api/create-rewards-calls endpoint
  * @param req The request object encoded as URLSearchParams
