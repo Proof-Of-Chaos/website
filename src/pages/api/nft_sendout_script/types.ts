@@ -23,6 +23,7 @@ export type GenerateRewardsResult = {
   kusamaAssetHubCall: string | undefined;
   kusamaAssetHubTxs: string[] | undefined;
   distribution: RarityDistribution | undefined;
+  voters: string[] | undefined;
   fees?: {
     kusama?: string;
     nfts?: string;

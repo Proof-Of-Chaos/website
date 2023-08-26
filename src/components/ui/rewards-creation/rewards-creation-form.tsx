@@ -57,11 +57,6 @@ export function RewardsCreationForm() {
 
   const isMounted = useIsMounted();
 
-  const totalNFTs =
-    callData?.distribution?.common +
-    callData?.distribution?.rare +
-    callData?.distribution?.epic;
-
   const formMethods = useForm({
     defaultValues: defaultReferendumRewardsConfig,
   });
@@ -231,7 +226,8 @@ export function RewardsCreationForm() {
               <p className="text-xs mb-4">
                 Here you can create a signable transactions for sending out NFTs
                 to users who voted on a referendum. Just fill in the form and
-                click submit. <br></br>If you find any issues, please{" "}
+                click submit. <br></br>If you find any 🪲, or want a new
+                feature, please{" "}
                 <a href="https://github.com/Proof-Of-Chaos/website/issues">
                   file a github issue here
                 </a>
@@ -398,7 +394,8 @@ export function RewardsCreationForm() {
               {callData && callData.distribution && !isComplete && (
                 <div className="text-sm">
                   <p className="mt-8">
-                    The txs you sign will mint <b>{totalNFTs} NFTs</b> (
+                    The txs you sign will mint{" "}
+                    <b>{callData.voters?.length} NFTs</b> (
                     {callData?.distribution?.common} common,{" "}
                     {callData?.distribution?.rare} rare,{" "}
                     {callData?.distribution?.epic} epic) to{" "}
@@ -417,7 +414,8 @@ export function RewardsCreationForm() {
               {callData && isComplete && (
                 <div>
                   <h3 className="text-2xl">
-                    🚀 The txs you signed minted <b>{totalNFTs} NFTs</b> 🚀
+                    🚀 The txs you signed minted{" "}
+                    <b>{callData.voters?.length} NFTs</b> 🚀
                   </h3>
                 </div>
               )}
@@ -444,9 +442,9 @@ export function RewardsCreationForm() {
         </div>
       )}
       {/* <pre className="text-[0.5rem]">
-          file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
-          form fields: {JSON.stringify(watchFormFields, null, 2)}
-        </pre> */}
+        file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
+        form fields: {JSON.stringify(watchFormFields, null, 2)}
+      </pre> */}
       {/* <pre className="text-[0.5rem]">
         call config:
         {JSON.stringify(callData?.config, null, 2)}
