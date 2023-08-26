@@ -224,10 +224,9 @@ export function RewardsCreationForm() {
               </h1>
 
               <p className="text-xs mb-4">
-                Here you can create a signable transactions for sending out NFTs
-                to users who voted on a referendum. Just fill in the form and
-                click submit. <br></br>If you find any 🪲, or want a new
-                feature, please{" "}
+                Here you can create signable transactions for sending out NFTs
+                to users who voted on a referendum. <br></br>If you find any 🪲,
+                or want a new feature, please{" "}
                 <a href="https://github.com/Proof-Of-Chaos/website/issues">
                   file a github issue here
                 </a>
