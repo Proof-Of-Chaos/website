@@ -2,7 +2,7 @@ import "@polkadot/rpc-augment";
 import "@polkadot/api-augment/kusama";
 import { ApiPromise, Keyring, WsProvider } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { Block } from "@polkadot/types/interfaces";
+import { Block, Header } from "@polkadot/types/interfaces";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import {
@@ -63,6 +63,7 @@ export const defaultToastMessages = [
   `(2/3) Waiting for transaction to enter block`,
   `(3/3) Waiting for block finalization`,
   `Transaction successful`,
+  `Transaction failed`,
 ];
 
 /**
@@ -93,6 +94,11 @@ export const sendAndFinalize = async (
   }
 
   return new Promise(async (resolve, reject) => {
+    let success = false;
+    let included = [];
+    let block = 0;
+    let blockHeader: Header;
+
     await api.isReady;
 
     // if someone passes a hex encoded tx we need to decode it
@@ -112,7 +118,7 @@ export const sendAndFinalize = async (
       call = maybeHexTxToSubmittable(tx);
     }
     const unsub = await call
-      .signAndSend(address, { signer: signer }, (result) => {
+      .signAndSend(address, { signer: signer }, async (result) => {
         const { status, dispatchError, events = [], txHash } = result;
         if (status.isReady) {
           if (toastId) {
@@ -121,6 +127,10 @@ export const sendAndFinalize = async (
             });
           }
         } else if (status.isInBlock) {
+          success = dispatchError ? false : true;
+          const signedBlock = await api.rpc.chain.getBlock(status.asInBlock);
+          blockHeader = signedBlock.block.header;
+          included = [...events];
           if (toastId) {
             hotToast.loading(toast.messages[2], {
               id: toastId,
@@ -129,16 +139,9 @@ export const sendAndFinalize = async (
             // console.log("transaction in block waiting for finalization")
           }
         } else if (status.isFinalized) {
-          if (toastId) {
-            hotToast.success(toast.messages[3], {
-              id: toastId,
-              duration: 4000,
-            });
-          } else {
-            console.log(
-              `Transaction included at blockHash ${status.asFinalized}`
-            );
-          }
+          console.log(
+            `Transaction included at blockHash ${status.asFinalized}`
+          );
           // events.forEach(({ phase, event: { data, method, section } }) => {
           //   // console.log(`\t' ${phase}: ${section}.${method}:: ${data}`)
           // });
@@ -158,12 +161,27 @@ export const sendAndFinalize = async (
               // Other, CannotLookup, BadOrigin, no extra info
               reject({ status: "error", message: dispatchError.toString() });
             }
+
+            if (toastId) {
+              hotToast.error(toast.messages[4], {
+                id: toastId,
+                duration: 4000,
+              });
+            }
           } else {
+            if (toastId) {
+              hotToast.success(toast.messages[3], {
+                id: toastId,
+                duration: 4000,
+              });
+            }
+
             resolve({
               status: "success",
               message: `success signAndSend ${tx.toString()}`,
               events,
               txHash,
+              blockHeader,
             });
           }
           unsub();
@@ -272,11 +290,6 @@ export async function getApi(chain: string, retry = 0): Promise<ApiPromise> {
   const chainApi = apis[chain];
 
   if (chainProvider && chainApi && chainApi.isConnected) {
-    console.log(
-      "returning api from cache for chain",
-      chain,
-      " because it is connected"
-    );
     return chainApi;
   }
 

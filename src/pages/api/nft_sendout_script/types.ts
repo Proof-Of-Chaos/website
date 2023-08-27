@@ -2,6 +2,7 @@ import { DeriveReferendumVote } from "@polkadot/api-derive/types";
 import { Bytes } from "@polkadot/types";
 import { BN } from "@polkadot/util";
 import { pinImageAndMetadataForOptions } from "./tools/pinataUtils";
+import { Header } from "@polkadot/types/interfaces";
 
 export interface VoteConviction extends ConvictionVote {
   lockedWithConviction?: BN;
@@ -389,6 +390,7 @@ export interface SendAndFinalizeResult {
   message: string;
   txHash?: string;
   events?: any[];
+  blockHeader?: Header;
   toast?: ToastType;
 }
 

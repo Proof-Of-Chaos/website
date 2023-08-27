@@ -94,6 +94,13 @@ export default function CreateNFTCollectionModal({
       body: formData,
     });
     const { tx, name, message } = await res.json();
+
+    console.info(`result from create-new-collection:`, {
+      tx,
+      name,
+      message,
+    });
+
     if (name === "Error") {
       setError({ name, message });
     }
@@ -118,10 +125,11 @@ export default function CreateNFTCollectionModal({
 
         closeModal();
       }
-    } catch ({ status }) {
+    } catch (error) {
+      console.log("error signing transaction", error);
       setError({
         name: "Error",
-        message: `Error signing transaction: ${status}`,
+        message: `Error signing transaction: ${error}`,
       });
     }
 
@@ -217,7 +225,6 @@ export default function CreateNFTCollectionModal({
                       noFile: (files) =>
                         files?.length > 0 || "Please upload a file",
                       lessThan3MB: (files) => {
-                        console.log("size", files[0].size);
                         return files[0].size < 3 * 1024 * 1024 || "Max 3MB";
                       },
                       acceptedFormats: (files) =>
