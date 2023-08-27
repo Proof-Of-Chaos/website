@@ -18,7 +18,7 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
       "This is the config NFT for the referendum rewards. You can use this NFT to verify the configuration that was used for the specific sendout.",
   },
   collectionConfig: {
-    id: parseInt(process.env.NEXT_PUBLIC_DEFAULT_COLLECTION_ID) || 34,
+    id: parseInt(process.env.NEXT_PUBLIC_DEFAULT_COLLECTION_ID) || 37,
     name: "",
     description: "",
     isNew: false,
