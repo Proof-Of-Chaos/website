@@ -258,7 +258,7 @@ export function RewardsCreationForm() {
                   type="text"
                   placeholder="Enter the address of the royalty receiver"
                   description="Where trading royalties should go to (Kusama / Asset Hub).
-                  80% will go to the entered address, 20% to the Proof of Chaos multisig."
+                  80% will go to the entered address, 20% to the Proof of Chaos multisig: Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4."
                   {...formMethods.register("royaltyAddress", {
                     validate: {},
                   })}
@@ -272,8 +272,8 @@ export function RewardsCreationForm() {
                     placeholder="The id of your existing collection"
                     type="text"
                     description="Either choose an existing collection to mint the NFTs into, or
-                    create a new one. You must be authorized to mint to the given collection. (34 is the default id for the Proof of Chaos
-                    public collection)"
+                    create a new one. You must be authorized to mint to the given collection! (103 is the default id for the Proof of Chaos
+                    PUBLIC collection. Since it is public, anyone can mint into it.)"
                     disabled={isNewCollectionLoading}
                     {...formMethods.register("collectionConfig.id", {
                       validate: {},
@@ -298,10 +298,10 @@ export function RewardsCreationForm() {
                 NFTs
               </label>
               <p className="form-helper">
-                You can create 3 different NFTs of different rarity by uploading
+                You can create 3 different types of NFTs, each with varying rarity, by uploading
                 an image and providing metadata. The mapping of voter -&gt;
-                rarity is performed by the POC algorithm taking several metrics
-                into account and adds some randomness to the flavor.
+                rarity is performed by the POC algorithm, which takes several metrics
+                into account and introduces an element of randomness.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
                 {["common", "rare", "epic"].map((rarity, index) => {

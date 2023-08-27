@@ -11,14 +11,14 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
   blockCutOff: null,
   directOnly: false,
   configNFT: {
-    settingsCollectionId: 86,
+    settingsCollectionId: parseInt(process.env.NEXT_PUBLIC_SETTINGS_COLLECTION_ID) || 86,
     file: undefined,
     imageCid: "ipfs://ipfs/QmZX9JAhur4ozT2mbHBVAWNRFZGfFRQLgkRgd1yyE35eme",
     description:
       "This is the config NFT for the referendum rewards. You can use this NFT to verify the configuration that was used for the specific sendout.",
   },
   collectionConfig: {
-    id: parseInt(process.env.NEXT_PUBLIC_DEFAULT_COLLECTION_ID) || 34,
+    id: parseInt(process.env.NEXT_PUBLIC_DEFAULT_COLLECTION_ID) || 37,
     name: "",
     description: "",
     isNew: false,
@@ -33,7 +33,7 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
   // encointerBonus: 50,
   minAmount: 0.2,
   defaultRoyalty: 95,
-  royaltyAddress: "DhvRNnnsyykGpmaa9GMjK9H4DeeQojd5V5qCTWd1GoYwnTc",
+  royaltyAddress: "Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4",
   options: [
     {
       maxProbability: 25,
