@@ -325,7 +325,7 @@ export interface CollectionConfiguration {
   name: string;
   description: string;
   metadataCid?: string | null;
-  isNew?: boolean;
+  isNew: boolean;
 }
 
 export interface ConfigNFT {
