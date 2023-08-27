@@ -33,7 +33,7 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
   // encointerBonus: 50,
   minAmount: 0.2,
   defaultRoyalty: 95,
-  royaltyAddress: "DhvRNnnsyykGpmaa9GMjK9H4DeeQojd5V5qCTWd1GoYwnTc",
+  royaltyAddress: "Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4",
   options: [
     {
       maxProbability: 25,
