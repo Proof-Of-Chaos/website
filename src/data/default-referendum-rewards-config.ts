@@ -11,7 +11,7 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
   blockCutOff: null,
   directOnly: false,
   configNFT: {
-    settingsCollectionId: 86,
+    settingsCollectionId: parseInt(process.env.NEXT_PUBLIC_SETTINGS_COLLECTION_ID) || 86,
     file: undefined,
     imageCid: "ipfs://ipfs/QmZX9JAhur4ozT2mbHBVAWNRFZGfFRQLgkRgd1yyE35eme",
     description:
