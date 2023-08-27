@@ -43,6 +43,7 @@ import {
   PalletConvictionVotingVoteVoting,
   PalletReferendaReferendumInfoConvictionVotingTally,
 } from "@polkadot/types/lookup";
+import { websiteConfig } from "../../../../data/website-config";
 import fs from "fs";
 
 // Helper function to get vote parameters
@@ -92,13 +93,12 @@ const applyBonusesFor = (
  */
 export const getDecoratedVotesWithInfo = async (
   config: RewardConfiguration,
-  chainDecimals: BN,
-  // logger: Logger
+  chainDecimals: BN
 ): Promise<{
   decoratedVotes: VoteConviction[];
   distribution: RarityDistribution;
 }> => {
-  // logger.info(`↪ Getting referendum details and all voting wallets`)
+  console.info(`↪ Getting referendum details and all voting wallets`);
 
   let { referendum, totalIssuance, votes } = await getConvictionVoting(
     parseInt(config.refIndex)
@@ -107,7 +107,9 @@ export const getDecoratedVotesWithInfo = async (
   // start decorating the votes with additional information
   // TODO rename all below to decorateWith...
 
-  // logger.info(`↪ Getting locks for referendum ${config.refIndex} with ${votes.length} votes.`);
+  console.info(
+    `↪ Getting locks for referendum ${config.refIndex} with ${votes.length} votes.`
+  );
 
   // 1. decorate `lockedWithConviction` - relevant info we consider instead of the vote * locked
   votes = await retrieveAccountLocks(
@@ -123,7 +125,9 @@ export const getDecoratedVotesWithInfo = async (
   votes = applyBonusesFor("dragon", votes);
   votes = applyBonusesFor("quiz", votes);
 
-  // logger.info(`↪ Checking for votes meeting requirements for referendum ${config.refIndex} with ${votes.length} votes.`);
+  console.info(
+    `↪ Checking for votes meeting requirements for referendum ${config.refIndex} with ${votes.length} votes.`
+  );
 
   // 3. decorate `meetsRequirements` - whether vote > threshold
   votes = await checkVotesMeetingRequirements(
@@ -133,7 +137,9 @@ export const getDecoratedVotesWithInfo = async (
     chainDecimals
   );
 
-  // logger.info(`↪ calculating distribution for referendum ${config.refIndex} with ${votes.length} votes.`);
+  console.info(
+    `↪ calculating distribution for referendum ${config.refIndex} with ${votes.length} votes.`
+  );
 
   // 4. get global min, max, median values for calculating the final rarity
   const {
@@ -146,31 +152,41 @@ export const getDecoratedVotesWithInfo = async (
     maxLockedWithConviction,
   } = getVoteInfo(votes, config);
 
-  // logger.info(
-  //   `📊 Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
-  // );
-  // logger.info(
-  //   `📊 Max locked with conviction meeting requirements: ${maxLockedWithConviction}KSM, min locked with conviction meeting requirements: ${minLockedWithConviction}KSM`
-  // );
-  // logger.info(
-  //   `📊 This is the range of values used to compute the median as well as lower and upper limits of the 'luck' curve`
-  // );
-  // logger.info(
-  //   `📊 Computed lower limit of curve: ${lowerLimitOfCurve}KSM, upper limit of curve: ${upperLimitOfCurve}KSM, median of curve: ${medianOfCurve}KSM`
-  // );
+  console.info(
+    `📊 Total votes: ${votes.length}, votes meeting requirements: ${votesMeetingRequirements.length}, votes not meeting requirements: ${votesNotMeetingRequirements.length}`
+  );
+  console.info(
+    `📊 Max locked with conviction meeting requirements: ${maxLockedWithConviction}KSM, min locked with conviction meeting requirements: ${minLockedWithConviction}KSM`
+  );
+  console.info(
+    `📊 This is the range of values used to compute the median as well as lower and upper limits of the 'luck' curve`
+  );
+  console.info(
+    `📊 Computed lower limit of curve: ${lowerLimitOfCurve}KSM, upper limit of curve: ${upperLimitOfCurve}KSM, median of curve: ${medianOfCurve}KSM`
+  );
 
   // 5. decorate with chances. E.g. chances: { common: 0.5, rare: 0.3, epic 0.2}
-  // logger.info(`🎲 Calculating NFT probabilities and distribution`)
+  console.info(`🎲 Calculating NFT probabilities and distribution`);
   const decoratedWithChancesVotes = decorateWithChances(
     votes,
     config,
     lowerLimitOfCurve,
     upperLimitOfCurve,
     medianOfCurve,
-    0,
+    0
     // logger
   );
   votes = decoratedWithChancesVotes.votesWithChances;
+
+  if (websiteConfig.rewards_sendout_filter.length > 0) {
+    votes = votes.filter((vote) =>
+      websiteConfig.rewards_sendout_filter.includes(vote.address.toString())
+    );
+
+    console.warn(
+      `🚨🚨🚨  TESTING, filtered votes to only send to ${votes.length} votes for referendum ${config.refIndex}`
+    );
+  }
 
   return {
     decoratedVotes: votes,
@@ -196,7 +212,7 @@ const decorateWithChances = (
   lowerLimitOfCurve: number,
   upperLimitOfCurve: number,
   medianOfCurve: number,
-  seed: number = 0,
+  seed: number = 0
   // logger: Logger
 ): { votesWithChances: VoteConviction[]; distribution: RarityDistribution } => {
   //seed the randomizer
@@ -247,7 +263,7 @@ const decorateWithChances = (
       lowerLimitOfCurve,
       upperLimitOfCurve,
       medianOfCurve,
-      ++seed,
+      ++seed
       // logger
     );
   }
@@ -485,12 +501,12 @@ export const retrieveAccountLocks = async (
         const userLockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-            userVote.endBlock
-              .sub(endBlockBN)
-              .muln(10)
-              .div(sevenDaysBlocks)
-              .toNumber() / 10
-          );
+              userVote.endBlock
+                .sub(endBlockBN)
+                .muln(10)
+                .div(sevenDaysBlocks)
+                .toNumber() / 10
+            );
         const matchingPeriod = lockPeriods.reduce(
           (acc, curr, index) => (userLockPeriods >= curr ? index : acc),
           0
@@ -501,8 +517,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-          BN.max(max, current)
-        )
+            BN.max(max, current)
+          )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -678,7 +694,7 @@ export const createConfigNFT = async (
   for (const attribute in configAttributes) {
     if (attribute === "nftIds" && Array.isArray(configAttributes[attribute])) {
       // Convert the array to a string
-      let ids = configAttributes[attribute].map(id => id.toString());
+      let ids = configAttributes[attribute].map((id) => id.toString());
 
       let counter = 1;
       let chunk = "";
@@ -722,7 +738,7 @@ export const createConfigNFT = async (
           nftId,
           "CollectionOwner",
           attribute,
-          (configAttributes.hasOwnProperty(attribute))
+          configAttributes.hasOwnProperty(attribute)
             ? configAttributes[attribute].toString()
             : ""
         )
@@ -738,7 +754,7 @@ export const createConfigNFT = async (
         nftId,
         "CollectionOwner",
         "collection_" + attribute,
-        (collectionConfig.hasOwnProperty(attribute))
+        collectionConfig.hasOwnProperty(attribute)
           ? collectionConfig[attribute].toString()
           : ""
       )
@@ -753,7 +769,7 @@ export const createConfigNFT = async (
         nftId,
         "CollectionOwner",
         "configNFT_" + attribute,
-        (configNFT.hasOwnProperty(attribute))
+        configNFT.hasOwnProperty(attribute)
           ? configNFT[attribute].toString()
           : ""
       )
@@ -770,9 +786,7 @@ export const createConfigNFT = async (
           nftId,
           "CollectionOwner",
           "option_" + optionIndex + "_" + attribute,
-          (option.hasOwnProperty(attribute))
-            ? option[attribute].toString()
-            : ""
+          option.hasOwnProperty(attribute) ? option[attribute].toString() : ""
         )
       );
     }

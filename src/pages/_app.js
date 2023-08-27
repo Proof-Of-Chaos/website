@@ -11,6 +11,8 @@ import PolkadotApiProvider from "../context/polkadot-api-context";
 import useAppStore from "../zustand";
 import { Analytics } from "@vercel/analytics/react";
 
+import { NextUIProvider } from "@nextui-org/react";
+
 import "../../styles/globals.scss";
 
 function MyApp({ Component, pageProps }) {
@@ -35,33 +37,35 @@ function MyApp({ Component, pageProps }) {
 
       <PolkadotApiProvider>
         <QueryClientProvider client={queryClient}>
-          {getLayout(<Component {...pageProps} />)}
-          <ModalsContainer />
-          <DrawersContainer />
-          <Toaster
-            className="toaster"
-            position="top-right"
-            toastOptions={{
-              style: {
-                width: "300px",
-                minHeight: "70px",
-              },
-            }}
-          >
-            {(t) => (
-              <ToastBar toast={t} className="toaster-bar">
-                {({ icon, message }) => (
-                  <>
-                    {icon}
-                    <div className="message flex flex-col mx-3 text-sm">
-                      <span className="font-bold">{t.title}</span>
-                      {message}
-                    </div>
-                  </>
-                )}
-              </ToastBar>
-            )}
-          </Toaster>
+          <NextUIProvider>
+            {getLayout(<Component {...pageProps} />)}
+            <ModalsContainer />
+            <DrawersContainer />
+            <Toaster
+              className="toaster"
+              position="top-right"
+              toastOptions={{
+                style: {
+                  width: "300px",
+                  minHeight: "70px",
+                },
+              }}
+            >
+              {(t) => (
+                <ToastBar toast={t} className="toaster-bar">
+                  {({ icon, message }) => (
+                    <>
+                      {icon}
+                      <div className="message flex flex-col mx-3 text-sm">
+                        <span className="font-bold">{t.title}</span>
+                        {message}
+                      </div>
+                    </>
+                  )}
+                </ToastBar>
+              )}
+            </Toaster>
+          </NextUIProvider>
         </QueryClientProvider>
       </PolkadotApiProvider>
       <Analytics />

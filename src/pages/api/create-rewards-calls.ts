@@ -33,6 +33,16 @@ import {
 import { getApiKusama, getApiKusamaAssetHub } from "../../data/getApi";
 import PinataClient from "@pinata/sdk";
 
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
+
 /**
  * Handler for the /api/create-rewards-calls endpoint
  * @param req The request object encoded as URLSearchParams
@@ -169,16 +179,26 @@ const generateCalls = async (
   const collectionDeposit = await getNFTCollectionDeposit(apiKusamaAssetHub);
   const itemDeposit = await getNFTItemDeposit(apiKusamaAssetHub);
 
-  const totalNFTs =
-    rarityDistribution?.common +
-    rarityDistribution?.rare +
-    rarityDistribution?.epic;
+  const voters = decoratedVotes.map((vote) => vote.address);
+  const totalNFTs = voters.length;
+
+  console.log(
+    "calculating fees with ",
+    config,
+    totalNFTs,
+    itemDeposit,
+    collectionDeposit
+  );
 
   const totalDeposit = config.collectionConfig.isNew
     ? new BN(collectionDeposit)
         .add(new BN(itemDeposit).muln(totalNFTs))
         .toString()
     : new BN(itemDeposit).muln(totalNFTs).toString();
+
+  console.info(
+    `📊 Total fees for sender ${config.sender} are ${totalDeposit} KSM`
+  );
 
   console.info("🎉 All Done");
 
@@ -209,6 +229,7 @@ const generateCalls = async (
       {
         call: "omitted",
         distribution: rarityDistribution,
+        voters,
         fees: {
           kusama: formatBalance(infoKusamaCalls.partialFee, {
             withSi: false,
@@ -241,6 +262,7 @@ const generateCalls = async (
     kusamaCall: JSON.stringify(kusamaCalls),
     kusamaAssetHubCall: JSON.stringify(nftCalls),
     kusamaAssetHubTxs: txsKusamaAssetHub,
+    voters,
     distribution: rarityDistribution,
     fees: {
       kusama: formatBalance(infoKusamaCalls.partialFee, {

@@ -22,8 +22,18 @@ import { usePastReferendaIndices } from "../../../hooks/use-gov2";
 import { useIsMounted } from "../../../hooks/use-is-mounted";
 import { bnToBn, formatBalance } from "@polkadot/util";
 
+import {
+  Input,
+  Select,
+  SelectItem,
+  Button as UIButton,
+  Textarea,
+  useDisclosure,
+} from "@nextui-org/react";
+
 export function RewardsCreationForm() {
   const { openModal, closeModal } = useModal();
+  const { onOpen } = useDisclosure();
   const connectedAccountIndex = useAppStore(
     (state) => state.user.connectedAccount
   );
@@ -47,11 +57,6 @@ export function RewardsCreationForm() {
 
   const isMounted = useIsMounted();
 
-  const totalNFTs =
-    callData?.distribution?.common +
-    callData?.distribution?.rare +
-    callData?.distribution?.epic;
-
   const formMethods = useForm({
     defaultValues: defaultReferendumRewardsConfig,
   });
@@ -65,10 +70,10 @@ export function RewardsCreationForm() {
     formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
 
-  useEffect(() => {
-    if (pastReferendaIndices?.length)
-      setValue("refIndex", pastReferendaIndices[0]);
-  }, [pastReferendaIndices]);
+  // useEffect(() => {
+  //   if (pastReferendaIndices?.length)
+  //     setValue("refIndex", pastReferendaIndices[0]);
+  // }, [pastReferendaIndices]);
 
   const watchFormFields = watch();
 
@@ -191,6 +196,7 @@ export function RewardsCreationForm() {
   }
 
   async function createNewCollection() {
+    console.log("creating new collection");
     openModal("NEW_NFT_COLLECTION", {
       config: watchFormFields,
       sender: walletAddress,
@@ -210,98 +216,82 @@ export function RewardsCreationForm() {
               onSubmit={formMethods.handleSubmit(onSubmit)}
               className={style.form}
             >
-              <h1 className="text-2xl">Create Rewards for a Referendum</h1>
-              <p className="text-xs">
-                Here you can create a signable transactions for sending out NFTs
-                to users who voted on a referendum.
-              </p>
-              <p className="text-xs">Just fill in the form and click submit.</p>
-              <label
-                htmlFor="refIndex"
-                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-              >
-                Referendum Index
-              </label>
-              <select
-                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-                {...formMethods.register("refIndex", {
-                  validate: {},
-                })}
-              >
-                {}
-                {isPastRefIndicesLoading ? (
-                  <option>Loading ...</option>
-                ) : (
-                  pastReferendaIndices?.map((refIdx) => (
-                    <option key={refIdx} value={refIdx}>
-                      {refIdx}
-                    </option>
-                  ))
-                )}
-              </select>
-              <p className="form-helper">
-                Select any <b>past</b> referendum to prepare the NFT sendouts
-                for
+              <h1 className="text-2xl relative">
+                Create Rewards for a Referendum
+                <span className="pl-2 text-base text-sky-600 translate-y-6">
+                  beta
+                </span>
+              </h1>
+
+              <p className="text-xs mb-4">
+                Here you can create signable transactions for sending out NFTs
+                to users who voted on a referendum. <br></br>If you find any 🪲,
+                or want a new feature, please{" "}
+                <a href="https://github.com/Proof-Of-Chaos/website/issues">
+                  file a github issue here
+                </a>
               </p>
 
-              <label
-                htmlFor="royaltyAddress"
-                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-              >
-                Royalty Address
-              </label>
-              <input
-                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-                placeholder="0"
-                type="text"
-                {...formMethods.register("royaltyAddress", {
-                  validate: {},
-                })}
-                required
-              />
-              <p className="form-helper">
-                Where trading royalties should go to (Kusama / Asset Hub).
-                Support us by leaving the default Proof of Chaos wallet.
-              </p>
+              <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4">
+                <Select
+                  isRequired
+                  label="Referendum Index"
+                  isLoading={isPastRefIndicesLoading}
+                  placeholder={"Select any past referendum"}
+                  description={
+                    "Select any past referendum to prepare the NFT sendouts for"
+                  }
+                  {...formMethods.register("refIndex", {
+                    validate: {},
+                  })}
+                >
+                  {pastReferendaIndices?.map((refIdx) => (
+                    <SelectItem key={refIdx} value={refIdx}>
+                      {refIdx}
+                    </SelectItem>
+                  ))}
+                </Select>
+
+                <Input
+                  isRequired
+                  label="Royalty Address"
+                  type="text"
+                  placeholder="Enter the address of the royalty receiver"
+                  description="Where trading royalties should go to (Kusama / Asset Hub).
+                  Support us by leaving the default Proof of Chaos wallet."
+                  {...formMethods.register("royaltyAddress", {
+                    validate: {},
+                  })}
+                />
+              </div>
 
               <>
-                <label
-                  htmlFor="collectionId"
-                  className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-                >
-                  Collection Id
-                </label>
-                <div className="flex">
-                  <input
-                    className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+                <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 items-center">
+                  <Input
+                    label="Collection Id"
                     placeholder="The id of your existing collection"
                     type="text"
+                    description="Either choose an existing collection to mint the NFTs into, or
+                    create a new one (34 is the default id for the Proof of Chaos
+                    public collection)"
+                    disabled={isNewCollectionLoading}
                     {...formMethods.register("collectionConfig.id", {
                       validate: {},
                     })}
-                    disabled={isNewCollectionLoading}
                   />
-                  <div className="flex pl-4 pr-2 items-center">or</div>
-                  <Button
-                    className="mt-2 ml-2"
+                  <div className="flex h-100">or</div>
+                  <UIButton
+                    className="w-full"
                     onClick={createNewCollection}
-                    variant="primary"
-                    size="small"
+                    color="secondary"
+                    isLoading={isNewCollectionLoading}
+                    variant="bordered"
                   >
-                    {isNewCollectionLoading ? (
-                      <>
-                        Creating new Collection <InlineLoader></InlineLoader>
-                      </>
-                    ) : (
-                      "Create New Collection"
-                    )}
-                  </Button>
+                    {isNewCollectionLoading
+                      ? "Creating a new collection ..."
+                      : "Create A New Collection"}
+                  </UIButton>
                 </div>
-                <p className="form-helper">
-                  Either choose an existing collection to mint the NFTs into, or
-                  create a new one (34 is the default id for the Proof of Chaos
-                  public collection)
-                </p>
               </>
 
               <label className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white">
@@ -403,7 +393,8 @@ export function RewardsCreationForm() {
               {callData && callData.distribution && !isComplete && (
                 <div className="text-sm">
                   <p className="mt-8">
-                    The txs you sign will mint <b>{totalNFTs} NFTs</b> (
+                    The txs you sign will mint{" "}
+                    <b>{callData.voters?.length} NFTs</b> (
                     {callData?.distribution?.common} common,{" "}
                     {callData?.distribution?.rare} rare,{" "}
                     {callData?.distribution?.epic} epic) to{" "}
@@ -422,7 +413,8 @@ export function RewardsCreationForm() {
               {callData && isComplete && (
                 <div>
                   <h3 className="text-2xl">
-                    🚀 The txs you signed minted <b>{totalNFTs} NFTs</b> 🚀
+                    🚀 The txs you signed minted{" "}
+                    <b>{callData.voters?.length} NFTs</b> 🚀
                   </h3>
                 </div>
               )}
@@ -449,9 +441,9 @@ export function RewardsCreationForm() {
         </div>
       )}
       {/* <pre className="text-[0.5rem]">
-          file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
-          form fields: {JSON.stringify(watchFormFields, null, 2)}
-        </pre> */}
+        file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
+        form fields: {JSON.stringify(watchFormFields, null, 2)}
+      </pre> */}
       {/* <pre className="text-[0.5rem]">
         call config:
         {JSON.stringify(callData?.config, null, 2)}
@@ -470,69 +462,57 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
   let optionIndex = refConfig.options.findIndex((opt) => opt.rarity === rarity);
 
   return (
-    <div className={`flex flex-col p-5 form-fields-${rarity}`}>
-      <h3 className="text-xl">{rarity}</h3>
-      <label
-        htmlFor={`file-${rarity}`}
-        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-      >
-        Upload Image (max 2MB)
-      </label>
+    <div
+      className={`flex flex-col p-1 form-fields-${rarity} 
+    gap-4`}
+    >
+      <div className="p-1 bg-white rounded shadow-md gap-4 flex flex-col p-3">
+        <h3 className="text-xl mb-2">{rarity}</h3>
 
-      <input
-        type="file"
-        {...register(`options[${optionIndex}].file`, {
-          validate: {},
-        })}
-        required
-      />
+        <div>
+          <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-0 pb-0">
+            Upload Image (max 2MB)
+          </label>
 
-      <label
-        htmlFor={`name-${rarity}`}
-        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-      >
-        Name of {rarity} NFT
-      </label>
-      <input
-        id={`name-${rarity}`}
-        className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-        placeholder={`Enter name of ${rarity} NFT`}
-        type="text"
-        {...register(`options[${optionIndex}].itemName`, {
-          validate: {},
-        })}
-      />
+          <input
+            id={`file-${rarity}`}
+            type="file"
+            className="mt-0"
+            placeholder="Upload Image"
+            {...register(`options[${optionIndex}].file`, {
+              validate: {},
+            })}
+          />
+        </div>
 
-      <label
-        htmlFor={`description-${rarity}`}
-        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-      >
-        Description of {rarity} NFT
-      </label>
-      <textarea
-        id={`description-${rarity}`}
-        className="form-control mt-2 block h-20 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-        placeholder={`Enter description of ${rarity} NFT`}
-        {...register(`options[${optionIndex}].description`, {
-          validate: {},
-        })}
-      />
+        <Input
+          id={`name-${rarity}`}
+          label={`Name of ${rarity} NFT`}
+          placeholder={`Enter name of ${rarity} NFT`}
+          type="text"
+          {...register(`options[${optionIndex}].itemName`, {
+            validate: {},
+          })}
+        />
 
-      <label
-        htmlFor={`artist-${rarity}`}
-        className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-      >
-        Artist of {rarity} NFT
-      </label>
-      <input
-        id={`artist-${rarity}`}
-        className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
-        placeholder={`Enter artist of ${rarity} NFT`}
-        type="text"
-        {...register(`options[${optionIndex}].artist`, {
-          validate: {},
-        })}
-      />
+        <Textarea
+          id={`description-${rarity}`}
+          label={`Description of ${rarity} NFT`}
+          placeholder={`Enter description of ${rarity} NFT`}
+          {...register(`options[${optionIndex}].description`, {
+            validate: {},
+          })}
+        />
+        <Input
+          id={`artist-${rarity}`}
+          label={`Artist of ${rarity} NFT`}
+          placeholder={`Enter artist of ${rarity} NFT`}
+          type="text"
+          {...register(`options[${optionIndex}].artist`, {
+            validate: {},
+          })}
+        />
+      </div>
     </div>
   );
 }

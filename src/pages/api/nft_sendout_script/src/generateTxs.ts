@@ -74,16 +74,6 @@ export const getTxsReferendumRewards = async (
       "ipfs://ipfs/" + fileAndMetadataCids.imageIpfsCids[option.rarity].direct;
   });
 
-  if (websiteConfig.rewards_sendout_filter.length > 0) {
-    decoratedVotes = decoratedVotes.filter((vote) =>
-      websiteConfig.rewards_sendout_filter.includes(vote.address.toString())
-    );
-
-    console.warn(
-      `🚨🚨🚨  TESTING, filtered votes to only send to ${decoratedVotes.length} votes for referendum ${referendumIndex}`
-    );
-  }
-
   // generate NFT mint txs for each vote(er)
   const txsVotes = getTxsForVotes(
     apiKusamaAssetHub,
@@ -397,7 +387,13 @@ const getAllSetAttributeTxs = (
       "royalty",
       vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty,
     ],
-    ["recipient", JSON.stringify([[config.royaltyAddress, 80], ["Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4", 20]])],
+    [
+      "recipient",
+      JSON.stringify([
+        [config.royaltyAddress, 80],
+        ["Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4", 20],
+      ]),
+    ],
 
     // ["aye", vote.balance.aye.toString()],
     // ["nay", vote.balance.nay.toString()],

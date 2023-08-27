@@ -1,6 +1,4 @@
 import { Dialog } from "@headlessui/react";
-import Button from "../ui/button";
-import Input from "../ui/input";
 import { useModal } from "./context";
 import { toast } from "react-toastify";
 import useAppStore from "../../zustand";
@@ -16,6 +14,14 @@ import {
 } from "../../data/chain";
 import { SendAndFinalizeResult } from "../../pages/api/nft_sendout_script/types";
 import LoadingComponent from "../ui/loadingComponent";
+import {
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Button,
+  Input,
+} from "@nextui-org/react";
+import { websiteConfig } from "../../data/website-config";
 
 export default function CreateNFTCollectionModal({
   config,
@@ -77,7 +83,7 @@ export default function CreateNFTCollectionModal({
       })
     );
 
-    formData.append("imageFile", data.imageFile[0]);
+    formData.append("imageFile", data.imageFile?.[0]);
 
     setIsLoading(true);
     //sets in parent form
@@ -89,11 +95,8 @@ export default function CreateNFTCollectionModal({
     });
     const { tx, name, message } = await res.json();
     if (name === "Error") {
-      // console.log(" frontend error", name, message)
       setError({ name, message });
     }
-
-    // console.log("result from api ", tx)
 
     try {
       const { status, events } = await signTx(tx);
@@ -157,12 +160,12 @@ export default function CreateNFTCollectionModal({
   }
 
   return (
-    <div className="overflow-scroll">
-      <Dialog.Title as="h3" className="text-xl font-medium text-gray-900">
+    <div className="">
+      <ModalHeader className="flex flex-col gap-1">
         Create a new NFT collection on Kusama Asset Hub
-      </Dialog.Title>
+      </ModalHeader>
 
-      <Dialog.Panel>
+      <ModalBody>
         <p className="form-helper">
           Sending the form will create a new collection on Kusama Asset Hub. The
           metadata of the collection (image, name, description) will be set in
@@ -170,79 +173,89 @@ export default function CreateNFTCollectionModal({
         </p>
 
         <LoadingComponent
-          className="w-52"
           isLoading={isLoading}
           loaderText="Creating new NFT collection"
         >
           <FormProvider {...formMethods}>
-            <form className="p-1" onSubmit={formMethods.handleSubmit(onSubmit)}>
-              <label
-                htmlFor="newCollectionName"
-                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-              >
-                Collection Name
-              </label>
-              <input
-                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+            <form
+              className="flex w-full flex-wrap gap-4"
+              onSubmit={formMethods.handleSubmit(onSubmit)}
+            >
+              <Input
+                isRequired
+                label="Collection Name"
                 placeholder="The name of your new collection"
                 type="text"
                 {...register("name", {
                   validate: {},
                 })}
-                required
               />
-
-              <label
-                htmlFor="newCollectionName"
-                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-              >
-                Collection Description
-              </label>
-              <input
-                className="form-control mt-2 block h-10 w-full rounded-md border border-gray-200 bg-white px-4 text-sm placeholder-gray-400  transition-shadow duration-200 invalid:border-red-500 invalid:text-red-600 focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:invalid:border-red-500 focus:invalid:ring-red-500 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:border-gray-700 dark:bg-light-dark dark:text-gray-100 dark:focus:border-gray-600 dark:focus:ring-gray-600 sm:rounded-lg"
+              <Input
+                isRequired
+                label="Collection Description"
                 placeholder="The description of your new collection"
                 type="text"
                 {...register("description", {
                   validate: {},
                 })}
-                required
               />
 
-              <label
-                htmlFor={`imageFile`}
-                className="mt-4 form-label block text-sm font-bold tracking-wider text-gray-900 dark:text-white"
-              >
-                Collection Image
-              </label>
-              <input
-                type="file"
-                {...register(`imageFile`, {
-                  validate: {},
-                })}
-                required
-              />
-              <Button type="submit" variant="primary" className="w-full mt-4">
-                Create Collection
-              </Button>
-              <Button
-                variant="calm"
-                type="button"
-                onClick={onCancel}
-                className="w-full mt-2"
-              >
-                Cancel
-              </Button>
-              {error.message && (
-                <div className="text-red-500">{error.message}</div>
+              <div>
+                <label
+                  htmlFor={`imageFile`}
+                  className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-0 pb-0"
+                >
+                  Collection Image (max 3MB)
+                </label>
+                <input
+                  required
+                  accept={websiteConfig.accepted_nft_formats.join(",")}
+                  type="file"
+                  name="imageFile"
+                  {...register(`imageFile`, {
+                    validate: {
+                      noFile: (files) =>
+                        files?.length > 0 || "Please upload a file",
+                      lessThan3MB: (files) => {
+                        console.log("size", files[0].size);
+                        return files[0].size < 3 * 1024 * 1024 || "Max 3MB";
+                      },
+                      acceptedFormats: (files) =>
+                        websiteConfig.accepted_nft_formats.includes(
+                          files[0]?.type
+                        ) || "please upload a valid image or video file",
+                    },
+                  })}
+                />
+              </div>
+              {errors.imageFile && (
+                <span className="w-full text-sm text-red-500">
+                  <>{errors.imageFile.message}</>
+                </span>
               )}
             </form>
           </FormProvider>
         </LoadingComponent>
+        {error.message && (
+          <div className="text-red-500 text-sm">{error.message}</div>
+        )}
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          onClick={formMethods.handleSubmit(onSubmit)}
+          color="secondary"
+          className="w-full"
+        >
+          Create Collection
+        </Button>
+        <Button type="button" onClick={onCancel} className="w-full">
+          Cancel
+        </Button>
+      </ModalFooter>
 
-        {/* <pre className="text-[0.5rem]">
-          {JSON.stringify(watchFormFields, null, 2)}
-        </pre> */}
-      </Dialog.Panel>
+      {/* <pre className="text-[0.5rem]">
+        {JSON.stringify(watchFormFields, null, 2)}
+      </pre> */}
     </div>
   );
 }

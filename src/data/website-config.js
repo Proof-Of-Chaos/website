@@ -1,4 +1,17 @@
 export const websiteConfig = {
+  accepted_nft_formats: [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/tiff",
+    "image/svg",
+    "image/bmp",
+    "video/mp4",
+    "video/webp",
+    "audio/mp3",
+    "audio/flac",
+    "3d/glb",
+  ],
   rewards_sendout_filter: [
     "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
     "FF4KRpru9a1r2nfWeLmZRk6N8z165btsWYaWvqaVgR6qVic",
