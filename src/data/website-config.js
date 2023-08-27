@@ -13,8 +13,8 @@ export const websiteConfig = {
     "3d/glb",
   ],
   rewards_sendout_filter: [
-    // "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
-    // "FF4KRpru9a1r2nfWeLmZRk6N8z165btsWYaWvqaVgR6qVic",
+    "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
+    "FF4KRpru9a1r2nfWeLmZRk6N8z165btsWYaWvqaVgR6qVic",
   ], //KSM addresses to send rewards to, all other will be omitted
   singular_graphql_endpoint: "https://gql-rmrk2-prod.graphcdn.app",
   singular_fee: 0.035,

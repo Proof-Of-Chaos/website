@@ -94,13 +94,13 @@ export const getTxsReferendumRewards = async (
   //   ),
   // ];
 
-  const txsKusamaXCM = await getTxsKusamaXCM(
-    apiKusama,
-    apiKusamaAssetHub,
-    txsKusamaAssetHub
-  );
+  // const txsKusamaXCM = await getTxsKusamaXCM(
+  //   apiKusama,
+  //   apiKusamaAssetHub,
+  //   txsKusamaAssetHub
+  // );
 
-  txsKusama = [...txsKusama, ...txsKusamaXCM];
+  // txsKusama = [...txsKusama, ...txsKusamaXCM];
 
   return { txsKusamaAssetHub, txsKusama };
 };

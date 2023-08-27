@@ -486,6 +486,7 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
         </div>
 
         <Input
+          isRequired
           id={`name-${rarity}`}
           label={`Name of ${rarity} NFT`}
           placeholder={`Enter name of ${rarity} NFT`}

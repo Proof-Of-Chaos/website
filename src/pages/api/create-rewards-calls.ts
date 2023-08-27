@@ -146,7 +146,7 @@ const generateCalls = async (
 
   // get all transactions that are needed for the distribution
   // TODO --- warning we slice by 10 here
-  let { txsKusamaAssetHub, txsKusama } = await getTxsReferendumRewards(
+  let { txsKusamaAssetHub } = await getTxsReferendumRewards(
     apiKusamaAssetHub,
     apiKusama,
     apiPinata,
@@ -160,17 +160,19 @@ const generateCalls = async (
   const nftCalls = apiKusamaAssetHub.tx.utility
     .batchAll(txsKusamaAssetHub)
     .method.toHex();
-  const kusamaCalls = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
+
+  // const kusamaCalls = apiKusama.tx.utility.batchAll(txsKusama).method.toHex();
 
   console.info(
-    `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama) and ${txsKusama.length} txs for Kusama XCM calls`
+    `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama)`
+    // ,` and ${txsKusama.length} txs for Kusama XCM calls`
   );
 
   console.info(`💵 Calculating fees for sender ${config.sender}`);
 
-  const infoKusamaCalls = await apiKusama.tx.utility
-    .batchAll(txsKusama)
-    .paymentInfo(config.sender);
+  // const infoKusamaCalls = await apiKusama.tx.utility
+  //   .batchAll(txsKusama)
+  //   .paymentInfo(config.sender);
 
   const infoNftCalls = await apiKusamaAssetHub.tx.utility
     .batchAll(txsKusamaAssetHub)
@@ -231,11 +233,11 @@ const generateCalls = async (
         distribution: rarityDistribution,
         voters,
         fees: {
-          kusama: formatBalance(infoKusamaCalls.partialFee, {
-            withSi: false,
-            forceUnit: "KSM",
-            decimals: kusamaChainDecimals.toNumber(),
-          }),
+          // kusama: formatBalance(infoKusamaCalls.partialFee, {
+          //   withSi: false,
+          //   forceUnit: "KSM",
+          //   decimals: kusamaChainDecimals.toNumber(),
+          // }),
           nfts: formatBalance(infoNftCalls.partialFee, {
             withSi: false,
             forceUnit: "KSM",
@@ -247,7 +249,7 @@ const generateCalls = async (
           },
         },
         txsCount: {
-          kusama: txsKusama.length,
+          // kusama: txsKusama.length,
           nfts: txsKusamaAssetHub.length,
         },
       },
@@ -259,17 +261,18 @@ const generateCalls = async (
   return {
     call: "omitted",
     config,
-    kusamaCall: JSON.stringify(kusamaCalls),
+    // kusamaCall: JSON.stringify(kusamaCalls),
+    kusamaCall: "",
     kusamaAssetHubCall: JSON.stringify(nftCalls),
     kusamaAssetHubTxs: txsKusamaAssetHub,
     voters,
     distribution: rarityDistribution,
     fees: {
-      kusama: formatBalance(infoKusamaCalls.partialFee, {
-        withSi: false,
-        forceUnit: "KSM",
-        decimals: kusamaChainDecimals.toNumber(),
-      }),
+      // kusama: formatBalance(infoKusamaCalls.partialFee, {
+      //   withSi: false,
+      //   forceUnit: "KSM",
+      //   decimals: kusamaChainDecimals.toNumber(),
+      // }),
       nfts: formatBalance(infoNftCalls.partialFee, {
         withSi: false,
         forceUnit: "KSM",
@@ -283,7 +286,7 @@ const generateCalls = async (
       }),
     },
     txsCount: {
-      kusama: txsKusama.length,
+      // kusama: txsKusama.length,
       nfts: txsKusamaAssetHub.length,
     },
   };
