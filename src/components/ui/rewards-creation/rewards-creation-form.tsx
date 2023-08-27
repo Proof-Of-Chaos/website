@@ -258,7 +258,7 @@ export function RewardsCreationForm() {
                   type="text"
                   placeholder="Enter the address of the royalty receiver"
                   description="Where trading royalties should go to (Kusama / Asset Hub).
-                  Support us by leaving the default Proof of Chaos wallet."
+                  80% will go to the entered address, 20% to the Proof of Chaos multisig."
                   {...formMethods.register("royaltyAddress", {
                     validate: {},
                   })}
@@ -272,7 +272,7 @@ export function RewardsCreationForm() {
                     placeholder="The id of your existing collection"
                     type="text"
                     description="Either choose an existing collection to mint the NFTs into, or
-                    create a new one (34 is the default id for the Proof of Chaos
+                    create a new one. You must be authorized to mint to the given collection. (34 is the default id for the Proof of Chaos
                     public collection)"
                     disabled={isNewCollectionLoading}
                     {...formMethods.register("collectionConfig.id", {
@@ -301,7 +301,7 @@ export function RewardsCreationForm() {
                 You can create 3 different NFTs of different rarity by uploading
                 an image and providing metadata. The mapping of voter -&gt;
                 rarity is performed by the POC algorithm taking several metrics
-                + randomness into account.
+                into account and adds some randomness to the flavor.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
                 {["common", "rare", "epic"].map((rarity, index) => {
