@@ -124,8 +124,9 @@ export function RewardsCreationForm() {
     const apiKusamaAssetHub = await getApiKusamaAssetHub();
 
     try {
-      const { status } = await sendAndFinalize(
+      const { status, blockHeader, txHash } = await sendAndFinalize(
         apiKusamaAssetHub,
+        //TODO is this still needed? does sendAndFinalize do it?
         callData.kusamaAssetHubTxs.map((tx) => apiKusamaAssetHub.tx(tx)),
         signer,
         walletAddress
@@ -133,9 +134,16 @@ export function RewardsCreationForm() {
 
       if (status === "success") {
         setIsComplete(true);
+
+        const configReqBody = {
+          ...callData.config,
+          blockNumber: blockHeader.number.toNumber(),
+          txHash,
+        };
+
         const createConfigRes = await fetch("/api/create-config-nft", {
           method: "POST",
-          body: JSON.stringify(callData.config),
+          body: JSON.stringify(configReqBody),
         });
         console.log("create Config NFT result", createConfigRes);
       }
@@ -298,10 +306,11 @@ export function RewardsCreationForm() {
                 NFTs
               </label>
               <p className="form-helper">
-                You can create 3 different types of NFTs, each with varying rarity, by uploading
-                an image and providing metadata. The mapping of voter -&gt;
-                rarity is performed by the POC algorithm, which takes several metrics
-                into account and introduces an element of randomness.
+                You can create 3 different types of NFTs, each with varying
+                rarity, by uploading an image and providing metadata. The
+                mapping of voter -&gt; rarity is performed by the POC algorithm,
+                which takes several metrics into account and introduces an
+                element of randomness.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-full">
                 {["common", "rare", "epic"].map((rarity, index) => {
@@ -329,8 +338,9 @@ export function RewardsCreationForm() {
                   </p>
                 )}
               <p className="form-helper pt-2 text-center">
-                Hitting "Submit" will generate the required transactions for sending NFTs to
-                all voters. You can then sign these transactions in the subsequent step to record them on the blockchain.
+                Hitting "Submit" will generate the required transactions for
+                sending NFTs to all voters. You can then sign these transactions
+                in the subsequent step to record them on the blockchain.
               </p>
               <Button
                 type="submit"

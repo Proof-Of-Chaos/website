@@ -106,7 +106,13 @@ export default function CreateNFTCollectionModal({
     }
 
     try {
-      const { status, events } = await signTx(tx);
+      const { status, events, blockHeader } = await signTx(tx);
+
+      console.log("status of create collection", {
+        status,
+        events,
+        blockHeader,
+      });
 
       if (status === "success") {
         const newCollectionIdEvent = events.find(

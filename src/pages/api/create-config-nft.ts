@@ -8,7 +8,6 @@ export default async function handler(
 ) {
   try {
     const config = JSON.parse(req.body);
-
     const apiPinata = await setupPinata();
     const result = await createConfigNFT(apiPinata, config);
 
@@ -19,6 +18,7 @@ export default async function handler(
       result,
     });
   } catch (error) {
-    res.status(400).json({ error: "Invalid JSON" });
+    console.error(error);
+    res.status(400).json({ error: "Invalid JSON", message: error });
   }
 }
