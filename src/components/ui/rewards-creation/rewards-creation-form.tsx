@@ -477,7 +477,7 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
       className={`flex flex-col p-1 form-fields-${rarity} 
     gap-4`}
     >
-      <div className="p-1 bg-white rounded shadow-md gap-4 flex flex-col p-3">
+      <div className="h-full p-1 bg-white rounded shadow-md gap-4 flex flex-col p-3">
         <h3 className="text-xl mb-2">{rarity}</h3>
 
         <div>
