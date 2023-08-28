@@ -71,6 +71,10 @@ export function RewardsCreationForm() {
     formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
 
+  useEffect(() => {
+    console.log("errorrs", errors);
+  }, [errors]);
+
   // useEffect(() => {
   //   if (pastReferendaIndices?.length)
   //     setValue("refIndex", pastReferendaIndices[0]);
@@ -469,7 +473,7 @@ export function RewardsCreationForm() {
 }
 
 function RewardsCreationRarityFields({ rarity, refConfig }) {
-  const { watch, register, formState } = useFormContext();
+  const { register, formState } = useFormContext();
   const { errors } = formState;
 
   let optionIndex = refConfig.options.findIndex((opt) => opt.rarity === rarity);
@@ -484,7 +488,7 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
 
         <div>
           <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-0 pb-0">
-            Upload Image (max 1MB)
+            Upload Image (max 1.5MB)
           </label>
 
           <input
@@ -495,13 +499,9 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
             className="mt-0"
             {...register(`options[${optionIndex}].file`, {
               validate: {
-                hello: (files) => {
-                  console.log("files", files);
-                  return false;
-                },
                 noFile: (files) => files?.length > 0 || "Please upload a file",
-                lessThan3MB: (files) => {
-                  return files[0].size < 1 * 1024 * 1024 || "Max 1MB";
+                lessThan15MB: (files) => {
+                  return files[0].size < 1.5 * 1024 * 1024 || "Max 1.5MB";
                 },
                 acceptedFormats: (files) =>
                   websiteConfig.accepted_nft_formats.includes(files[0]?.type) ||
@@ -509,9 +509,9 @@ function RewardsCreationRarityFields({ rarity, refConfig }) {
               },
             })}
           />
-          {errors[`file-${rarity}`] && (
+          {errors[`options[${optionIndex}].file`] && (
             <span className="w-full text-sm text-red-500">
-              <>{errors[`file-${rarity}`].message}</>
+              <>{errors[`options[${optionIndex}].file`].message}</>
             </span>
           )}
         </div>
