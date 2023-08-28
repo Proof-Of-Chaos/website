@@ -338,9 +338,10 @@ export function RewardsCreationForm() {
                   </p>
                 )}
               <p className="form-helper pt-2 text-center">
-                Hitting "Submit" will generate the required transactions for
-                sending NFTs to all voters. You can then sign these transactions
-                in the subsequent step to record them on the blockchain.
+                Hitting &quot;Submit&quot; will generate the required
+                transactions for sending NFTs to all voters. You can then sign
+                these transactions in the subsequent step to record them on the
+                blockchain.
               </p>
               <Button
                 type="submit"

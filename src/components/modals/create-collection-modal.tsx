@@ -10,6 +10,7 @@ import { useState } from "react";
 import {
   defaultToastMessages,
   getApiKusamaAssetHub,
+  getNFTCollectionDeposit,
   sendAndFinalize,
 } from "../../data/chain";
 import { SendAndFinalizeResult } from "../../pages/api/nft_sendout_script/types";
@@ -20,8 +21,10 @@ import {
   ModalHeader,
   Button,
   Input,
+  Tooltip,
 } from "@nextui-org/react";
 import { websiteConfig } from "../../data/website-config";
+import { useCollectionDeposit } from "../../hooks/use-fees";
 
 export default function CreateNFTCollectionModal({
   config,
@@ -37,6 +40,10 @@ export default function CreateNFTCollectionModal({
   const connectedAccount = useAppStore(
     (state) => state.user.connectedAccounts?.[connectedAccountIndex]
   );
+
+  const { data: collectionDeposit, isLoading: isDepositLoading } =
+    useCollectionDeposit();
+  console.log("collectionDeposit", collectionDeposit);
 
   const formMethods = useForm({
     defaultValues: {
@@ -254,13 +261,17 @@ export default function CreateNFTCollectionModal({
         )}
       </ModalBody>
       <ModalFooter>
-        <Button
-          onClick={formMethods.handleSubmit(onSubmit)}
-          color="secondary"
-          className="w-full"
+        <Tooltip
+          content={isLoading ? "Loading Fees" : `Deposit ${collectionDeposit}`}
         >
-          Create Collection
-        </Button>
+          <Button
+            onClick={formMethods.handleSubmit(onSubmit)}
+            color="secondary"
+            className="w-full"
+          >
+            Create Collection
+          </Button>
+        </Tooltip>
         <Button type="button" onClick={onCancel} className="w-full">
           Cancel
         </Button>
