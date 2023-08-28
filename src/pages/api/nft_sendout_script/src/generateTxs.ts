@@ -277,8 +277,7 @@ export const getTxsForVotes = (
     ids.push(nftId);
 
     console.info(
-      `📤  ${vote.address.toString()} will get ${nftId} with rarity ${
-        chosenOption.rarity
+      `📤  ${vote.address.toString()} will get ${nftId} with rarity ${chosenOption.rarity
       } and nftId ${nftId}`
     );
 
@@ -363,14 +362,25 @@ const getAllSetAttributeTxs = (
 
   const randRoyaltyInRange = Math.floor(
     rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
-      chosenOption.minRoyalty
+    chosenOption.minRoyalty
   );
 
-  const imageCid = `ipfs://ipfs/${
-    fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
-      vote.voteType == "Delegating" ? "delegated" : "direct"
-    ]
-  }`;
+  const imageCid = `ipfs://ipfs/${fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
+    vote.voteType == "Delegating" ? "delegated" : "direct"
+  ]
+    }`;
+
+  let recipientValue;
+  if (config.royaltyAddress === "Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4") {
+    recipientValue = JSON.stringify([
+      [config.royaltyAddress, 100]
+    ]);
+  } else {
+    recipientValue = JSON.stringify([
+      [config.royaltyAddress, 80],
+      ["Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4", 20]
+    ]);
+  }
 
   let attributesToSet = [
     ["image", imageCid],
@@ -387,13 +397,7 @@ const getAllSetAttributeTxs = (
       "royalty",
       vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty,
     ],
-    [
-      "recipient",
-      JSON.stringify([
-        [config.royaltyAddress, 80],
-        ["Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4", 20],
-      ]),
-    ],
+    ["recipient", recipientValue],
 
     // ["aye", vote.balance.aye.toString()],
     // ["nay", vote.balance.nay.toString()],
