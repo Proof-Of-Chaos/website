@@ -158,6 +158,13 @@ const generateCalls = async (
   //   .batchAll(txsKusama)
   //   .paymentInfo(config.sender);
 
+  const amountOfTxs = txsKusamaAssetHub.length;
+  const amountOfNFTs = decoratedVotes.length;
+  const txsPerNFT = amountOfTxs / amountOfNFTs;
+
+  console.info(`📊 Generated ${amountOfTxs} txs for ${amountOfNFTs} NFTs`);
+  console.info(`📊 Generated ${txsPerNFT} txs per NFT`);
+
   const infoNftCalls = await apiKusamaAssetHub.tx.utility
     .batchAll(txsKusamaAssetHub)
     .paymentInfo(config.sender);
