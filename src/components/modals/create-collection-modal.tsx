@@ -24,7 +24,7 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { websiteConfig } from "../../data/website-config";
-import { useCollectionDeposit } from "../../hooks/use-fees";
+// import { useCollectionDeposit } from "../../hooks/use-fees";
 
 export default function CreateNFTCollectionModal({
   config,
@@ -41,9 +41,9 @@ export default function CreateNFTCollectionModal({
     (state) => state.user.connectedAccounts?.[connectedAccountIndex]
   );
 
-  const { data: collectionDeposit, isLoading: isDepositLoading } =
-    useCollectionDeposit();
-  console.log("collectionDeposit", collectionDeposit);
+  // const { data: collectionDeposit, isLoading: isDepositLoading } =
+  //   useCollectionDeposit();
+  // console.log("collectionDeposit", collectionDeposit);
 
   const formMethods = useForm({
     defaultValues: {
@@ -261,9 +261,7 @@ export default function CreateNFTCollectionModal({
         )}
       </ModalBody>
       <ModalFooter>
-        <Tooltip
-          content={isLoading ? "Loading Fees" : `Deposit ${collectionDeposit}`}
-        >
+        <Tooltip content={`~0.1 KSM Deposit`}>
           <Button
             onClick={formMethods.handleSubmit(onSubmit)}
             color="secondary"

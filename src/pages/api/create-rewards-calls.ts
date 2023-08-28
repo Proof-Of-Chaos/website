@@ -107,7 +107,7 @@ const generateCalls = async (
   console.info(
     `🚀 Generating calls for reward distribution of referendum ${refIndex}`
   );
-  console.info("with config", config);
+  // console.info("with config", config);
 
   await cryptoWaitReady();
 
@@ -184,13 +184,13 @@ const generateCalls = async (
   const voters = decoratedVotes.map((vote) => vote.address);
   const totalNFTs = voters.length;
 
-  console.log(
-    "calculating fees with ",
-    config,
-    totalNFTs,
-    itemDeposit,
-    collectionDeposit
-  );
+  // console.log(
+  //   "calculating fees with ",
+  //   config,
+  //   totalNFTs,
+  //   itemDeposit,
+  //   collectionDeposit
+  // );
 
   const totalDeposit = config.collectionConfig.isNew
     ? new BN(collectionDeposit)
@@ -225,38 +225,38 @@ const generateCalls = async (
   //   )
   // );
 
-  console.info(
-    `returning
-    ${JSON.stringify(
-      {
-        call: "omitted",
-        distribution: rarityDistribution,
-        voters,
-        fees: {
-          // kusama: formatBalance(infoKusamaCalls.partialFee, {
-          //   withSi: false,
-          //   forceUnit: "KSM",
-          //   decimals: kusamaChainDecimals.toNumber(),
-          // }),
-          nfts: formatBalance(infoNftCalls.partialFee, {
-            withSi: false,
-            forceUnit: "KSM",
-            decimals: kusamaChainDecimals.toNumber(),
-          }),
-          deposits: {
-            collectionDeposit,
-            itemDeposit,
-          },
-        },
-        txsCount: {
-          // kusama: txsKusama.length,
-          nfts: txsKusamaAssetHub.length,
-        },
-      },
-      null,
-      2
-    )}`
-  );
+  // console.info(
+  //   `returning
+  //   ${JSON.stringify(
+  //     {
+  //       call: "omitted",
+  //       distribution: rarityDistribution,
+  //       voters,
+  //       fees: {
+  //         // kusama: formatBalance(infoKusamaCalls.partialFee, {
+  //         //   withSi: false,
+  //         //   forceUnit: "KSM",
+  //         //   decimals: kusamaChainDecimals.toNumber(),
+  //         // }),
+  //         nfts: formatBalance(infoNftCalls.partialFee, {
+  //           withSi: false,
+  //           forceUnit: "KSM",
+  //           decimals: kusamaChainDecimals.toNumber(),
+  //         }),
+  //         deposits: {
+  //           collectionDeposit,
+  //           itemDeposit,
+  //         },
+  //       },
+  //       txsCount: {
+  //         // kusama: txsKusama.length,
+  //         nfts: txsKusamaAssetHub.length,
+  //       },
+  //     },
+  //     null,
+  //     2
+  //   )}`
+  // );
 
   return {
     call: "omitted",
