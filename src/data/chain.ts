@@ -20,13 +20,13 @@ export const CHAIN = {
 
 export const WS_ENDPOINTS = {
   [CHAIN.KUSAMA]: [
-    "wss://kusama-rpc.polkadot.io",
     "wss://kusama-rpc.dwellir.com",
+    "wss://kusama-rpc.polkadot.io",
     "wss://kusama.api.onfinality.io/public-ws",
   ],
   [CHAIN.KUSAMA_ASSET_HUB]: [
-    "wss://kusama-asset-hub-rpc.polkadot.io",
     "wss://rpc-asset-hub-kusama.luckyfriday.io",
+    "wss://kusama-asset-hub-rpc.polkadot.io",
     "wss://statemine.api.onfinality.io/public-ws",
   ],
   [CHAIN.ENCOINTER]: [

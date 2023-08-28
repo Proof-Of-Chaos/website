@@ -30,7 +30,6 @@ import {
 import { getApiKusamaAssetHub } from "../../../../data/getApi";
 import { getConvictionVoting } from "./voteData";
 import { lucksForConfig, weightedRandom } from "../../../../utils/utils";
-import { Logger } from "log4js";
 import { ApiPromise } from "@polkadot/api";
 import { GraphQLClient } from "graphql-request";
 import { encodeAddress } from "@polkadot/util-crypto";
@@ -44,7 +43,6 @@ import {
   PalletReferendaReferendumInfoConvictionVotingTally,
 } from "@polkadot/types/lookup";
 import { websiteConfig } from "../../../../data/website-config";
-import fs from "fs";
 
 // Helper function to get vote parameters
 const getVoteParams = (
@@ -786,7 +784,9 @@ export const createConfigNFT = async (
           nftId,
           "CollectionOwner",
           "option_" + optionIndex + "_" + attribute,
-          option.hasOwnProperty(attribute) ? option[attribute]?.toString() ?? "" : ""
+          option.hasOwnProperty(attribute)
+            ? option[attribute]?.toString() ?? ""
+            : ""
         )
       );
     }

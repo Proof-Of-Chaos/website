@@ -15,14 +15,8 @@ import {
   getBlockNumber,
   setupPinata,
 } from "./nft_sendout_script/src/_helpersApi";
-import { getConvictionVoting } from "./nft_sendout_script/src/voteData";
-import {
-  createConfigNFT,
-  getDecoratedVotesWithInfo,
-  retrieveAccountLocks,
-} from "./nft_sendout_script/src/_helpersVote";
+import { getDecoratedVotesWithInfo } from "./nft_sendout_script/src/_helpersVote";
 import { getTxsReferendumRewards } from "./nft_sendout_script/src/generateTxs";
-import { Readable } from "stream";
 import formidable, { errors as formidableErrors } from "formidable";
 import {
   CHAIN,
@@ -32,16 +26,6 @@ import {
 } from "../../data/chain";
 import { getApiKusama, getApiKusamaAssetHub } from "../../data/getApi";
 import PinataClient from "@pinata/sdk";
-
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  useDisclosure,
-} from "@nextui-org/react";
 
 /**
  * Handler for the /api/create-rewards-calls endpoint
