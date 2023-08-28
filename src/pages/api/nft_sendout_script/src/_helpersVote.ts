@@ -739,7 +739,7 @@ export const createConfigNFT = async (
           "CollectionOwner",
           attribute,
           configAttributes.hasOwnProperty(attribute)
-            ? configAttributes[attribute].toString()
+            ? configAttributes[attribute]?.toString() ?? ""
             : ""
         )
       );
@@ -755,7 +755,7 @@ export const createConfigNFT = async (
         "CollectionOwner",
         "collection_" + attribute,
         collectionConfig.hasOwnProperty(attribute)
-          ? collectionConfig[attribute].toString()
+          ? collectionConfig[attribute]?.toString() ?? ""
           : ""
       )
     );
@@ -770,7 +770,7 @@ export const createConfigNFT = async (
         "CollectionOwner",
         "configNFT_" + attribute,
         configNFT.hasOwnProperty(attribute)
-          ? configNFT[attribute].toString()
+          ? configNFT[attribute]?.toString() ?? ""
           : ""
       )
     );
@@ -786,7 +786,7 @@ export const createConfigNFT = async (
           nftId,
           "CollectionOwner",
           "option_" + optionIndex + "_" + attribute,
-          option.hasOwnProperty(attribute) ? option[attribute].toString() : ""
+          option.hasOwnProperty(attribute) ? option[attribute]?.toString() ?? "" : ""
         )
       );
     }
