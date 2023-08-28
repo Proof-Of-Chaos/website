@@ -162,6 +162,8 @@ const generateCalls = async (
     .batchAll(txsKusamaAssetHub)
     .paymentInfo(config.sender);
 
+  console.info("successfully calculated fees");
+
   const collectionDeposit = await getNFTCollectionDeposit(apiKusamaAssetHub);
   const itemDeposit = await getNFTItemDeposit(apiKusamaAssetHub);
 
