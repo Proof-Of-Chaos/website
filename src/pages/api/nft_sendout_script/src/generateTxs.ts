@@ -388,7 +388,7 @@ const getAllSetAttributeTxs = (
     ["referendum", referendumIndex],
     ["meetsRequirements", vote.meetsRequirements],
     ["voter", vote.address.toString()],
-    ["amountLockedInGovernance", vote.lockedWithConvictionDecimal],
+    ["amountLockedInGovernance", vote.lockedWithConvictionDecimal.toString()],
     ["voteDirection", vote.voteDirection],
     ["delegatedConvictionBalance", vote.delegatedConvictionBalance.toString()],
     ["delegatedTo", vote.delegatedTo?.toString()],
