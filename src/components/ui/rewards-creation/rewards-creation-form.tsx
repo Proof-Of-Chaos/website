@@ -159,6 +159,23 @@ export function RewardsCreationForm() {
         userSignatureRequests
       );
       console.log("allSignatureResults", allSignatureResults);
+
+      if (allSignatureResults.every((res) => res.status === "success")) {
+        setIsComplete(true);
+        const configReqBody = {
+          ...callData.config,
+          blockNumbers: allSignatureResults.map((res) =>
+            res.blockHeader.number.toNumber()
+          ),
+          txHashes: allSignatureResults.map((res) => res.txHash),
+        };
+
+        const createConfigRes = await fetch("/api/create-config-nft", {
+          method: "POST",
+          body: JSON.stringify(configReqBody),
+        });
+        console.log("create Config NFT result", createConfigRes);
+      }
     } catch {
       console.info("error sending tx", error);
       setError(error);
