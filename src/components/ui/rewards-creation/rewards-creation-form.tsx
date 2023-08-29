@@ -75,10 +75,11 @@ export function RewardsCreationForm() {
     formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
 
-  //calculate the maximum natural number < 1000 that is a multiple of 13
+  //calculate the maximum natural number < nft_batch_size_max that is a multiple of txsPerVote
   const maxTxsPerBatch =
-    Math.floor(1000 / callData?.txsCount?.txsPerVote) *
-    callData?.txsCount?.txsPerVote;
+    Math.floor(
+      websiteConfig.nft_batch_size_max / callData?.txsCount?.txsPerVote
+    ) * callData?.txsCount?.txsPerVote;
 
   // group the kusamaAssetHubTxs in batches of max size maxTxsPerbatch making sure that txs belonging together (multiples of 13) are never split to different batches
   const kusamaAssetHubTxsBatches = callData?.kusamaAssetHubTxs?.reduce(

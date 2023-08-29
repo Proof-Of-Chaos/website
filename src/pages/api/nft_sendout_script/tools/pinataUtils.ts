@@ -19,6 +19,8 @@ import {
 import pinataSDK from "@pinata/sdk";
 
 import { websiteConfig } from "../../../../data/website-config";
+import { RarityDistribution } from "../types";
+import { sum } from "lodash";
 
 const defaultOptions: Partial<PinataPinOptions> = {
   pinataOptions: {
@@ -77,7 +79,7 @@ export const pinImagesForOptions = async (
 export const pinImageAndMetadataForOptions = async (
   pinata: pinataSDK,
   config: RewardConfiguration,
-  totalSupply: number
+  rarityDistribution: RarityDistribution
 ): Promise<PinImageAndMetadataForOptionsResult> => {
   const imageIpfsCids = {};
   const metadataIpfsCids = {};
@@ -124,6 +126,8 @@ export const pinImageAndMetadataForOptions = async (
       ]);
     }
 
+    const totalNFTs = sum(Object.values(rarityDistribution));
+
     //TODO what is correct here? Kodadot wants image, but RMRK wants mediaUri
     //pin metadata
     const metadata = {
@@ -157,7 +161,14 @@ export const pinImageAndMetadataForOptions = async (
           trait_type: "recipient",
           value: recipientValue,
         },
-        { trait_type: "totalSupply", value: totalSupply },
+        {
+          trait_type: "totalSupply",
+          value: totalNFTs,
+        },
+        {
+          trait_type: "totalSupplyRarity",
+          value: rarityDistribution[option.rarity],
+        },
       ],
     };
 

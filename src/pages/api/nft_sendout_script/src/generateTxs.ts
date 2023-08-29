@@ -63,13 +63,13 @@ export const getTxsReferendumRewards = async (
     rarityDistribution
   );
 
-  const { totalSupply } = rarityDistribution;
+  console.info("rarityDistribution", rarityDistribution);
 
   // pin metadata and file for each rarity option to Pinata and get nft attributes
   const fileAndMetadataCids = await pinImageAndMetadataForOptions(
     apiPinata,
     config,
-    totalSupply
+    rarityDistribution
   );
 
   //overwrite file attribute in config with the cid from pinata
