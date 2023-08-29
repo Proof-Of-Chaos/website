@@ -1,4 +1,32 @@
 export const websiteConfig = {
+  // batch size for minting NFTs, txs will be batched in this size
+  nft_batch_size_max: 1000,
+  // default address for royalties, used in _helpersVote.ts
+  royaltyAddress: "Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4",
+  // which attributes to add to the NFT
+  nft_attributes: [
+    "image",
+    "referendum",
+    "meetsRequirements",
+    "voter",
+    "amountLockedInGovernance",
+    "voteDirection",
+    "delegatedConvictionBalance",
+    "delegatedTo",
+    "recipient",
+    "aye",
+    "nay",
+    "abstain",
+    "chanceAtEpic",
+    "chanceAtRare",
+    "chanceAtCommon",
+    // "dragonEquipped",
+    // "quizCorrect",
+    // "encointerScore",
+    // TODO this was rmrk style ?
+    // "royaltyPercentFloat",
+    // "royaltyReceiver",
+  ],
   accepted_nft_formats: [
     "image/jpeg",
     "image/png",

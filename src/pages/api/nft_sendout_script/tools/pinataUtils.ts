@@ -11,11 +11,14 @@ import {
   PinImageAndMetadataForCollectionResult,
   PinImageAndMetadataForConfigNFTResult,
   PinImageAndMetadataForOptionsResult,
+  PinImagesForOptionsResult,
   ProcessMetadataResult,
   RewardConfiguration,
   RewardOption,
 } from "../types";
 import pinataSDK from "@pinata/sdk";
+
+import { websiteConfig } from "../../../../data/website-config";
 
 const defaultOptions: Partial<PinataPinOptions> = {
   pinataOptions: {
@@ -28,6 +31,44 @@ export type StreamPinata = Readable & {
 };
 
 /**
+ * Given a config and a pinata api, pin all the images rarity option
+ * @param pinata
+ * @param config
+ * @returns {Promise<PinImageAndMetadataForOptionsResult>}
+ */
+export const pinImagesForOptions = async (
+  pinata: pinataSDK,
+  config: RewardConfiguration
+): Promise<PinImagesForOptionsResult> => {
+  const imageIpfsCids = {};
+
+  for (const option of config.options) {
+    const pinataFileOptions: PinataPinOptions = {
+      pinataMetadata: {
+        name: `referendum-${config.refIndex}_${option.rarity}`,
+      },
+      pinataOptions: {
+        cidVersion: 1,
+      },
+    };
+
+    //pin image file
+    const imageIpfsCid = await pinata.pinFileToIPFS(
+      option.file,
+      pinataFileOptions
+    );
+
+    imageIpfsCids[option.rarity] = {
+      direct: imageIpfsCid.IpfsHash,
+      // TODO
+      delegated: imageIpfsCid.IpfsHash,
+    };
+  }
+
+  return { imageIpfsCids };
+};
+
+/**
  * Given a config and a pinata api, pin all the images and metadata for each rarity option
  * @param pinata
  * @param config
@@ -35,7 +76,8 @@ export type StreamPinata = Readable & {
  */
 export const pinImageAndMetadataForOptions = async (
   pinata: pinataSDK,
-  config: RewardConfiguration
+  config: RewardConfiguration,
+  totalSupply: number
 ): Promise<PinImageAndMetadataForOptionsResult> => {
   const imageIpfsCids = {};
   const metadataIpfsCids = {};
@@ -72,6 +114,16 @@ export const pinImageAndMetadataForOptions = async (
       delegated: imageIpfsCid.IpfsHash,
     };
 
+    let recipientValue;
+    if (config.royaltyAddress === websiteConfig.royaltyAddress) {
+      recipientValue = JSON.stringify([[config.royaltyAddress, 100]]);
+    } else {
+      recipientValue = JSON.stringify([
+        [config.royaltyAddress, 80],
+        [websiteConfig.royaltyAddress, 20],
+      ]);
+    }
+
     //TODO what is correct here? Kodadot wants image, but RMRK wants mediaUri
     //pin metadata
     const metadata = {
@@ -82,7 +134,7 @@ export const pinImageAndMetadataForOptions = async (
       description: `${option.description}\n\n_This NFT was created with [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
       attributes: [
         {
-          trait_type: "Rarity",
+          trait_type: "rarity",
           value: option.rarity,
         },
         {
@@ -97,8 +149,19 @@ export const pinImageAndMetadataForOptions = async (
           trait_type: "artist",
           value: option.artist,
         },
+        {
+          trait_type: "referendum",
+          value: config.refIndex,
+        },
+        {
+          trait_type: "recipient",
+          value: recipientValue,
+        },
+        { trait_type: "totalSupply", value: totalSupply },
       ],
     };
+
+    console.log("your metadata is", metadata);
     const metadataIpfsCid = await pinata.pinJSONToIPFS(
       metadata,
       pinataMetadataOptions
@@ -215,7 +278,7 @@ export const pinMetadataForConfigNFT = async (
   for (const attribute in configAttributes) {
     if (attribute === "nftIds" && Array.isArray(configAttributes[attribute])) {
       // Convert the array to a string
-      let ids = configAttributes[attribute].map(id => id.toString());
+      let ids = configAttributes[attribute].map((id) => id.toString());
 
       let counter = 1;
       let chunk = "";
@@ -226,7 +289,7 @@ export const pinMetadataForConfigNFT = async (
           // Push the current chunk and reset it
           attributes.push({
             trait_type: attribute + "_" + counter,
-            value: chunk.slice(0, -1) // Remove trailing comma
+            value: chunk.slice(0, -1), // Remove trailing comma
           });
           chunk = "";
           counter++;
@@ -239,13 +302,15 @@ export const pinMetadataForConfigNFT = async (
       if (chunk) {
         attributes.push({
           trait_type: attribute + "_" + counter,
-          value: chunk.slice(0, -1) // Remove trailing comma
+          value: chunk.slice(0, -1), // Remove trailing comma
         });
       }
     } else {
       attributes.push({
         trait_type: attribute,
-        value: configAttributes.hasOwnProperty(attribute) ? configAttributes[attribute]?.toString() ?? "" : ""
+        value: configAttributes.hasOwnProperty(attribute)
+          ? configAttributes[attribute]?.toString() ?? ""
+          : "",
       });
     }
   }
@@ -254,10 +319,9 @@ export const pinMetadataForConfigNFT = async (
   for (const attribute in collectionConfig) {
     attributes.push({
       trait_type: "collection_" + attribute,
-      value: (collectionConfig.hasOwnProperty(attribute))
+      value: collectionConfig.hasOwnProperty(attribute)
         ? collectionConfig[attribute]?.toString() ?? ""
-        : ""
-      ,
+        : "",
     });
   }
 
@@ -265,7 +329,9 @@ export const pinMetadataForConfigNFT = async (
   for (const attribute in configNFT) {
     attributes.push({
       trait_type: "configNFT_" + attribute,
-      value: configNFT.hasOwnProperty(attribute) ? configNFT[attribute]?.toString() ?? "" : "",
+      value: configNFT.hasOwnProperty(attribute)
+        ? configNFT[attribute]?.toString() ?? ""
+        : "",
     });
   }
 
@@ -275,7 +341,9 @@ export const pinMetadataForConfigNFT = async (
     for (const attribute in option) {
       attributes.push({
         trait_type: "option_" + optionIndex + "_" + attribute,
-        value: option.hasOwnProperty(attribute) ? option[attribute]?.toString() ?? "" : "",
+        value: option.hasOwnProperty(attribute)
+          ? option[attribute]?.toString() ?? ""
+          : "",
       });
     }
     optionIndex++;
@@ -288,7 +356,7 @@ export const pinMetadataForConfigNFT = async (
     image: imageIpfsCid,
     name: `Referendum ${config.refIndex} - Config NFT`,
     description: `${configNFT.description}\n\n_This NFT was created with [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
-    attributes
+    attributes,
   };
   const metadataIpfsCid = (
     await pinata.pinJSONToIPFS(metadata, pinataMetadataOptions)

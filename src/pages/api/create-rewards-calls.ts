@@ -130,7 +130,7 @@ const generateCalls = async (
 
   // get all transactions that are needed for the distribution
   // TODO --- warning we slice by 10 here
-  let { txsKusamaAssetHub } = await getTxsReferendumRewards(
+  let { txsKusamaAssetHub, txsPerVote } = await getTxsReferendumRewards(
     apiKusamaAssetHub,
     apiKusama,
     apiPinata,
@@ -202,21 +202,21 @@ const generateCalls = async (
   //   ./log/tmp_transactions_${config.refIndex}_xcm.json`
   // );
 
-  // fs.writeFileSync(
-  //   `./log/tmp_transactions_${config.refIndex}_xcm.json`,
-  //   JSON.stringify(
-  //     {
-  //       nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
-  //       xcm: txsKusama.map((tx) => tx.toHuman()),
-  //       deposits: {
-  //         collectionDeposit,
-  //         itemDeposit,
-  //       },
-  //     },
-  //     null,
-  //     2
-  //   )
-  // );
+  fs.writeFileSync(
+    `./log/tmp_transactions_${config.refIndex}_xcm.json`,
+    JSON.stringify(
+      {
+        nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
+        // xcm: txsKusama.map((tx) => tx.toHuman()),
+        deposits: {
+          collectionDeposit,
+          itemDeposit,
+        },
+      },
+      null,
+      2
+    )
+  );
 
   // console.info(
   //   `returning
@@ -281,6 +281,7 @@ const generateCalls = async (
     txsCount: {
       // kusama: txsKusama.length,
       nfts: txsKusamaAssetHub.length,
+      txsPerVote,
     },
   };
 };

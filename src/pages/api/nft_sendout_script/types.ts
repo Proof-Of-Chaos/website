@@ -33,6 +33,7 @@ export type GenerateRewardsResult = {
   txsCount?: {
     kusama?: number;
     nfts?: number;
+    txsPerVote?: number;
   };
 };
 
@@ -260,6 +261,15 @@ export interface ProcessMetadataResult {
     };
   };
 }
+
+export type PinImagesForOptionsResult = {
+  imageIpfsCids: {
+    [key: string]: {
+      direct: string;
+      delegated: string;
+    };
+  };
+};
 
 export type PinImageAndMetadataForOptionsResult = {
   imageIpfsCids: {

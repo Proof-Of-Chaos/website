@@ -27,6 +27,7 @@ export const getTxsReferendumRewards = async (
 ): Promise<{
   txsKusamaAssetHub: any[];
   txsKusama: any[];
+  txsPerVote: number;
 }> => {
   let txsKusamaAssetHub = [];
   let txsKusama = [];
@@ -62,10 +63,13 @@ export const getTxsReferendumRewards = async (
     rarityDistribution
   );
 
+  const { totalSupply } = rarityDistribution;
+
   // pin metadata and file for each rarity option to Pinata and get nft attributes
   const fileAndMetadataCids = await pinImageAndMetadataForOptions(
     apiPinata,
-    config
+    config,
+    totalSupply
   );
 
   //overwrite file attribute in config with the cid from pinata
@@ -86,6 +90,8 @@ export const getTxsReferendumRewards = async (
     proxyWallet
   );
 
+  const txsPerVote = txsVotes.length / decoratedVotes.length;
+
   txsKusamaAssetHub = [...txsKusamaAssetHub, ...txsVotes];
 
   // txsKusamaAssetHub = [
@@ -102,7 +108,7 @@ export const getTxsReferendumRewards = async (
 
   // txsKusama = [...txsKusama, ...txsKusamaXCM];
 
-  return { txsKusamaAssetHub, txsKusama };
+  return { txsKusamaAssetHub, txsKusama, txsPerVote };
 };
 
 //TODO i think this can be without an array and just return the object
@@ -365,40 +371,38 @@ const getAllSetAttributeTxs = (
       chosenOption.minRoyalty
   );
 
-  const imageCid = `ipfs://ipfs/${
-    fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
-      vote.voteType == "Delegating" ? "delegated" : "direct"
-    ]
-  }`;
+  // const imageCid = `ipfs://ipfs/${
+  //   fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
+  //     vote.voteType == "Delegating" ? "delegated" : "direct"
+  //   ]
+  // }`;
 
   let recipientValue;
-  if (
-    config.royaltyAddress === "Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4"
-  ) {
+  if (config.royaltyAddress === websiteConfig.royaltyAddress) {
     recipientValue = JSON.stringify([[config.royaltyAddress, 100]]);
   } else {
     recipientValue = JSON.stringify([
       [config.royaltyAddress, 80],
-      ["Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4", 20],
+      [websiteConfig.royaltyAddress, 20],
     ]);
   }
 
   let attributesToSet = [
-    ["image", imageCid],
-    ["referendum", referendumIndex],
-    ["meetsRequirements", vote.meetsRequirements],
+    // ["image", imageCid],
+    // ["referendum", referendumIndex],
+    // ["meetsRequirements", vote.meetsRequirements],
     ["voter", vote.address.toString()],
     ["amountLockedInGovernance", vote.lockedWithConvictionDecimal],
-    ["voteDirection", vote.voteDirection],
-    ["delegatedConvictionBalance", vote.delegatedConvictionBalance.toString()],
-    ["delegatedTo", vote.delegatedTo?.toString()],
+    // ["voteDirection", vote.voteDirection],
+    // ["delegatedConvictionBalance", vote.delegatedConvictionBalance.toString()],
+    // ["delegatedTo", vote.delegatedTo?.toString()],
 
     // single account royalties (kodadot friendly)
     [
       "royalty",
       vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty,
     ],
-    ["recipient", recipientValue],
+    // ["recipient", recipientValue],
 
     // ["aye", vote.balance.aye.toString()],
     // ["nay", vote.balance.nay.toString()],
@@ -428,19 +432,19 @@ const getAllSetAttributeTxs = (
     );
   }
 
-  for (const attribute of vote.voteType == "Delegating"
-    ? attributes[chosenOption.rarity].delegated
-    : attributes[chosenOption.rarity].direct) {
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionConfig.id,
-        nftId,
-        "CollectionOwner",
-        attribute.name,
-        attribute.value
-      )
-    );
-  }
+  // for (const attribute of vote.voteType == "Delegating"
+  //   ? attributes[chosenOption.rarity].delegated
+  //   : attributes[chosenOption.rarity].direct) {
+  //   txs.push(
+  //     apiKusamaAssetHub.tx.nfts.setAttribute(
+  //       config.collectionConfig.id,
+  //       nftId,
+  //       "CollectionOwner",
+  //       attribute.name,
+  //       attribute.value
+  //     )
+  //   );
+  // }
 
   return txs;
 };
