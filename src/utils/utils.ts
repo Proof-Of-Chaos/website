@@ -275,7 +275,46 @@ async function* streamToJSON(
   }
 }
 
+/**
+ *  Map an iterable to an array of promises and execute them in series
+ * @param iterable
+ * @param fn
+ * @returns
+ */
+function mapPromises(promises: Promise<any>[]) {
+  let currentPromise: Promise<any>;
+  let results: any[] = [];
+
+  for (const promise of promises) {
+    currentPromise = promise;
+
+    currentPromise.then((result) => {
+      results.push(result);
+
+      // Only start the next promise once the current one has resolved.
+      if (promises.length > 1) {
+        mapPromises(promises.slice(1));
+      }
+    });
+  }
+
+  return results;
+}
+
+async function executeAsyncFunctionsInSequence(
+  asyncFunctions: Array<() => Promise<any>>
+) {
+  let results: any[] = [];
+
+  for (const asyncFunction of asyncFunctions) {
+    results.push(await asyncFunction());
+  }
+
+  return results;
+}
+
 export {
+  executeAsyncFunctionsInSequence,
   getRandomInt,
   getRandomIntBetween,
   KSMFormatted,
@@ -293,4 +332,5 @@ export {
   stripHtml,
   weightedRandom,
   streamToJSON,
+  mapPromises,
 };

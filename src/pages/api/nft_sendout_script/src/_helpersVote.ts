@@ -1,5 +1,6 @@
 import seedrandom from "seedrandom";
 import type { Option } from "@polkadot/types";
+import { pick } from "lodash";
 
 import { BN } from "@polkadot/util";
 import type {
@@ -19,6 +20,7 @@ import type {
   EncointerCommunity,
   FetchReputableVotersParams,
   DirectVoteLock,
+  RNG,
 } from "../types.js";
 import { ApiDecoration } from "@polkadot/api/types";
 import {
@@ -1001,3 +1003,65 @@ const checkCollectionExists = async (
     return false;
   }
 };
+
+/**
+ * Given a config it will return an object with all the NFT attributes that can be used either in `setAttribute` calls or in the metadata.
+ * @param config
+ * @param filter
+ */
+export function getSendoutNFTAttributes(
+  config: RewardConfiguration,
+  vote: VoteConviction,
+  imageCid: string,
+  filter: string[],
+  rng: RNG
+): any {
+  const { refIndex: referendumIndex } = config;
+  const { chosenOption } = vote;
+
+  const randRoyaltyInRange = Math.floor(
+    rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
+      chosenOption.minRoyalty
+  );
+
+  let recipientValue;
+  if (config.royaltyAddress === websiteConfig.royaltyAddress) {
+    recipientValue = JSON.stringify([[config.royaltyAddress, 100]]);
+  } else {
+    recipientValue = JSON.stringify([
+      [config.royaltyAddress, 80],
+      [websiteConfig.royaltyAddress, 20],
+    ]);
+  }
+
+  const allAttributes = {
+    image: imageCid,
+    referendum: referendumIndex,
+    meetsRequirements: vote.meetsRequirements,
+    voter: vote.address.toString(),
+    amountLockedInGovernance: vote.lockedWithConvictionDecimal,
+    voteDirection: vote.voteDirection,
+    delegatedConvictionBalance: vote.delegatedConvictionBalance.toString(),
+    delegatedTo: vote.delegatedTo?.toString(),
+    royalty: vote.meetsRequirements
+      ? randRoyaltyInRange
+      : config.defaultRoyalty,
+    recipient: recipientValue,
+    aye: vote.balance.aye.toString(),
+    nay: vote.balance.nay.toString(),
+    abstain: vote.balance.abstain.toString(),
+    chanceAtEpic: vote.chances.epic.toString(),
+    chanceAtRare: vote.chances.rare.toString(),
+    chanceAtCommon: vote.chances.common.toString(),
+    dragonEquipped: vote.dragonEquipped,
+    quizCorrect: vote.quizCorrect.toString(),
+    encointerScore: vote.encointerScore,
+    // TODO this was rmrk style ?
+    // royaltyPercentFloat: vote.meetsRequirements ? randRoyaltyInRange : 0,
+    // royaltyReceiver: config.royaltyAddress,
+  };
+
+  const filteredAttributes = pick(allAttributes, filter);
+
+  return filteredAttributes;
+}

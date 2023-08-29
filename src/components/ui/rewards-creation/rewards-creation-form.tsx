@@ -31,6 +31,10 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { websiteConfig } from "../../../data/website-config";
+import {
+  executeAsyncFunctionsInSequence,
+  mapPromises,
+} from "../../../utils/utils";
 
 export function RewardsCreationForm() {
   const { openModal, closeModal } = useModal();
@@ -71,9 +75,23 @@ export function RewardsCreationForm() {
     formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
 
-  useEffect(() => {
-    console.log("errorrs", errors);
-  }, [errors]);
+  //calculate the maximum natural number < 1000 that is a multiple of 13
+  const maxTxsPerBatch =
+    Math.floor(1000 / callData?.txsCount?.txsPerVote) *
+    callData?.txsCount?.txsPerVote;
+
+  // group the kusamaAssetHubTxs in batches of max size maxTxsPerbatch making sure that txs belonging together (multiples of 13) are never split to different batches
+  const kusamaAssetHubTxsBatches = callData?.kusamaAssetHubTxs?.reduce(
+    (acc, tx, index) => {
+      const batchIndex = Math.floor(index / maxTxsPerBatch);
+      if (!acc[batchIndex]) {
+        acc[batchIndex] = [];
+      }
+      acc[batchIndex].push(tx);
+      return acc;
+    },
+    []
+  );
 
   // useEffect(() => {
   //   if (pastReferendaIndices?.length)
@@ -128,34 +146,51 @@ export function RewardsCreationForm() {
 
     const apiKusamaAssetHub = await getApiKusamaAssetHub();
 
+    console.log("kusamaAssetHubTxsBatches", kusamaAssetHubTxsBatches);
+
+    // execute sendAndFinalize for each batch and record the results
+    const userSignatureRequests = kusamaAssetHubTxsBatches.map((batch) => {
+      return async () =>
+        sendAndFinalize(apiKusamaAssetHub, batch, signer, walletAddress);
+    });
+
     try {
-      const { status, blockHeader, txHash } = await sendAndFinalize(
-        apiKusamaAssetHub,
-        //TODO is this still needed? does sendAndFinalize do it?
-        callData.kusamaAssetHubTxs.map((tx) => apiKusamaAssetHub.tx(tx)),
-        signer,
-        walletAddress
+      const allSignatureResults = await executeAsyncFunctionsInSequence(
+        userSignatureRequests
       );
-
-      if (status === "success") {
-        setIsComplete(true);
-
-        const configReqBody = {
-          ...callData.config,
-          blockNumber: blockHeader.number.toNumber(),
-          txHash,
-        };
-
-        const createConfigRes = await fetch("/api/create-config-nft", {
-          method: "POST",
-          body: JSON.stringify(configReqBody),
-        });
-        console.log("create Config NFT result", createConfigRes);
-      }
-    } catch (error) {
+      console.log("allSignatureResults", allSignatureResults);
+    } catch {
       console.info("error sending tx", error);
       setError(error);
     }
+    // try {
+    //   const { status, blockHeader, txHash } = await sendAndFinalize(
+    //     apiKusamaAssetHub,
+    //     //TODO is this still needed? does sendAndFinalize do it?
+    //     callData.kusamaAssetHubTxs.map((tx) => apiKusamaAssetHub.tx(tx)),
+    //     signer,
+    //     walletAddress
+    //   );
+
+    //   if (status === "success") {
+    //     setIsComplete(true);
+
+    //     const configReqBody = {
+    //       ...callData.config,
+    //       blockNumber: blockHeader.number.toNumber(),
+    //       txHash,
+    //     };
+
+    //     const createConfigRes = await fetch("/api/create-config-nft", {
+    //       method: "POST",
+    //       body: JSON.stringify(configReqBody),
+    //     });
+    //     console.log("create Config NFT result", createConfigRes);
+    //   }
+    // } catch (error) {
+    //   console.info("error sending tx", error);
+    //   setError(error);
+    // }
   }
 
   function onCancel() {
@@ -424,6 +459,14 @@ export function RewardsCreationForm() {
                     KSM
                   </p>
                   <p>Transaction Count: {callData.txsCount.nfts}</p>
+                  <p className="mt-2 text-lg">
+                    You will be asked to{" "}
+                    <b>
+                      sign {kusamaAssetHubTxsBatches.length} transactions in
+                      sequence
+                    </b>
+                    . For a complete sendout, you will have to sign all of them.{" "}
+                  </p>
                 </div>
               )}
               {callData && isComplete && (
