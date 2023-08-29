@@ -393,6 +393,7 @@ export interface RewardOption {
   metadataCidDirect?: string;
   metadataCidDelegated?: string;
   file?: any;
+  imageCid?: string;
 }
 
 export interface SendAndFinalizeResult {

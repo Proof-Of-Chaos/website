@@ -35,6 +35,7 @@ import {
   executeAsyncFunctionsInSequence,
   mapPromises,
 } from "../../../utils/utils";
+import { RewardsCreationRarityFields } from "./rewards-creation-rarity-field";
 
 export function RewardsCreationForm() {
   const { openModal, closeModal } = useModal();
@@ -235,11 +236,13 @@ export function RewardsCreationForm() {
     // that are appended to the form data in respective key value pairs
     // e.g. commonFile => FileObject
     data.options.forEach((option) => {
-      formData.append(
-        `${option.rarity}File`,
-        option.file[0],
-        option.file[0].name
-      );
+      if (!option.imageCid) {
+        formData.append(
+          `${option.rarity}File`,
+          option.file[0],
+          option.file[0].name
+        );
+      }
     });
 
     if (data.collectionConfig.isNew) {
@@ -378,6 +381,8 @@ export function RewardsCreationForm() {
                       key={rarity}
                       rarity={rarity}
                       refConfig={watchFormFields}
+                      register={formMethods.register}
+                      errors={errors}
                     />
                   );
                 })}
@@ -517,10 +522,10 @@ export function RewardsCreationForm() {
           )}
         </div>
       )}
-      {/* <pre className="text-[0.5rem]">
+      <pre className="text-[0.5rem]">
         file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
         form fields: {JSON.stringify(watchFormFields, null, 2)}
-      </pre> */}
+      </pre>
       {/* <pre className="text-[0.5rem]">
         call config:
         {JSON.stringify(callData?.config, null, 2)}
@@ -529,84 +534,6 @@ export function RewardsCreationForm() {
         preimage hex:
         {callData?.preimage}
       </pre> */}
-    </div>
-  );
-}
-
-function RewardsCreationRarityFields({ rarity, refConfig }) {
-  const { register, formState } = useFormContext();
-  const { errors } = formState;
-
-  let optionIndex = refConfig.options.findIndex((opt) => opt.rarity === rarity);
-
-  return (
-    <div
-      className={`flex flex-col p-1 form-fields-${rarity} 
-    gap-4`}
-    >
-      <div className="h-full p-1 bg-white rounded shadow-md gap-4 flex flex-col p-3">
-        <h3 className="text-xl mb-2">{rarity}</h3>
-
-        <div>
-          <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-0 pb-0">
-            Upload Image (max 1.5MB)
-          </label>
-
-          <input
-            id={`file-${rarity}`}
-            required
-            accept={websiteConfig.accepted_nft_formats.join(",")}
-            type="file"
-            className="mt-0"
-            {...register(`options[${optionIndex}].file`, {
-              validate: {
-                noFile: (files) => files?.length > 0 || "Please upload a file",
-                lessThan15MB: (files) => {
-                  return files[0].size < 1.5 * 1024 * 1024 || "Max 1.5MB";
-                },
-                acceptedFormats: (files) =>
-                  websiteConfig.accepted_nft_formats.includes(files[0]?.type) ||
-                  "please upload a valid image or video file",
-              },
-            })}
-          />
-          {errors[`options[${optionIndex}].file`] && (
-            <span className="w-full text-sm text-red-500">
-              <>{errors[`options[${optionIndex}].file`].message}</>
-            </span>
-          )}
-        </div>
-
-        <Input
-          isRequired
-          id={`name-${rarity}`}
-          label={`Name of ${rarity} NFT`}
-          placeholder={`Enter name of ${rarity} NFT`}
-          type="text"
-          {...register(`options[${optionIndex}].itemName`, {
-            validate: {},
-          })}
-        />
-
-        <Textarea
-          id={`description-${rarity}`}
-          label={`Description of ${rarity} NFT (256 chars)`}
-          placeholder={`Enter description of ${rarity} NFT`}
-          maxLength={256}
-          {...register(`options[${optionIndex}].description`, {
-            validate: {},
-          })}
-        />
-        <Input
-          id={`artist-${rarity}`}
-          label={`Artist of ${rarity} NFT`}
-          placeholder={`Enter artist of ${rarity} NFT`}
-          type="text"
-          {...register(`options[${optionIndex}].artist`, {
-            validate: {},
-          })}
-        />
-      </div>
     </div>
   );
 }

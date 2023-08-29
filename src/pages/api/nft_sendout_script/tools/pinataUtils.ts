@@ -104,16 +104,27 @@ export const pinImageAndMetadataForOptions = async (
       },
     };
 
-    //pin image file
-    const imageIpfsCid = await pinata.pinFileToIPFS(
-      option.file,
-      pinataFileOptions
-    );
+    //image file
+    let imageIpfsCid;
+
+    if (option.imageCid) {
+      console.info(
+        "getting image cid from config",
+        option.imageCid,
+        "for rarity",
+        option.rarity
+      );
+      imageIpfsCid = option.imageCid;
+    } else {
+      imageIpfsCid = (
+        await pinata.pinFileToIPFS(option.file, pinataFileOptions)
+      ).IpfsHash;
+    }
 
     imageIpfsCids[option.rarity] = {
-      direct: imageIpfsCid.IpfsHash,
+      direct: imageIpfsCid,
       // TODO
-      delegated: imageIpfsCid.IpfsHash,
+      delegated: imageIpfsCid,
     };
 
     let recipientValue;
@@ -132,8 +143,8 @@ export const pinImageAndMetadataForOptions = async (
     //pin metadata
     const metadata = {
       external_url: "https://www.proofofchaos.app/",
-      mediaUri: `ipfs://ipfs/${imageIpfsCid.IpfsHash}`,
-      image: `ipfs://ipfs/${imageIpfsCid.IpfsHash}`,
+      mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
+      image: `ipfs://ipfs/${imageIpfsCid}`,
       name: option.itemName,
       description: `${option.description}\n\n_This NFT was created with [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
       attributes: [
