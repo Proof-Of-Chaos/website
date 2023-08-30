@@ -75,7 +75,7 @@ export const getTxsReferendumRewards = async (
   //overwrite file attribute in config with the cid from pinata
   config.options.forEach((option) => {
     option.file =
-      "ipfs://ipfs/" + fileAndMetadataCids.imageIpfsCids[option.rarity].direct;
+      "ipfs://ipfs/" + fileAndMetadataCids.imageIpfsCids[option.rarity];
   });
 
   // generate NFT mint txs for each vote(er)
@@ -288,7 +288,7 @@ export const getTxsForVotes = (
     // );
 
     const selectedMetadata =
-      fileAndMetadataCids.metadataIpfsCids[chosenOption.rarity];
+      fileAndMetadataCids.metadataIpfsCids[vote.meetsRequirements ? chosenOption.rarity : "default"];
 
     let metadataCid =
       vote.voteType == "Delegating"
@@ -318,18 +318,18 @@ export const getTxsForVotes = (
       )
     );
 
-    txs.push(
-      ...getAllSetAttributeTxs(
-        apiKusamaAssetHub,
-        config,
-        fileAndMetadataCids,
-        attributes,
-        vote,
-        nftId,
-        chosenOption,
-        rng
-      )
-    );
+    // txs.push(
+    //   ...getAllSetAttributeTxs(
+    //     apiKusamaAssetHub,
+    //     config,
+    //     fileAndMetadataCids,
+    //     attributes,
+    //     vote,
+    //     nftId,
+    //     chosenOption,
+    //     rng
+    //   )
+    // );
 
     const ipfsIdentifier = `ipfs://ipfs/${metadataCid}`;
 
@@ -360,99 +360,99 @@ export const getTxsForVotes = (
   return txs;
 };
 
-const getAllSetAttributeTxs = (
-  apiKusamaAssetHub: ApiPromise,
-  config: RewardConfiguration,
-  fileAndMetadataCids: PinImageAndMetadataForOptionsResult,
-  attributes,
-  vote: VoteConviction,
-  nftId,
-  chosenOption,
-  rng: RNG
-) => {
-  let txs = [];
+// const getAllSetAttributeTxs = (
+//   apiKusamaAssetHub: ApiPromise,
+//   config: RewardConfiguration,
+//   fileAndMetadataCids: PinImageAndMetadataForOptionsResult,
+//   attributes,
+//   vote: VoteConviction,
+//   nftId,
+//   chosenOption,
+//   rng: RNG
+// ) => {
+//   let txs = [];
 
-  const { refIndex: referendumIndex } = config;
+//   const { refIndex: referendumIndex } = config;
 
-  const randRoyaltyInRange = Math.floor(
-    rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
-    chosenOption.minRoyalty
-  );
+//   // const randRoyaltyInRange = Math.floor(
+//   //   rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
+//   //   chosenOption.minRoyalty
+//   // );
 
-  // const imageCid = `ipfs://ipfs/${
-  //   fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
-  //     vote.voteType == "Delegating" ? "delegated" : "direct"
-  //   ]
-  // }`;
+//   // const imageCid = `ipfs://ipfs/${
+//   //   fileAndMetadataCids.imageIpfsCids[chosenOption.rarity][
+//   //     vote.voteType == "Delegating" ? "delegated" : "direct"
+//   //   ]
+//   // }`;
 
-  // let recipientValue;
-  // if (config.royaltyAddress === websiteConfig.royaltyAddress) {
-  //   recipientValue = JSON.stringify([[config.royaltyAddress, 100]]);
-  // } else {
-  //   recipientValue = JSON.stringify([
-  //     [config.royaltyAddress, 80],
-  //     [websiteConfig.royaltyAddress, 20],
-  //   ]);
-  // }
+//   // let recipientValue;
+//   // if (config.royaltyAddress === websiteConfig.royaltyAddress) {
+//   //   recipientValue = JSON.stringify([[config.royaltyAddress, 100]]);
+//   // } else {
+//   //   recipientValue = JSON.stringify([
+//   //     [config.royaltyAddress, 80],
+//   //     [websiteConfig.royaltyAddress, 20],
+//   //   ]);
+//   // }
 
-  let attributesToSet = [
-    // ["image", imageCid],
-    // ["referendum", referendumIndex],
-    // ["meetsRequirements", vote.meetsRequirements],
-    ["voter", vote.address.toString()],
-    ["amountLockedInGovernance", vote.lockedWithConvictionDecimal.toString()],
-    // ["voteDirection", vote.voteDirection],
-    // ["delegatedConvictionBalance", vote.delegatedConvictionBalance.toString()],
-    // ["delegatedTo", vote.delegatedTo?.toString()],
+//   let attributesToSet = [
+//     // ["image", imageCid],
+//     // ["referendum", referendumIndex],
+//     // ["meetsRequirements", vote.meetsRequirements],
+//     // ["voter", vote.address.toString()],
+//     // ["amountLockedInGovernance", vote.lockedWithConvictionDecimal.toString()],
+//     // ["voteDirection", vote.voteDirection],
+//     // ["delegatedConvictionBalance", vote.delegatedConvictionBalance.toString()],
+//     // ["delegatedTo", vote.delegatedTo?.toString()],
 
-    // single account royalties (kodadot friendly)
-    [
-      "royalty",
-      vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty,
-    ],
-    // ["recipient", recipientValue],
+//     // single account royalties (kodadot friendly)
+//     // [
+//     //   "royalty",
+//     //   vote.meetsRequirements ? randRoyaltyInRange : config.defaultRoyalty,
+//     // ],
+//     // ["recipient", recipientValue],
 
-    // ["aye", vote.balance.aye.toString()],
-    // ["nay", vote.balance.nay.toString()],
-    // ["abstain", vote.balance.abstain.toString()],
-    // ["chanceAtEpic", vote.chances.epic.toString()],
-    // ["chanceAtRare", vote.chances.rare.toString()],
-    // ["chanceAtCommon", vote.chances.common.toString()],
+//     // ["aye", vote.balance.aye.toString()],
+//     // ["nay", vote.balance.nay.toString()],
+//     // ["abstain", vote.balance.abstain.toString()],
+//     // ["chanceAtEpic", vote.chances.epic.toString()],
+//     // ["chanceAtRare", vote.chances.rare.toString()],
+//     // ["chanceAtCommon", vote.chances.common.toString()],
 
-    // ["dragonEquipped", vote.dragonEquipped],
-    // ["quizCorrect", vote.quizCorrect.toString()],
-    // ["encointerScore", vote.encointerScore],
+//     // ["dragonEquipped", vote.dragonEquipped],
+//     // ["quizCorrect", vote.quizCorrect.toString()],
+//     // ["encointerScore", vote.encointerScore],
 
-    // TODO this was rmrk style ?
-    // ["royaltyPercentFloat", vote.meetsRequirements ? randRoyaltyInRange : 0],
-    // ["royaltyReceiver", config.royaltyAddress],
-  ];
+//     // TODO this was rmrk style ?
+//     // ["royaltyPercentFloat", vote.meetsRequirements ? randRoyaltyInRange : 0],
+//     // ["royaltyReceiver", config.royaltyAddress],
+//   ];
 
-  for (const [key, value] of attributesToSet) {
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.collectionConfig.id,
-        nftId,
-        "CollectionOwner",
-        key,
-        value
-      )
-    );
-  }
+//   for (const [key, value] of attributesToSet) {
+//     txs.push(
+//       apiKusamaAssetHub.tx.nfts.setAttribute(
+//         config.collectionConfig.id,
+//         nftId,
+//         "CollectionOwner",
+//         key,
+//         value
+//       )
+//     );
+//   }
 
-  // for (const attribute of vote.voteType == "Delegating"
-  //   ? attributes[chosenOption.rarity].delegated
-  //   : attributes[chosenOption.rarity].direct) {
-  //   txs.push(
-  //     apiKusamaAssetHub.tx.nfts.setAttribute(
-  //       config.collectionConfig.id,
-  //       nftId,
-  //       "CollectionOwner",
-  //       attribute.name,
-  //       attribute.value
-  //     )
-  //   );
-  // }
+//   // for (const attribute of vote.voteType == "Delegating"
+//   //   ? attributes[chosenOption.rarity].delegated
+//   //   : attributes[chosenOption.rarity].direct) {
+//   //   txs.push(
+//   //     apiKusamaAssetHub.tx.nfts.setAttribute(
+//   //       config.collectionConfig.id,
+//   //       nftId,
+//   //       "CollectionOwner",
+//   //       attribute.name,
+//   //       attribute.value
+//   //     )
+//   //   );
+//   // }
 
-  return txs;
-};
+//   return txs;
+// };

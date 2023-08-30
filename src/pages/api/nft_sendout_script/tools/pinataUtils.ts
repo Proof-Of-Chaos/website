@@ -38,37 +38,37 @@ export type StreamPinata = Readable & {
  * @param config
  * @returns {Promise<PinImageAndMetadataForOptionsResult>}
  */
-export const pinImagesForOptions = async (
-  pinata: pinataSDK,
-  config: RewardConfiguration
-): Promise<PinImagesForOptionsResult> => {
-  const imageIpfsCids = {};
+// export const pinImagesForOptions = async (
+//   pinata: pinataSDK,
+//   config: RewardConfiguration
+// ): Promise<PinImagesForOptionsResult> => {
+//   const imageIpfsCids = {};
 
-  for (const option of config.options) {
-    const pinataFileOptions: PinataPinOptions = {
-      pinataMetadata: {
-        name: `referendum-${config.refIndex}_${option.rarity}`,
-      },
-      pinataOptions: {
-        cidVersion: 1,
-      },
-    };
+//   for (const option of config.options) {
+//     const pinataFileOptions: PinataPinOptions = {
+//       pinataMetadata: {
+//         name: `referendum-${config.refIndex}_${option.rarity}`,
+//       },
+//       pinataOptions: {
+//         cidVersion: 1,
+//       },
+//     };
 
-    //pin image file
-    const imageIpfsCid = await pinata.pinFileToIPFS(
-      option.file,
-      pinataFileOptions
-    );
+//     //pin image file
+//     const imageIpfsCid = await pinata.pinFileToIPFS(
+//       option.file,
+//       pinataFileOptions
+//     );
 
-    imageIpfsCids[option.rarity] = {
-      direct: imageIpfsCid.IpfsHash,
-      // TODO
-      delegated: imageIpfsCid.IpfsHash,
-    };
-  }
+//     imageIpfsCids[option.rarity] = {
+//       direct: imageIpfsCid.IpfsHash,
+//       // TODO
+//       delegated: imageIpfsCid.IpfsHash,
+//     };
+//   }
 
-  return { imageIpfsCids };
-};
+//   return { imageIpfsCids };
+// };
 
 /**
  * Given a config and a pinata api, pin all the images and metadata for each rarity option
@@ -84,7 +84,12 @@ export const pinImageAndMetadataForOptions = async (
   const imageIpfsCids = {};
   const metadataIpfsCids = {};
 
-  for (const option of config.options) {
+  let configOptionsAndDefault = [...config.options]; // Deep copy to avoid modifying the original config.options
+  configOptionsAndDefault.push({ ...config.options[2] }); // Clone the third element before pushing to ensure they remain distinct objects
+  configOptionsAndDefault[3].royalty = config.defaultRoyalty;
+
+  for (const option of configOptionsAndDefault) {
+
     const pinataFileOptions: PinataPinOptions = {
       pinataMetadata: {
         name: `referendum-${config.refIndex}_${option.rarity}`,
@@ -105,27 +110,25 @@ export const pinImageAndMetadataForOptions = async (
     };
 
     //image file
-    let imageIpfsCid;
+    let imageIpfsCid = imageIpfsCids[option.rarity]
 
-    if (option.imageCid) {
-      console.info(
-        "getting image cid from config",
-        option.imageCid,
-        "for rarity",
-        option.rarity
-      );
-      imageIpfsCid = option.imageCid;
-    } else {
-      imageIpfsCid = (
-        await pinata.pinFileToIPFS(option.file, pinataFileOptions)
-      ).IpfsHash;
+    //no need to do the image pin for default option
+    if (!imageIpfsCid) {
+      if (option.imageCid) {
+        console.info(
+          "getting image cid from config",
+          option.imageCid,
+          "for rarity",
+          option.rarity
+        );
+        imageIpfsCid = option.imageCid;
+      } else {
+        imageIpfsCid = (
+          await pinata.pinFileToIPFS(option.file, pinataFileOptions)
+        ).IpfsHash;
+      }
+      imageIpfsCids[option.rarity] = imageIpfsCid;
     }
-
-    imageIpfsCids[option.rarity] = {
-      direct: imageIpfsCid,
-      // TODO
-      delegated: imageIpfsCid,
-    };
 
     let recipientValue;
     if (config.royaltyAddress === websiteConfig.royaltyAddress) {
@@ -139,59 +142,53 @@ export const pinImageAndMetadataForOptions = async (
 
     const totalNFTs = sum(Object.values(rarityDistribution));
 
-    //TODO what is correct here? Kodadot wants image, but RMRK wants mediaUri
-    //pin metadata
-    const metadata = {
+    // Base metadata
+    const baseMetadata = {
       external_url: "https://www.proofofchaos.app/",
       mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
       image: `ipfs://ipfs/${imageIpfsCid}`,
       name: option.itemName,
       description: `${option.description}\n\n_This NFT was created with [proofofchaos.app](https://proofofchaos.app/referendum-rewards)_`,
       attributes: [
-        {
-          trait_type: "rarity",
-          value: option.rarity,
-        },
-        {
-          trait_type: "name",
-          value: option.itemName,
-        },
-        {
-          trait_type: "description",
-          value: option.description,
-        },
-        {
-          trait_type: "artist",
-          value: option.artist,
-        },
-        {
-          trait_type: "referendum",
-          value: parseInt(config.refIndex),
-        },
-        {
-          trait_type: "recipient",
-          value: recipientValue,
-        },
-        {
-          trait_type: "totalSupply",
-          value: totalNFTs,
-        },
-        {
-          trait_type: "totalSupplyRarity",
-          value: rarityDistribution[option.rarity],
-        },
-      ],
+        { trait_type: "rarity", value: option.rarity },
+        { trait_type: "name", value: option.itemName },
+        { trait_type: "description", value: option.description },
+        { trait_type: "artist", value: option.artist },
+        { trait_type: "referendum", value: parseInt(config.refIndex) },
+        { trait_type: "recipient", value: recipientValue },
+        { trait_type: "totalSupply", value: totalNFTs },
+        { trait_type: "totalSupplyRarity", value: rarityDistribution[option.rarity] },
+        { trait_type: "royalty", value: option.royalty },
+      ]
     };
 
-    console.log("your metadata is", metadata);
-    const metadataIpfsCid = await pinata.pinJSONToIPFS(
-      metadata,
+    // Create metadataDirect and metadataDelegated by spreading the baseMetadata 
+    // and appending the unique voteType attribute.
+    const metadataDirect = {
+      ...baseMetadata,
+      attributes: [...baseMetadata.attributes, { trait_type: "voteType", value: "direct" }]
+    };
+
+    const metadataDelegated = {
+      ...baseMetadata,
+      attributes: [...baseMetadata.attributes, { trait_type: "voteType", value: "delegated" }]
+    };
+
+    const metadataIpfsCidDirect = await pinata.pinJSONToIPFS(
+      metadataDirect,
       pinataMetadataOptions
     );
-    metadataIpfsCids[option.rarity] = {
-      direct: metadataIpfsCid.IpfsHash,
-      // TODO
-      delegated: metadataIpfsCid.IpfsHash,
+
+    const metadataIpfsCidDelegated = await pinata.pinJSONToIPFS(
+      metadataDelegated,
+      pinataMetadataOptions
+    );
+    let index = configOptionsAndDefault.indexOf(option);
+
+    //push the last option as the default option
+    metadataIpfsCids[index < 3 ? option.rarity : "default"] = {
+      direct: metadataIpfsCidDirect.IpfsHash,
+      delegated: metadataIpfsCidDelegated.IpfsHash,
     };
   }
 

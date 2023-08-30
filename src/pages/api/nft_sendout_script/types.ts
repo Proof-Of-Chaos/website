@@ -383,15 +383,14 @@ export interface RewardConfiguration {
 }
 
 export interface RewardOption {
-  description: String;
+  description: string;
   maxProbability: number | null;
   minProbability: number | null;
   transferable: boolean;
   artist: string;
   rarity: string;
   itemName: string;
-  minRoyalty: number;
-  maxRoyalty: number;
+  royalty: number;
   metadataCidDirect?: string;
   metadataCidDelegated?: string;
   file?: any;
