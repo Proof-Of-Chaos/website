@@ -1,6 +1,6 @@
 export const websiteConfig = {
   // batch size for minting NFTs, txs will be batched in this size
-  nft_batch_size_max: 500,
+  nft_batch_size_max: 700,
   // default address for royalties, used in _helpersVote.ts
   royaltyAddress: "Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4",
   // which attributes to add to the NFT

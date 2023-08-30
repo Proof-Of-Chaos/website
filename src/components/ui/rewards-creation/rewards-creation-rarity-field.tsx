@@ -89,9 +89,9 @@ export function RewardsCreationRarityFields({
         />
         <Textarea
           id={`description-${rarity}`}
-          label={`Description of ${rarity} NFT (256 chars)`}
+          label={`Description of ${rarity} NFT (1000 chars)`}
           placeholder={`Enter description of ${rarity} NFT`}
-          maxLength={256}
+          maxLength={1000}
           {...register(`options[${optionIndex}].description`, {
             validate: {},
           })}

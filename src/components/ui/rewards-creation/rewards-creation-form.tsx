@@ -1,5 +1,8 @@
+import "@polkadot/rpc-augment";
+import "@polkadot/api-augment/kusama";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import debounce from "lodash.debounce";
 
 import Button from "../button";
 import Loader, { InlineLoader } from "../loader";
@@ -36,6 +39,9 @@ import {
   mapPromises,
 } from "../../../utils/utils";
 import { RewardsCreationRarityFields } from "./rewards-creation-rarity-field";
+import { useCollectionData } from "../../../hooks/use-collection-data";
+import { useNftCollection } from "../../../hooks/use-chain-config";
+import { u32 } from "@polkadot/types-codec";
 
 export function RewardsCreationForm() {
   const { openModal, closeModal } = useModal();
@@ -46,6 +52,7 @@ export function RewardsCreationForm() {
   const connectedAccount = useAppStore(
     (state) => state.user.connectedAccounts?.[connectedAccountIndex]
   );
+  const ksmAddress = connectedAccount?.ksmAddress;
   const walletAddress = connectedAccount?.address;
   const wallet = getWalletBySource(connectedAccount?.source);
 
@@ -61,6 +68,8 @@ export function RewardsCreationForm() {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
+  let collectionOwnerIsWallet = false;
+
   const isMounted = useIsMounted();
 
   const formMethods = useForm({
@@ -73,6 +82,8 @@ export function RewardsCreationForm() {
   const {
     watch,
     setValue,
+    setError: setFormError,
+    clearErrors,
     formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
 
@@ -101,6 +112,39 @@ export function RewardsCreationForm() {
   // }, [pastReferendaIndices]);
 
   const watchFormFields = watch();
+
+  useEffect(() => {
+    const checkCollectionOwner = debounce(async () => {
+      if (!watchFormFields?.collectionConfig?.id) {
+        clearErrors("collectionConfig.id");
+        return;
+      }
+      const apiKusamaAssetHub = await getApiKusamaAssetHub();
+      try {
+        const collectionData = await apiKusamaAssetHub.query.nfts.collection(
+          watchFormFields.collectionConfig.id
+        );
+        collectionOwnerIsWallet =
+          (collectionData?.toJSON() as any).owner === ksmAddress;
+
+        if (!collectionOwnerIsWallet) {
+          console.log("not owner");
+          setFormError("collectionConfig.id", {
+            type: "invalid",
+            message: "You are not the owner of this collection",
+          });
+        } else {
+          clearErrors("collectionConfig.id");
+        }
+      } catch (error) {
+        setFormError("collectionConfig.id", {
+          type: "invalid",
+          message: "Invalid Input",
+        });
+      }
+    }, 500);
+    checkCollectionOwner();
+  }, [watchFormFields.collectionConfig.id]);
 
   //TODO type
   async function generatePreimage(formData) {
@@ -218,6 +262,7 @@ export function RewardsCreationForm() {
   }
 
   async function onSubmit(data) {
+    console.log("submit formErrors", errors);
     console.table(data);
 
     setCallData(undefined);
@@ -283,6 +328,7 @@ export function RewardsCreationForm() {
           ) : (
             <form
               onSubmit={formMethods.handleSubmit(onSubmit)}
+              onError={console.log}
               className={style.form}
             >
               <h1 className="text-2xl relative">
@@ -340,12 +386,17 @@ export function RewardsCreationForm() {
                     label="Collection Id"
                     placeholder="The id of your existing collection"
                     type="text"
-                    description="Either choose an existing collection to mint the NFTs into, or
-                    create a new one. You must be authorized to mint to the given collection! (103 is the default id for the Proof of Chaos
-                    PUBLIC collection. Since it is public, anyone can mint into it.)"
+                    validationState={
+                      errors.collectionConfig?.id ? "invalid" : "valid"
+                    }
+                    errorMessage={errors.collectionConfig?.id?.message}
+                    description="Select a collection that you are the owner of. NFTs will be minted to this collection."
                     disabled={isNewCollectionLoading}
                     {...formMethods.register("collectionConfig.id", {
-                      validate: {},
+                      validate: {
+                        isCollectionOwner: () =>
+                          !collectionOwnerIsWallet || "Not owner of collection",
+                      },
                     })}
                   />
                   <div className="flex h-100">or</div>
