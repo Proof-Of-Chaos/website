@@ -368,6 +368,8 @@ export interface RewardConfiguration {
   defaultRoyalty: number;
   royaltyAddress: string;
   options: RewardOption[];
+  isMetadataLocked: boolean;
+  isAttributesLocked: boolean;
   lowerLimitOfCurve?: number | null;
   upperLimitOfCurve?: number | null;
   medianOfCurve?: number | null;

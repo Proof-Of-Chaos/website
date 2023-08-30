@@ -340,6 +340,14 @@ export const getTxsForVotes = (
         ipfsIdentifier
       )
     );
+    txs.push(
+      apiKusamaAssetHub.tx.nfts.lockItemProperties(
+        config.collectionConfig.id,
+        nftId,
+        config.isMetadataLocked,
+        config.isAttributesLocked
+      )
+    );
     // txs.push(
     //   apiKusamaAssetHub.tx.nfts.transfer(
     //     config.collectionConfig.id,
@@ -368,7 +376,7 @@ const getAllSetAttributeTxs = (
 
   const randRoyaltyInRange = Math.floor(
     rng() * (chosenOption.maxRoyalty - chosenOption.minRoyalty + 1) +
-      chosenOption.minRoyalty
+    chosenOption.minRoyalty
   );
 
   // const imageCid = `ipfs://ipfs/${

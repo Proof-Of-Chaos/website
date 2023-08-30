@@ -69,4 +69,6 @@ export const defaultReferendumRewardsConfig: RewardConfiguration = {
       description: "",
     },
   ],
+  isMetadataLocked: true,
+  isAttributesLocked: true
 };
