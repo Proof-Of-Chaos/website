@@ -377,15 +377,15 @@ const getAllSetAttributeTxs = (
   //   ]
   // }`;
 
-  let recipientValue;
-  if (config.royaltyAddress === websiteConfig.royaltyAddress) {
-    recipientValue = JSON.stringify([[config.royaltyAddress, 100]]);
-  } else {
-    recipientValue = JSON.stringify([
-      [config.royaltyAddress, 80],
-      [websiteConfig.royaltyAddress, 20],
-    ]);
-  }
+  // let recipientValue;
+  // if (config.royaltyAddress === websiteConfig.royaltyAddress) {
+  //   recipientValue = JSON.stringify([[config.royaltyAddress, 100]]);
+  // } else {
+  //   recipientValue = JSON.stringify([
+  //     [config.royaltyAddress, 80],
+  //     [websiteConfig.royaltyAddress, 20],
+  //   ]);
+  // }
 
   let attributesToSet = [
     // ["image", imageCid],

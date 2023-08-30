@@ -1026,12 +1026,12 @@ export function getSendoutNFTAttributes(
 
   let recipientValue;
   if (config.royaltyAddress === websiteConfig.royaltyAddress) {
-    recipientValue = JSON.stringify([[config.royaltyAddress, 100]]);
+    recipientValue = [[config.royaltyAddress, 100]];
   } else {
-    recipientValue = JSON.stringify([
+    recipientValue = [
       [config.royaltyAddress, 80],
       [websiteConfig.royaltyAddress, 20],
-    ]);
+    ];
   }
 
   const allAttributes = {
