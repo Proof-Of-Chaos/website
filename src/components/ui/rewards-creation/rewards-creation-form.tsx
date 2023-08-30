@@ -522,10 +522,10 @@ export function RewardsCreationForm() {
           )}
         </div>
       )}
-      <pre className="text-[0.5rem]">
+      {/* <pre className="text-[0.5rem]">
         file: {JSON.stringify(watchFormFields.options[0]?.file?.[0], null, 2)}
         form fields: {JSON.stringify(watchFormFields, null, 2)}
-      </pre>
+      </pre> */}
       {/* <pre className="text-[0.5rem]">
         call config:
         {JSON.stringify(callData?.config, null, 2)}
