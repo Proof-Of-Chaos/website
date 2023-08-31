@@ -84,12 +84,18 @@ export const pinImageAndMetadataForOptions = async (
   const imageIpfsCids = {};
   const metadataIpfsCids = {};
 
+  // create a fourth option for votes not meeting requirements
+  let commonOption = config.options.find(
+    (option) => option.rarity === "common"
+  );
+
+  let defaultOption = { ...commonOption };
+  defaultOption.royalty = config.defaultRoyalty;
+
   let configOptionsAndDefault = [...config.options]; // Deep copy to avoid modifying the original config.options
-  configOptionsAndDefault.push({ ...config.options[2] }); // Clone the third element before pushing to ensure they remain distinct objects
-  configOptionsAndDefault[3].royalty = config.defaultRoyalty;
+  configOptionsAndDefault.push(defaultOption); // Clone the third element before pushing to ensure they remain distinct objects
 
   for (const option of configOptionsAndDefault) {
-
     const pinataFileOptions: PinataPinOptions = {
       pinataMetadata: {
         name: `referendum-${config.refIndex}_${option.rarity}`,
@@ -110,7 +116,7 @@ export const pinImageAndMetadataForOptions = async (
     };
 
     //image file
-    let imageIpfsCid = imageIpfsCids[option.rarity]
+    let imageIpfsCid = imageIpfsCids[option.rarity];
 
     //no need to do the image pin for default option
     if (!imageIpfsCid) {
@@ -157,21 +163,30 @@ export const pinImageAndMetadataForOptions = async (
         { trait_type: "referendum", value: parseInt(config.refIndex) },
         { trait_type: "recipient", value: recipientValue },
         { trait_type: "totalSupply", value: totalNFTs },
-        { trait_type: "totalSupplyRarity", value: rarityDistribution[option.rarity] },
+        {
+          trait_type: "totalSupplyRarity",
+          value: rarityDistribution[option.rarity],
+        },
         { trait_type: "royalty", value: option.royalty },
-      ]
+      ],
     };
 
-    // Create metadataDirect and metadataDelegated by spreading the baseMetadata 
+    // Create metadataDirect and metadataDelegated by spreading the baseMetadata
     // and appending the unique voteType attribute.
     const metadataDirect = {
       ...baseMetadata,
-      attributes: [...baseMetadata.attributes, { trait_type: "voteType", value: "direct" }]
+      attributes: [
+        ...baseMetadata.attributes,
+        { trait_type: "voteType", value: "direct" },
+      ],
     };
 
     const metadataDelegated = {
       ...baseMetadata,
-      attributes: [...baseMetadata.attributes, { trait_type: "voteType", value: "delegated" }]
+      attributes: [
+        ...baseMetadata.attributes,
+        { trait_type: "voteType", value: "delegated" },
+      ],
     };
 
     const metadataIpfsCidDirect = await pinata.pinJSONToIPFS(
@@ -358,7 +373,7 @@ export const pinMetadataForConfigNFT = async (
   //add attributes for all the reward options
   for (const option of options) {
     for (const attribute in option) {
-      if (attribute === 'imageCid') {
+      if (attribute === "imageCid") {
         continue;
       }
       attributes.push({
