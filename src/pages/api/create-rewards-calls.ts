@@ -21,8 +21,10 @@ import formidable, { errors as formidableErrors } from "formidable";
 import {
   CHAIN,
   getChainDecimals,
+  getNFTAttributeDeposit,
   getNFTCollectionDeposit,
   getNFTItemDeposit,
+  getNFTMetadataDeposit,
 } from "../../data/chain";
 import { getApiKusama, getApiKusamaAssetHub } from "../../data/getApi";
 import PinataClient from "@pinata/sdk";
@@ -173,26 +175,24 @@ const generateCalls = async (
 
   const collectionDeposit = await getNFTCollectionDeposit(apiKusamaAssetHub);
   const itemDeposit = await getNFTItemDeposit(apiKusamaAssetHub);
+  const metadataDepositBase = await getNFTMetadataDeposit(apiKusamaAssetHub);
+  // const attributeDepositBase = await getNFTAttributeDeposit(apiKusamaAssetHub);
 
   const voters = decoratedVotes.map((vote) => vote.address);
   const totalNFTs = voters.length;
 
-  // console.log(
-  //   "calculating fees with ",
-  //   config,
-  //   totalNFTs,
-  //   itemDeposit,
-  //   collectionDeposit
-  // );
+  let totalDeposit = new BN(itemDeposit)
+    .add(new BN(metadataDepositBase))
+    .muln(totalNFTs);
 
-  const totalDeposit = config.collectionConfig.isNew
-    ? new BN(collectionDeposit)
-        .add(new BN(itemDeposit).muln(totalNFTs))
-        .toString()
-    : new BN(itemDeposit).muln(totalNFTs).toString();
+  if (config.collectionConfig.isNew) {
+    totalDeposit.add(new BN(collectionDeposit));
+  }
 
   console.info(
-    `📊 Total fees for sender ${config.sender} are ${totalDeposit} KSM`
+    `📊 Total fees for sender ${
+      config.sender
+    } are ${totalDeposit.toString()} KSM`
   );
 
   console.info("🎉 All Done");
@@ -202,21 +202,21 @@ const generateCalls = async (
   //   ./log/tmp_transactions_${config.refIndex}_xcm.json`
   // );
 
-  // fs.writeFileSync(
-  //   `./log/tmp_transactions_${config.refIndex}_xcm.json`,
-  //   JSON.stringify(
-  //     {
-  //       nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
-  //       // xcm: txsKusama.map((tx) => tx.toHuman()),
-  //       deposits: {
-  //         collectionDeposit,
-  //         itemDeposit,
-  //       },
-  //     },
-  //     null,
-  //     2
-  //   )
-  // );
+  fs.writeFileSync(
+    `./log/tmp_transactions_${config.refIndex}_xcm.json`,
+    JSON.stringify(
+      {
+        nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
+        // xcm: txsKusama.map((tx) => tx.toHuman()),
+        deposits: {
+          collectionDeposit,
+          itemDeposit,
+        },
+      },
+      null,
+      2
+    )
+  );
 
   // console.info(
   //   `returning

@@ -20,13 +20,13 @@ export const CHAIN = {
 
 export const WS_ENDPOINTS = {
   [CHAIN.KUSAMA]: [
-    "wss://kusama-rpc.polkadot.io",
     "wss://kusama-rpc.dwellir.com",
+    "wss://kusama-rpc.polkadot.io",
     "wss://kusama.api.onfinality.io/public-ws",
   ],
   [CHAIN.KUSAMA_ASSET_HUB]: [
-    "wss://kusama-asset-hub-rpc.polkadot.io",
     "wss://rpc-asset-hub-kusama.luckyfriday.io",
+    "wss://kusama-asset-hub-rpc.polkadot.io",
     "wss://statemine.api.onfinality.io/public-ws",
   ],
   [CHAIN.ENCOINTER]: [
@@ -515,5 +515,15 @@ export async function getNFTCollectionDeposit(api: ApiPromise) {
 
 export async function getNFTItemDeposit(api: ApiPromise) {
   const deposit = await api.consts.nfts?.itemDeposit.toString();
+  return deposit;
+}
+
+export async function getNFTMetadataDeposit(api: ApiPromise) {
+  const deposit = await api.consts.nfts?.metadataDepositBase.toString();
+  return deposit;
+}
+
+export async function getNFTAttributeDeposit(api: ApiPromise) {
+  const deposit = await api.consts.nfts?.attributeDepositBase.toString();
   return deposit;
 }

@@ -288,7 +288,9 @@ export const getTxsForVotes = (
     // );
 
     const selectedMetadata =
-      fileAndMetadataCids.metadataIpfsCids[vote.meetsRequirements ? chosenOption.rarity : "default"];
+      fileAndMetadataCids.metadataIpfsCids[
+        vote.meetsRequirements ? chosenOption.rarity : "default"
+      ];
 
     let metadataCid =
       vote.voteType == "Delegating"
@@ -340,14 +342,17 @@ export const getTxsForVotes = (
         ipfsIdentifier
       )
     );
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.lockItemProperties(
-        config.collectionConfig.id,
-        nftId,
-        config.isMetadataLocked,
-        config.isAttributesLocked
-      )
-    );
+
+    if (config.isMetadataLocked || config.isAttributesLocked) {
+      txs.push(
+        apiKusamaAssetHub.tx.nfts.lockItemProperties(
+          config.collectionConfig.id,
+          nftId,
+          config.isMetadataLocked,
+          config.isAttributesLocked
+        )
+      );
+    }
     // txs.push(
     //   apiKusamaAssetHub.tx.nfts.transfer(
     //     config.collectionConfig.id,
