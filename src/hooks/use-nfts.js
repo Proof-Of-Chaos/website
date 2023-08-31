@@ -127,10 +127,10 @@ export function useNFTs( queryOptions ) {
         title: descriptionSegments[0].replace(/'/g, ""),
         description: descriptionSegments[1] ?? item.metadata_description,
         url: 'https://singular.app/collections/' + item.collectionId + '?search=' + encodeURIComponent(item.metadata_name),
-      }
+      };
     }));
     return [ ...transformedNFTs, ...websiteConfig.classic_referendums ]
-  }, queryOptions)
+  }, queryOptions);
 }
 
 export const useUserNfts = () => {

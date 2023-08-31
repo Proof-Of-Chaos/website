@@ -1,26 +1,47 @@
-import { getApi, sendAndFinalize } from './chain';
-import { VoteChoice } from '../hooks/use-vote-manager';
+import { getApi, getApiKusama, sendAndFinalize } from "./chain";
+import { VoteChoice } from "../hooks/use-vote-manager";
 
-export async function castVote(signer, aye, ref, address, balance, conviction, gov2 = false) {
-  return new Promise( async (resolve, reject ) => {
+export async function castVote(
+  signer,
+  aye,
+  ref,
+  address,
+  balance,
+  conviction,
+  gov2 = false
+) {
+  return new Promise(async (resolve, reject) => {
     try {
-      const api = await getApi()
-      let transaction = await getVoteTx(api, aye, ref, balance, conviction, gov2);
+      const api = await getApiKusama();
+      let transaction = await getVoteTx(
+        api,
+        aye,
+        ref,
+        balance,
+        conviction,
+        gov2
+      );
       const { success } = await sendAndFinalize(transaction, signer, address);
-      resolve( success );
-    } catch( error ) {
-      if ( error === 'signAndSend cancelled') {
-        reject( 'cancelled' );
+      resolve(success);
+    } catch (error) {
+      if (error === "signAndSend cancelled") {
+        reject("cancelled");
       } else {
-        reject( error )
+        reject(error);
       }
     }
-  })
+  });
 }
 
-export function getVoteTx(api, voteChoice, ref, balances, conviction, gov2 = false) {
-
-  let vote = {}
+export function getVoteTx(
+  api,
+  voteChoice,
+  ref,
+  balances,
+  conviction,
+  gov2 = false
+) {
+  let vote = {};
 
   switch (voteChoice) {
     case VoteChoice.Aye:
@@ -32,29 +53,29 @@ export function getVoteTx(api, voteChoice, ref, balances, conviction, gov2 = fal
             conviction: conviction,
           },
           balance: voteChoice === VoteChoice.Aye ? balances.aye : balances.nay,
-        }
-      }
-      break
+        },
+      };
+      break;
     case VoteChoice.Split:
       vote = {
         Split: {
           aye: balances.aye,
-          nay: balances.nay
-        }
-      }
-      break
+          nay: balances.nay,
+        },
+      };
+      break;
     case VoteChoice.Abstain:
       vote = {
         SplitAbstain: {
-          aye: balances.aye, 
+          aye: balances.aye,
           nay: balances.nay,
-          abstain: balances.abstain
-        }
-      }
+          abstain: balances.abstain,
+        },
+      };
   }
 
-  if ( gov2 ) {
-    return api.tx.convictionVoting.vote(ref,vote)
+  if (gov2) {
+    return api.tx.convictionVoting.vote(ref, vote);
   }
-  return api.tx.democracy.vote(ref, vote)
+  return api.tx.democracy.vote(ref, vote);
 }

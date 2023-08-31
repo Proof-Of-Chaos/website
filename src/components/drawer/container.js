@@ -1,11 +1,11 @@
-import { Fragment, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
-import { Dialog } from '@headlessui/react';
-import { Transition } from '@headlessui/react';
-import { useDrawer } from './context';
+import { Fragment, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
+import { Dialog } from "@headlessui/react";
+import { Transition } from "@headlessui/react";
+import { useDrawer } from "./context";
 
-const DrawerMenu = dynamic(() => import('../../layouts/layout-menu'));
+const DrawerMenu = dynamic(() => import("../../layouts/layout-menu"));
 
 function renderDrawerContent(view) {
   switch (view) {
@@ -19,9 +19,9 @@ export default function DrawersContainer() {
   const { view, isOpen, closeDrawer } = useDrawer();
   useEffect(() => {
     // close search modal when route change
-    router.events.on('routeChangeStart', closeDrawer);
+    router.events.on("routeChangeStart", closeDrawer);
     return () => {
-      router.events.off('routeChangeStart', closeDrawer);
+      router.events.off("routeChangeStart", closeDrawer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -4,10 +4,9 @@ import Document, {
   Html,
   Main,
   NextScript,
-} from 'next/document';
+} from "next/document";
 
-import { ServerStyleSheet } from 'styled-components'
-
+import { ServerStyleSheet } from "styled-components";
 
 class CustomDocument extends Document {
   static async getInitialProps(ctx) {
@@ -17,8 +16,15 @@ class CustomDocument extends Document {
     return (
       <Html lang="en-US" dir="ltr" className="light">
         <Head>
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
-          <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap" rel="stylesheet" />
+          <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossOrigin="true"
+          />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap"
+            rel="stylesheet"
+          />
           <link rel="shortcut icon" href="/favicon.ico" />
         </Head>
         <body>

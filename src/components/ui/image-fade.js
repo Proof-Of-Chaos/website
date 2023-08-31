@@ -1,5 +1,5 @@
 import { useState } from "react";
-import NextImage from "next/image";
+import NextImage from "next/legacy/image";
 
 export default function Image( props ) {
   const [ready, setReady] = useState(false);
