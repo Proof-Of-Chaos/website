@@ -358,6 +358,9 @@ export const pinMetadataForConfigNFT = async (
   //add attributes for all the reward options
   for (const option of options) {
     for (const attribute in option) {
+      if (attribute === 'imageCid') {
+        continue;
+      }
       attributes.push({
         trait_type: "option_" + optionIndex + "_" + attribute,
         value: option.hasOwnProperty(attribute)
