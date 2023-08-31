@@ -119,7 +119,7 @@ const generateCalls = async (
     throw new Error(`Referendum is still ongoing: ${e}`);
   }
 
-  console.info(`ℹ️  Getting all voting wallets for ${refIndex}`);
+  console.info(`ℹ️  Getting all voting wallets for referendum ${refIndex}`);
   // get the list of all wallets that have voted along with their calculated NFT rarity and other info @see getDecoratedVotes
   const { decoratedVotes, distribution: rarityDistribution } =
     await getDecoratedVotesWithInfo(config, kusamaChainDecimals);
@@ -202,21 +202,21 @@ const generateCalls = async (
   //   ./log/tmp_transactions_${config.refIndex}_xcm.json`
   // );
 
-  fs.writeFileSync(
-    `./log/tmp_transactions_${config.refIndex}_xcm.json`,
-    JSON.stringify(
-      {
-        nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
-        // xcm: txsKusama.map((tx) => tx.toHuman()),
-        deposits: {
-          collectionDeposit,
-          itemDeposit,
-        },
-      },
-      null,
-      2
-    )
-  );
+  // fs.writeFileSync(
+  //   `./log/tmp_transactions_${config.refIndex}_xcm.json`,
+  //   JSON.stringify(
+  //     {
+  //       nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
+  //       // xcm: txsKusama.map((tx) => tx.toHuman()),
+  //       deposits: {
+  //         collectionDeposit,
+  //         itemDeposit,
+  //       },
+  //     },
+  //     null,
+  //     2
+  //   )
+  // );
 
   // console.info(
   //   `returning

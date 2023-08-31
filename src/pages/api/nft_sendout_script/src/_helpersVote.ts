@@ -501,12 +501,12 @@ export const retrieveAccountLocks = async (
         const userLockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-            userVote.endBlock
-              .sub(endBlockBN)
-              .muln(10)
-              .div(sevenDaysBlocks)
-              .toNumber() / 10
-          );
+              userVote.endBlock
+                .sub(endBlockBN)
+                .muln(10)
+                .div(sevenDaysBlocks)
+                .toNumber() / 10
+            );
         const matchingPeriod = lockPeriods.reduce(
           (acc, curr, index) => (userLockPeriods >= curr ? index : acc),
           0
@@ -517,8 +517,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-          BN.max(max, current)
-        )
+            BN.max(max, current)
+          )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -690,113 +690,115 @@ export const createConfigNFT = async (
   //filter out all attributes other tan the collectionConfig and options
   const { collectionConfig, configNFT, options, ...configAttributes } = config;
 
+  //TODO we removed all setattributes, is this still needed, make sure everything is in the metadata
+
   //add attributes for all the non-nested config stuff
-  for (const attribute in configAttributes) {
-    if (attribute === "nftIds" && Array.isArray(configAttributes[attribute])) {
-      // Convert the array to a string
-      let ids = configAttributes[attribute].map((id) => id.toString());
+  // for (const attribute in configAttributes) {
+  //   if (attribute === "nftIds" && Array.isArray(configAttributes[attribute])) {
+  //     // Convert the array to a string
+  //     let ids = configAttributes[attribute].map((id) => id.toString());
 
-      let counter = 1;
-      let chunk = "";
+  //     let counter = 1;
+  //     let chunk = "";
 
-      for (let id of ids) {
-        // Check if adding the next ID would exceed 254 characters
-        if (chunk.length + id.length + 1 > 254) {
-          // Push the current chunk and reset it
-          txs.push(
-            apiKusamaAssetHub.tx.nfts.setAttribute(
-              config.configNFT.settingsCollectionId,
-              nftId,
-              "CollectionOwner",
-              attribute + "_" + counter,
-              chunk.slice(0, -1) // Remove trailing comma
-            )
-          );
-          chunk = "";
-          counter++;
-        }
+  //     for (let id of ids) {
+  //       // Check if adding the next ID would exceed 254 characters
+  //       if (chunk.length + id.length + 1 > 254) {
+  //         // Push the current chunk and reset it
+  //         txs.push(
+  //           apiKusamaAssetHub.tx.nfts.setAttribute(
+  //             config.configNFT.settingsCollectionId,
+  //             nftId,
+  //             "CollectionOwner",
+  //             attribute + "_" + counter,
+  //             chunk.slice(0, -1) // Remove trailing comma
+  //           )
+  //         );
+  //         chunk = "";
+  //         counter++;
+  //       }
 
-        chunk += id + ",";
-      }
+  //       chunk += id + ",";
+  //     }
 
-      // Handle any remaining IDs
-      if (chunk) {
-        txs.push(
-          apiKusamaAssetHub.tx.nfts.setAttribute(
-            config.configNFT.settingsCollectionId,
-            nftId,
-            "CollectionOwner",
-            attribute + "_" + counter,
-            chunk.slice(0, -1) // Remove trailing comma
-          )
-        );
-      }
-    } else {
-      txs.push(
-        apiKusamaAssetHub.tx.nfts.setAttribute(
-          config.configNFT.settingsCollectionId,
-          nftId,
-          "CollectionOwner",
-          attribute,
-          configAttributes.hasOwnProperty(attribute)
-            ? configAttributes[attribute]?.toString() ?? ""
-            : ""
-        )
-      );
-    }
-  }
+  //     // Handle any remaining IDs
+  //     if (chunk) {
+  //       txs.push(
+  //         apiKusamaAssetHub.tx.nfts.setAttribute(
+  //           config.configNFT.settingsCollectionId,
+  //           nftId,
+  //           "CollectionOwner",
+  //           attribute + "_" + counter,
+  //           chunk.slice(0, -1) // Remove trailing comma
+  //         )
+  //       );
+  //     }
+  //   } else {
+  //     txs.push(
+  //       apiKusamaAssetHub.tx.nfts.setAttribute(
+  //         config.configNFT.settingsCollectionId,
+  //         nftId,
+  //         "CollectionOwner",
+  //         attribute,
+  //         configAttributes.hasOwnProperty(attribute)
+  //           ? configAttributes[attribute]?.toString() ?? ""
+  //           : ""
+  //       )
+  //     );
+  //   }
+  // }
 
-  //add attributes for all the new collection config
-  for (const attribute in collectionConfig) {
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.configNFT.settingsCollectionId,
-        nftId,
-        "CollectionOwner",
-        "collection_" + attribute,
-        collectionConfig.hasOwnProperty(attribute)
-          ? collectionConfig[attribute]?.toString() ?? ""
-          : ""
-      )
-    );
-  }
+  // //add attributes for all the new collection config
+  // for (const attribute in collectionConfig) {
+  //   txs.push(
+  //     apiKusamaAssetHub.tx.nfts.setAttribute(
+  //       config.configNFT.settingsCollectionId,
+  //       nftId,
+  //       "CollectionOwner",
+  //       "collection_" + attribute,
+  //       collectionConfig.hasOwnProperty(attribute)
+  //         ? collectionConfig[attribute]?.toString() ?? ""
+  //         : ""
+  //     )
+  //   );
+  // }
 
-  //add attributes for all the configNFT stuff
-  for (const attribute in configNFT) {
-    txs.push(
-      apiKusamaAssetHub.tx.nfts.setAttribute(
-        config.configNFT.settingsCollectionId,
-        nftId,
-        "CollectionOwner",
-        "configNFT_" + attribute,
-        configNFT.hasOwnProperty(attribute)
-          ? configNFT[attribute]?.toString() ?? ""
-          : ""
-      )
-    );
-  }
+  // //add attributes for all the configNFT stuff
+  // for (const attribute in configNFT) {
+  //   txs.push(
+  //     apiKusamaAssetHub.tx.nfts.setAttribute(
+  //       config.configNFT.settingsCollectionId,
+  //       nftId,
+  //       "CollectionOwner",
+  //       "configNFT_" + attribute,
+  //       configNFT.hasOwnProperty(attribute)
+  //         ? configNFT[attribute]?.toString() ?? ""
+  //         : ""
+  //     )
+  //   );
+  // }
 
-  let optionIndex = 0;
-  //add attributes for all the reward options
-  for (const option of options) {
-    for (const attribute in option) {
-      if (attribute === 'imageCid') {
-        continue;
-      }
-      txs.push(
-        apiKusamaAssetHub.tx.nfts.setAttribute(
-          config.configNFT.settingsCollectionId,
-          nftId,
-          "CollectionOwner",
-          "option_" + optionIndex + "_" + attribute,
-          option.hasOwnProperty(attribute)
-            ? option[attribute]?.toString() ?? ""
-            : ""
-        )
-      );
-    }
-    optionIndex++;
-  }
+  // let optionIndex = 0;
+  // //add attributes for all the reward options
+  // for (const option of options) {
+  //   for (const attribute in option) {
+  //     if (attribute === 'imageCid') {
+  //       continue;
+  //     }
+  //     txs.push(
+  //       apiKusamaAssetHub.tx.nfts.setAttribute(
+  //         config.configNFT.settingsCollectionId,
+  //         nftId,
+  //         "CollectionOwner",
+  //         "option_" + optionIndex + "_" + attribute,
+  //         option.hasOwnProperty(attribute)
+  //           ? option[attribute]?.toString() ?? ""
+  //           : ""
+  //       )
+  //     );
+  //   }
+  //   optionIndex++;
+  // }
 
   // pin metadata and file for config NFT to Pinata
   const configMetadataCid = (await pinMetadataForConfigNFT(apiPinata, config))
@@ -811,6 +813,15 @@ export const createConfigNFT = async (
       config.configNFT.metadataCid
     )
   );
+
+  // txs.push(
+  //   apiKusamaAssetHub.tx.nfts.lockItemProperties(
+  //     config.configNFT.settingsCollectionId,
+  //     nftId,
+  //     true,
+  //     false
+  //   )
+  // );
 
   // fs.writeFileSync(
   //   `./log/tmp_config_transactions_${config.refIndex}_xcm.json`,
