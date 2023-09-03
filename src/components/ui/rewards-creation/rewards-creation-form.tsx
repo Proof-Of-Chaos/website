@@ -67,8 +67,7 @@ export function RewardsCreationForm() {
   });
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-
-  let collectionOwnerIsWallet = false;
+  const [collectionOwnerIsWallet, setCollectionOwnerIsWallet] = useState(false);
 
   const isMounted = useIsMounted();
 
@@ -124,10 +123,12 @@ export function RewardsCreationForm() {
         const collectionData = await apiKusamaAssetHub.query.nfts.collection(
           watchFormFields.collectionConfig.id
         );
-        collectionOwnerIsWallet =
+        const ownsCollection =
           (collectionData?.toJSON() as any).owner === ksmAddress;
 
-        if (!collectionOwnerIsWallet) {
+        setCollectionOwnerIsWallet(ownsCollection);
+
+        if (!ownsCollection) {
           console.log("not owner");
           setFormError("collectionConfig.id", {
             type: "invalid",
@@ -137,10 +138,7 @@ export function RewardsCreationForm() {
           clearErrors("collectionConfig.id");
         }
       } catch (error) {
-        setFormError("collectionConfig.id", {
-          type: "invalid",
-          message: "Invalid Input",
-        });
+        console.log("invalid input");
       }
     }, 500);
     checkCollectionOwner();
@@ -383,22 +381,27 @@ export function RewardsCreationForm() {
               <>
                 <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 items-center">
                   <Input
+                    isRequired
                     label="Collection Id"
                     placeholder="The id of your existing collection"
                     type="text"
-                    validationState={
-                      errors.collectionConfig?.id ? "invalid" : "valid"
-                    }
                     errorMessage={errors.collectionConfig?.id?.message}
                     description="Select a collection that you are the owner of. NFTs will be minted to this collection."
                     disabled={isNewCollectionLoading}
+                    validationState={
+                      errors.collectionConfig?.id ? "invalid" : "valid"
+                    }
                     {...formMethods.register("collectionConfig.id", {
                       validate: {
-                        isCollectionOwner: () =>
-                          !collectionOwnerIsWallet || "Not owner of collection",
+                        isNumber: (value) =>
+                          !isNaN(value) || "Not a valid number",
+                        isNotCollectionOwner: () =>
+                          collectionOwnerIsWallet ||
+                          "You are not the owner of the collection",
                       },
                     })}
                   />
+                  <p>{errors?.["collectionConfig.id"]?.message}</p>
                   <div className="flex h-100">or</div>
                   <UIButton
                     className="w-full"
