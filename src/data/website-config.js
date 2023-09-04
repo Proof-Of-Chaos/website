@@ -1,7 +1,7 @@
-const rewardsFilter = process.env.REWARDS_FILTER_ADDRESSES 
-    ? process.env.REWARDS_FILTER_ADDRESSES.split(",") 
-    : [];
-    
+const rewardsFilter = process.env.REWARDS_FILTER_ADDRESSES
+  ? process.env.REWARDS_FILTER_ADDRESSES.split(",")
+  : [];
+
 export const websiteConfig = {
   // batch size for minting NFTs, txs will be batched in this size
   nft_batch_size_max: 700,
