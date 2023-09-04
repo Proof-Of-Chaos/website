@@ -266,17 +266,8 @@ const generateCalls = async (
       //   forceUnit: "KSM",
       //   decimals: kusamaChainDecimals.toNumber(),
       // }),
-      nfts: formatBalance(infoNftCalls.partialFee, {
-        withSi: false,
-        forceUnit: "KSM",
-        //TODO this could be wrong on other chains
-        decimals: kusamaChainDecimals.toNumber(),
-      }),
-      deposit: formatBalance(totalDeposit, {
-        withSi: false,
-        forceUnit: "KSM",
-        decimals: kusamaChainDecimals.toNumber(),
-      }),
+      nfts: infoNftCalls.partialFee.toString(),
+      deposit: totalDeposit.toString(),
     },
     txsCount: {
       // kusama: txsKusama.length,

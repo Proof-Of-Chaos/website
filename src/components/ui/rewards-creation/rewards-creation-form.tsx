@@ -30,6 +30,7 @@ import {
   Select,
   SelectItem,
   Button as UIButton,
+  Skeleton,
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";
@@ -42,6 +43,10 @@ import { RewardsCreationRarityFields } from "./rewards-creation-rarity-field";
 import { useCollectionData } from "../../../hooks/use-collection-data";
 import { useNftCollection } from "../../../hooks/use-chain-config";
 import { u32 } from "@polkadot/types-codec";
+import {
+  getAccountBalanceAssetHubKusama,
+  useAccountBalance,
+} from "../../../hooks/use-account-balance";
 
 export function RewardsCreationForm() {
   const { openModal, closeModal } = useModal();
@@ -68,6 +73,8 @@ export function RewardsCreationForm() {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [collectionOwnerIsWallet, setCollectionOwnerIsWallet] = useState(false);
+  const [accountBalanceAssetHubKusama, setAccountBalanceAssetHubKusama] =
+    useState(undefined);
 
   const isMounted = useIsMounted();
 
@@ -111,6 +118,19 @@ export function RewardsCreationForm() {
   // }, [pastReferendaIndices]);
 
   const watchFormFields = watch();
+
+  useEffect(() => {
+    const checkAccountBalance = async () => {
+      if (!ksmAddress) return;
+      const { data, status } = await getAccountBalanceAssetHubKusama(
+        ksmAddress
+      );
+
+      setAccountBalanceAssetHubKusama(data?.free);
+    };
+
+    checkAccountBalance();
+  }, [ksmAddress]);
 
   useEffect(() => {
     const checkCollectionOwner = debounce(async () => {
@@ -316,6 +336,17 @@ export function RewardsCreationForm() {
       setIsNewCollectionLoading,
     });
   }
+
+  const isEnoughBalance =
+    accountBalanceAssetHubKusama &&
+    bnToBn(accountBalanceAssetHubKusama).gt(bnToBn(callData?.fees?.deposit));
+
+  console.log(
+    "done???",
+    isEnoughBalance,
+    accountBalanceAssetHubKusama,
+    callData?.fees?.deposit
+  );
 
   return (
     <div className={style.formWrapper}>
@@ -529,13 +560,36 @@ export function RewardsCreationForm() {
                     <b>collection {watchFormFields.collectionConfig.id}</b>
                   </p>
                   <p className="mt-2">
-                    Fees (Kusama Asset Hub): {callData.fees.nfts} KSM
+                    Fees (Kusama Asset Hub):{" "}
+                    {formatBalance(callData?.fees?.nfts, {
+                      decimals: 12,
+                      forceUnit: "-",
+                      withSi: true,
+                      withUnit: "KSM",
+                    })}{" "}
+                    KSM
                   </p>
                   <p className="">
-                    Locked Deposit (Kusama Asset Hub): {callData.fees.deposit}
+                    Locked Deposit (Kusama Asset Hub):{" "}
+                    {callData?.fees?.deposit &&
+                      formatBalance(callData?.fees?.deposit, {
+                        decimals: 12,
+                        forceUnit: "-",
+                        withSi: true,
+                        withUnit: "KSM",
+                      })}
                     KSM
                   </p>
                   <p>Transaction Count: {callData.txsCount.nfts}</p>
+                  <h2>
+                    your account balance is{" "}
+                    {formatBalance(accountBalanceAssetHubKusama, {
+                      decimals: 12,
+                      forceUnit: "-",
+                      withSi: true,
+                      withUnit: "KSM",
+                    })}
+                  </h2>
                   <p className="mt-2 text-lg">
                     You will be asked to{" "}
                     <b>
@@ -559,9 +613,20 @@ export function RewardsCreationForm() {
                   {isComplete || !callData ? "Close" : "Cancel"}
                 </Button>
                 {!isComplete && callData && (
-                  <Button onClick={signAndSend} variant="primary">
-                    🔏 Sign and Send 📤
-                  </Button>
+                  <>
+                    {/* {JSON.stringify(bnToBn(accountBalanceAssetHubKusama))}
+                    {JSON.stringify(bnToBn(callData.fees?.deposit))} */}
+                    {!isEnoughBalance ? (
+                      <p className="text-red-500">
+                        You do not have enough KSM to pay the fees. Please top
+                        up your account.
+                      </p>
+                    ) : (
+                      <Button onClick={signAndSend} variant="primary">
+                        🔏 Sign and Send 📤
+                      </Button>
+                    )}
+                  </>
                 )}
                 {isComplete && (
                   <a
