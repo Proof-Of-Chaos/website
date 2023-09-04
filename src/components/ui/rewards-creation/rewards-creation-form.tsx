@@ -339,13 +339,6 @@ export function RewardsCreationForm() {
     accountBalanceAssetHubKusama &&
     bnToBn(accountBalanceAssetHubKusama).gt(bnToBn(callData?.fees?.deposit));
 
-  console.log(
-    "done???",
-    isEnoughBalance,
-    accountBalanceAssetHubKusama,
-    callData?.fees?.deposit
-  );
-
   return (
     <div className={style.formWrapper}>
       {isMounted && (
