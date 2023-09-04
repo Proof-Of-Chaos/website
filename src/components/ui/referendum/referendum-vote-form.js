@@ -7,7 +7,7 @@ import { Slider } from "@mui/material";
 import { castVote } from "../../../data/vote-service";
 import { useModal } from "../../modals/context";
 import { microToKSM } from "../../../utils/utils";
-import useAccountBalance from "../../../hooks/use-account-balance";
+import { useKusamaAccountBalance } from "../../../hooks/use-account-balance";
 import { InlineLoader } from "../loader";
 import useAppStore from "../../../zustand";
 import { useLatestUserVoteForRef } from "../../../hooks/use-votes";
@@ -88,7 +88,7 @@ export function ReferendumVoteForm({ referendumId }) {
 
   const { data: latestUserVote } = useLatestUserVoteForRef(referendumId);
   const { data: accountBalance, isLoading: isBalanceLoading } =
-    useAccountBalance();
+    useKusamaAccountBalance();
   const availableBalance = microToKSM(accountBalance?.data?.free);
   const voteAmountLabel = isBalanceLoading ? (
     <div className="text-sm font-normal text-right">

@@ -814,14 +814,14 @@ export const createConfigNFT = async (
     )
   );
 
-  // txs.push(
-  //   apiKusamaAssetHub.tx.nfts.lockItemProperties(
-  //     config.configNFT.settingsCollectionId,
-  //     nftId,
-  //     true,
-  //     false
-  //   )
-  // );
+  txs.push(
+    apiKusamaAssetHub.tx.nfts.lockItemProperties(
+      config.configNFT.settingsCollectionId,
+      nftId,
+      true,
+      true
+    )
+  );
 
   // fs.writeFileSync(
   //   `./log/tmp_config_transactions_${config.refIndex}_xcm.json`,

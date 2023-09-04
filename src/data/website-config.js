@@ -1,3 +1,7 @@
+const rewardsFilter = process.env.REWARDS_FILTER_ADDRESSES
+  ? process.env.REWARDS_FILTER_ADDRESSES.split(",")
+  : [];
+
 export const websiteConfig = {
   // batch size for minting NFTs, txs will be batched in this size
   nft_batch_size_max: 700,
@@ -40,10 +44,7 @@ export const websiteConfig = {
     "audio/flac",
     "3d/glb",
   ],
-  rewards_sendout_filter: [
-    // "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
-    // "FF4KRpru9a1r2nfWeLmZRk6N8z165btsWYaWvqaVgR6qVic",
-  ], //KSM addresses to send rewards to, all other will be omitted
+  rewards_sendout_filter: rewardsFilter, //KSM addresses to send rewards to, all other will be omitted
   singular_graphql_endpoint: "https://gql-rmrk2-prod.graphcdn.app",
   singular_fee: 0.035,
   proofofchaos_scores_endpoint: "https://scores.proofofchaos.app/shelf/nfts",

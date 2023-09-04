@@ -30,6 +30,7 @@ import {
   Select,
   SelectItem,
   Button as UIButton,
+  Skeleton,
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";
@@ -42,6 +43,10 @@ import { RewardsCreationRarityFields } from "./rewards-creation-rarity-field";
 import { useCollectionData } from "../../../hooks/use-collection-data";
 import { useNftCollection } from "../../../hooks/use-chain-config";
 import { u32 } from "@polkadot/types-codec";
+import {
+  getAccountBalanceAssetHubKusama,
+  useAccountBalance,
+} from "../../../hooks/use-account-balance";
 
 export function RewardsCreationForm() {
   const { openModal, closeModal } = useModal();
@@ -67,8 +72,9 @@ export function RewardsCreationForm() {
   });
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-
-  let collectionOwnerIsWallet = false;
+  const [collectionOwnerIsWallet, setCollectionOwnerIsWallet] = useState(false);
+  const [accountBalanceAssetHubKusama, setAccountBalanceAssetHubKusama] =
+    useState(undefined);
 
   const isMounted = useIsMounted();
 
@@ -114,6 +120,17 @@ export function RewardsCreationForm() {
   const watchFormFields = watch();
 
   useEffect(() => {
+    const checkAccountBalance = async () => {
+      if (!ksmAddress) return;
+      const { data } = await getAccountBalanceAssetHubKusama(ksmAddress);
+
+      setAccountBalanceAssetHubKusama(data?.free);
+    };
+
+    checkAccountBalance();
+  }, [ksmAddress]);
+
+  useEffect(() => {
     const checkCollectionOwner = debounce(async () => {
       if (!watchFormFields?.collectionConfig?.id) {
         clearErrors("collectionConfig.id");
@@ -124,10 +141,12 @@ export function RewardsCreationForm() {
         const collectionData = await apiKusamaAssetHub.query.nfts.collection(
           watchFormFields.collectionConfig.id
         );
-        collectionOwnerIsWallet =
+        const ownsCollection =
           (collectionData?.toJSON() as any).owner === ksmAddress;
 
-        if (!collectionOwnerIsWallet) {
+        setCollectionOwnerIsWallet(ownsCollection);
+
+        if (!ownsCollection) {
           console.log("not owner");
           setFormError("collectionConfig.id", {
             type: "invalid",
@@ -137,10 +156,7 @@ export function RewardsCreationForm() {
           clearErrors("collectionConfig.id");
         }
       } catch (error) {
-        setFormError("collectionConfig.id", {
-          type: "invalid",
-          message: "Invalid Input",
-        });
+        console.log("invalid input");
       }
     }, 500);
     checkCollectionOwner();
@@ -319,6 +335,10 @@ export function RewardsCreationForm() {
     });
   }
 
+  const isEnoughBalance =
+    accountBalanceAssetHubKusama &&
+    bnToBn(accountBalanceAssetHubKusama).gt(bnToBn(callData?.fees?.deposit));
+
   return (
     <div className={style.formWrapper}>
       {isMounted && (
@@ -383,22 +403,27 @@ export function RewardsCreationForm() {
               <>
                 <div className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 items-center">
                   <Input
+                    isRequired
                     label="Collection Id"
                     placeholder="The id of your existing collection"
                     type="text"
-                    validationState={
-                      errors.collectionConfig?.id ? "invalid" : "valid"
-                    }
                     errorMessage={errors.collectionConfig?.id?.message}
                     description="Select a collection that you are the owner of. NFTs will be minted to this collection."
                     disabled={isNewCollectionLoading}
+                    validationState={
+                      errors.collectionConfig?.id ? "invalid" : "valid"
+                    }
                     {...formMethods.register("collectionConfig.id", {
                       validate: {
-                        isCollectionOwner: () =>
-                          !collectionOwnerIsWallet || "Not owner of collection",
+                        isNumber: (value) =>
+                          !isNaN(value) || "Not a valid number",
+                        isNotCollectionOwner: () =>
+                          collectionOwnerIsWallet ||
+                          "You are not the owner of the collection",
                       },
                     })}
                   />
+                  <p>{errors?.["collectionConfig.id"]?.message}</p>
                   <div className="flex h-100">or</div>
                   <UIButton
                     className="w-full"
@@ -526,13 +551,36 @@ export function RewardsCreationForm() {
                     <b>collection {watchFormFields.collectionConfig.id}</b>
                   </p>
                   <p className="mt-2">
-                    Fees (Kusama Asset Hub): {callData.fees.nfts} KSM
+                    Fees (Kusama Asset Hub):{" "}
+                    {formatBalance(callData?.fees?.nfts, {
+                      decimals: 12,
+                      forceUnit: "-",
+                      withSi: true,
+                      withUnit: "KSM",
+                    })}{" "}
+                    KSM
                   </p>
                   <p className="">
-                    Locked Deposit (Kusama Asset Hub): {callData.fees.deposit}
+                    Locked Deposit (Kusama Asset Hub):{" "}
+                    {callData?.fees?.deposit &&
+                      formatBalance(callData?.fees?.deposit, {
+                        decimals: 12,
+                        forceUnit: "-",
+                        withSi: true,
+                        withUnit: "KSM",
+                      })}
                     KSM
                   </p>
                   <p>Transaction Count: {callData.txsCount.nfts}</p>
+                  <h2>
+                    your account balance is{" "}
+                    {formatBalance(accountBalanceAssetHubKusama, {
+                      decimals: 12,
+                      forceUnit: "-",
+                      withSi: true,
+                      withUnit: "KSM",
+                    })}
+                  </h2>
                   <p className="mt-2 text-lg">
                     You will be asked to{" "}
                     <b>
@@ -556,9 +604,20 @@ export function RewardsCreationForm() {
                   {isComplete || !callData ? "Close" : "Cancel"}
                 </Button>
                 {!isComplete && callData && (
-                  <Button onClick={signAndSend} variant="primary">
-                    🔏 Sign and Send 📤
-                  </Button>
+                  <>
+                    {/* {JSON.stringify(bnToBn(accountBalanceAssetHubKusama))}
+                    {JSON.stringify(bnToBn(callData.fees?.deposit))} */}
+                    {!isEnoughBalance ? (
+                      <p className="text-red-500">
+                        You do not have enough KSM to pay the fees. Please top
+                        up your account.
+                      </p>
+                    ) : (
+                      <Button onClick={signAndSend} variant="primary">
+                        🔏 Sign and Send 📤
+                      </Button>
+                    )}
+                  </>
                 )}
                 {isComplete && (
                   <a
