@@ -3,20 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import useAppStore from "../zustand";
 import { getApiKusama, getApiKusamaAssetHub } from "../data/chain";
 import { get } from "lodash";
-
-export function useKusamaAccountBalance() {
-  const connectedAccountIndex = useAppStore(
-    (state) => state.user.connectedAccount
-  );
-
-  return useQuery({
-    queryKey: ["accountBalanceKusama", connectedAccountIndex],
-    queryFn: async () => {
-      const apiKusama = await getApiKusama();
-      return useAccountBalance(apiKusama);
-    },
-  });
-}
+import {
+  FrameSystemAccountInfo,
+  PalletAssetsAssetAccount,
+} from "@polkadot/types/lookup";
 
 export async function getAccountBalanceAssetHubKusama(accountAddress) {
   if (!accountAddress) {
@@ -27,8 +17,10 @@ export async function getAccountBalanceAssetHubKusama(accountAddress) {
 
   console.log("getAccountBalanceAssetHubKusama", accountAddress);
 
-  const { data, status } = await api.query.system.account(accountAddress);
-  return { data, status };
+  const { data } = await api.query.system.account<FrameSystemAccountInfo>(
+    accountAddress
+  );
+  return { data };
 }
 
 export function useAccountBalance(api: ApiPromise) {
@@ -41,10 +33,10 @@ export function useAccountBalance(api: ApiPromise) {
   return useQuery({
     queryKey: ["accountBalance", connectedAccountIndex],
     queryFn: async () => {
-      const { data, status } = await api.query.system.account(
+      const { data } = await api.query.system.account<FrameSystemAccountInfo>(
         selectedAccount.address
       );
-      return { data, status };
+      return { data };
     },
   });
 }

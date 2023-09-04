@@ -122,9 +122,7 @@ export function RewardsCreationForm() {
   useEffect(() => {
     const checkAccountBalance = async () => {
       if (!ksmAddress) return;
-      const { data, status } = await getAccountBalanceAssetHubKusama(
-        ksmAddress
-      );
+      const { data } = await getAccountBalanceAssetHubKusama(ksmAddress);
 
       setAccountBalanceAssetHubKusama(data?.free);
     };

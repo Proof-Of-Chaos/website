@@ -2,7 +2,7 @@ import { DeriveReferendumVote } from "@polkadot/api-derive/types";
 import { Bytes } from "@polkadot/types";
 import { BN } from "@polkadot/util";
 import { pinImageAndMetadataForOptions } from "./tools/pinataUtils";
-import { Balance, Header } from "@polkadot/types/interfaces";
+import { Header } from "@polkadot/types/interfaces";
 
 export interface VoteConviction extends ConvictionVote {
   lockedWithConviction?: BN;
@@ -27,8 +27,8 @@ export type GenerateRewardsResult = {
   voters: string[] | undefined;
   fees?: {
     kusama?: string;
-    nfts?: Balance;
-    deposit?: BN;
+    nfts?: string;
+    deposit?: string;
   };
   txsCount?: {
     kusama?: number;
