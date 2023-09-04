@@ -40,3 +40,23 @@ export function useAccountBalance(api: ApiPromise) {
     },
   });
 }
+
+export function useKusamaAccountBalance() {
+  const connectedAccountIndex = useAppStore(
+    (state) => state.user.connectedAccount
+  );
+  const selectedAccount = useAppStore(
+    (state) => state.user.connectedAccounts?.[connectedAccountIndex]
+  );
+
+  return useQuery({
+    queryKey: ["accountBalance", connectedAccountIndex],
+    queryFn: async () => {
+      const api = await getApiKusama();
+      const { data } = await api.query.system.account<FrameSystemAccountInfo>(
+        selectedAccount.address
+      );
+      return { data };
+    },
+  });
+}
