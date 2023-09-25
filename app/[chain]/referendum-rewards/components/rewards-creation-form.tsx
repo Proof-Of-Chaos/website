@@ -260,7 +260,7 @@ export default function RewardsCreationForm({
 
         setRewardSendoutData({
           ...responseData,
-          batches,
+          kusamaAssetHubTxs: batches,
         });
       } else {
         setRewardSendoutData({
