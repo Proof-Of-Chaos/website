@@ -22,7 +22,6 @@ import { chain } from "lodash";
 import { Button } from "@nextui-org/button";
 import { Deposit } from "@/hooks/use-deposit";
 import { getTxCollectionCreate } from "@/config/txs";
-import ReactJson from "react-json-view";
 
 type PropType = Omit<ModalProps, "children"> & {
   sendoutData: GenerateRewardsResult;

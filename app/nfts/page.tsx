@@ -38,12 +38,44 @@ export const revalidate = 3600;
 //   title: "NFTs",
 // };
 
+async function* streamToJSON(
+  data: ReadableStream<Uint8Array>
+): AsyncIterableIterator<string> {
+  const reader = data.getReader();
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) {
+      break;
+    }
+
+    if (value) {
+      try {
+        yield decoder.decode(value);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+}
+
 export default function NFTPage() {
   const { activeChain } = useSubstrateChain();
 
-  function apiDisconnect(api: ApiPromise | undefined) {
-    console.log("disconnecting api");
-    api?.disconnect();
+  async function getTest() {
+    const response = await fetch("/api/test", {
+      method: "post",
+    });
+    const stream = response.body;
+
+    if (!stream) {
+      return;
+    }
+
+    for await (const message of streamToJSON(stream)) {
+      console.log(message);
+    }
   }
 
   return (
@@ -56,9 +88,7 @@ export default function NFTPage() {
       </p>
       <p className="text-center text-4xl">🔥</p>
 
-      <Button onClick={() => apiDisconnect(activeChain?.api)}>
-        disconnect api
-      </Button>
+      <Button onClick={getTest}>disconnect api</Button>
     </div>
   );
 }

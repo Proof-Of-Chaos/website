@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useReferendumDetail } from "@/hooks/vote/use-referendum-detail";
 import { InlineLoader } from "@/components/inline-loader";
 import { Button } from "@nextui-org/button";
+import { Progress } from "@nextui-org/progress";
 import { RewardsCreationRarityFields } from "./rewards-rarity-fields";
 import { rewardsConfig } from "@/config/rewards";
 import { vividButtonClasses } from "@/components/primitives";
@@ -32,8 +33,9 @@ import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import ModalAnalyzeSendout from "./modal-analyze-sendout";
 import { TxButton } from "@/components/TxButton";
 import { bnToBn } from "@polkadot/util";
-import { mergeWithDefaultConfig } from "../../../../components/util";
-import { TxTypes } from "../../../../components/util-client";
+import { mergeWithDefaultConfig } from "@/components/util";
+import { TxTypes } from "@/components/util-client";
+import FormActions from "./form-actions";
 
 type ConfigReqBody = RewardConfiguration & {
   blockNumbers?: (number | undefined)[];
@@ -443,6 +445,8 @@ export default function RewardsCreationForm({
           ))}
         </div>
 
+        <FormActions className="mt-8" />
+
         <Card className="mt-4">
           <CardHeader className="mx-2 mt-2 text-xl">Action</CardHeader>
           <CardBody className="flex gap-4">
@@ -466,6 +470,7 @@ export default function RewardsCreationForm({
                   <span className="block">Please try again</span>
                 </p>
               )}
+
               <Button
                 type="submit"
                 isDisabled={isSubmitting || formStep !== 0}
@@ -475,6 +480,19 @@ export default function RewardsCreationForm({
                 Generate {activeChain && <activeChain.icon />}reward
                 transactions
               </Button>
+              <Progress
+                size="sm"
+                isIndeterminate
+                aria-label="Loading..."
+                className="w-full"
+                color="secondary"
+              />
+              <div className="text-tiny text-center flex justify-center w-full z-10">
+                <span className="bg-content1/80 px-6">
+                  🚀 Generating calls for reward distribution of referendum
+                  {refIndex}
+                </span>
+              </div>
             </div>
             <div className="flex items-center flex-wrap gap-2 text-tiny">
               <div
@@ -507,7 +525,6 @@ export default function RewardsCreationForm({
                   </Button>
                 )}
               </div>
-
               <TxButton
                 extrinsic={rewardSendoutData?.kusamaAssetHubTxsBatches}
                 requiredBalance={totalFees}
