@@ -188,7 +188,6 @@ export default function RewardsCreationForm({
     // uploaded files
     data.options?.forEach((option) => {
       if (!option.imageCid && option.file?.[0]) {
-        console.log("option file", option.file[0]);
         formData.append(
           `${option.rarity}File`,
           option.file[0],
@@ -260,7 +259,7 @@ export default function RewardsCreationForm({
 
         setRewardSendoutData({
           ...responseData,
-          kusamaAssetHubTxs: batches,
+          kusamaAssetHubTxsBatches: batches,
         });
       } else {
         setRewardSendoutData({
@@ -531,7 +530,7 @@ export default function RewardsCreationForm({
           {...register(`chain`)}
         />
 
-        <pre className="text-xs">{JSON.stringify(watch(), null, 2)}</pre>
+        {/* <pre className="text-xs">{JSON.stringify(watch(), null, 2)}</pre> */}
       </form>
       <ModalCreateNFTCollection
         setCollectionConfig={setCollectionConfig}
