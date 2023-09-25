@@ -1,2 +1,0 @@
-- calculate bonuses is currently not happening in rewards-creation-form
--

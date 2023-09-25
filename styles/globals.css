@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'DM Mono', monospace;
+}
+
+.nft-snippet-item > .nft-snippet-overlay {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nft-snippet-item:hover > .nft-snippet-overlay {
+    background-color: transparent;
+}
+
+[role="tooltip"] {
+    max-width: 350px;
+    text-align: center;
+}
+
+.MuiSlider-markLabel {
+    @apply text-gray-500 dark:text-gray-100;
+
+    &.MuiSlider-markLabelActive {
+        @apply text-blue-800 dark:text-blue-400;
+    }
+}
