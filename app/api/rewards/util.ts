@@ -3,7 +3,7 @@ import {
   PalletConvictionVotingVoteCasting,
   PalletConvictionVotingVoteVoting,
   PalletReferendaReferendumInfoConvictionVotingTally,
-  PalletConvictionVotingVoteAccountVote
+  PalletConvictionVotingVoteAccountVote,
 } from "@polkadot/types/lookup";
 import {
   RarityDistribution,
@@ -411,12 +411,12 @@ export const retrieveAccountLocks = async (
         const userLockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-            userVote.endBlock
-              .sub(endBlockBN)
-              .muln(10)
-              .div(sevenDaysBlocks)
-              .toNumber() / 10
-          );
+              userVote.endBlock
+                .sub(endBlockBN)
+                .muln(10)
+                .div(sevenDaysBlocks)
+                .toNumber() / 10
+            );
         const matchingPeriod = lockPeriods.reduce(
           (acc, curr, index) => (userLockPeriods >= curr ? index : acc),
           0
@@ -427,8 +427,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-          BN.max(max, current)
-        )
+            BN.max(max, current)
+          )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -888,7 +888,10 @@ export const getNftAttributesForOptions = (
   return attributes;
 };
 
-export const formatDelegatedVotes = async (delegation: ConvictionDelegation, delegatedToVotes: DecoratedConvictionVote[]): Promise<DecoratedConvictionVote[]> => {
+export const formatDelegatedVotes = async (
+  delegation: ConvictionDelegation,
+  delegatedToVotes: DecoratedConvictionVote[]
+): Promise<DecoratedConvictionVote[]> => {
   // There are votes for a given track that a person delegating will have votes for.
   let delegatedVotes: DecoratedConvictionVote[] = [];
   for (const vote of delegatedToVotes) {
@@ -941,15 +944,13 @@ export const formatDelegatedVotes = async (delegation: ConvictionDelegation, del
         balance = {
           aye: new BN(delegation.balance).mul(ayePercentage).toString(),
           nay: new BN(delegation.balance).mul(nayPercentage).toString(),
-          abstain: new BN(delegation.balance)
-            .mul(abstainPercentage)
-            .toString(),
+          abstain: new BN(delegation.balance).mul(abstainPercentage).toString(),
         };
         break;
     }
 
     if (!balance) {
-      throw new Error("balance of vote is undefined")
+      throw new Error("balance of vote is undefined");
     }
 
     const delegatedVote: ConvictionVote = {
@@ -978,10 +979,11 @@ export const formatDelegatedVotes = async (delegation: ConvictionDelegation, del
     delegatedVotes.push(delegatedVote);
   }
   return delegatedVotes;
+};
 
-}
-
-export const formatDelegation = async (vote: VotePolkadot): Promise<ConvictionDelegation> => {
+export const formatDelegation = async (
+  vote: VotePolkadot
+): Promise<ConvictionDelegation> => {
   // Each of these is the votingFor for an account for a given governance track
   const { accountId, track } = vote;
 
@@ -1046,10 +1048,16 @@ export const formatDelegation = async (vote: VotePolkadot): Promise<ConvictionDe
     prior: prior,
   };
   return delegation;
-}
+};
 
-
-export const formatVote = async (accountId: string, track: number, index: string, referendumVote: PalletConvictionVotingVoteAccountVote, delegationCapital: string, delegationVotes: string): Promise<DecoratedConvictionVote | undefined> => {
+export const formatVote = async (
+  accountId: string,
+  track: number,
+  index: string,
+  referendumVote: PalletConvictionVotingVoteAccountVote,
+  delegationCapital: string,
+  delegationVotes: string
+): Promise<DecoratedConvictionVote | undefined> => {
   // Each of these is the votingFor for an account for a given governance track
 
   // The vote for each referendum - this is the referendum index,the conviction, the vote type (aye,nay), and the balance
@@ -1137,17 +1145,14 @@ export const formatVote = async (accountId: string, track: number, index: string
         abstain.gte(aye) && abstain.gte(nay)
           ? "Abstain"
           : aye.gte(nay.abs())
-            ? "Aye"
-            : "Nay",
+          ? "Aye"
+          : "Nay",
     };
     return formattedVote;
   } else {
     console.log(`Vote type is unknown`, { label: "Democracy" });
-    console.log(
-      `Vote type: ${JSON.stringify(referendumVote.type)}`,
-      {
-        label: "Democracy",
-      }
-    );
+    console.log(`Vote type: ${JSON.stringify(referendumVote.type)}`, {
+      label: "Democracy",
+    });
   }
-}
+};
