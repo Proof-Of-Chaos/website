@@ -93,23 +93,23 @@ export const getUserVotes = cache(
             for (const vote of delegatedToVotingForTillNow) {
                 if (vote.voteData.isCasting) {
                     const { accountId, track } = vote;
+                    if (track == delegation.track) {
+                        // For each given track, these are the invididual votes for that track,
+                        //     as well as the total delegation amounts for that particular track
 
-                    // For each given track, these are the invididual votes for that track,
-                    //     as well as the total delegation amounts for that particular track
-
-                    // The total delegation amounts.
-                    //     delegationVotes - the _total_ amount of tokens applied in voting. This takes the conviction into account
-                    //     delegationCapital - the base level of tokens delegated to this address
-                    const {
-                        votes,
-                        delegations: { votes: delegationVotes, capital: delegationCapital },
-                    } = vote.voteData.asCasting;
-
-                    // push the given referendum votes to refVotes
-                    for (const [index, referendumVote] of votes) {
-                        const formattedVote = await formatVote(accountId, track, index.toString(), referendumVote, delegationCapital.toString(), delegationVotes.toString())
-                        if (formattedVote) {
-                            formattedDelegatedToVotes.push(formattedVote);
+                        // The total delegation amounts.
+                        //     delegationVotes - the _total_ amount of tokens applied in voting. This takes the conviction into account
+                        //     delegationCapital - the base level of tokens delegated to this address
+                        const {
+                            votes,
+                            delegations: { votes: delegationVotes, capital: delegationCapital },
+                        } = vote.voteData.asCasting;
+                        // push the given referendum votes to refVotes
+                        for (const [index, referendumVote] of votes) {
+                            const formattedVote = await formatVote(accountId, track, index.toString(), referendumVote, delegationCapital.toString(), delegationVotes.toString())
+                            if (formattedVote) {
+                                formattedDelegatedToVotes.push(formattedVote);
+                            }
                         }
                     }
                 }
