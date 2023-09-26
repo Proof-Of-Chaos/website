@@ -39,9 +39,9 @@ export const getUserVotes = cache(
             referendaMap.set(ref.index, ref);
         }
 
-        const accountVotesTillNow = await api.query.convictionVoting.votingFor.entries();
+        const votesTillNow = await api.query.convictionVoting.votingFor.entries();
 
-        const votingForTillNow: VotePolkadot[] = accountVotesTillNow?.map(transformVoteMulti);
+        const votingForTillNow: VotePolkadot[] = votesTillNow?.map(transformVoteMulti);
         const casting: VotePolkadot[] = [];
         const delegating: VotePolkadot[] = [];
         for (const vote of votingForTillNow) {
@@ -52,7 +52,7 @@ export const getUserVotes = cache(
             }
         }
 
-        let userVotes = [];
+        let formattedVotes = [];
         let delegationsAt = [];
 
         //format all direct votes
@@ -80,13 +80,13 @@ export const getUserVotes = cache(
                 if (isReferendumOngoing) {
                     const formattedVote = await formatVote(accountId, track, index.toString(), referendumVote, delegationCapital.toString(), delegationVotes.toString())
                     if (formattedVote) {
-                        userVotes.push(formattedVote);
+                        formattedVotes.push(formattedVote);
                     }
                 }
             }
         }
         console.log(
-            `Finished adding ${userVotes.length} for user`,
+            `Finished adding ${formattedVotes.length} votes`,
             {
                 label: "User Votes",
             }
@@ -103,7 +103,7 @@ export const getUserVotes = cache(
         });
 
         for (const delegation of delegationsAt) {
-            const delegatedToVotes: DecoratedConvictionVote[] = userVotes.filter((vote) => {
+            const delegatedToVotes: DecoratedConvictionVote[] = formattedVotes.filter((vote) => {
                 return (
                     vote.address == delegation.target &&
                     vote.track == delegation.track
@@ -111,21 +111,21 @@ export const getUserVotes = cache(
             });
             if (delegatedToVotes.length > 0) {
                 //format delegated votes
-                userVotes.push(...(await formatDelegatedVotes(delegation, delegatedToVotes)));
+                formattedVotes.push(...(await formatDelegatedVotes(delegation, delegatedToVotes)));
             }
 
         }
 
-        const user = userVotes.filter(vote => vote.address == userAddress);
+        const userVotes: DecoratedConvictionVote[] = formattedVotes.filter(vote => vote.address == userAddress);
 
 
         console.log(
-            `Finished filtering and formatting ${user.length} user votes for ongoing referenda.`,
+            `Finished filtering and formatting ${userVotes.length} user votes for ongoing referenda.`,
             {
                 label: "Democracy",
             }
         );
 
-        return votingForTillNow;
+        return userVotes;
     }
 );
