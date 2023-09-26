@@ -10,6 +10,9 @@ export async function POST(req: NextRequest) {
   // read the post body as json
   let { chain, refIndex }: { chain: SubstrateChain; refIndex: string } =
     await req.json();
+
+  console.log("server route /api/vote", chain, refIndex);
+
   const chainConfig = await getChainByName(chain);
   const { api } = chainConfig;
 
@@ -35,5 +38,10 @@ export async function POST(req: NextRequest) {
 
   // and return the latest user vote or where they delegated as
   // as serializable json (aka strings, numbers, booleans, plain objects, arrays, etc.)
-  return NextResponse.json({});
+  return NextResponse.json({
+    vote: {
+      test: 123,
+      something: "123",
+    },
+  });
 }
