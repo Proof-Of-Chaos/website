@@ -3,6 +3,7 @@ import { ChainConfig, SubstrateChain } from "@/types";
 import { getReferenda } from "./get-referenda";
 import { getTracks } from "./get-tracks";
 import ReferendumList from "./components/referendum-list";
+import { getUserVotes } from "./get-user-votes";
 
 export async function generateStaticParams() {
   const params: { chain: SubstrateChain }[] = [];
@@ -29,6 +30,7 @@ export default async function PageVote({
 
   const referenda = await getReferenda(selectedChain);
   const tracks = await getTracks(selectedChain);
+  const userVotes = await getUserVotes(selectedChain)
 
   return (
     <>
