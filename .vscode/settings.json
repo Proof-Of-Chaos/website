@@ -1,6 +1,5 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": [
-    "unsub"
-  ]
+    "cSpell.words": [
+        "ENCOINTER"
+    ]
 }
