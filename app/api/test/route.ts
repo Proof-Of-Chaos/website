@@ -18,25 +18,36 @@ function sleep(time: number) {
   });
 }
 
-const encoder = new TextEncoder();
-
-async function* makeIterator() {
-  yield encoder.encode("<p>One</p>");
+async function* makeIterator(encoder: TextEncoder) {
+  yield encoder.encode(
+    "🚀 Generating calls for reward distribution of referendum"
+  );
   await sleep(2000);
-  yield encoder.encode("<p>Two</p>");
+  yield encoder.encode(`ℹ️  Getting all voting wallets for referendum`);
   await sleep(2000);
-  yield encoder.encode("<p>Three</p>");
+  yield encoder.encode(
+    "↪ Checking for votes meeting requirements for referendum ${config.refIndex} with ${votes.length} votes."
+  );
+  await sleep(2000);
+  yield encoder.encode(
+    "↪ calculating distribution for referendum ${config.refIndex} with ${votes.length} votes."
+  );
+  await sleep(2000);
+  yield encoder.encode(
+    `📊 Total votes:  111, votes meeting requirements:222, votes not meeting requirements: 212`
+  );
 }
 
 export async function POST() {
-  const iterator = makeIterator();
+  const encoder = new TextEncoder();
+  const iterator = makeIterator(encoder);
   const stream = iteratorToStream(iterator);
 
   return new Response(stream, {
     headers: {
       Connection: "keep-alive",
       // I saw somewhere that it needs to be set to 'none' to work in production on Vercel
-      "Content-Encoding": "none",
+      // "Content-Encoding": "none",
       "Cache-Control": "no-cache",
       "Content-Type": "text/event-stream",
     },

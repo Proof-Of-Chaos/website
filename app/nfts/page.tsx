@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import { Button } from "@nextui-org/button";
 import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { ApiPromise } from "@polkadot/api";
+import { streamToJSON } from "@/components/util-client";
 
 export const revalidate = 3600;
 
@@ -37,28 +38,6 @@ export const revalidate = 3600;
 // export const metadata: Metadata = {
 //   title: "NFTs",
 // };
-
-async function* streamToJSON(
-  data: ReadableStream<Uint8Array>
-): AsyncIterableIterator<string> {
-  const reader = data.getReader();
-  const decoder = new TextDecoder();
-
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) {
-      break;
-    }
-
-    if (value) {
-      try {
-        yield decoder.decode(value);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-}
 
 export default function NFTPage() {
   const { activeChain } = useSubstrateChain();

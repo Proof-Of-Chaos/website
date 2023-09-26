@@ -1,6 +1,6 @@
 "use client";
 
-import { SendAndFinalizeResult, ToastType } from "@/types";
+import { SendAndFinalizeResult, StreamResult, ToastType } from "@/types";
 import { Signer, SubmittableExtrinsic } from "@polkadot/api/types";
 import { toast as hotToast, Toast, ToastOptions } from "react-hot-toast";
 import { Header, RuntimeDispatchInfo } from "@polkadot/types/interfaces";
@@ -241,3 +241,50 @@ export const sendAndFinalize = async (
     };
   });
 };
+
+export async function* streamToJSON(
+  data: ReadableStream<Uint8Array>
+): AsyncIterableIterator<StreamResult> {
+  const reader = data.getReader();
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const result = await reader.read();
+    const { value, done } = result;
+
+    if (value) {
+      try {
+        yield { value: decoder.decode(value), done };
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    if (result.done) {
+      yield { value: "finished", done };
+      break;
+    }
+  }
+}
+
+export async function executeStream(
+  response: Response,
+  setStreamData: any,
+  onFinished?: any
+) {
+  const stream = response?.body;
+  if (!stream) {
+    return;
+  }
+  for await (const data of streamToJSON(stream)) {
+    // dataCounter.current += 1;
+    console.log("DATA", data);
+
+    if (data?.value === "finished") {
+      onFinished?.(data);
+      break;
+    }
+
+    setStreamData(data);
+  }
+}
