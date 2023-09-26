@@ -3,6 +3,7 @@ import {
   PalletConvictionVotingVoteCasting,
   PalletConvictionVotingVoteVoting,
   PalletReferendaReferendumInfoConvictionVotingTally,
+  PalletConvictionVotingVoteAccountVote
 } from "@polkadot/types/lookup";
 import {
   RarityDistribution,
@@ -10,6 +11,7 @@ import {
   RewardOption,
 } from "@/app/[chain]/referendum-rewards/types";
 import {
+  ConvictionDelegation,
   ConvictionVote,
   DecoratedConvictionVote,
   DirectVoteLock,
@@ -409,12 +411,12 @@ export const retrieveAccountLocks = async (
         const userLockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-              userVote.endBlock
-                .sub(endBlockBN)
-                .muln(10)
-                .div(sevenDaysBlocks)
-                .toNumber() / 10
-            );
+            userVote.endBlock
+              .sub(endBlockBN)
+              .muln(10)
+              .div(sevenDaysBlocks)
+              .toNumber() / 10
+          );
         const matchingPeriod = lockPeriods.reduce(
           (acc, curr, index) => (userLockPeriods >= curr ? index : acc),
           0
@@ -425,8 +427,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-            BN.max(max, current)
-          )
+          BN.max(max, current)
+        )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -885,3 +887,267 @@ export const getNftAttributesForOptions = (
 
   return attributes;
 };
+
+export const formatDelegatedVotes = async (delegation: ConvictionDelegation, delegatedToVotes: DecoratedConvictionVote[]): Promise<DecoratedConvictionVote[]> => {
+  // There are votes for a given track that a person delegating will have votes for.
+  let delegatedVotes: DecoratedConvictionVote[] = [];
+  for (const vote of delegatedToVotes) {
+    const voteDirectionType = vote.voteDirectionType;
+    const voteDirection = vote.voteDirection;
+    let balance;
+    switch (voteDirectionType) {
+      case "Standard":
+        balance = {
+          aye: voteDirection == "Aye" ? delegation.balance : "0",
+          nay: voteDirection == "Nay" ? delegation.balance : "0",
+          abstain: "0",
+        };
+        break;
+      case "Split":
+        balance = {
+          aye: new BN(delegation.balance)
+            .mul(
+              new BN(vote.balance.aye).div(
+                new BN(vote.balance.aye).add(new BN(vote.balance.nay))
+              )
+            )
+            .toString(),
+          nay: new BN(delegation.balance)
+            .mul(
+              new BN(vote.balance.nay).div(
+                new BN(vote.balance.aye).add(new BN(vote.balance.nay))
+              )
+            )
+            .toString(),
+          abstain: "0",
+        };
+        break;
+      case "SplitAbstain":
+        const ayePercentage = new BN(vote.balance.aye).div(
+          new BN(vote.balance.aye)
+            .add(new BN(vote.balance.nay))
+            .add(new BN(vote.balance.abstain))
+        );
+        const nayPercentage = new BN(vote.balance.nay).div(
+          new BN(vote.balance.aye)
+            .add(new BN(vote.balance.nay))
+            .add(new BN(vote.balance.abstain))
+        );
+        const abstainPercentage = new BN(vote.balance.abstain).div(
+          new BN(vote.balance.aye)
+            .add(new BN(vote.balance.nay))
+            .add(new BN(vote.balance.abstain))
+        );
+        balance = {
+          aye: new BN(delegation.balance).mul(ayePercentage).toString(),
+          nay: new BN(delegation.balance).mul(nayPercentage).toString(),
+          abstain: new BN(delegation.balance)
+            .mul(abstainPercentage)
+            .toString(),
+        };
+        break;
+    }
+
+    if (!balance) {
+      throw new Error("balance of vote is undefined")
+    }
+
+    const delegatedVote: ConvictionVote = {
+      // The particular governance track
+      track: vote.track,
+      // The account that is voting
+      address: delegation.address,
+      // The index of the referendum
+      referendumIndex: vote.referendumIndex,
+      // The conviction being voted with, ie `None`, `Locked1x`, `Locked5x`, etc
+      conviction: delegation.conviction,
+      // The balance they are voting with themselves, sans delegated balance
+      balance: balance,
+      // The total amount of tokens that were delegated to them (including conviction)
+      delegatedConvictionBalance: delegation.delegatedConvictionBalance,
+      // the total amount of tokens that were delegated to them (without conviction)
+      delegatedBalance: delegation.delegatedBalance,
+      // The vote type, either 'aye', or 'nay'
+      voteDirection: vote.voteDirection,
+      // Whether the person is voting themselves or delegating
+      voteType: "Delegating",
+      voteDirectionType: voteDirectionType,
+      // Who the person is delegating to
+      delegatedTo: vote.address,
+    };
+    delegatedVotes.push(delegatedVote);
+  }
+  return delegatedVotes;
+
+}
+
+export const formatDelegation = async (vote: VotePolkadot): Promise<ConvictionDelegation> => {
+  // Each of these is the votingFor for an account for a given governance track
+  const { accountId, track } = vote;
+
+  // The address is delegating to another address for this particular track
+  const {
+    balance,
+    target,
+    conviction,
+    delegations: { votes: delegationVotes, capital: delegationCapital },
+    prior,
+  } = vote.voteData.asDelegating;
+  // const balanceHuman = balance.isZero() ? 0 : balance.divn(denom).toNumber();
+  let effectiveBalance;
+  switch (conviction.type) {
+    case "None":
+      {
+        effectiveBalance = balance.divn(10);
+      }
+      break;
+    case "Locked1x":
+      {
+        effectiveBalance = balance;
+      }
+      break;
+    case "Locked2x":
+      {
+        effectiveBalance = balance.muln(2);
+      }
+      break;
+    case "Locked3x":
+      {
+        effectiveBalance = balance.muln(3);
+      }
+      break;
+    case "Locked4x":
+      {
+        effectiveBalance = balance.muln(4);
+      }
+      break;
+    case "Locked5x":
+      {
+        effectiveBalance = balance.muln(5);
+      }
+      break;
+    case "Locked6x":
+      {
+        effectiveBalance = balance.muln(6);
+      }
+      break;
+  }
+  const delegation: ConvictionDelegation = {
+    track: track,
+    address: accountId,
+    target: target.toString(),
+    balance: balance.toString(),
+    effectiveBalance: effectiveBalance.toString(),
+    conviction: conviction.type,
+    // The total amount of tokens that were delegated to them (including conviction)
+    delegatedConvictionBalance: delegationVotes.toString(),
+    // the total amount of tokens that were delegated to them (without conviction)
+    delegatedBalance: delegationCapital.toString(),
+    prior: prior,
+  };
+  return delegation;
+}
+
+
+export const formatVote = async (accountId: string, track: number, index: string, referendumVote: PalletConvictionVotingVoteAccountVote, delegationCapital: string, delegationVotes: string): Promise<DecoratedConvictionVote | undefined> => {
+  // Each of these is the votingFor for an account for a given governance track
+
+  // The vote for each referendum - this is the referendum index,the conviction, the vote type (aye,nay), and the balance
+  const { type } = referendumVote;
+  let formattedVote: DecoratedConvictionVote;
+  let voteBase;
+  voteBase = {
+    // The particular governance track
+    track,
+    // The account that is voting
+    address: accountId,
+    // The index of the referendum
+    referendumIndex: index.toString(),
+    // The total amount of tokens that were delegated to them (including conviction)
+    delegatedConvictionBalance: delegationVotes.toString(),
+    // the total amount of tokens that were delegated to them (without conviction)
+    delegatedBalance: delegationCapital.toString(),
+    // Whether the person is voting themselves or delegating
+    voteType: "Casting",
+    // Who the person is delegating to
+    delegatedTo: null,
+    // The vote direction type, either "Standard", "Split", or "SplitAbstain"
+    voteDirectionType: type,
+  };
+  if (type === "Standard") {
+    const { vote, balance } = referendumVote.asStandard;
+    const { conviction, isAye, isNay } = vote;
+
+    // const balanceHuman = balance.isZero() ? 0 : balance.divn(denom).toNumber();
+
+    // The formatted vote
+    formattedVote = {
+      ...voteBase,
+      // The conviction being voted with, ie `None`, `Locked1x`, `Locked5x`, etc
+      conviction: conviction.type,
+      // The balance they are voting with themselves, sans delegated balance
+      balance: {
+        aye: isAye ? balance.toString() : "0",
+        nay: isNay ? balance.toString() : "0",
+        abstain: "0",
+      },
+      // The vote type, either 'aye', or 'nay'
+      voteDirection: isAye ? "Aye" : "Nay",
+    };
+    return formattedVote;
+  } else if (type === "Split") {
+    const { aye, nay } = referendumVote.asSplit;
+
+    // const ayeHuman = aye.isZero() ? 0 : aye.divn(denom).toNumber();
+    // const nayHuman = nay.isZero() ? 0 : nay.divn(denom).toNumber();
+
+    // The formatted vote
+    formattedVote = {
+      ...voteBase,
+      // The conviction being voted with, ie `None`, `Locked1x`, `Locked5x`, etc
+      conviction: "Locked1x",
+      // The balance they are voting with themselves, sans delegated balance
+      balance: {
+        aye: aye.toString(),
+        nay: nay.toString(),
+        abstain: "0",
+      },
+      // The vote type, either 'aye', or 'nay'
+      voteDirection: aye.gte(nay) ? "Aye" : "Nay",
+    };
+    return formattedVote;
+  } else if (type === "SplitAbstain") {
+    const { aye, nay, abstain } = referendumVote.asSplitAbstain;
+    // const ayeHuman = aye.isZero() ? 0 : aye.divn(denom).toNumber();
+    // const nayHuman = nay.isZero() ? 0 : nay.divn(denom).toNumber();
+    // const abstainHuman = abstain.isZero() ? 0 : abstain.divn(denom).toNumber()
+    // The formatted vote
+    formattedVote = {
+      ...voteBase,
+      // The conviction being voted with, ie `None`, `Locked1x`, `Locked5x`, etc
+      conviction: "Locked1x",
+      // The balance they are voting with themselves, sans delegated balance
+      balance: {
+        aye: aye.toString(),
+        nay: nay.toString(),
+        abstain: abstain.toString(),
+      },
+      // The vote type, either 'aye', or 'nay'
+      voteDirection:
+        abstain.gte(aye) && abstain.gte(nay)
+          ? "Abstain"
+          : aye.gte(nay.abs())
+            ? "Aye"
+            : "Nay",
+    };
+    return formattedVote;
+  } else {
+    console.log(`Vote type is unknown`, { label: "Democracy" });
+    console.log(
+      `Vote type: ${JSON.stringify(referendumVote.type)}`,
+      {
+        label: "Democracy",
+      }
+    );
+  }
+}
