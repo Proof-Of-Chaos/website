@@ -10,12 +10,12 @@ import type {
 import { getOpenGovReferenda } from "@/app/api/rewards/get-conviction-voting";
 import { formatDelegatedVotes, formatDelegation, formatVote } from "@/app/api/rewards/util";
 
-export const preload = (chain: SubstrateChain) => {
-    void getUserVotes(chain);
+export const preload = (chain: SubstrateChain, userAddress: string) => {
+    void getUserVotes(chain, userAddress);
 };
 
 export const getUserVotes = cache(
-    async (chain: SubstrateChain) => {
+    async (chain: SubstrateChain, userAddress: string) => {
         const safeChain = (chain as SubstrateChain) || SubstrateChain.Kusama;
         const chainConfig = await getChainByName(safeChain);
         const { api } = chainConfig;
@@ -24,7 +24,6 @@ export const getUserVotes = cache(
             throw `can not get api of ${chain}`;
         }
         // const user = useAppStore((s) => s.user);
-        const userAddress = "Hgcdd6sjp37KD1cKrAbwMZ6sBZTAVwb6v2GTssv9L2w1oN3";
 
         // const referendaMap = new Map();
 
