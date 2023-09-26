@@ -889,12 +889,15 @@ export const getNftAttributesForOptions = (
 };
 
 export const formatDelegatedVotes = async (delegation: ConvictionDelegation, delegatedToVotes: DecoratedConvictionVote[]): Promise<DecoratedConvictionVote[]> => {
-  // There are votes for a given track that a person delegating will have votes for.
   let delegatedVotes: DecoratedConvictionVote[] = [];
   for (const vote of delegatedToVotes) {
     const voteDirectionType = vote.voteDirectionType;
     const voteDirection = vote.voteDirection;
     let balance;
+
+    const totalForSplit = new BN(vote.balance.aye).add(new BN(vote.balance.nay));
+    const totalForSplitAbstain = totalForSplit.add(new BN(vote.balance.abstain));
+
     switch (voteDirectionType) {
       case "Standard":
         balance = {
@@ -905,45 +908,16 @@ export const formatDelegatedVotes = async (delegation: ConvictionDelegation, del
         break;
       case "Split":
         balance = {
-          aye: new BN(delegation.balance)
-            .mul(
-              new BN(vote.balance.aye).div(
-                new BN(vote.balance.aye).add(new BN(vote.balance.nay))
-              )
-            )
-            .toString(),
-          nay: new BN(delegation.balance)
-            .mul(
-              new BN(vote.balance.nay).div(
-                new BN(vote.balance.aye).add(new BN(vote.balance.nay))
-              )
-            )
-            .toString(),
+          aye: totalForSplit.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.aye).div(totalForSplit)).toString(),
+          nay: totalForSplit.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.nay).div(totalForSplit)).toString(),
           abstain: "0",
         };
         break;
       case "SplitAbstain":
-        const ayePercentage = new BN(vote.balance.aye).div(
-          new BN(vote.balance.aye)
-            .add(new BN(vote.balance.nay))
-            .add(new BN(vote.balance.abstain))
-        );
-        const nayPercentage = new BN(vote.balance.nay).div(
-          new BN(vote.balance.aye)
-            .add(new BN(vote.balance.nay))
-            .add(new BN(vote.balance.abstain))
-        );
-        const abstainPercentage = new BN(vote.balance.abstain).div(
-          new BN(vote.balance.aye)
-            .add(new BN(vote.balance.nay))
-            .add(new BN(vote.balance.abstain))
-        );
         balance = {
-          aye: new BN(delegation.balance).mul(ayePercentage).toString(),
-          nay: new BN(delegation.balance).mul(nayPercentage).toString(),
-          abstain: new BN(delegation.balance)
-            .mul(abstainPercentage)
-            .toString(),
+          aye: totalForSplitAbstain.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.aye).div(totalForSplitAbstain)).toString(),
+          nay: totalForSplitAbstain.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.nay).div(totalForSplitAbstain)).toString(),
+          abstain: totalForSplitAbstain.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.abstain).div(totalForSplitAbstain)).toString(),
         };
         break;
     }
@@ -953,33 +927,24 @@ export const formatDelegatedVotes = async (delegation: ConvictionDelegation, del
     }
 
     const delegatedVote: ConvictionVote = {
-      // The particular governance track
       track: vote.track,
-      // The account that is voting
       address: delegation.address,
-      // The index of the referendum
       referendumIndex: vote.referendumIndex,
-      // The conviction being voted with, ie `None`, `Locked1x`, `Locked5x`, etc
       conviction: delegation.conviction,
-      // The balance they are voting with themselves, sans delegated balance
       balance: balance,
-      // The total amount of tokens that were delegated to them (including conviction)
       delegatedConvictionBalance: delegation.delegatedConvictionBalance,
-      // the total amount of tokens that were delegated to them (without conviction)
       delegatedBalance: delegation.delegatedBalance,
-      // The vote type, either 'aye', or 'nay'
       voteDirection: vote.voteDirection,
-      // Whether the person is voting themselves or delegating
       voteType: "Delegating",
       voteDirectionType: voteDirectionType,
-      // Who the person is delegating to
       delegatedTo: vote.address,
     };
+
     delegatedVotes.push(delegatedVote);
   }
   return delegatedVotes;
-
 }
+
 
 export const formatDelegation = async (vote: VotePolkadot): Promise<ConvictionDelegation> => {
   // Each of these is the votingFor for an account for a given governance track
