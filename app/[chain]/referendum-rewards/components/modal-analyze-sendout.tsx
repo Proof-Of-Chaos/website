@@ -1,10 +1,5 @@
-import { useAppStore } from "@/app/zustand";
-import { useForm } from "react-hook-form";
 import { CollectionConfiguration, GenerateRewardsResult } from "../types";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { TxTypes, sendAndFinalize } from "@/components/util-client";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
-import { ChainType, SendAndFinalizeResult } from "@/types";
+
 import {
   Modal,
   ModalBody,
@@ -13,15 +8,7 @@ import {
   ModalHeader,
   ModalProps,
 } from "@nextui-org/modal";
-import { Input } from "@nextui-org/input";
-import { rewardsConfig } from "@/config/rewards";
-import { TxButton } from "@/components/TxButton";
-import Check from "@w3f/polkadot-icons/keyline/Check";
-import { titleCase } from "@/components/util";
-import { chain } from "lodash";
 import { Button } from "@nextui-org/button";
-import { Deposit } from "@/hooks/use-deposit";
-import { getTxCollectionCreate } from "@/config/txs";
 import ReactJson from "react-json-view";
 
 type PropType = Omit<ModalProps, "children"> & {

@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import { Button } from "@nextui-org/button";
 import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { ApiPromise } from "@polkadot/api";
+import { streamToJSON } from "@/components/util-client";
 
 export const revalidate = 3600;
 
@@ -41,9 +42,19 @@ export const revalidate = 3600;
 export default function NFTPage() {
   const { activeChain } = useSubstrateChain();
 
-  function apiDisconnect(api: ApiPromise | undefined) {
-    console.log("disconnecting api");
-    api?.disconnect();
+  async function getTest() {
+    const response = await fetch("/api/test", {
+      method: "post",
+    });
+    const stream = response.body;
+
+    if (!stream) {
+      return;
+    }
+
+    for await (const message of streamToJSON(stream)) {
+      console.log(message);
+    }
   }
 
   return (
@@ -56,9 +67,7 @@ export default function NFTPage() {
       </p>
       <p className="text-center text-4xl">🔥</p>
 
-      <Button onClick={() => apiDisconnect(activeChain?.api)}>
-        disconnect api
-      </Button>
+      <Button onClick={getTest}>disconnect api</Button>
     </div>
   );
 }

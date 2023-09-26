@@ -173,3 +173,10 @@ export interface VotePolkadot {
   track: number;
   voteData: PalletConvictionVotingVoteVoting;
 }
+
+export type StreamResult =
+  | {
+      done: boolean;
+      value: string;
+    }
+  | undefined;
