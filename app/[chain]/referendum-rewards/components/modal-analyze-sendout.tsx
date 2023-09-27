@@ -40,13 +40,13 @@ export default function ModalAnalyzeSendout({
             <ModalBody>
               {sendoutData ? (
                 <div className="overflow-scroll">
-                  <ReactJson
+                  {/* <ReactJson
                     theme="chalk"
                     src={sendoutData}
                     collapsed={true}
                     collapseStringsAfterLength={false}
                     iconStyle="circle"
-                  />
+                  /> */}
                 </div>
               ) : (
                 "Error reading sendout data"

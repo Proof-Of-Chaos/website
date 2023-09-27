@@ -35,6 +35,10 @@ export async function POST(req: NextRequest) {
   let selectedChain: SubstrateChain;
   let sender;
 
+  const encoder = new TextEncoder();
+  const iterator = makeIterator(encoder);
+  const stream = iteratorToStream(iterator);
+
   try {
     // parse the form data that is coming from the client
     formData = await req.formData();
@@ -121,6 +125,7 @@ export async function POST(req: NextRequest) {
   try {
     const apiPinata = await setupPinata();
     rewardConfig = mergeWithDefaultConfig(rewardConfig);
+
     const callResult: GenerateRewardsResult = await generateCalls(
       apiPinata,
       selectedChain,
@@ -264,60 +269,6 @@ const generateCalls = async (
   // );
 
   console.info("🎉 All Done");
-
-  // console.info(
-  //   `📄 Writing transactions to
-  //   ./log/tmp_transactions_${config.refIndex}_xcm.json`
-  // );
-
-  // fs.writeFileSync(
-  //   `./log/tmp_transactions_${config.refIndex}_xcm.json`,
-  //   JSON.stringify(
-  //     {
-  //       nfts: txsKusamaAssetHub.map((tx) => tx.toHuman()),
-  //       // xcm: txsKusama.map((tx) => tx.toHuman()),
-  //       deposits: {
-  //         collectionDeposit,
-  //         itemDeposit,
-  //       },
-  //     },
-  //     null,
-  //     2
-  //   )
-  // );
-
-  // console.info(
-  //   `returning
-  //   ${JSON.stringify(
-  //     {
-  //       call: "omitted",
-  //       distribution: rarityDistribution,
-  //       voters,
-  //       fees: {
-  //         // kusama: formatBalance(infoKusamaCalls.partialFee, {
-  //         //   withSi: false,
-  //         //   forceUnit: "KSM",
-  //         //   decimals: relayChainDecimals.toNumber(),
-  //         // }),
-  //         nfts: formatBalance(infoNftCalls.partialFee, {
-  //           withSi: false,
-  //           forceUnit: "KSM",
-  //           decimals: relayChainDecimals.toNumber(),
-  //         }),
-  //         deposits: {
-  //           collectionDeposit,
-  //           itemDeposit,
-  //         },
-  //       },
-  //       txsCount: {
-  //         // kusama: txsKusama.length,
-  //         nfts: txsKusamaAssetHub.length,
-  //       },
-  //     },
-  //     null,
-  //     2
-  //   )}`
-  // );
 
   return {
     status: "success",

@@ -18,8 +18,6 @@ export function StepForm() {
 
   const resultNode = useRef<HTMLDivElement>(null);
 
-  console.log(otherSteps);
-
   const [streamData, setStreamData] = useState<StreamResult>();
   const dataCounter = useRef(0);
 
@@ -28,15 +26,15 @@ export function StepForm() {
       setStreamData({ value: "✅ Done", done: true });
     }, 1500);
 
-    setTimeout(() => {
-      nextStep();
-      dataCounter.current = 1;
-    }, 3000);
+    // setTimeout(() => {
+    //   nextStep();
+    //   dataCounter.current = 1;
+    // }, 3000);
   }
 
   async function actionGenerateRewardTxs() {
     console.log("fetching DATA stream");
-    const response = await fetch("/api/test", {
+    const response = await fetch("/api/rewards", {
       method: "post",
     });
 
@@ -76,7 +74,6 @@ export function StepForm() {
           <Card className="text-sm">
             <CardBody>
               <div className="flex gap-4 items-center mb-4">
-                <span className="text-4xl">1</span>
                 <div>
                   <p>
                     Create on chain transactions based on your configuration
@@ -123,7 +120,6 @@ export function StepForm() {
           <Card className="text-sm">
             <CardBody>
               <div className="flex gap-4 items-center mb-4">
-                <span className="text-4xl">2</span>
                 <p>
                   Start the sendout process. You will be asked to sign
                   <span className="text-warning px-4">
@@ -139,7 +135,6 @@ export function StepForm() {
           <Card className="text-sm">
             <CardBody>
               <div className="flex gap-4 flex-wrap items-center mb-4">
-                <span className="text-4xl">3</span>
                 🎉 Congratulations, you successfully minted{" "}
                 <span className="text-warning">732</span> NFTs in total: <br />
                 <span className="text-warning">523</span>common,

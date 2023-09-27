@@ -445,7 +445,7 @@ export default function RewardsCreationForm({
           ))}
         </div>
 
-        <FormActions className="mt-8" />
+        <FormActions chain={chain} className="mt-8" />
 
         <Card className="mt-4">
           <CardHeader className="mx-2 mt-2 text-xl">Action</CardHeader>

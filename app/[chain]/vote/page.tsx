@@ -30,7 +30,6 @@ export default async function PageVote({
 
   const referenda = await getReferenda(selectedChain);
   const tracks = await getTracks(selectedChain);
-  const userVotes = await getUserVotes(selectedChain)
 
   return (
     <>
