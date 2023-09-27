@@ -1,3 +1,5 @@
+"use client";
+
 import { CollectionConfiguration, GenerateRewardsResult } from "../types";
 
 import {
@@ -9,17 +11,32 @@ import {
   ModalProps,
 } from "@nextui-org/modal";
 import { Button } from "@nextui-org/button";
-import ReactJson from "react-json-view";
+
+import { pick } from "lodash";
+
+import dynamic from "next/dynamic";
 
 type PropType = Omit<ModalProps, "children"> & {
   sendoutData: GenerateRewardsResult;
 };
+
+const ReactJsonNoSSR = dynamic(() => import("react-json-view"), {
+  ssr: false,
+});
 
 export default function ModalAnalyzeSendout({
   sendoutData,
   ...props
 }: PropType) {
   const { isOpen, onOpenChange } = props;
+
+  const displayedData = pick(sendoutData, [
+    "kusamaAssetHubTxsBatches",
+    "distribution",
+    "voters",
+    "config",
+    "txsCount",
+  ]);
 
   return (
     <Modal
@@ -38,15 +55,14 @@ export default function ModalAnalyzeSendout({
             </ModalHeader>
 
             <ModalBody>
-              {sendoutData ? (
-                <div className="overflow-scroll">
-                  {/* <ReactJson
+              {displayedData ? (
+                <div className="overflow-hidden overflow-y-scroll">
+                  <ReactJsonNoSSR
                     theme="chalk"
-                    src={sendoutData}
-                    collapsed={true}
-                    collapseStringsAfterLength={false}
+                    src={displayedData}
                     iconStyle="circle"
-                  /> */}
+                  />
+                  {/* {JSON.stringify(sendoutData, null, 2)} */}
                 </div>
               ) : (
                 "Error reading sendout data"

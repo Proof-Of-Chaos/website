@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "@/styles/globals.scss";
 import { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { fontMono } from "@/config/fonts";
@@ -57,7 +57,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <Toaster
-            position="top-right"
+            position="bottom-right"
             toastOptions={{
               style: {
                 width: "300px",

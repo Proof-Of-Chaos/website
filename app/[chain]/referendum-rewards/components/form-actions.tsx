@@ -6,32 +6,70 @@ import clsx from "clsx";
 import { Progress } from "@nextui-org/progress";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { StreamResult, SubstrateChain } from "@/types";
-import { useForm, useFormContext } from "react-hook-form";
 import { getChainInfo } from "@/config/chains";
-import { useAppStore } from "@/app/zustand";
+import { useFormContext } from "react-hook-form";
 import { rewardsSchema } from "../util";
 import { rewardsConfig } from "@/config/rewards";
+import { useAppStore } from "@/app/zustand";
+import { TxTypes } from "@/components/util-client";
 import { z } from "zod";
-import { executeStream } from "@/components/util-client";
+import {
+  GenerateRewardsResult,
+  RewardConfiguration,
+  RewardCriteria,
+  SendAndFinalizeResult,
+} from "../types";
+import { TxButton } from "@/components/TxButton";
+import { bnToBn } from "@polkadot/util";
+import ModalAnalyzeSendout from "./modal-analyze-sendout";
+import { useDisclosure } from "@nextui-org/modal";
+import { TextRotator } from "@/components/text-rotator";
+import { mergeWithDefaultConfig } from "../../../../components/util";
+import { error } from "console";
+import { Link } from "@nextui-org/link";
 export const revalidate = 3600;
+
+type ConfigReqBody = RewardConfiguration & {
+  blockNumbers?: (number | undefined)[];
+  txHashes: (string | undefined)[];
+};
 
 export default function FormActions({
   className,
+  // onSubmit,
   chain,
 }: {
   className?: string;
+  // onSubmit?: (data: any) => Promise<any>;
   chain: SubstrateChain;
 }) {
-  const { ss58Format, name: activeChainName } = getChainInfo(chain);
+  const activeChain = getChainInfo(chain);
+  const { ss58Format, name: activeChainName, icon } = activeChain;
   const chainRewardsSchema = rewardsSchema(activeChainName, ss58Format);
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
   const { DEFAULT_REWARDS_CONFIG } = rewardsConfig;
 
-  const explode = useAppStore((s) => s.explode);
+  const {
+    isOpen: isAnalyzeOpen,
+    onOpen: onAnalzeOpen,
+    onOpenChange: onAnalyzeOpenChange,
+    onClose: onAnalyzeClose,
+  } = useDisclosure();
 
+  const explode = useAppStore((s) => s.explode);
   const walletAddress = useAppStore(
     (state) => state.user.actingAccount?.address
   );
+
+  const [rewardSendoutData, setRewardSendoutData] =
+    useState<GenerateRewardsResult>(undefined);
+
+  const totalFees =
+    rewardSendoutData?.fees?.nfts && rewardSendoutData?.fees?.deposit
+      ? bnToBn(rewardSendoutData.fees.nfts).add(
+          bnToBn(rewardSendoutData.fees.deposit)
+        )
+      : undefined;
 
   const [step, setStep] = useState(0);
   const nextStep = () => setStep((prev) => prev + 1);
@@ -39,42 +77,31 @@ export default function FormActions({
   // create array with index of all children
   const otherSteps = [0, 1, 2].filter((index) => index > step).map(String);
 
-  const resultNode = useRef<HTMLDivElement>(null);
+  const [signingIndex, setSigningIndex] = useState<number>(0);
+  const amountOfTxs = rewardSendoutData?.txsCount?.txsPerVote;
+  const [txResult, setTxResult] = useState<SendAndFinalizeResult[]>();
 
-  console.log(otherSteps);
+  const formMethods = useFormContext();
+
+  const {
+    formState: { isSubmitting, errors },
+    setError,
+    handleSubmit,
+    watch,
+    reset,
+  } = formMethods;
+
+  const watchFormFields = watch();
 
   const [streamData, setStreamData] = useState<StreamResult>();
   const dataCounter = useRef(0);
 
-  const formMethods = useFormContext();
-  const { handleSubmit, setValue, setError } = formMethods;
-
-  function onFinished(data: StreamResult) {
-    setTimeout(() => {
-      setStreamData({ value: "✅ Done", done: true });
-    }, 1500);
-
-    // setTimeout(() => {
-    //   nextStep();
-    //   dataCounter.current = 1;
-    // }, 3000);
+  function onReset() {
+    setStep(0);
+    reset();
   }
 
-  useEffect(() => {
-    if (streamData) {
-      dataCounter.current += 1;
-      let p = document.createElement("p");
-      p.append(`${streamData?.value}`);
-      resultNode.current?.append(p);
-
-      if (resultNode.current) {
-        resultNode.current.scrollTop = resultNode.current.scrollHeight;
-      }
-    }
-  });
-
-  //TODO type
-  async function onSubmit(data: TypeRewardsSchema) {
+  async function onSubmit(data: Partial<TypeRewardsSchema>) {
     // append all data needed for the rewards creation to a FormData object
     const formData = new FormData();
 
@@ -97,7 +124,7 @@ export default function FormActions({
         );
       }
     });
-    if (data.collectionConfig.file?.[0]) {
+    if (data.collectionConfig?.file?.[0]) {
       formData.append(
         "collectionImage",
         data.collectionConfig.file[0],
@@ -105,17 +132,157 @@ export default function FormActions({
       );
     }
 
-    console.log("fetching DATA stream");
-    const response = await fetch("/api/test", {
-      method: "post",
+    const response = await fetch("/api/rewards", {
+      method: "POST",
       body: formData,
     });
+    const responseData = await response.json();
+    console.log("raw response data", responseData);
 
-    executeStream(response, setStreamData, onFinished);
+    if (!response.ok) {
+      console.error("error getting response from server", responseData);
+      setError("root", {
+        message: "Error reaching server",
+      });
+    }
+    if (responseData.errors) {
+      const errors = responseData.errors;
+      if (errors.criteria) {
+        setError("criteria", {
+          type: "server",
+          message: errors.criteria,
+        });
+      } else if (errors.refIndex) {
+        setError("refIndex", {
+          type: "server",
+          message: errors.refIndex,
+        });
+      } else {
+        setError("root", {
+          message: errors.form,
+        });
+      }
+    }
+
+    console.log("response", response);
+
+    if (response.ok && responseData.status === "success") {
+      const maxTxsPerBatch =
+        Math.floor(
+          rewardsConfig.NFT_BATCH_SIZE_MAX / responseData?.txsCount?.txsPerVote
+        ) * responseData?.txsCount?.txsPerVote;
+
+      let kusamaAssetHubTxsBatches: TxTypes[] | undefined =
+        responseData?.kusamaAssetHubTxs;
+
+      if (kusamaAssetHubTxsBatches && Array.isArray(kusamaAssetHubTxsBatches)) {
+        // group the kusamaAssetHubTxs in batches of max size maxTxsPerbatch making sure that txs belonging together (multiples of 13) are never split to different batches
+        const batches = kusamaAssetHubTxsBatches.reduce((acc, tx, index) => {
+          const batchIndex: number = Math.floor(index / maxTxsPerBatch);
+          if (!acc[batchIndex]) {
+            acc[batchIndex] = [];
+          }
+          acc[batchIndex].push(tx);
+          return acc;
+        }, [] as TxTypes[][]);
+
+        setRewardSendoutData({
+          ...responseData,
+          kusamaAssetHubTxsBatches: batches,
+        });
+      } else {
+        setRewardSendoutData({
+          ...responseData,
+        });
+      }
+
+      nextStep();
+    }
   }
 
+  async function actionCreateConfigNFT(configReqBody: ConfigReqBody) {
+    const createConfigRes = await fetch("/api/create-config-nft", {
+      method: "POST",
+      body: JSON.stringify(configReqBody),
+    });
+
+    console.log("create config nft result", createConfigRes);
+  }
+
+  function onStart() {
+    setSigningIndex(1);
+  }
+
+  function onPartFinished({
+    status,
+    txHash,
+    blockHeader,
+  }: SendAndFinalizeResult): void {
+    console.log("part finished, status", status, txHash, blockHeader);
+    if (status === "success") {
+      setSigningIndex((prev) => prev + 1);
+    } else {
+      console.error("error sending tx", txHash);
+      setError("root", {
+        message: `Error sending tx ${signingIndex}/${amountOfTxs}. Please try again.`,
+      });
+    }
+  }
+
+  function onFinished(
+    results: SendAndFinalizeResult[] | SendAndFinalizeResult
+  ): void {
+    console.log("onfinished", results);
+
+    if (!Array.isArray(results)) {
+      results = [results];
+    }
+
+    setTxResult(results);
+
+    if (results.every((res) => res.status === "success")) {
+      explode(true);
+      nextStep();
+
+      const sendoutConfig = rewardSendoutData?.config ?? watchFormFields;
+
+      const configReqBody = {
+        ...mergeWithDefaultConfig(sendoutConfig),
+        chain: activeChainName,
+        criteria: watchFormFields.criteria as RewardCriteria,
+        blockNumbers: results.map((res) => res.blockHeader?.number.toNumber()),
+        txHashes: results.map((res) => res.txHash),
+      };
+
+      actionCreateConfigNFT(configReqBody);
+    } else {
+      console.error("error sending txs", results);
+      setError("root", {
+        message: "Error sending txs",
+      });
+    }
+  }
+
+  // useEffect(() => {
+  //   if (streamData) {
+  //     dataCounter.current += 1;
+  //     let p = document.createElement("p");
+  //     p.append(`${streamData?.value}`);
+  //     resultNode.current?.append(p);
+
+  //     if (resultNode.current) {
+  //       resultNode.current.scrollTop = resultNode.current.scrollHeight;
+  //     }
+  //   }
+  // });
+
   return (
-    <div className="flex w-full flex-col border-2 p-4 border-secondary-400 rounded-lg shadow-lg shadow-secondary-400">
+    <div
+      className={clsx(
+        "flex w-full flex-col border-2 p-4 border-secondary-400 rounded-lg shadow-lg shadow-secondary-400",
+        className
+      )}
+    >
       <Tabs
         disabledKeys={otherSteps}
         onSelectionChange={(key) => {
@@ -126,11 +293,11 @@ export default function FormActions({
         classNames={{
           tabList: "w-full",
         }}
-        variant="light"
+        variant="underlined"
         color="secondary"
         size="lg"
       >
-        <Tab title="1 Create Txs ✨" key="0">
+        <Tab title="1 Setup NFTs ✨" key="0">
           <Card className="text-sm">
             <CardBody>
               <div className="flex gap-4 items-center mb-4">
@@ -150,48 +317,76 @@ export default function FormActions({
               </div>
               <Button
                 type="submit"
-                className={clsx(
-                  "w-full h-20 mt-4 flex flex-col p-0 space-between",
-                  vividButtonClasses
-                )}
+                className={clsx("w-full h-20 mt-4 ", vividButtonClasses)}
                 variant="shadow"
                 onClick={handleSubmit(onSubmit)}
+                isLoading={isSubmitting}
+                isDisabled={isSubmitting}
               >
-                Generate Kusama reward transactions
-                <Progress
-                  size="sm"
-                  color="secondary"
-                  isIndeterminate
-                  aria-label="Loading..."
-                  className="w-full  absolute bottom-0 left-0"
-                />
+                {isSubmitting ? (
+                  <>
+                    {activeChain && (
+                      <activeChain.icon className="animate-spin" />
+                    )}{" "}
+                    <TextRotator />
+                  </>
+                ) : (
+                  <>
+                    Generate {activeChain && <activeChain.icon />} reward
+                    transactions
+                  </>
+                )}
               </Button>
-              <div className="relative text-tiny text-center flex justify-center w-full z-10 flex-col">
-                <div className="absolute top-4 right-2 text-white">status</div>
-                <div
-                  className="h-20 mt-3 scroll-smooth overflow-scroll text-left w-full rounded-md bg-black/80 text-white p-2"
-                  ref={resultNode}
-                ></div>
-              </div>
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="2 Sign Txs 🔏" key="1">
+        <Tab title="2 Mint NFTs 🔏" key="1">
           <Card className="text-sm">
             <CardBody>
               <div className="flex gap-4 items-center mb-4">
                 <p>
                   Start the sendout process. You will be asked to sign
                   <span className="text-warning px-4">
-                    7 transactions in sequence.
+                    {amountOfTxs ?? "multiple"} transactions in sequence.
                   </span>
                   Complete all for a full sendout.
                 </p>
               </div>
+              {rewardSendoutData && (
+                <Button
+                  onClick={onAnalyzeOpenChange}
+                  color="secondary"
+                  variant="bordered"
+                  className="self-end flex-grow w-full mb-4"
+                >
+                  Analyze Sendout
+                </Button>
+              )}
+              <TxButton
+                extrinsic={rewardSendoutData?.kusamaAssetHubTxsBatches}
+                requiredBalance={totalFees}
+                variant="shadow"
+                isDisabled={isSubmitting || step !== 1}
+                className={clsx("w-full h-20 border-2", vividButtonClasses)}
+                onPartFinished={onPartFinished}
+                onFinished={onFinished}
+                onStart={onStart}
+              >
+                {signingIndex === 0 ? (
+                  <>
+                    Start the {activeChain && <activeChain.icon />} rewards
+                    sendout
+                  </>
+                ) : (
+                  <>
+                    Sending Transaction {signingIndex}/{amountOfTxs}
+                  </>
+                )}
+              </TxButton>
             </CardBody>
           </Card>
         </Tab>
-        <Tab title="3 View 🥳" key="2">
+        <Tab title="3 View NFTs 🥳" key="2">
           <Card className="text-sm">
             <CardBody>
               <div className="flex gap-4 flex-wrap items-center mb-4">
@@ -202,18 +397,41 @@ export default function FormActions({
                 <span className="text-warning">59</span>epic.
               </div>
               <div className="flex gap-4 flex-wrap">
-                <Button color="secondary">View Collection on Kodadot</Button>
-                {[0, 1, 2].map((id) => (
-                  <Button color="secondary" key={id}>
-                    View Transaction {id}
-                  </Button>
-                ))}
-                <Button className="w-full">♻️ Start Again</Button>
+                {activeChainName !== SubstrateChain.Rococo && (
+                  <Link href="" isExternal>
+                    <Button color="secondary">
+                      View Collection on Kodadot
+                    </Button>
+                  </Link>
+                )}
+                {txResult &&
+                  txResult.map(({ txHash }, idx) => (
+                    <Link
+                      href={`${activeChain.subscanAssetHub}/extrinsic/${txHash}`}
+                      isExternal
+                      key={idx}
+                    >
+                      <Button color="secondary">View Transaction {idx}</Button>
+                    </Link>
+                  ))}
+                <Button className="w-full" onClick={onReset}>
+                  ♻️ Start Again
+                </Button>
               </div>
             </CardBody>
           </Card>
         </Tab>
       </Tabs>
+      {errors && Object.keys(errors).length > 0 && (
+        <span className="text-danger text-lg text-center w-full">
+          There are form errors, please see above.
+        </span>
+      )}
+      <ModalAnalyzeSendout
+        sendoutData={rewardSendoutData}
+        onOpenChange={onAnalyzeOpenChange}
+        isOpen={isAnalyzeOpen}
+      />
     </div>
   );
 }

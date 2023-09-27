@@ -141,7 +141,7 @@ async function* iterator() {
   yield `{ any: "json", status: "done" }`;
 }
 
-export async function POST(req: NextApiRequest) {
+export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     console.log("post request");
   } else {

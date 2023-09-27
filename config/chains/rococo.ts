@@ -139,6 +139,8 @@ export const rococo: ChainConfig = {
   assetHubEndpoints,
   selectedAssetHubEndpoint: 0,
   selectedEndpoint: 0,
+  subscan: "https://rococo.subscan.io/",
+  subscanAssetHub: "https://assethub-rococo.subscan.io",
   icon: RococoIcon,
   tracks,
   ...rococoConfig,

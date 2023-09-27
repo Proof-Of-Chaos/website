@@ -12,6 +12,7 @@ import { ReactNode, ReactSVGElement, SVGProps } from "react";
 import { Header } from "@polkadot/types/interfaces";
 import { RewardOption } from "@/app/[chain]/referendum-rewards/types";
 import { BN } from "@polkadot/util";
+import { subtitle } from "../components/primitives";
 
 export enum SubstrateChain {
   Kusama = "kusama",
@@ -43,6 +44,8 @@ export type ChainConfig = {
   assetHubProvider?: WsProvider;
   api?: ApiPromise;
   assetHubApi?: ApiPromise;
+  subscan?: string;
+  subscanAssetHub?: string;
 };
 
 export type PolkadotExtensionType = {

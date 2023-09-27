@@ -3,7 +3,7 @@ import { rewardsConfig } from "@/config/rewards";
 import { ChainConfig, SubstrateChain } from "@/types";
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { z } from "zod";
-import { RewardCriteria } from "./types";
+import { RewardCriteria, SendAndFinalizeResult } from "./types";
 
 export function validateAddress(address: string, ss58Format: number) {
   try {
@@ -93,7 +93,26 @@ export async function executeAsyncFunctionsInSequence<T>(
   let results: T[] = [];
 
   for (const asyncFunction of asyncFunctions) {
-    results.push(await asyncFunction());
+    const result = await asyncFunction();
+    results.push(result);
+  }
+
+  return results;
+}
+
+export async function executeTxsInSequence(
+  txs: Array<() => Promise<SendAndFinalizeResult>>,
+  onPartFinished?: (result: SendAndFinalizeResult) => void
+) {
+  let results: SendAndFinalizeResult[] = [];
+
+  for (const tx of txs) {
+    const result = await tx();
+    if (result.status === "error") {
+      throw result;
+    }
+    onPartFinished && onPartFinished(result);
+    results.push(result);
   }
 
   return results;

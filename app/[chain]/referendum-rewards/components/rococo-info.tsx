@@ -5,9 +5,9 @@ export function RococoInfo() {
   return (
     <Card className="border border-2 border-warning-500 text-tiny mb-8">
       <CardBody className="flex-none inline text-center">
-        <h3 className="text-lg text-center mb-3">⚠️ Rococo Rewards ⚠️</h3>
+        <h3 className="text-lg text-center mb-3">ℹ️ Rococo Rewards ℹ️</h3>
         On rococo you can test your sendouts without spending money. But you
-        need ROC tokens. On Rococo Asset Hub.
+        need ROC tokens on Rococo Asset Hub.
         <ol className="list-decimal list-inside">
           <li>
             <Link
@@ -33,7 +33,7 @@ export function RococoInfo() {
           </li>
         </ol>
         You can then use the page, however the nfts will not appear in any
-        frontend like Kodadot.
+        frontend like Kodadot (yet).
       </CardBody>
     </Card>
   );

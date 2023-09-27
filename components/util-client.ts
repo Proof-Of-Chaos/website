@@ -193,6 +193,12 @@ export const sendAndFinalize = async (
                 reject(docs?.join(" "));
               } else {
                 // Other, CannotLookup, BadOrigin, no extra info
+                if (toastId) {
+                  hotToast.error(toastMessages[4], {
+                    id: toastId,
+                    duration: 4000,
+                  });
+                }
                 reject({ status: "error", message: dispatchError.toString() });
               }
 
@@ -225,7 +231,10 @@ export const sendAndFinalize = async (
     } catch (error) {
       console.error("signAndSend cancelled", error);
       if (toastId) {
-        hotToast.dismiss(toastId);
+        hotToast.error(toastMessages[4], {
+          id: toastId,
+          duration: 4000,
+        });
       }
       reject(error);
     }
@@ -233,7 +242,10 @@ export const sendAndFinalize = async (
     console.error("sendAndFinalize error", error);
 
     if (toastId) {
-      hotToast.dismiss(toastId);
+      hotToast.error(error.message, {
+        id: toastId,
+        duration: 4000,
+      });
     }
     return {
       status: "error",

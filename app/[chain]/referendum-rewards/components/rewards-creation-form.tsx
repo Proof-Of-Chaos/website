@@ -37,11 +37,6 @@ import { mergeWithDefaultConfig } from "@/components/util";
 import { TxTypes } from "@/components/util-client";
 import FormActions from "./form-actions";
 
-type ConfigReqBody = RewardConfiguration & {
-  blockNumbers?: (number | undefined)[];
-  txHashes: (string | undefined)[];
-};
-
 export default function RewardsCreationForm({
   chain,
 }: {
@@ -140,142 +135,9 @@ export default function RewardsCreationForm({
     onOpen();
   }
 
-  async function actionCreateConfigNFT(configReqBody: ConfigReqBody) {
-    const createConfigRes = await fetch("/api/create-config-nft", {
-      method: "POST",
-      body: JSON.stringify(configReqBody),
-    });
-
-    console.log("create config nft result", createConfigRes);
-  }
-
-  function onFinished(
-    results: SendAndFinalizeResult[] | SendAndFinalizeResult
-  ): void {
-    explode(true);
-    console.log("onfinished", results);
-
-    if (!Array.isArray(results)) {
-      results = [results];
-    }
-
-    if (results.every((res) => res.status === "success")) {
-      const sendoutConfig = rewardSendoutData?.config ?? watchFormFields;
-
-      const configReqBody = {
-        ...mergeWithDefaultConfig(sendoutConfig),
-        chain: activeChainName,
-        criteria: watchFormFields.criteria as RewardCriteria,
-        blockNumbers: results.map((res) => res.blockHeader?.number.toNumber()),
-        txHashes: results.map((res) => res.txHash),
-      };
-
-      actionCreateConfigNFT(configReqBody);
-    }
-  }
-
-  async function onSubmit(data: TypeRewardsSchema) {
-    // append all data needed for the rewards creation to a FormData object
-    const formData = new FormData();
-
-    // form fields
-    formData.append("rewardConfig", JSON.stringify(data));
-
-    // chain + walletAddress of the sender
-    formData.append("chain", chain);
-    if (walletAddress) {
-      formData.append("sender", walletAddress);
-    }
-
-    // uploaded files
-    data.options?.forEach((option) => {
-      if (!option.imageCid && option.file?.[0]) {
-        formData.append(
-          `${option.rarity}File`,
-          option.file[0],
-          option.file[0].name
-        );
-      }
-    });
-    if (data.collectionConfig.file?.[0]) {
-      formData.append(
-        "collectionImage",
-        data.collectionConfig.file[0],
-        data.collectionConfig.file[0].name
-      );
-    }
-
-    const response = await fetch("/api/rewards", {
-      method: "POST",
-      body: formData,
-    });
-    const responseData = await response.json();
-    console.log("raw response data", responseData);
-
-    if (!response.ok) {
-      console.error("error getting response from server", responseData);
-      setError("root", {
-        message: "Error reaching server",
-      });
-    }
-    if (responseData.errors) {
-      const errors = responseData.errors;
-      if (errors.criteria) {
-        setError("criteria", {
-          type: "server",
-          message: errors.criteria,
-        });
-      } else if (errors.refIndex) {
-        setError("refIndex", {
-          type: "server",
-          message: errors.refIndex,
-        });
-      } else {
-        setError("root", {
-          message: errors.form,
-        });
-      }
-    }
-
-    console.log("response", response);
-
-    if (response.ok && responseData.status === "success") {
-      const maxTxsPerBatch =
-        Math.floor(
-          rewardsConfig.NFT_BATCH_SIZE_MAX / responseData?.txsCount?.txsPerVote
-        ) * responseData?.txsCount?.txsPerVote;
-
-      let kusamaAssetHubTxsBatches: TxTypes[] | undefined =
-        responseData?.kusamaAssetHubTxs;
-
-      if (kusamaAssetHubTxsBatches && Array.isArray(kusamaAssetHubTxsBatches)) {
-        // group the kusamaAssetHubTxs in batches of max size maxTxsPerbatch making sure that txs belonging together (multiples of 13) are never split to different batches
-        const batches = kusamaAssetHubTxsBatches.reduce((acc, tx, index) => {
-          const batchIndex: number = Math.floor(index / maxTxsPerBatch);
-          if (!acc[batchIndex]) {
-            acc[batchIndex] = [];
-          }
-          acc[batchIndex].push(tx);
-          return acc;
-        }, [] as TxTypes[][]);
-
-        setRewardSendoutData({
-          ...responseData,
-          kusamaAssetHubTxsBatches: batches,
-        });
-      } else {
-        setRewardSendoutData({
-          ...responseData,
-        });
-      }
-
-      nextFormStep();
-    }
-  }
-
   return (
     <FormProvider {...formMethods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="test">
+      <form className="test">
         <h3 className="mb-4 text-lg">What should be rewarded?</h3>
         <div className="flex mb-4 min-h-[100px]">
           <div className="hidden md:flex md:w-1/3 text-xs pr-8">
@@ -445,9 +307,9 @@ export default function RewardsCreationForm({
           ))}
         </div>
 
-        <FormActions chain={chain} className="mt-8" />
+        <FormActions chain={chain} className="my-8" />
 
-        <Card className="mt-4">
+        {/* <Card className="mt-4">
           <CardHeader className="mx-2 mt-2 text-xl">Action</CardHeader>
           <CardBody className="flex gap-4">
             <div className="flex items-center flex-wrap gap-2 text-tiny">
@@ -537,7 +399,7 @@ export default function RewardsCreationForm({
               </TxButton>
             </div>
           </CardBody>
-        </Card>
+        </Card> */}
 
         <Input
           type="text"

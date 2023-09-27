@@ -35,10 +35,6 @@ export async function POST(req: NextRequest) {
   let selectedChain: SubstrateChain;
   let sender;
 
-  const encoder = new TextEncoder();
-  const iterator = makeIterator(encoder);
-  const stream = iteratorToStream(iterator);
-
   try {
     // parse the form data that is coming from the client
     formData = await req.formData();

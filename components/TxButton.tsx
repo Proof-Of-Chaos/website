@@ -27,7 +27,10 @@ import { ApiPromise } from "@polkadot/api";
 import { chain, set } from "lodash";
 import Check from "@w3f/polkadot-icons/keyline/Check";
 import Error from "@w3f/polkadot-icons/keyline/Error";
-import { executeAsyncFunctionsInSequence } from "@/app/[chain]/referendum-rewards/util";
+import {
+  executeAsyncFunctionsInSequence,
+  executeTxsInSequence,
+} from "@/app/[chain]/referendum-rewards/util";
 
 type DepositCountType = {
   type: Deposit;
@@ -49,6 +52,8 @@ export function TxButton<T>(
     successText?: React.ReactNode;
     error?: { name: string; message: string };
     setError?: (error: { name: string; message: string }) => void;
+    onStart?: () => void;
+    onPartFinished?: (res: SendAndFinalizeResult) => void;
     onFinished?: (res: SendAndFinalizeResult | SendAndFinalizeResult[]) => void;
     onPendingChange?: (isPending: boolean) => void;
   }
@@ -64,6 +69,8 @@ export function TxButton<T>(
     onPendingChange,
     error: errorProp,
     setError: setErrorProp,
+    onPartFinished,
+    onStart,
     ...rest
   } = props;
 
@@ -132,9 +139,8 @@ export function TxButton<T>(
       : availableBalanceBn.gte(bnToBn(requiredBalanceCalculated));
 
   const onSubmit = async (e: any) => {
+    onStart?.();
     try {
-      console.log("clicked button, awaiting propmise");
-
       if (extrinsic) {
         setIsLoading(true);
         setIsSuccess(false);
@@ -154,8 +160,9 @@ export function TxButton<T>(
               );
           });
 
-          res = await executeAsyncFunctionsInSequence<SendAndFinalizeResult>(
-            userSignatureRequests
+          res = await executeTxsInSequence(
+            userSignatureRequests,
+            onPartFinished
           );
           console.log("allSignatureResults", res);
 

@@ -26,3 +26,9 @@ body {
         @apply text-blue-800 dark:text-blue-400;
     }
 }
+
+.toaster .message > div {
+    padding: 0;
+    margin: 0;
+    display: block;
+}
