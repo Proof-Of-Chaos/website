@@ -62,7 +62,7 @@ export const getUserVotes = cache(
         const { accountId, track } = vote;
 
         // For each given track, these are the invididual votes for that track,
-        //     as well as the total delegation amounts for that particular track
+        // as well as the total delegation amounts for that particular track
 
         // The total delegation amounts.
         //     delegationVotes - the _total_ amount of tokens applied in voting. This takes the conviction into account

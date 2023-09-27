@@ -11,6 +11,7 @@ import { Suspense } from "react";
 import { useAppStore } from "@/app/zustand";
 import { getChainInfo } from "@/config/chains";
 import { ReferendumNotFound } from "./referendum-not-found";
+import { useUserVotes } from "@/hooks/vote/use-user-votes";
 
 interface Props {
   referenda?: UIReferendum[];
@@ -21,8 +22,8 @@ interface Props {
 export default function ReferendumList(props: Props) {
   const { referenda, tracks, chain } = props;
 
-  const safeChain = chain || SubstrateChain.Kusama;
-  const chainInfo = getChainInfo(safeChain);
+  const selectedChain = chain || SubstrateChain.Kusama;
+  const chainInfo = getChainInfo(selectedChain);
   const { symbol, decimals } = chainInfo;
 
   const filters = useAppStore((state) => state.filters);
@@ -39,6 +40,13 @@ export default function ReferendumList(props: Props) {
       return ref.track === trackFilter;
     }
   });
+
+  const user = useAppStore((state) => state.user);
+  const { data: userVotes, isLoading: isUserVotesLoading } = useUserVotes();
+
+  const votedAmount = userVotes?.length || 0;
+  const unvotedAmount =
+    referenda && referenda.length ? referenda.length - votedAmount : 0;
 
   return (
     <div className="referendum-list">
