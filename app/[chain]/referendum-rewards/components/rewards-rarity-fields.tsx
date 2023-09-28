@@ -26,6 +26,7 @@ export function RewardsCreationRarityFields({
   const {
     register,
     formState: { errors },
+    watch,
   } = formMethods;
   const { acceptedNftFormats } = rewardsConfig;
   const [isUploadSelected, setIsUploadSelected] = useState(true);
@@ -40,6 +41,14 @@ export function RewardsCreationRarityFields({
   let optionIndex = rewardConfig.options.findIndex(
     (opt) => opt.rarity === rarity
   );
+
+  const shouldHaveCover: {
+    [key: string]: boolean;
+  } = {
+    common: false,
+    rare: true,
+    epic: true,
+  };
 
   return (
     <div
@@ -78,7 +87,7 @@ export function RewardsCreationRarityFields({
               <>
                 <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-16 py-2 overflow-x-clip">
                   <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
-                    Upload {rarity} Image (max 1.5MB)
+                    Upload {rarity} File (max 1.5MB)
                   </label>
 
                   <input
@@ -96,13 +105,35 @@ export function RewardsCreationRarityFields({
                     </span>
                   )}
                 </div>
+                {shouldHaveCover[rarity] && (
+                  <div className="mt-4 relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-16 py-2 overflow-x-clip">
+                    <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
+                      Upload {rarity} Cover File (max 1.5MB)
+                    </label>
+
+                    <input
+                      id={`file-${rarity}`}
+                      accept={acceptedNftFormats.join(",")}
+                      type="file"
+                      className="mt-0 pb-2"
+                      {...register(`options.${optionIndex}.fileCover`)}
+                    />
+                    {/* @ts-ignore */}
+                    {errors?.options?.[optionIndex]?.fileCover && (
+                      <span className="w-full text-tiny text-danger px-1">
+                        {/* @ts-ignore */}
+                        <>{errors?.options?.[optionIndex].fileCover?.message}</>
+                      </span>
+                    )}
+                  </div>
+                )}
               </>
             ) : (
               <>
                 <Input
                   id={`imageCid-${rarity}`}
-                  label={`IPFS Image CID of ${rarity} NFT`}
-                  placeholder={`Enter Image CID of ${rarity} NFT`}
+                  label={`IPFS  CID of ${rarity} NFT`}
+                  placeholder={`Enter CID of ${rarity} NFT`}
                   type="text"
                   className="h-16"
                   color={
@@ -118,6 +149,27 @@ export function RewardsCreationRarityFields({
                   }
                   {...register(`options.${optionIndex}.imageCid`, {})}
                 />
+                {shouldHaveCover[rarity] && (
+                  <Input
+                    id={`coverCid-${rarity}`}
+                    label={`IPFS  Cover CID of ${rarity} NFT`}
+                    placeholder={`Enter Cover CID of ${rarity} NFT`}
+                    type="text"
+                    className="h-16"
+                    color={
+                      !!errors[`options.${optionIndex}].coverCid`]
+                        ? "danger"
+                        : "default"
+                    }
+                    errorMessage={
+                      //@ts-ignore
+                      !!errors?.options?.[optionIndex]?.coverCid &&
+                      //@ts-ignore
+                      errors?.options?.[optionIndex]?.coverCid?.message
+                    }
+                    {...register(`options.${optionIndex}.coverCid`, {})}
+                  />
+                )}
               </>
             )}
           </div>
