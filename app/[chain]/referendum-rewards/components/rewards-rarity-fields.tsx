@@ -28,7 +28,7 @@ export function RewardsCreationRarityFields({
     formState: { errors },
     watch,
   } = formMethods;
-  const { acceptedNftFormats } = rewardsConfig;
+  const { acceptedNftFormats, acceptedNonImageFormats } = rewardsConfig;
   const [isUploadSelected, setIsUploadSelected] = useState(true);
 
   const { activeChain } = useSubstrateChain();
@@ -42,13 +42,13 @@ export function RewardsCreationRarityFields({
     (opt) => opt.rarity === rarity
   );
 
-  const shouldHaveCover: {
+  const [shouldHaveCover, setShouldHaveCover] = useState<{
     [key: string]: boolean;
-  } = {
+  }>({
     common: false,
-    rare: true,
-    epic: true,
-  };
+    rare: false,
+    epic: false,
+  });
 
   return (
     <div
@@ -96,6 +96,18 @@ export function RewardsCreationRarityFields({
                     type="file"
                     className="mt-0 pb-2"
                     {...register(`options.${optionIndex}.file`)}
+                    onChange={(e) => {
+                      const mediaType = e.target.files?.[0]?.type;
+                      const needsCover =
+                        mediaType && acceptedNonImageFormats.includes(mediaType)
+                          ? true
+                          : false;
+
+                      setShouldHaveCover({
+                        ...shouldHaveCover,
+                        [rarity]: needsCover,
+                      });
+                    }}
                   />
                   {/* @ts-ignore */}
                   {errors?.options?.[optionIndex]?.file && (
