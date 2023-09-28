@@ -34,7 +34,7 @@ export function RewardsCreationRarityFields({
   const { name, ss58Format } =
     activeChain || getChainInfo(SubstrateChain.Kusama);
 
-  const chainRewardsSchema = rewardsSchema(name, ss58Format);
+  const chainRewardsSchema = rewardsSchema(name, undefined, ss58Format);
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
 
   let optionIndex = rewardConfig.options.findIndex(

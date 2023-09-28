@@ -74,14 +74,6 @@ export const zodSchemaObject = (
             const encodedAddress =
               userAddress && encodeAddress(userAddress, ss58Format);
 
-            console.log(
-              "collectionData",
-              collectionData,
-              collectionData?.toJSON()?.owner,
-              "here",
-              ss58Format,
-              userAddress
-            );
             const ownsCollection =
               (collectionData?.toJSON() as any)?.owner === encodedAddress;
 
