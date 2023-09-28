@@ -1731,6 +1731,25 @@
     "@react-aria/utils" "^3.20.0"
     "@react-types/shared" "^3.20.0"
 
+"@nextui-org/checkbox@^2.0.22":
+  version "2.0.22"
+  resolved "https://registry.yarnpkg.com/@nextui-org/checkbox/-/checkbox-2.0.22.tgz#63d401989182432638d3f6e5e2e3edae0c878b48"
+  integrity sha512-SSZUwcMsqkB1MtBibEk/WfBNLRQKtTS+54H82ZC6vzPzrSqhUlxN1yThWz3MLAw2qSQ1KGyx/4YDJSI9325XUg==
+  dependencies:
+    "@nextui-org/react-utils" "2.0.9"
+    "@nextui-org/shared-utils" "2.0.3"
+    "@nextui-org/system" "2.0.10"
+    "@nextui-org/theme" "2.1.9"
+    "@react-aria/checkbox" "^3.11.0"
+    "@react-aria/focus" "^3.14.1"
+    "@react-aria/interactions" "^3.18.0"
+    "@react-aria/utils" "^3.20.0"
+    "@react-aria/visually-hidden" "^3.8.4"
+    "@react-stately/checkbox" "^3.5.0"
+    "@react-stately/toggle" "^3.6.2"
+    "@react-types/checkbox" "^3.5.1"
+    "@react-types/shared" "^3.20.0"
+
 "@nextui-org/chip@^2.0.20":
   version "2.0.21"
   resolved "https://registry.npmjs.org/@nextui-org/chip/-/chip-2.0.21.tgz"
@@ -3868,6 +3887,20 @@
     "@react-types/shared" "^3.20.0"
     "@swc/helpers" "^0.5.0"
 
+"@react-aria/checkbox@^3.11.0":
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/@react-aria/checkbox/-/checkbox-3.11.0.tgz#f4249befb42b0639af53ce4014bdbd53d4aafcd3"
+  integrity sha512-3C5ON4IvFu69LihMOB6Y2Zr4T0zjkuPfQ6HrHuS9SiFU+IZuv1z38K/bXk7UkmZoiLtWLloNA5XKNCwf+Y+6Xw==
+  dependencies:
+    "@react-aria/label" "^3.7.0"
+    "@react-aria/toggle" "^3.8.0"
+    "@react-aria/utils" "^3.20.0"
+    "@react-stately/checkbox" "^3.5.0"
+    "@react-stately/toggle" "^3.6.2"
+    "@react-types/checkbox" "^3.5.1"
+    "@react-types/shared" "^3.20.0"
+    "@swc/helpers" "^0.5.0"
+
 "@react-aria/dialog@^3.5.5":
   version "3.5.5"
   resolved "https://registry.npmjs.org/@react-aria/dialog/-/dialog-3.5.5.tgz"
@@ -4124,6 +4157,17 @@
     "@react-types/shared" "^3.20.0"
     "@swc/helpers" "^0.5.0"
     clsx "^1.1.1"
+
+"@react-stately/checkbox@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@react-stately/checkbox/-/checkbox-3.5.0.tgz#a19ad2b7f676d4453ba07af3c6c2d046f1e39c03"
+  integrity sha512-DSSC5nXd9P07ddyDZ6FBwaMAypURCwCRhC8kli5MNRF8/KCDJxWOpWe6LDRXeDgA6EN7ExE1deb8gydIrYmUOw==
+  dependencies:
+    "@react-stately/toggle" "^3.6.2"
+    "@react-stately/utils" "^3.7.0"
+    "@react-types/checkbox" "^3.5.1"
+    "@react-types/shared" "^3.20.0"
+    "@swc/helpers" "^0.5.0"
 
 "@react-stately/collections@^3.10.0", "@react-stately/collections@^3.10.1":
   version "3.10.1"

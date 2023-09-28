@@ -14,6 +14,7 @@ import { getChainInfo } from "@/config/chains";
 import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { SubstrateChain } from "@/types";
 import { rewardsSchema } from "../rewards-schema";
+import { Checkbox } from "@nextui-org/checkbox";
 
 export function RewardsCreationRarityFields({
   rarity,
@@ -72,20 +73,29 @@ export function RewardsCreationRarityFields({
           </h3>
         </CardHeader>
         <CardBody className="flex gap-3 bg-background">
-          <div className="text-sm flex justify-start items-center">
-            <span className="mr-2">upload file</span>
-            <Switch
-              size="sm"
-              color="secondary"
-              onChange={() => setIsUploadSelected(!isUploadSelected)}
-            >
-              ipfs cid
-            </Switch>
+          <div className="text-sm flex justify-start items-center justify-between">
+            <div className="flex items-center">
+              <span className="mr-2">upload file</span>
+              <Switch
+                size="sm"
+                color="secondary"
+                onChange={() => setIsUploadSelected(!isUploadSelected)}
+              >
+                ipfs cid
+              </Switch>
+            </div>
+            <Checkbox size="sm" color="secondary">
+              Cover
+            </Checkbox>
           </div>
+          <span className="text-tiny text-foreground-400">
+            Either upload files here but be limited in size, or directly set a
+            link to an ipfs file you uploaded somewhere.
+          </span>
           <div className="text-xs flex flex-col">
             {isUploadSelected ? (
               <>
-                <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-16 py-2 overflow-x-clip">
+                <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100  rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-20 py-2 overflow-x-clip">
                   <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
                     Upload {rarity} File (max 1.5MB)
                   </label>
@@ -118,7 +128,7 @@ export function RewardsCreationRarityFields({
                   )}
                 </div>
                 {shouldHaveCover[rarity] && (
-                  <div className="mt-4 relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-16 py-2 overflow-x-clip">
+                  <div className="mt-4 relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-unit-12 py-2 overflow-x-clip">
                     <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
                       Upload {rarity} Cover File (max 1.5MB)
                     </label>
@@ -145,9 +155,9 @@ export function RewardsCreationRarityFields({
                 <Input
                   id={`imageCid-${rarity}`}
                   label={`IPFS  CID of ${rarity} NFT`}
-                  placeholder={`Enter CID of ${rarity} NFT`}
+                  placeholder={`ipfs://ipfs/...`}
                   type="text"
-                  className="h-16"
+                  className="h-20"
                   color={
                     !!errors[`options.${optionIndex}].imageCid`]
                       ? "danger"
@@ -165,9 +175,9 @@ export function RewardsCreationRarityFields({
                   <Input
                     id={`coverCid-${rarity}`}
                     label={`IPFS  Cover CID of ${rarity} NFT`}
-                    placeholder={`Enter Cover CID of ${rarity} NFT`}
+                    placeholder={`ipfs://ipfs/...`}
                     type="text"
-                    className="h-16"
+                    className="h-20"
                     color={
                       !!errors[`options.${optionIndex}].coverCid`]
                         ? "danger"
