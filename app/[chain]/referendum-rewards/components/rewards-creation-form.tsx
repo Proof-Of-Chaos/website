@@ -45,13 +45,18 @@ export default function RewardsCreationForm({
   const [isCollectionCreatePending, setIsCollectionCreatePending] =
     useState(false);
   const { ss58Format, name: activeChainName } = getChainInfo(chain);
-  const chainRewardsSchema = rewardsSchema(activeChainName, ss58Format);
-
-  const explode = useAppStore((s) => s.explode);
 
   const walletAddress = useAppStore(
     (state) => state.user.actingAccount?.address
   );
+
+  const chainRewardsSchema = rewardsSchema(
+    activeChainName,
+    walletAddress,
+    ss58Format
+  );
+
+  const explode = useAppStore((s) => s.explode);
 
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
   const { DEFAULT_REWARDS_CONFIG } = rewardsConfig;

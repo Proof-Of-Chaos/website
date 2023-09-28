@@ -5,7 +5,7 @@ import { kusama } from "./kusama";
 
 const rococoConfig = {
   symbol: "ROC",
-  ss58Format: 42,
+  ss58Format: 2,
   decimals: 12,
   blockTime: 6000,
 };

@@ -43,9 +43,15 @@ export default function FormActions({
   // onSubmit?: (data: any) => Promise<any>;
   chain: SubstrateChain;
 }) {
+  const { actingAccount } = useAppStore((state) => state.user);
+  const userAddress = actingAccount?.address;
   const activeChain = getChainInfo(chain);
   const { ss58Format, name: activeChainName, icon } = activeChain;
-  const chainRewardsSchema = rewardsSchema(activeChainName, ss58Format);
+  const chainRewardsSchema = rewardsSchema(
+    activeChainName,
+    userAddress,
+    ss58Format
+  );
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
   const { DEFAULT_REWARDS_CONFIG } = rewardsConfig;
 

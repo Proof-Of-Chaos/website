@@ -35,18 +35,22 @@ export async function POST(req: NextRequest) {
   let selectedChain: SubstrateChain;
   let sender;
 
+  // parse the form data that is coming from the client
+  formData = await req.formData();
+  console.log("formData", formData);
+
+  sender = formData?.get("sender")?.toString();
+  if (!sender) {
+    throw new Error("Missing sender");
+  }
+
+  // get the form data as json so we can work with it
+  const rewardConfigData = formData?.get("rewardConfig");
+  if (!rewardConfigData) {
+    throw new Error("Missing formData");
+  }
+
   try {
-    // parse the form data that is coming from the client
-    formData = await req.formData();
-    console.log("formData", formData);
-
-    sender = formData?.get("sender");
-
-    // get the form data as json so we can work with it
-    const rewardConfigData = formData?.get("rewardConfig");
-    if (!rewardConfigData) {
-      throw new Error("Missing formData");
-    }
     rewardConfig = JSON.parse(rewardConfigData?.toString());
 
     console.log("rewardConfig json", rewardConfig);
@@ -74,11 +78,11 @@ export async function POST(req: NextRequest) {
 
     console.log("rewardConfig after file transform", rewardConfig);
 
-    const schemaObject = zodSchemaObject(selectedChain, ss58Format);
+    const schemaObject = zodSchemaObject(selectedChain, sender, ss58Format);
     const schema = zfd.formData(schemaObject);
 
     console.info("validating form data", rewardConfig);
-    const result = schema.safeParse(rewardConfig);
+    const result = await schema.safeParseAsync(rewardConfig);
     console.log("result", result);
 
     if (!result.success) {

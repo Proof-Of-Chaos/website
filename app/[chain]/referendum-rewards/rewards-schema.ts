@@ -4,6 +4,8 @@ import { ChainConfig, SubstrateChain } from "@/types";
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { z } from "zod";
 import { RewardCriteria, SendAndFinalizeResult } from "./types";
+import { getChainInfo } from "@/config/chains";
+import { getChain } from "@/app/vote/server-actions/get-chain";
 
 export function validateAddress(address: string, ss58Format: number) {
   try {
@@ -43,7 +45,11 @@ const fileUpload =
           "File Format not supported"
         );
 
-export const zodSchemaObject = (chain: SubstrateChain, ss58Format: number) => {
+export const zodSchemaObject = (
+  chain: SubstrateChain,
+  userAddress: string | undefined,
+  ss58Format: number
+) => {
   return {
     chain: z.nativeEnum(SubstrateChain).default(SubstrateChain.Kusama),
     criteria: z.nativeEnum(RewardCriteria, {
@@ -52,7 +58,7 @@ export const zodSchemaObject = (chain: SubstrateChain, ss58Format: number) => {
     refIndex: z.string().min(1, "Please select a referendum"),
     royaltyAddress: z.custom<string>(
       (value) => validateAddress(value as string, ss58Format),
-      `Not a valid ${titleCase(chain)} address`
+      `Not a valid ${titleCase(chain)} asset hub address`
     ),
     collectionConfig: z.object({
       id: z
@@ -60,8 +66,30 @@ export const zodSchemaObject = (chain: SubstrateChain, ss58Format: number) => {
         .transform((id) => parseInt(id) || -1)
         .refine((id) => id >= 0, "Id must be a positive number")
         .refine(async (id) => {
-          return true;
-        }),
+          const { assetHubApi } = getChainInfo(chain);
+          console.log("Aaa", id);
+
+          if (id >= 0) {
+            const collectionData = await assetHubApi?.query.nfts.collection(id);
+            const encodedAddress =
+              userAddress && encodeAddress(userAddress, ss58Format);
+
+            console.log(
+              "collectionData",
+              collectionData,
+              collectionData?.toJSON()?.owner,
+              "here",
+              ss58Format,
+              userAddress
+            );
+            const ownsCollection =
+              (collectionData?.toJSON() as any)?.owner === encodedAddress;
+
+            return ownsCollection;
+          } else {
+            return false;
+          }
+        }, "You do not own this collection"),
       name: z.string().optional(),
       description: z.string().optional(),
       // TODO
@@ -119,7 +147,11 @@ export const zodSchemaObject = (chain: SubstrateChain, ss58Format: number) => {
 };
 
 // validation schema for rewards form
-export const rewardsSchema = (chain: SubstrateChain, ss58Format: number) => {
-  const obj = zodSchemaObject(chain, ss58Format);
+export const rewardsSchema = (
+  chain: SubstrateChain,
+  userAddress: string | undefined,
+  ss58Format: number
+) => {
+  const obj = zodSchemaObject(chain, userAddress, ss58Format);
   return z.object(obj);
 };
