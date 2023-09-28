@@ -15,12 +15,20 @@ import {
   formatVote,
 } from "@/app/api/rewards/util";
 
-export const preload = (chain: SubstrateChain, userAddress: string) => {
-  void getUserVotes(chain, userAddress);
+export const preload = (
+  chain: SubstrateChain,
+  userAddress: string,
+  referendaFilter: "ongoing" | "past" | "all" | number
+) => {
+  void getUserVotes(chain, userAddress, referendaFilter);
 };
 
 export const getUserVotes = cache(
-  async (chain: SubstrateChain, userAddress: string) => {
+  async (
+    chain: SubstrateChain,
+    userAddress: string,
+    referendaFilter: "ongoing" | "past" | "all" | number
+  ) => {
     const safeChain = (chain as SubstrateChain) || SubstrateChain.Kusama;
     const chainConfig = await getChainByName(safeChain);
     const { api } = chainConfig;
@@ -55,6 +63,17 @@ export const getUserVotes = cache(
 
     console.log(votingForTillNow.length, "votes qureied");
 
+    // const refIndexInt = parseInt(referendaFilter);
+    // if (!isNaN(refIndexInt)) {
+    //   throw "refIndexFilter for single referendum for getUserVotes not yet implemented";
+    // } else {
+    //   if (referendaFilter === "ongoing") {
+    //     console.error(`not implemented yet ${referendaFilter}`);
+    //   } else {
+    //     throw `invalid referendaFilter ${referendaFilter}`;
+    //   }
+    // }
+
     //format all direct votes
 
     for (const vote of votingForTillNow) {
@@ -62,7 +81,7 @@ export const getUserVotes = cache(
         const { accountId, track } = vote;
 
         // For each given track, these are the invididual votes for that track,
-        // as well as the total delegation amounts for that particular track
+        //     as well as the total delegation amounts for that particular track
 
         // The total delegation amounts.
         //     delegationVotes - the _total_ amount of tokens applied in voting. This takes the conviction into account

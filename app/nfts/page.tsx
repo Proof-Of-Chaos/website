@@ -66,8 +66,6 @@ export default function NFTPage() {
         transition from RMRK NFTs to nft pallet NFTs
       </p>
       <p className="text-center text-4xl">🔥</p>
-
-      <Button onClick={getTest}>disconnect api</Button>
     </div>
   );
 }

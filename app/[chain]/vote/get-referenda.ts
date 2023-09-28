@@ -5,10 +5,10 @@ import { cache } from "react";
 import "server-only";
 
 export const preload = (chain: SubstrateChain) => {
-  void getReferenda(chain);
+  void getOngoingReferenda(chain);
 };
 
-export const getReferenda = cache(
+export const getOngoingReferenda = cache(
   async (chain: SubstrateChain, trackFilter = "all", refFilter = "all") => {
     const safeChain = (chain as SubstrateChain) || SubstrateChain.Kusama;
     const chainConfig = await getChainByName(safeChain);

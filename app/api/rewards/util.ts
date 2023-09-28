@@ -899,8 +899,12 @@ export const formatDelegatedVotes = async (
     const voteDirection = vote.voteDirection;
     let balance;
 
-    const totalForSplit = new BN(vote.balance.aye).add(new BN(vote.balance.nay));
-    const totalForSplitAbstain = totalForSplit.add(new BN(vote.balance.abstain));
+    const totalForSplit = new BN(vote.balance.aye).add(
+      new BN(vote.balance.nay)
+    );
+    const totalForSplitAbstain = totalForSplit.add(
+      new BN(vote.balance.abstain)
+    );
 
     switch (voteDirectionType) {
       case "Standard":
@@ -912,16 +916,36 @@ export const formatDelegatedVotes = async (
         break;
       case "Split":
         balance = {
-          aye: totalForSplit.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.aye).div(totalForSplit)).toString(),
-          nay: totalForSplit.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.nay).div(totalForSplit)).toString(),
+          aye: totalForSplit.isZero()
+            ? "0"
+            : new BN(delegation.balance)
+                .mul(new BN(vote.balance.aye).div(totalForSplit))
+                .toString(),
+          nay: totalForSplit.isZero()
+            ? "0"
+            : new BN(delegation.balance)
+                .mul(new BN(vote.balance.nay).div(totalForSplit))
+                .toString(),
           abstain: "0",
         };
         break;
       case "SplitAbstain":
         balance = {
-          aye: totalForSplitAbstain.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.aye).div(totalForSplitAbstain)).toString(),
-          nay: totalForSplitAbstain.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.nay).div(totalForSplitAbstain)).toString(),
-          abstain: totalForSplitAbstain.isZero() ? "0" : new BN(delegation.balance).mul(new BN(vote.balance.abstain).div(totalForSplitAbstain)).toString(),
+          aye: totalForSplitAbstain.isZero()
+            ? "0"
+            : new BN(delegation.balance)
+                .mul(new BN(vote.balance.aye).div(totalForSplitAbstain))
+                .toString(),
+          nay: totalForSplitAbstain.isZero()
+            ? "0"
+            : new BN(delegation.balance)
+                .mul(new BN(vote.balance.nay).div(totalForSplitAbstain))
+                .toString(),
+          abstain: totalForSplitAbstain.isZero()
+            ? "0"
+            : new BN(delegation.balance)
+                .mul(new BN(vote.balance.abstain).div(totalForSplitAbstain))
+                .toString(),
         };
         break;
     }
@@ -947,8 +971,7 @@ export const formatDelegatedVotes = async (
     delegatedVotes.push(delegatedVote);
   }
   return delegatedVotes;
-}
-
+};
 
 export const formatDelegation = async (
   vote: VotePolkadot
@@ -1019,14 +1042,14 @@ export const formatDelegation = async (
   return delegation;
 };
 
-export const formatVote = async (
+export const formatVote = (
   accountId: string,
   track: number,
   index: string,
   referendumVote: PalletConvictionVotingVoteAccountVote,
   delegationCapital: string,
   delegationVotes: string
-): Promise<DecoratedConvictionVote | undefined> => {
+): DecoratedConvictionVote | undefined => {
   // Each of these is the votingFor for an account for a given governance track
 
   // The vote for each referendum - this is the referendum index,the conviction, the vote type (aye,nay), and the balance

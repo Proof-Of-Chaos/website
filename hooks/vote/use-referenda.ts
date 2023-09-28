@@ -9,7 +9,10 @@ type UseReferendaType = {
   tracks: UITrack[];
 };
 
-export const useReferenda = (refFilter: string = "all", withTracks = true) => {
+export const useReferenda = (
+  refFilter: string = "ongoing",
+  withTracks = true
+) => {
   const { activeChain } = useSubstrateChain();
   const chain = activeChain?.name || DEFAULT_CHAIN;
 

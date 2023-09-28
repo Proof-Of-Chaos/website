@@ -2,8 +2,10 @@
 
 import { UIReferendum, UITrack } from "@/app/[chain]/vote/types";
 import { useAppStore } from "@/app/zustand";
+import { InlineLoader } from "@/components/inline-loader";
 import { titleCase } from "@/components/util";
-import { SubstrateChain } from "@/types";
+import { useLatestUserVotes } from "@/hooks/vote/use-latest-user-vote";
+import { DecoratedConvictionVote, SubstrateChain } from "@/types";
 import { Button, ButtonGroup } from "@nextui-org/button";
 import Link from "next/link";
 import { Key } from "react";
@@ -22,6 +24,16 @@ export function TrackFilter({
   const setTrackFilter = useAppStore((state) => state.setTrackFilter);
   const safeChain = chain || SubstrateChain.Kusama;
 
+  const { data: userVotes, isLoading: isUserVotesLoading } =
+    useLatestUserVotes("all");
+
+  const votedAmount =
+    userVotes?.filter(
+      (vote: DecoratedConvictionVote) => vote?.referendumIndex !== undefined
+    ).length || 0;
+  const unvotedAmount =
+    referenda && referenda.length ? referenda.length - votedAmount : 0;
+
   // get the count of referenda for each track
   const referendaCountPerTrack = tracks?.map((track) => {
     const count = referenda?.filter(
@@ -36,6 +48,14 @@ export function TrackFilter({
     trackId: "all",
     count: totalCount,
   });
+  // referendaCountPerTrack?.push({
+  //   trackId: "voted",
+  //   count: votedAmount,
+  // });
+  // referendaCountPerTrack?.push({
+  //   trackId: "unvoted",
+  //   count: unvotedAmount,
+  // });
 
   const distinctReferendaTrackIds = referenda
     ?.map((ref) => ref.track)
@@ -49,8 +69,8 @@ export function TrackFilter({
   const moreTracks = [
     { id: "all", name: "all", text: "All" },
     ...(distinctTracks || []),
-    { id: "voted", name: "voted", text: "Voted" },
-    { id: "unvoted", name: "unvoted", text: "Unvoted" },
+    // { id: "voted", name: "voted", text: "Voted" },
+    // { id: "unvoted", name: "unvoted", text: "Unvoted" },
   ];
 
   const handleChange = (key: Key) => {
@@ -81,7 +101,12 @@ export function TrackFilter({
               {/* <Link href={`?trackFilter=${track.id}`}> */}
               {titleCase(track.name)}
               <span className="text-xs text-gray-500 ml-1">
-                {referendaCount}
+                {isUserVotesLoading &&
+                ["voted", "unvoted"].includes(track.id) ? (
+                  <InlineLoader />
+                ) : (
+                  referendaCount
+                )}
               </span>
               {/* </Link> */}
             </Button>

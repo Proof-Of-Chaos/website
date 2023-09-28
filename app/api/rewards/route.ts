@@ -1,4 +1,3 @@
-import { zodSchemaObject } from "@/app/[chain]/referendum-rewards/util";
 import { DEFAULT_CHAIN, getChainByName, getChainInfo } from "@/config/chains";
 import { SubstrateChain } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -22,6 +21,7 @@ import {
 import fs from "fs";
 import { rewardsConfig } from "../../../config/rewards";
 import { mergeWithDefaultConfig } from "@/components/util";
+import { zodSchemaObject } from "@/app/[chain]/referendum-rewards/rewards-schema";
 
 export async function POST(req: NextRequest) {
   //   let { rewardsConfig }: { rewardsConfig: unknown } = await req.json();

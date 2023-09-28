@@ -1,6 +1,6 @@
 import { DEFAULT_CHAIN, CHAINS_ENABLED, getChainByName } from "@/config/chains";
 import { ChainConfig, SubstrateChain } from "@/types";
-import { getReferenda } from "./get-referenda";
+import { getOngoingReferenda } from "./get-referenda";
 import { getTracks } from "./get-tracks";
 import ReferendumList from "./components/referendum-list";
 import { getUserVotes } from "./get-user-votes";
@@ -28,7 +28,7 @@ export default async function PageVote({
     ? (chain as SubstrateChain)
     : DEFAULT_CHAIN;
 
-  const referenda = await getReferenda(selectedChain);
+  const referenda = await getOngoingReferenda(selectedChain);
   const tracks = await getTracks(selectedChain);
 
   return (

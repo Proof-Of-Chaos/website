@@ -8,7 +8,6 @@ import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { StreamResult, SubstrateChain } from "@/types";
 import { getChainInfo } from "@/config/chains";
 import { useFormContext } from "react-hook-form";
-import { rewardsSchema } from "../util";
 import { rewardsConfig } from "@/config/rewards";
 import { useAppStore } from "@/app/zustand";
 import { TxTypes } from "@/components/util-client";
@@ -27,6 +26,7 @@ import { TextRotator } from "@/components/text-rotator";
 import { mergeWithDefaultConfig } from "../../../../components/util";
 import { error } from "console";
 import { Link } from "@nextui-org/link";
+import { rewardsSchema } from "../rewards-schema";
 export const revalidate = 3600;
 
 type ConfigReqBody = RewardConfiguration & {
@@ -424,7 +424,7 @@ export default function FormActions({
       </Tabs>
       {errors && Object.keys(errors).length > 0 && (
         <span className="text-danger text-lg text-center w-full">
-          There are form errors, please see above.
+          There are input errors, please see above.
         </span>
       )}
       <ModalAnalyzeSendout

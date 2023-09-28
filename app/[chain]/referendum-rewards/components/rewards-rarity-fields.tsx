@@ -13,7 +13,7 @@ import { FieldErrors, UseFormRegister, useFormContext } from "react-hook-form";
 import { getChainInfo } from "@/config/chains";
 import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { SubstrateChain } from "@/types";
-import { rewardsSchema } from "../util";
+import { rewardsSchema } from "../rewards-schema";
 
 export function RewardsCreationRarityFields({
   rarity,
@@ -76,7 +76,7 @@ export function RewardsCreationRarityFields({
           <div className="text-xs flex flex-col">
             {isUploadSelected ? (
               <>
-                <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-16 py-2">
+                <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-16 py-2 overflow-x-clip">
                   <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
                     Upload {rarity} Image (max 1.5MB)
                   </label>
@@ -105,6 +105,17 @@ export function RewardsCreationRarityFields({
                   placeholder={`Enter Image CID of ${rarity} NFT`}
                   type="text"
                   className="h-16"
+                  color={
+                    !!errors[`options.${optionIndex}].imageCid`]
+                      ? "danger"
+                      : "default"
+                  }
+                  errorMessage={
+                    //@ts-ignore
+                    !!errors?.options?.[optionIndex]?.imageCid &&
+                    //@ts-ignore
+                    errors?.options?.[optionIndex]?.imageCid?.message
+                  }
                   {...register(`options.${optionIndex}.imageCid`, {})}
                 />
               </>

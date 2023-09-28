@@ -3,11 +3,11 @@
 import { title } from "@/components/primitives";
 import { useSubstrateChain } from "@/context/substrate-chain-context";
 
-import { useLatestUserVote } from "@/hooks/vote/use-latest-user-vote";
+import { useLatestUserVotes } from "@/hooks/vote/use-latest-user-vote";
 import { usePAUserVotes } from "@/hooks/vote/use-pa-user-votes";
 
 export default function VoteTestPage() {
-  const { data: votes, isLoading } = useLatestUserVote("all");
+  const { data: votes, isLoading } = useLatestUserVotes("ongoing");
 
   const { data: paVotes, isLoading: isPALoading } = usePAUserVotes();
 
