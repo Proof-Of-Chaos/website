@@ -35,8 +35,6 @@ export const getUserVotes =
     let formattedVotes = [];
     let delegations = [];
 
-    console.log(votingForTillNow.length, "votes qureied");
-
     //format all direct votes
 
     for (const vote of votingForTillNow) {
@@ -72,7 +70,9 @@ export const getUserVotes =
         delegations.push(await formatDelegation(vote));
       }
     }
-    console.log(`Finished adding ${formattedVotes.length} votes`, {
+
+    const directVoteCount = formattedVotes.length
+    console.log(`Finished adding ${directVoteCount} direct votes`, {
       label: "User Votes",
     });
 
@@ -123,6 +123,10 @@ export const getUserVotes =
       );
     }
 
+    console.log(`Finished adding ${formattedVotes.length -  directVoteCount} delegated votes`, {
+      label: "User Votes",
+    });
+
     switch (referendaFilter) {
       case "ongoing":
         const ongoingRefs = await getOngoingReferenda(chain);
@@ -138,7 +142,7 @@ export const getUserVotes =
     console.log(
       `Finished filtering and formatting ${formattedVotes.length} user votes for referenda with filter ${referendaFilter}.`,
       {
-        label: "Democracy",
+        label: "User Votes",
       }
     );
 
