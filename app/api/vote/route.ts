@@ -1,9 +1,6 @@
-import type { PalletReferendaReferendumInfoConvictionVotingTally } from "@polkadot/types/lookup";
-import { StorageKey, u32, Option } from "@polkadot/types";
 import { NextResponse, NextRequest } from "next/server";
-import { DecoratedConvictionVote, SubstrateChain } from "@/types/index";
+import { SubstrateChain, UserVotesReturnType } from "@/types/index";
 import { getChainByName } from "@/config/chains";
-import { getOngoingReferenda } from "@/app/[chain]/vote/get-referenda";
 import { getUserVotes } from "@/app/api/vote/get-user-votes";
 
 // api that returns
@@ -30,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   // declare a variable to hold the result which is either a singleVote or a list of votes,
   // delegated or direct
-  let result: DecoratedConvictionVote[] | undefined;
+  let result: UserVotesReturnType;
   result = await getUserVotes(chain, userAddress, referendaFilter);
 
 

@@ -123,6 +123,11 @@ export interface DecoratedConvictionVote extends ConvictionVote {
   chosenOption?: RewardOption;
 }
 
+export interface UserVotesReturnType {
+  votes: DecoratedConvictionVote[],
+  delegations: ConvictionDelegation[]
+};
+
 export type Chances = { [key: string]: number };
 
 export interface DirectVoteLock extends Lock {

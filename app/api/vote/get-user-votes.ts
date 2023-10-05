@@ -4,7 +4,7 @@ import {
 } from "@/app/[chain]/vote/util";
 import { useAppStore } from "@/app/zustand";
 import { getChainByName } from "@/config/chains";
-import { ConvictionDelegation, DecoratedConvictionVote, SubstrateChain, VotePolkadot } from "@/types";
+import { ConvictionDelegation, DecoratedConvictionVote, SubstrateChain, VotePolkadot, UserVotesReturnType } from "@/types";
 import { cache } from "react";
 import type { PalletConvictionVotingVoteVoting } from "@polkadot/types/lookup";
 import { getOpenGovReferenda } from "@/app/api/rewards/get-conviction-voting";
@@ -17,7 +17,7 @@ import { getOngoingReferenda } from "@/app/[chain]/vote/get-referenda";
 import { UIReferendum } from "@/app/[chain]/vote/types";
 
 export const getUserVotes =
-  async (chain: SubstrateChain, userAddress: string, referendaFilter: string): Promise<DecoratedConvictionVote[]> => {
+  async (chain: SubstrateChain, userAddress: string, referendaFilter: string): Promise<UserVotesReturnType> => {
     const safeChain = (chain as SubstrateChain) || SubstrateChain.Kusama;
     const chainConfig = await getChainByName(safeChain);
     const { api } = chainConfig;
@@ -104,7 +104,7 @@ export const getUserVotes =
             } = vote.voteData.asCasting;
             // push the given referendum votes to refVotes
             for (const [index, referendumVote] of votes) {
-              const formattedVote: DecoratedConvictionVote | undefined = await formatVote(
+              const formattedVote: DecoratedConvictionVote | undefined = formatVote(
                 accountId,
                 track,
                 index.toString(),
@@ -150,5 +150,5 @@ export const getUserVotes =
       }
     );
 
-    return formattedVotes;
+    return {votes: formattedVotes, delegations } ;
   }
