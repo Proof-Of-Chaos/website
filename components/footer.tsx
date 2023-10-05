@@ -12,10 +12,6 @@ export function Footer() {
             Website by{" "}
             <Link href="https://github.com/niklasp" size="sm">
               niftesty
-            </Link>{" "}
-            &{" "}
-            <Link href="https://twitter.com/tumispro" size="sm">
-              Tum
             </Link>
           </p>
           <p className="w-full sm:w-auto text-center text-sm text-gray-500 sm:pl-4 sm:border-l sm:border-gray-200 sm:ml-4">
