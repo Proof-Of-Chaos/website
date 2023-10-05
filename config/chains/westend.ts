@@ -3,19 +3,19 @@ import { KusamaIcon, PolkadotIcon, RococoIcon } from "@/components/icons";
 import { BN, formatBalance } from "@polkadot/util";
 import { kusama } from "./kusama";
 
-const rococoConfig = {
+const westendConfig = {
   symbol: "ROC",
-  ss58Format: 2,
+  ss58Format: 42,
   decimals: 12,
   blockTime: 6000,
 };
 
 const formatSpend = (mul: number, value: BN): string =>
   `${formatBalance(value.muln(mul), {
-    decimals: rococoConfig.decimals,
+    decimals: westendConfig.decimals,
     forceUnit: "-",
     withSi: true,
-    withUnit: rococoConfig.symbol,
+    withUnit: westendConfig.symbol,
   })}`;
 
 // https://github.com/paritytech/polkadot/blob/6e3f2c5b4b6e6927915de2f784e1d831717760fa/runtime/kusama/constants/src/lib.rs#L28-L32
@@ -133,8 +133,8 @@ const tracks = [
   },
 ];
 
-export const rococo: ChainConfig = {
-  name: SubstrateChain.Rococo,
+export const westend: ChainConfig = {
+  name: SubstrateChain.Westend,
   endpoints,
   assetHubEndpoints,
   selectedAssetHubEndpoint: 0,
@@ -143,5 +143,5 @@ export const rococo: ChainConfig = {
   subscanAssetHub: "https://assethub-rococo.subscan.io",
   icon: RococoIcon,
   tracks,
-  ...rococoConfig,
+  ...westendConfig,
 };

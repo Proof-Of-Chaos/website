@@ -3,20 +3,23 @@ import { StorageKey, u32, Option } from "@polkadot/types";
 import { NextResponse, NextRequest } from "next/server";
 import { DecoratedConvictionVote, SubstrateChain } from "@/types/index";
 import { getChainByName } from "@/config/chains";
-import { getReferenda } from "@/app/[chain]/vote/get-referenda";
+import { getOngoingReferenda } from "@/app/[chain]/vote/get-referenda";
 import { getUserVotes } from "@/app/api/vote/get-user-votes";
 
-// function that handles post requests from the client
+// api that returns
 export async function POST(req: NextRequest) {
   // read the post body as json
   let {
     chain,
-    refIndex,
+    referendaFilter = "ongoing",
     userAddress,
-  }: { chain: SubstrateChain; refIndex: string; userAddress: string } =
-    await req.json();
+  }: {
+    chain: SubstrateChain;
+    referendaFilter: string;
+    userAddress: string;
+  } = await req.json();
 
-  console.log("server route /api/vote", chain, refIndex);
+  console.log("server route /api/vote", chain, referendaFilter);
 
   const chainConfig = await getChainByName(chain);
   const { api } = chainConfig;
@@ -25,27 +28,10 @@ export async function POST(req: NextRequest) {
     throw `can not get api of ${chain}`;
   }
 
-  const refIndexInt = parseInt(refIndex);
-
   // declare a variable to hold the result which is either a singleVote or a list of votes,
   // delegated or direct
-  let result: DecoratedConvictionVote[] = [];
-
-  if (!isNaN(refIndexInt)) {
-    // query the user votes for only that ref
-    // ...
-    result = await getUserVotes(chain, userAddress);
-    // filter out only that ref
-    result = result.filter(vote => vote.referendumIndex === refIndex);
-  } else {
-    // you might want to get all ongoing referenda here via
-    const ongoingRefs = await getReferenda(chain);
-    result = await getUserVotes(chain, userAddress);
-    //filter out only ongoing votes
-    const ongoingRefsIndices = ongoingRefs.map(ref => ref.index);
-    result = result.filter(vote => ongoingRefsIndices.includes(vote.referendumIndex));
-    result.sort((a, b) => parseInt(b.referendumIndex) - parseInt(a.referendumIndex));
-  }
+  let result: DecoratedConvictionVote | DecoratedConvictionVote[] | undefined;
+  result = await getUserVotes(chain, userAddress, referendaFilter);
 
   // and return the latest user vote or where they delegated as
   // as serializable json (aka strings, numbers, booleans, plain objects, arrays, etc.)

@@ -7,6 +7,7 @@ import { SubstrateChain } from "@/types";
 export type RewardsConfigType = {
   royaltyAddress: string;
   acceptedNftFormats: string[];
+  acceptedNonImageFormats: string[];
   maxFileSize: number;
   DEFAULT_REWARDS_CONFIG: RewardConfiguration;
   rewardsFilter: string[];
@@ -25,18 +26,25 @@ export const rewardsConfig: RewardsConfigType = {
   royaltyAddress:
     process.env.NEXT_PUBLIC_ROYALTY_ADDRESS ||
     "Go8NpTvzdpfpK1rprXW1tE4TFTHtd2NDJCqZLw5V77GR8r4",
+  acceptedNonImageFormats: [
+    "video/mp4",
+    "video/webp",
+    "audio/mp3",
+    "audio/flac",
+    "3d/glb",
+  ],
   acceptedNftFormats: [
+    "video/mp4",
+    "video/webp",
+    "audio/mp3",
+    "audio/flac",
+    "3d/glb",
     "image/jpeg",
     "image/png",
     "image/gif",
     "image/tiff",
     "image/svg",
     "image/bmp",
-    "video/mp4",
-    "video/webp",
-    "audio/mp3",
-    "audio/flac",
-    "3d/glb",
   ],
   maxFileSize: 2 * 1024 * 1024,
   DEFAULT_REWARDS_CONFIG: {

@@ -80,171 +80,179 @@ const emptyUser = {
 };
 
 export const useAppStore = create<AppState>()(
-  devtools((set, get) => ({
-    chain: kusama,
-    isChainApiReady: false,
-    user: emptyUser,
-    filters: {
-      trackFilter: "all",
-    },
-    modals: {
-      isOpen: false,
-      view: null,
-    },
-    rewards: {
-      form: {
-        values: rewardsConfig.DEFAULT_REWARDS_CONFIG,
+  devtools(
+    // persist(
+    (set, get) => ({
+      chain: kusama,
+      isChainApiReady: false,
+      user: emptyUser,
+      filters: {
+        trackFilter: "all",
       },
-    },
-    confetti: false,
-    explode: (show) => {
-      set({
-        confetti: show,
-      });
-    },
-    setRewardFormValues: (values) => {
-      const { rewards } = get();
-      set({
-        rewards: {
-          ...rewards,
-          form: {
-            ...rewards.form,
-            values: {
-              ...rewards.form.values,
-              ...values,
+      modals: {
+        isOpen: false,
+        view: null,
+      },
+      rewards: {
+        form: {
+          values: rewardsConfig.DEFAULT_REWARDS_CONFIG,
+        },
+      },
+      confetti: false,
+      explode: (show) => {
+        set({
+          confetti: show,
+        });
+      },
+      setRewardFormValues: (values) => {
+        const { rewards } = get();
+        set({
+          rewards: {
+            ...rewards,
+            form: {
+              ...rewards.form,
+              values: {
+                ...rewards.form.values,
+                ...values,
+              },
             },
           },
-        },
-      });
-    },
+        });
+      },
 
-    openModal: (view, modalProps) => {
-      const { modals } = get();
-      set({
-        modals: {
-          ...modals,
-          modalProps,
-          isOpen: true,
-          view,
-        },
-      });
-    },
-    closeModal: () => {
-      const { modals } = get();
-      set({
-        modals: {
-          ...modals,
-          isOpen: false,
-        },
-      });
-    },
-    setExtensions: (extensions) => {
-      const { user } = get();
-      set({
-        user: {
-          ...user,
-          extensions,
-        },
-      });
-    },
-    setIsExtensionReady: (isReady) => {
-      const { user } = get();
-      set({
-        user: {
-          ...user,
-          isExtensionReady: isReady,
-        },
-      });
-    },
-    setUserWantsConnection: (wantsConnection) => {
-      const { user } = get();
-      set({
-        user: {
-          ...user,
-          wantsConnection,
-        },
-      });
-    },
-    setAccounts: (accounts) => {
-      const { user } = get();
-      set({
-        user: {
-          ...user,
-          accounts,
-        },
-      });
-    },
-    setAccountIdx: (idx) => {
-      const { user } = get();
-      set({
-        user: {
-          ...user,
-          actingAccountIdx: idx,
-          actingAccount: user.accounts[idx],
-        },
-      });
-    },
-    setActingAccountSigner: (signer) => {
-      const { user } = get();
-      set({
-        user: {
-          ...user,
-          actingAccountSigner: signer,
-        },
-      });
-    },
-    disconnect: () => {
-      set({
-        user: emptyUser,
-      });
-    },
-    setIsChainApiReady: (isReady) => {
-      set({
-        isChainApiReady: isReady,
-      });
-    },
-    updateVoteState: (referendumId: string, vote: any) => {
-      // set((state) => ({
-      //   user: {
-      //     ...state.user,
-      //     voteStates: {
-      //       ...state.user.voteStates,
-      //       [`${referendumId}`]: {
-      //         ...state.user.voteStates?.[`${referendumId}`],
-      //         vote,
-      //       },
-      //     },
-      //   },
-      // }));
-    },
-    removeVoteState: (referendumId: string) => {
-      // set((state) => {
-      //   const newVoteStates = { ...state.user.voteStates };
-      //   delete newVoteStates[`${referendumId}`];
-      //   return {
-      //     user: {
-      //       ...state.user,
-      //       voteStates: newVoteStates,
-      //     },
-      //   };
-      // });
-    },
-    clearVoteState: () => {
-      // set((state) => ({
-      //   user: {
-      //     ...state.user,
-      //     voteStates: [],
-      //   },
-      // }));
-    },
+      openModal: (view, modalProps) => {
+        const { modals } = get();
+        set({
+          modals: {
+            ...modals,
+            modalProps,
+            isOpen: true,
+            view,
+          },
+        });
+      },
+      closeModal: () => {
+        const { modals } = get();
+        set({
+          modals: {
+            ...modals,
+            isOpen: false,
+          },
+        });
+      },
+      setExtensions: (extensions) => {
+        const { user } = get();
+        set({
+          user: {
+            ...user,
+            extensions,
+          },
+        });
+      },
+      setIsExtensionReady: (isReady) => {
+        const { user } = get();
+        set({
+          user: {
+            ...user,
+            isExtensionReady: isReady,
+          },
+        });
+      },
+      setUserWantsConnection: (wantsConnection) => {
+        const { user } = get();
+        set({
+          user: {
+            ...user,
+            wantsConnection,
+          },
+        });
+      },
+      setAccounts: (accounts) => {
+        const { user } = get();
+        set({
+          user: {
+            ...user,
+            accounts,
+          },
+        });
+      },
+      setAccountIdx: (idx) => {
+        const { user } = get();
+        set({
+          user: {
+            ...user,
+            actingAccountIdx: idx,
+            actingAccount: user.accounts[idx],
+          },
+        });
+      },
+      setActingAccountSigner: (signer) => {
+        const { user } = get();
+        set({
+          user: {
+            ...user,
+            actingAccountSigner: signer,
+          },
+        });
+      },
+      disconnect: () => {
+        set({
+          user: emptyUser,
+        });
+      },
+      setIsChainApiReady: (isReady) => {
+        set({
+          isChainApiReady: isReady,
+        });
+      },
+      updateVoteState: (referendumId: string, vote: any) => {
+        // set((state) => ({
+        //   user: {
+        //     ...state.user,
+        //     voteStates: {
+        //       ...state.user.voteStates,
+        //       [`${referendumId}`]: {
+        //         ...state.user.voteStates?.[`${referendumId}`],
+        //         vote,
+        //       },
+        //     },
+        //   },
+        // }));
+      },
+      removeVoteState: (referendumId: string) => {
+        // set((state) => {
+        //   const newVoteStates = { ...state.user.voteStates };
+        //   delete newVoteStates[`${referendumId}`];
+        //   return {
+        //     user: {
+        //       ...state.user,
+        //       voteStates: newVoteStates,
+        //     },
+        //   };
+        // });
+      },
+      clearVoteState: () => {
+        // set((state) => ({
+        //   user: {
+        //     ...state.user,
+        //     voteStates: [],
+        //   },
+        // }));
+      },
 
-    setTrackFilter: (trackFilter) => {
-      set((state) => ({
-        filters: {
-          ...state.filters,
-          trackFilter,
-        },
-      }));
-    },
-  }))
+      setTrackFilter: (trackFilter) => {
+        set((state) => ({
+          filters: {
+            ...state.filters,
+            trackFilter,
+          },
+        }));
+      },
+    })
+    //   {
+    //     name: "poc-storage",
+    //     partialize: (state) => ({ user: state.user }),
+    //   }
+    // )
+  )
 );

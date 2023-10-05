@@ -13,7 +13,8 @@ import { FieldErrors, UseFormRegister, useFormContext } from "react-hook-form";
 import { getChainInfo } from "@/config/chains";
 import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { SubstrateChain } from "@/types";
-import { rewardsSchema } from "../util";
+import { rewardsSchema } from "../rewards-schema";
+import { Checkbox } from "@nextui-org/checkbox";
 
 export function RewardsCreationRarityFields({
   rarity,
@@ -26,20 +27,29 @@ export function RewardsCreationRarityFields({
   const {
     register,
     formState: { errors },
+    watch,
   } = formMethods;
-  const { acceptedNftFormats } = rewardsConfig;
+  const { acceptedNftFormats, acceptedNonImageFormats } = rewardsConfig;
   const [isUploadSelected, setIsUploadSelected] = useState(true);
 
   const { activeChain } = useSubstrateChain();
   const { name, ss58Format } =
     activeChain || getChainInfo(SubstrateChain.Kusama);
 
-  const chainRewardsSchema = rewardsSchema(name, ss58Format);
+  const chainRewardsSchema = rewardsSchema(name, undefined, ss58Format);
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
 
   let optionIndex = rewardConfig.options.findIndex(
     (opt) => opt.rarity === rarity
   );
+
+  const [shouldHaveCover, setShouldHaveCover] = useState<{
+    [key: string]: boolean;
+  }>({
+    common: false,
+    rare: false,
+    epic: false,
+  });
 
   return (
     <div
@@ -63,22 +73,31 @@ export function RewardsCreationRarityFields({
           </h3>
         </CardHeader>
         <CardBody className="flex gap-3 bg-background">
-          <div className="text-sm flex justify-start items-center">
-            <span className="mr-2">upload file</span>
-            <Switch
-              size="sm"
-              color="secondary"
-              onChange={() => setIsUploadSelected(!isUploadSelected)}
-            >
-              ipfs cid
-            </Switch>
+          <div className="text-sm flex justify-start items-center justify-between">
+            <div className="flex items-center">
+              <span className="mr-2">upload file</span>
+              <Switch
+                size="sm"
+                color="secondary"
+                onChange={() => setIsUploadSelected(!isUploadSelected)}
+              >
+                ipfs cid
+              </Switch>
+            </div>
+            <Checkbox size="sm" color="secondary">
+              Cover
+            </Checkbox>
           </div>
+          <span className="text-tiny text-foreground-400">
+            Either upload files here but be limited in size, or directly set a
+            link to an ipfs file you uploaded somewhere.
+          </span>
           <div className="text-xs flex flex-col">
             {isUploadSelected ? (
               <>
-                <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-16 py-2">
+                <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100  rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-20 py-2 overflow-x-clip">
                   <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
-                    Upload {rarity} Image (max 1.5MB)
+                    Upload {rarity} File (max 1.5MB)
                   </label>
 
                   <input
@@ -87,6 +106,18 @@ export function RewardsCreationRarityFields({
                     type="file"
                     className="mt-0 pb-2"
                     {...register(`options.${optionIndex}.file`)}
+                    onChange={(e) => {
+                      const mediaType = e.target.files?.[0]?.type;
+                      const needsCover =
+                        mediaType && acceptedNonImageFormats.includes(mediaType)
+                          ? true
+                          : false;
+
+                      setShouldHaveCover({
+                        ...shouldHaveCover,
+                        [rarity]: needsCover,
+                      });
+                    }}
                   />
                   {/* @ts-ignore */}
                   {errors?.options?.[optionIndex]?.file && (
@@ -96,17 +127,71 @@ export function RewardsCreationRarityFields({
                     </span>
                   )}
                 </div>
+                {shouldHaveCover[rarity] && (
+                  <div className="mt-4 relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-unit-12 py-2 overflow-x-clip">
+                    <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
+                      Upload {rarity} Cover File (max 1.5MB)
+                    </label>
+
+                    <input
+                      id={`file-${rarity}`}
+                      accept={acceptedNftFormats.join(",")}
+                      type="file"
+                      className="mt-0 pb-2"
+                      {...register(`options.${optionIndex}.fileCover`)}
+                    />
+                    {/* @ts-ignore */}
+                    {errors?.options?.[optionIndex]?.fileCover && (
+                      <span className="w-full text-tiny text-danger px-1">
+                        {/* @ts-ignore */}
+                        <>{errors?.options?.[optionIndex].fileCover?.message}</>
+                      </span>
+                    )}
+                  </div>
+                )}
               </>
             ) : (
               <>
                 <Input
                   id={`imageCid-${rarity}`}
-                  label={`IPFS Image CID of ${rarity} NFT`}
-                  placeholder={`Enter Image CID of ${rarity} NFT`}
+                  label={`IPFS  CID of ${rarity} NFT`}
+                  placeholder={`ipfs://ipfs/...`}
                   type="text"
-                  className="h-16"
+                  className="h-20"
+                  color={
+                    !!errors[`options.${optionIndex}].imageCid`]
+                      ? "danger"
+                      : "default"
+                  }
+                  errorMessage={
+                    //@ts-ignore
+                    !!errors?.options?.[optionIndex]?.imageCid &&
+                    //@ts-ignore
+                    errors?.options?.[optionIndex]?.imageCid?.message
+                  }
                   {...register(`options.${optionIndex}.imageCid`, {})}
                 />
+                {shouldHaveCover[rarity] && (
+                  <Input
+                    id={`coverCid-${rarity}`}
+                    label={`IPFS  Cover CID of ${rarity} NFT`}
+                    placeholder={`ipfs://ipfs/...`}
+                    type="text"
+                    className="h-20"
+                    color={
+                      !!errors[`options.${optionIndex}].coverCid`]
+                        ? "danger"
+                        : "default"
+                    }
+                    errorMessage={
+                      //@ts-ignore
+                      !!errors?.options?.[optionIndex]?.coverCid &&
+                      //@ts-ignore
+                      errors?.options?.[optionIndex]?.coverCid?.message
+                    }
+                    {...register(`options.${optionIndex}.coverCid`, {})}
+                  />
+                )}
               </>
             )}
           </div>

@@ -202,7 +202,7 @@ export function ReferendumDetail({
             endBlock={endBlock}
             referendum={referendum}
           />
-          <ReferendumUserInfoCard referendum={referendum} />
+          {/* <ReferendumUserInfoCard referendum={referendum} /> */}
           <ReferendumVoteButtons referendum={{ ...referendum }} userVote={{}} />
         </div>
       </div>

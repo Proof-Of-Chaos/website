@@ -13,7 +13,6 @@ import { rewardsConfig } from "@/config/rewards";
 import { vividButtonClasses } from "@/components/primitives";
 import clsx from "clsx";
 import { FormProvider, useForm } from "react-hook-form";
-import { rewardsSchema, validateAddress } from "../util";
 import { SubstrateChain } from "@/types";
 import { getChainInfo } from "@/config/chains";
 import { z } from "zod";
@@ -36,6 +35,7 @@ import { bnToBn } from "@polkadot/util";
 import { mergeWithDefaultConfig } from "@/components/util";
 import { TxTypes } from "@/components/util-client";
 import FormActions from "./form-actions";
+import { rewardsSchema } from "../rewards-schema";
 
 export default function RewardsCreationForm({
   chain,
@@ -45,13 +45,18 @@ export default function RewardsCreationForm({
   const [isCollectionCreatePending, setIsCollectionCreatePending] =
     useState(false);
   const { ss58Format, name: activeChainName } = getChainInfo(chain);
-  const chainRewardsSchema = rewardsSchema(activeChainName, ss58Format);
-
-  const explode = useAppStore((s) => s.explode);
 
   const walletAddress = useAppStore(
     (state) => state.user.actingAccount?.address
   );
+
+  const chainRewardsSchema = rewardsSchema(
+    activeChainName,
+    walletAddress,
+    ss58Format
+  );
+
+  const explode = useAppStore((s) => s.explode);
 
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
   const { DEFAULT_REWARDS_CONFIG } = rewardsConfig;

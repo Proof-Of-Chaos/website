@@ -42,14 +42,16 @@ export default function Home() {
               variant="shadow"
               className="hover:-translate-y-0.5 w-full md:w-1/3"
             >
-              <ChainLink href="/vote">Vote Now →</ChainLink>
+              <ChainLink href="/vote" className="text-white">
+                Vote Now →
+              </ChainLink>
             </Button>
             <Button
               size="lg"
               variant="shadow"
               className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg hover:-translate-y-0.5 w-full md:w-1/3"
             >
-              <ChainLink href="/referendum-rewards">
+              <ChainLink href="/referendum-rewards" className="text-white">
                 Create Voting Rewards 🎁
               </ChainLink>
             </Button>

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -28,10 +30,34 @@ import { Logo } from "@/components/icons";
 import { ChainSwitch } from "./chain-switch";
 import { WalletConnect } from "./wallet-connect";
 import { ChainLink } from "./chain-link";
+import { Button } from "@nextui-org/button";
+import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
+  const pathname = usePathname();
+
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar
+      maxWidth="xl"
+      position="sticky"
+      classNames={{
+        item: [
+          "flex",
+          "relative",
+          "h-full",
+          "items-center",
+          "data-[active=true]:after:content-['']",
+          "data-[active=true]:after:absolute",
+          "data-[active=true]:after:-bottom-1",
+          "data-[active=true]:after:left-0",
+          "data-[active=true]:after:right-0",
+          "data-[active=true]:after:h-[3px]",
+          "data-[active=true]:after:bg-gradient-to-r",
+          "data-[active=true]:after:from-sky-500",
+          "data-[active=true]:after:to-purple-400",
+        ],
+      }}
+    >
       <NavbarContent className="lg:hidden flex-grow-0" justify="center">
         <NavbarMenuToggle />
       </NavbarContent>
@@ -44,18 +70,18 @@ export const Navbar = () => {
             </p>
             {/* p̸̤̈́r̶͖͐ơ̵̳ȯ̵͙f̵͔̔ò̵̝f̴̝̈́ć̶̖h̸̻͒a̶͙̚o̷̩͛s̵̠̏ */}
             <p className="sm:hidden font-bold -mt-1 text-3xl bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-purple-500">
-              p̸̤̈́ò̵̝ć̶̖
+              poc
             </p>
           </NextLink>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-4 font-bold">
           {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
+            <NavbarItem key={item.href} isActive={pathname.includes(item.href)}>
               {item.chainLink ? (
                 <ChainLink
                   className={clsx(
-                    linkStyles({ color: "foreground" }),
-                    "text-lg data-[active=true]:text-primary data-[active=true]:font-bold"
+                    // linkStyles({ color: "foreground" }),
+                    "text-lg font-bold"
                   )}
                   color="foreground"
                   href={item.href}
@@ -63,16 +89,16 @@ export const Navbar = () => {
                   {item.label}
                 </ChainLink>
               ) : (
-                <NextLink
+                <Link
                   className={clsx(
-                    linkStyles({ color: "foreground" }),
-                    "text-lg data-[active=true]:text-primary data-[active=true]:font-bold"
+                    // linkStyles({ color: "foreground" }),
+                    "text-lg font-bold"
                   )}
                   color="foreground"
                   href={item.href}
                 >
                   {item.label}
-                </NextLink>
+                </Link>
               )}
             </NavbarItem>
           ))}
@@ -107,21 +133,31 @@ export const Navbar = () => {
 
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
-              </Link>
+          {siteConfig.navItems.map((item, index) => (
+            <NavbarMenuItem key={item.href}>
+              {item.chainLink ? (
+                <ChainLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    "!text-2xl data-[active=true]:text-primary data-[active=true]:font-bold"
+                  )}
+                  color="foreground"
+                  href={item.href}
+                >
+                  {item.label}
+                </ChainLink>
+              ) : (
+                <NextLink
+                  className={clsx(
+                    linkStyles({ color: "foreground" }),
+                    "!text-2xl data-[active=true]:text-primary data-[active=true]:font-bold"
+                  )}
+                  color="foreground"
+                  href={item.href}
+                >
+                  {item.label}
+                </NextLink>
+              )}
             </NavbarMenuItem>
           ))}
         </div>

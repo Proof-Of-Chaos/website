@@ -1,7 +1,7 @@
 "use client";
 
 import { UIReferendum, UITrack } from "../types";
-import { SubstrateChain } from "@/types";
+import { DecoratedConvictionVote, SubstrateChain } from "@/types";
 
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
@@ -12,6 +12,7 @@ import { useAppStore } from "@/app/zustand";
 import { getChainInfo } from "@/config/chains";
 import { ReferendumNotFound } from "./referendum-not-found";
 import { useUserVotes } from "@/hooks/vote/use-user-votes";
+import { useLatestUserVotes } from "@/hooks/vote/use-latest-user-vote";
 
 interface Props {
   referenda?: UIReferendum[];
@@ -29,24 +30,26 @@ export default function ReferendumList(props: Props) {
   const filters = useAppStore((state) => state.filters);
   const { trackFilter } = filters;
 
+  const { data: userVotes, isLoading: isUserVotesLoading } =
+    useLatestUserVotes("ongoing");
+
   const filteredReferenda = referenda?.filter((ref) => {
     if (trackFilter === "all") {
       return true;
-      // } else if (trackFilter === "voted") {
-      //   return ref.userVote !== undefined;
+    } else if (trackFilter === "voted") {
+      const findResult = userVotes?.find(
+        (vote) => vote.referendumIndex === ref.index
+      );
+      console.log("findResult", ref.index, findResult);
+      return findResult !== undefined;
       // } else if (trackFilter === "unvoted") {
-      //   return ref.userVote === undefined;
+      //   return (
+      //     userVotes?.find()
+      //   );
     } else {
       return ref.track === trackFilter;
     }
   });
-
-  const user = useAppStore((state) => state.user);
-  const { data: userVotes, isLoading: isUserVotesLoading } = useUserVotes();
-
-  const votedAmount = userVotes?.length || 0;
-  const unvotedAmount =
-    referenda && referenda.length ? referenda.length - votedAmount : 0;
 
   return (
     <div className="referendum-list">
@@ -55,6 +58,7 @@ export default function ReferendumList(props: Props) {
         tracks={tracks}
         referenda={referenda}
       />
+      {/* <pre className="text-tiny">{JSON.stringify(userVotes, null, 2)}</pre> */}
       {filteredReferenda && filteredReferenda.length > 0 ? (
         <>
           <AnimatePresence>

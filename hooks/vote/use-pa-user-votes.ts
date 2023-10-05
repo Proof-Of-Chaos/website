@@ -36,7 +36,7 @@ export const usePAUserVotes = () => {
       };
 
       const res = await fetch(
-        `https://api.polkassembly.io/api/v1/votes/history?page=1&listingLimit=100&voterAddress=${chainAddress}`,
+        `https://api.polkassembly.io/api/v1/votes/history?page=1&listingLimit=100&voterAddress=${chainAddress}&voteType=referendums_v2`,
         requestOptions
       );
       const votes = await res.json();

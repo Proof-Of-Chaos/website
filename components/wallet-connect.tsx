@@ -102,6 +102,18 @@ export const WalletConnect = () => {
                     className="hover:cursor-pointer"
                   />
                 }
+                endContent={
+                  <Button
+                    className="cursor-copy"
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        encodeAddress(account.address, ss58Prefix?.toNumber())
+                      );
+                    }}
+                  >
+                    copy
+                  </Button>
+                }
                 aria-label={account.address}
               >
                 {account.meta?.name || trimAddress(account.address)}
