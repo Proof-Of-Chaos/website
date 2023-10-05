@@ -1,21 +1,21 @@
 import { useAppStore } from "@/app/zustand";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { SubstrateChain } from "@/types";
 import { useQuery } from "react-query";
 
 export const useUserVotes = () => {
   const user = useAppStore((s) => s.user);
-  const { activeChain } = useSubstrateChain();
+  const { activeChainName } = usePolkadotApis();
   const userAddress = user?.accounts?.[user.actingAccountIdx]?.address;
 
   return useQuery({
-    queryKey: ["userVotes", activeChain?.name, userAddress],
-    enabled: !!activeChain?.name && !!userAddress,
+    queryKey: ["userVotes", activeChainName, userAddress],
+    enabled: !!activeChainName && !!userAddress,
     queryFn: async () => {
       var headers = new Headers();
       headers.append(
         "x-network",
-        (activeChain?.name || SubstrateChain.Kusama).toLowerCase()
+        (activeChainName || SubstrateChain.Kusama).toLowerCase()
       );
 
       var requestOptions: RequestInit = {

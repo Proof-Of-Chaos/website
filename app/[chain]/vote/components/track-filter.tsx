@@ -28,7 +28,7 @@ export function TrackFilter({
     useLatestUserVotes("all");
 
   const votedAmount =
-    userVotes?.filter(
+    userVotes?.votes?.filter(
       (vote: DecoratedConvictionVote) => vote?.referendumIndex !== undefined
     ).length || 0;
   const unvotedAmount =

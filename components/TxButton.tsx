@@ -2,8 +2,6 @@
 
 import { useAppStore } from "@/app/zustand";
 import { DEFAULT_CHAIN, getChainInfo } from "@/config/chains";
-import { kusama } from "@/config/chains/kusama";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { useAccountBalance } from "@/hooks/use-account-balance";
 import { ChainType, SendAndFinalizeResult, SubstrateChain } from "@/types";
 import { Button, ButtonProps } from "@nextui-org/button";
@@ -15,22 +13,17 @@ import {
   formatBalance,
 } from "@polkadot/util";
 import { InlineLoader } from "./inline-loader";
-import { TxTypes, getTxCost, sendAndFinalize } from "./util-client";
-import { format } from "path";
+import { TxTypes, sendAndFinalize } from "./util-client";
 import clsx from "clsx";
-import React, { MouseEventHandler, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTxCost } from "@/hooks/use-tx-cost";
 import { Deposit, useDeposits } from "@/hooks/use-deposit";
-import { UseDepositsType } from "../hooks/use-deposit";
 import { Tooltip } from "@nextui-org/tooltip";
-import { ApiPromise } from "@polkadot/api";
-import { chain, set } from "lodash";
 import Check from "@w3f/polkadot-icons/keyline/Check";
 import Error from "@w3f/polkadot-icons/keyline/Error";
-import {
-  executeAsyncFunctionsInSequence,
-  executeTxsInSequence,
-} from "@/app/[chain]/referendum-rewards/util";
+import { executeTxsInSequence } from "@/app/[chain]/referendum-rewards/util";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { chain } from "lodash";
 
 type DepositCountType = {
   type: Deposit;
@@ -85,12 +78,14 @@ export function TxButton<T>(
   const { actingAccount, actingAccountSigner } = user;
   const { data: accountBalance, isLoading: isAccountBalanceLoading } =
     useAccountBalance(chainType);
-  const { activeChain } = useSubstrateChain();
+  const {
+    activeChainName,
+    apiStates: { relay, assetHub },
+  } = usePolkadotApis();
 
-  const api =
-    chainType === ChainType.Relay ? activeChain?.api : activeChain?.assetHubApi;
+  const api = chainType === ChainType.Relay ? relay?.api : assetHub?.api;
 
-  const { symbol, decimals } = getChainInfo(activeChain?.name || DEFAULT_CHAIN);
+  const { symbol, decimals } = getChainInfo(activeChainName || DEFAULT_CHAIN);
 
   const { data: txCost, isLoading: isTxCostLoading } = useTxCost(
     extrinsic,

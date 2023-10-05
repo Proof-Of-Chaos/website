@@ -1,6 +1,5 @@
 import { title } from "@/components/primitives";
 import { Metadata } from "next";
-import Vote from "@w3f/polkadot-icons/keyline/Vote";
 
 export const metadata: Metadata = {
   title: "Vote",

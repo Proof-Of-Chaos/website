@@ -13,50 +13,52 @@ import {
 import Identicon from "@polkadot/react-identicon";
 import { Button } from "@nextui-org/button";
 import { trimAddress } from "./util";
-import { Key, useEffect } from "react";
+import { Key, useEffect, useState } from "react";
 import UseCases from "@w3f/polkadot-icons/keyline/UseCases";
 import Users from "@w3f/polkadot-icons/keyline/Users";
 import { encodeAddress } from "@polkadot/keyring";
 import ConnectWallet from "@w3f/polkadot-icons/keyline/ConnectWallet";
-import { usePolkadotExtensionWithContext } from "@/context/polkadot-extension-provider";
+import Copy from "@w3f/polkadot-icons/keyline/Copy";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 
 export const WalletConnect = () => {
-  const selectedChain = useAppStore((state) => state.chain);
-  const user = useAppStore((state) => state.user);
-  const { accounts, actingAccountIdx, isExtensionReady } = user;
-  const selectedAccount = accounts && accounts[actingAccountIdx];
-  const setAccountIdx = useAppStore((state) => state.setAccountIdx);
+  const {
+    isExtensionAvailable,
+    accounts,
+    selectedAccount,
+    initiateConnection,
+    userWantsConnection,
+    setSelectedAccountIndex,
+    disconnect,
+  } = usePolkadotExtension();
+
   const { data: chainDetails, isLoading } = useChainDetails();
   const { ss58Prefix } = chainDetails || {};
-  const { extensionSetup } = usePolkadotExtensionWithContext();
   const router = useRouter();
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const handleChange = (key: Key) => {
-    if (["logout", "profile"].includes(key as string)) {
+    if (["profile"].includes(key as string)) {
       router.push(`/${key}`);
       return;
     }
     const accountIdx =
       accounts?.findIndex((account) => account.address === key) || 0;
-    setAccountIdx(accountIdx);
+    setSelectedAccountIndex(accountIdx);
   };
 
-  const handleConnect = () => {
-    console.log("connect");
-    extensionSetup();
-  };
-
-  const disconnect = () => {
-    console.log("disconnect");
-  };
-
-  if (!isExtensionReady) {
+  if (!userWantsConnection) {
     return (
       <div className="max-w-xs">
         <Button
-          onClick={handleConnect}
+          onClick={initiateConnection}
           variant="bordered"
           size="lg"
           isIconOnly={true}
@@ -66,6 +68,17 @@ export const WalletConnect = () => {
       </div>
     );
   }
+
+  if (!isExtensionAvailable)
+    return (
+      <Button variant="bordered" size="lg" isIconOnly={true}>
+        <ConnectWallet stroke="currentColor" width={20} height={20} />
+      </Button>
+    );
+
+  if (accounts.length === 0) return <p>No account found</p>;
+
+  console.log("selectedAccount", selectedAccount?.address);
 
   return (
     <div className="max-w-xs">
@@ -86,8 +99,15 @@ export const WalletConnect = () => {
           aria-label="Account Select"
           onAction={handleChange}
         >
-          <DropdownSection title="Accounts" showDivider>
-            {user.accounts?.map((account) => (
+          <DropdownSection
+            title="Accounts"
+            showDivider
+            className="max-h"
+            classNames={{
+              group: "max-h-72 overflow-y-scroll",
+            }}
+          >
+            {accounts?.map((account) => (
               <DropdownItem
                 key={account.address}
                 value={account.address}
@@ -104,14 +124,16 @@ export const WalletConnect = () => {
                 }
                 endContent={
                   <Button
-                    className="cursor-copy"
-                    onClick={() => {
+                    className="cursor-copy bg-transparent"
+                    size="sm"
+                    isIconOnly={true}
+                    onClick={(e) => {
                       navigator.clipboard.writeText(
                         encodeAddress(account.address, ss58Prefix?.toNumber())
                       );
                     }}
                   >
-                    copy
+                    <Copy width={20} height={20} stroke="currentColor" />
                   </Button>
                 }
                 aria-label={account.address}
@@ -138,8 +160,9 @@ export const WalletConnect = () => {
               key={"logout"}
               value={"logout"}
               aria-label={"logout"}
+              onClick={disconnect}
             >
-              Logout
+              Logout {selectedAccount?.meta?.name}
             </DropdownItem>
           </DropdownSection>
         </DropdownMenu>

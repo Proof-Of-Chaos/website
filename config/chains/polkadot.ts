@@ -1,4 +1,10 @@
-import { ChainConfig, SubstrateChain } from "@/types";
+import {
+  ChainConfig,
+  ChainType,
+  Endpoint,
+  EndpointMap,
+  SubstrateChain,
+} from "@/types";
 import { PolkadotIcon } from "@/components/icons";
 import { ReactNode } from "react";
 import { BN, formatBalance } from "@polkadot/util";
@@ -32,55 +38,56 @@ const SPEND_LIMITS = {
   Treasurer: formatSpend(10_000, GRAND),
 };
 
-const endpoints = [
-  {
-    name: "Parity",
-    url: "wss://rpc.polkadot.io",
-  },
-  {
-    name: "OnFinality",
-    url: "wss://polkadot.api.onfinality.io/public-ws",
-  },
-  {
-    name: "Dwellir",
-    url: "wss://polkadot-rpc.dwellir.com",
-  },
-  {
-    name: "Dwellir Tunisia",
-    url: "wss://polkadot-rpc-tn.dwellir.com",
-  },
-  {
-    name: "Automata 1RPC",
-    url: "wss://1rpc.io/dot",
-  },
-  {
-    name: "IBP-GeoDNS1",
-    url: "wss://rpc.ibp.network/polkadot",
-  },
-  {
-    name: "IBP-GeoDNS2",
-    url: "wss://rpc.dotters.network/polkadot",
-  },
-  {
-    name: "RadiumBlock",
-    url: "wss://polkadot.public.curie.radiumblock.co/ws",
-  },
-];
-
-const assetHubEndpoints = [
-  { name: "Dwellir", url: "wss://statemint-rpc.dwellir.com" },
-  { name: "Dwellir Tunisia", url: "wss://statemint-rpc-tn.dwellir.com" },
-  { name: "IBP-GeoDNS1", url: "wss://sys.ibp.network/statemint" },
-  { name: "IBP-GeoDNS2", url: "wss://sys.dotters.network/statemint" },
-  { name: "LuckyFriday", url: "wss://rpc-asset-hub-polkadot.luckyfriday.io" },
-  { name: "OnFinality", url: "wss://statemint.api.onfinality.io/public-ws" },
-  { name: "Parity", url: "wss://polkadot-asset-hub-rpc.polkadot.io" },
-  {
-    name: "RadiumBlock",
-    url: "wss://statemint.public.curie.radiumblock.co/ws",
-  },
-  { name: "Stakeworld", url: "wss://dot-rpc.stakeworld.io/assethub" },
-];
+const endpoints: EndpointMap = {
+  [ChainType.Relay]: [
+    {
+      name: "Parity",
+      url: "wss://rpc.polkadot.io",
+    },
+    {
+      name: "OnFinality",
+      url: "wss://polkadot.api.onfinality.io/public-ws",
+    },
+    {
+      name: "Dwellir",
+      url: "wss://polkadot-rpc.dwellir.com",
+    },
+    {
+      name: "Dwellir Tunisia",
+      url: "wss://polkadot-rpc-tn.dwellir.com",
+    },
+    {
+      name: "Automata 1RPC",
+      url: "wss://1rpc.io/dot",
+    },
+    {
+      name: "IBP-GeoDNS1",
+      url: "wss://rpc.ibp.network/polkadot",
+    },
+    {
+      name: "IBP-GeoDNS2",
+      url: "wss://rpc.dotters.network/polkadot",
+    },
+    {
+      name: "RadiumBlock",
+      url: "wss://polkadot.public.curie.radiumblock.co/ws",
+    },
+  ],
+  [ChainType.AssetHub]: [
+    { name: "Dwellir", url: "wss://statemint-rpc.dwellir.com" },
+    { name: "Dwellir Tunisia", url: "wss://statemint-rpc-tn.dwellir.com" },
+    { name: "IBP-GeoDNS1", url: "wss://sys.ibp.network/statemint" },
+    { name: "IBP-GeoDNS2", url: "wss://sys.dotters.network/statemint" },
+    { name: "LuckyFriday", url: "wss://rpc-asset-hub-polkadot.luckyfriday.io" },
+    { name: "OnFinality", url: "wss://statemint.api.onfinality.io/public-ws" },
+    { name: "Parity", url: "wss://polkadot-asset-hub-rpc.polkadot.io" },
+    {
+      name: "RadiumBlock",
+      url: "wss://statemint.public.curie.radiumblock.co/ws",
+    },
+    { name: "Stakeworld", url: "wss://dot-rpc.stakeworld.io/assethub" },
+  ],
+};
 
 const tracks = [
   {
@@ -178,7 +185,6 @@ const tracks = [
 export const polkadot: ChainConfig = {
   name: SubstrateChain.Polkadot,
   endpoints,
-  assetHubEndpoints,
   selectedAssetHubEndpoint: 0,
   selectedEndpoint: 0,
   icon: PolkadotIcon,

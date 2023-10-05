@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
   let result: UserVotesReturnType;
   result = await getUserVotes(chain, userAddress, referendaFilter);
 
-
   // and return the latest user vote or where they delegated as
   // as serializable json (aka strings, numbers, booleans, plain objects, arrays, etc.)
   return NextResponse.json(result);

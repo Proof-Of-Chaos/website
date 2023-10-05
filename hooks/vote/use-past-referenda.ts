@@ -1,10 +1,10 @@
 import { DEFAULT_CHAIN } from "@/config/chains";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { useQuery } from "react-query";
 
 export const usePastReferendaIndices = () => {
-  const { activeChain } = useSubstrateChain();
-  const chain = activeChain?.name || DEFAULT_CHAIN;
+  const { activeChainName } = usePolkadotApis();
+  const chain = activeChainName || DEFAULT_CHAIN;
 
   return useQuery({
     queryKey: ["past-referenda", chain],

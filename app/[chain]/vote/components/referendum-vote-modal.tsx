@@ -2,10 +2,8 @@
 
 import { ModalBody, ModalHeader } from "@nextui-org/modal";
 import { UIReferendum } from "../types";
-import { useReferendumDetail } from "@/hooks/vote/use-referendum-detail";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
-import { useAccountBalance } from "@/hooks/use-account-balance";
 import { ReferendumVoteForm } from "./referendum-vote-form";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 export default function ReferendumVoteModal({
   referendum,
@@ -13,14 +11,13 @@ export default function ReferendumVoteModal({
   referendum: UIReferendum;
 }) {
   const { index, title } = referendum;
-  const { activeChain } = useSubstrateChain();
-  const { data: balance } = useAccountBalance();
+  const { activeChainName, activeChainInfo } = usePolkadotApis();
   return (
     <>
       <ModalHeader>
         <h1 className="text-xl flex items-center">
           <span className="mr-2">
-            {activeChain && <activeChain.icon width={50} height={50} />}
+            {activeChainName && <activeChainInfo.icon width={50} height={50} />}
           </span>
           Vote on Referendum {index}
         </h1>

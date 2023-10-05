@@ -4,8 +4,6 @@ import { SendAndFinalizeResult, StreamResult, ToastType } from "@/types";
 import { Signer, SubmittableExtrinsic } from "@polkadot/api/types";
 import { toast as hotToast, Toast, ToastOptions } from "react-hot-toast";
 import { Header, RuntimeDispatchInfo } from "@polkadot/types/interfaces";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
-import { useAppStore } from "@/app/zustand";
 import { ApiPromise } from "@polkadot/api";
 import { Observable } from "rxjs";
 

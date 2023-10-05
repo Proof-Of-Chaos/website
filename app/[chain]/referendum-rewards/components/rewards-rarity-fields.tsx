@@ -5,16 +5,15 @@ import { useState } from "react";
 import { rewardsConfig } from "@/config/rewards";
 import { RewardConfiguration } from "../types";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { Divider } from "@nextui-org/divider";
 import clsx from "clsx";
 import styles from "./style.module.scss";
 import { titleCase } from "@/components/util";
-import { FieldErrors, UseFormRegister, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { getChainInfo } from "@/config/chains";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { SubstrateChain } from "@/types";
 import { rewardsSchema } from "../rewards-schema";
 import { Checkbox } from "@nextui-org/checkbox";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 export function RewardsCreationRarityFields({
   rarity,
@@ -32,11 +31,14 @@ export function RewardsCreationRarityFields({
   const { acceptedNftFormats, acceptedNonImageFormats } = rewardsConfig;
   const [isUploadSelected, setIsUploadSelected] = useState(true);
 
-  const { activeChain } = useSubstrateChain();
-  const { name, ss58Format } =
-    activeChain || getChainInfo(SubstrateChain.Kusama);
+  const { activeChainName, activeChainInfo } = usePolkadotApis();
+  const { ss58Format } = activeChainInfo;
 
-  const chainRewardsSchema = rewardsSchema(name, undefined, ss58Format);
+  const chainRewardsSchema = rewardsSchema(
+    activeChainName,
+    undefined,
+    ss58Format
+  );
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
 
   let optionIndex = rewardConfig.options.findIndex(

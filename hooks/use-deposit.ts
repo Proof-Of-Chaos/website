@@ -1,13 +1,7 @@
-import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
-
-import { useAppStore } from "@/app/zustand";
-import { TxTypes, getTxCost } from "@/components/util-client";
-import { DEFAULT_CHAIN, getChainByName } from "@/config/chains";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
-import { ChainConfig, ChainType, SubstrateChain } from "@/types";
+import { DEFAULT_CHAIN } from "@/config/chains";
+import { ChainType } from "@/types";
 import { useQuery } from "react-query";
-import { Observable } from "rxjs";
-import { ApiPromise } from "@polkadot/api";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 export enum Deposit {
   Collection = "collectionDeposit",
@@ -26,13 +20,16 @@ export interface UseDepositsType extends Record<Deposit, string | undefined> {
 export const useDeposits = (
   chainType: ChainType | undefined = ChainType.Relay
 ) => {
-  const { activeChain } = useSubstrateChain();
-  const chainName = activeChain?.name || DEFAULT_CHAIN;
+  const {
+    activeChainName,
+    apiStates: { relay, assetHub },
+  } = usePolkadotApis();
+  const chainName = activeChainName || DEFAULT_CHAIN;
 
   const api =
     chainType === ChainType.AssetHub
-      ? activeChain?.assetHubApi
-      : activeChain?.api;
+      ? assetHub?.api
+      : relay?.api || assetHub?.api;
 
   return useQuery<UseDepositsType, Error>({
     queryKey: ["deposits", chainName, chainType],

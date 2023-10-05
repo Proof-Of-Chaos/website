@@ -30,26 +30,12 @@ export const usePolkadotExtension = () => {
 
   const extensionSetup = async () => {
     const extensionDapp = await import("@polkadot/extension-dapp");
-    const {
-      web3AccountsSubscribe,
-      web3Enable,
-      isWeb3Injected,
-      web3FromAddress,
-    } = extensionDapp;
-
-    console.log("isWeb3Injected", isWeb3Injected);
-
+    const { web3AccountsSubscribe, web3Enable, web3FromAddress } =
+      extensionDapp;
     const injectedPromise = documentReadyPromise(() =>
       web3Enable(process.env.NEXT_PUBLIC_APP_NAME || "Polkadot Multi Chain App")
     );
-
-    let browserExtensions: InjectedExtension[] = [];
-
-    try {
-      browserExtensions = await injectedPromise;
-    } catch (error) {
-      console.error("GRRR 🦁 r", error);
-    }
+    const browserExtensions = await injectedPromise;
 
     console.log("extensions", browserExtensions);
 
@@ -64,6 +50,10 @@ export const usePolkadotExtension = () => {
 
     if (accounts.length > 0) {
       setIsExtensionReady(true);
+      if (actingAccount && actingAccount.address) {
+        const { signer } = await web3FromAddress(actingAccount.address);
+        setActingAccountSigner(signer);
+      }
     } else {
       let unsubscribe: () => void;
 
@@ -73,7 +63,6 @@ export const usePolkadotExtension = () => {
         console.log("accounts", injectedAccounts);
         setIsExtensionReady(true);
         setAccounts(injectedAccounts);
-        setAccountIdx(0);
       });
 
       return () => unsubscribe && unsubscribe();
@@ -81,21 +70,29 @@ export const usePolkadotExtension = () => {
   };
 
   useEffect(() => {
-    const asyncEffect = async () => {
-      const extensionDapp = await import("@polkadot/extension-dapp");
-      const { web3FromAddress } = extensionDapp;
+    // This effect is used to setup the browser extension
+    // if (!isExtensionReady) {
+    //   extensionSetup();
+    // }
+    if (!accounts) {
+      extensionSetup();
+    }
+  }, [isExtensionReady, accounts]);
 
-      if (actingAccount && actingAccount.address) {
-        const { signer } = await web3FromAddress(actingAccount.address);
-        setActingAccountSigner(signer);
-      }
-    };
-    asyncEffect();
-  }, [actingAccountIdx, accounts]);
+  // useEffect(() => {
+  //   const asyncEffect = async () => {
+  //     const extensionDapp = await import("@polkadot/extension-dapp");
+  //     const { web3FromAddress } = extensionDapp;
 
-  useEffect(() => {
-    extensionSetup();
-  }, [isExtensionReady]);
+  //     if (actingAccount && actingAccount.address) {
+  //       const { signer } = await web3FromAddress(actingAccount.address);
+  //       setActingAccountSigner(signer);
+  //     }
+  //   };
+  //   if (isExtensionReady) {
+  //     asyncEffect();
+  //   }
+  // }, [actingAccountIdx, accounts, isExtensionReady]);
 
   return { extensionSetup, isExtensionReady };
 };

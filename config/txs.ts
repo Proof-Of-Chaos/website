@@ -25,7 +25,7 @@ export const getTxCollectionCreate = (
     settings: 0,
   };
 
-  return apiWithNFTsPallet?.tx.nfts.create(admin, config);
+  return apiWithNFTsPallet?.tx.nfts?.create(admin, config);
 };
 
 export async function getNFTCollectionDeposit(api: ApiPromise | undefined) {

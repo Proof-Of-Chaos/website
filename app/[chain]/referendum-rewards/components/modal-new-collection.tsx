@@ -2,9 +2,7 @@ import { useAppStore } from "@/app/zustand";
 import { useForm } from "react-hook-form";
 import { CollectionConfiguration } from "../types";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { TxTypes, sendAndFinalize } from "@/components/util-client";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
-import { ChainType, SendAndFinalizeResult } from "@/types";
+import { SendAndFinalizeResult } from "@/types";
 import {
   Modal,
   ModalBody,
@@ -16,12 +14,11 @@ import {
 import { Input } from "@nextui-org/input";
 import { rewardsConfig } from "@/config/rewards";
 import { TxButton } from "@/components/TxButton";
-import Check from "@w3f/polkadot-icons/keyline/Check";
 import { titleCase } from "@/components/util";
-import { chain } from "lodash";
 import { Button } from "@nextui-org/button";
 import { Deposit } from "@/hooks/use-deposit";
 import { getTxCollectionCreate } from "@/config/txs";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 type PropType = Omit<ModalProps, "children"> & {
   setCollectionConfig: (config: CollectionConfiguration) => void;
@@ -43,15 +40,16 @@ export default function ModalCreateNFTCollection({
     message: "",
     name: "",
   });
-  const closeModal = useAppStore((state) => state.closeModal);
-  const { activeChain } = useSubstrateChain();
-  const { assetHubApi } = activeChain || {};
+  const {
+    activeChainName,
+    apiStates: { assetHub },
+  } = usePolkadotApis();
 
   const connectedAccount = useAppStore((state) => state.user.actingAccount);
 
   const txCreateCollection = useMemo(() => {
-    return getTxCollectionCreate(assetHubApi, connectedAccount?.address);
-  }, [assetHubApi, connectedAccount]);
+    return getTxCollectionCreate(assetHub?.api, connectedAccount?.address);
+  }, [assetHub?.api, connectedAccount]);
 
   const formMethods = useForm({
     defaultValues: {
@@ -139,14 +137,14 @@ export default function ModalCreateNFTCollection({
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Create a new NFT collection on {titleCase(activeChain?.name)}{" "}
-              Asset Hub
+              Create a new NFT collection on {titleCase(activeChainName)} Asset
+              Hub
             </ModalHeader>
 
             <ModalBody>
               <p className="form-helper text-sm">
                 Sending the form will create a new collection on{" "}
-                {titleCase(activeChain?.name)} Asset Hub. The metadata of the
+                {titleCase(activeChainName)} Asset Hub. The metadata of the
                 collection (image, name, description) will be set in the next
                 step when your rewards transactions are signed.
               </p>

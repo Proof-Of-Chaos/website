@@ -4,7 +4,7 @@ import {
 } from "@/app/[chain]/referendum-rewards/types";
 import { rewardsConfig } from "../config/rewards";
 
-export const trimAddress = (address: string, amount: number = 3) => {
+export const trimAddress = (address: string, amount: number = 5) => {
   if (!address) {
     return "";
   }

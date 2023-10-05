@@ -1,24 +1,25 @@
 import { useAppStore } from "@/app/zustand";
 import { DEFAULT_CHAIN } from "@/config/chains";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
-import { DecoratedConvictionVote } from "@/types";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
+import { DecoratedConvictionVote, UserVotesReturnType } from "@/types";
 import { useQuery } from "react-query";
 
 export const useLatestUserVotes = (referendaFilter: string) => {
-  const user = useAppStore((s) => s.user);
-  const { activeChain } = useSubstrateChain();
-  const chain = activeChain?.name || DEFAULT_CHAIN;
-  const userAddress = user?.accounts?.[user.actingAccountIdx]?.address;
+  const { activeChainName } = usePolkadotApis();
+  const chain = activeChainName || DEFAULT_CHAIN;
+  const { selectedAccount } = usePolkadotExtension();
+  const userAddress = selectedAccount?.address || "";
 
   console.log(
     "useLatestUserVote",
-    activeChain?.name,
+    activeChainName,
     userAddress,
     referendaFilter
   );
 
-  return useQuery<DecoratedConvictionVote[]>({
-    queryKey: ["userVotes", activeChain?.name, userAddress, referendaFilter],
+  return useQuery<UserVotesReturnType>({
+    queryKey: ["userVotes", activeChainName, userAddress, referendaFilter],
     queryFn: async () => {
       const res = await fetch(`/api/vote`, {
         method: "post",
@@ -34,3 +35,5 @@ export const useLatestUserVotes = (referendaFilter: string) => {
     },
   });
 };
+
+// useLatestUserVote kusama 5GstZ2VggLiFGgFFWkXzAjGypUgdUidqqjdv9t96PTx69RJV ongoing

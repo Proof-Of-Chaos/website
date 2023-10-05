@@ -7,7 +7,6 @@ import { VoteChoice } from "../types";
 import clsx from "clsx";
 import { useAppStore } from "@/app/zustand";
 import { formatBalance, bnToBn, BN_ZERO } from "@polkadot/util";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { Spinner } from "@nextui-org/spinner";
 import { Input } from "@nextui-org/input";
 import { getVoteTx } from "../util";
@@ -16,6 +15,7 @@ import { web3FromAddress } from "@polkadot/extension-dapp";
 import { vividButtonClasses } from "@/components/primitives";
 import { kusama } from "@/config/chains/kusama";
 import { InlineLoader } from "@/components/inline-loader";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 const VOTE_LOCK_OPTIONS = [
   {
@@ -92,22 +92,15 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
   const [voteChoice, setVoteChoice] = useState(VoteChoice.Aye);
   const [sliderValue, setSliderValue] = useState(VOTE_LOCK_OPTIONS[1]);
   const sliderRef = useRef<any>(undefined);
-  //   const queryClient = useQueryClient();
-  //   const { voteOnRef } = useVoteManager(queryClient);
-  const closeModal = useAppStore((state) => state.closeModal);
-  const { activeChain } = useSubstrateChain();
-  const { decimals, symbol, api } = activeChain || kusama;
+  const {
+    activeChainInfo,
+    apiStates: { relay },
+  } = usePolkadotApis();
+  const { decimals, symbol } = activeChainInfo;
   const voteInChainDecimalsMultiplier = bnToBn(10).pow(bnToBn(decimals));
   const user = useAppStore((state) => state.user);
-  const {
-    accounts,
-    actingAccountIdx,
-    isExtensionReady,
-    actingAccount,
-    actingAccountSigner,
-  } = user;
+  const { actingAccount, actingAccountSigner } = user;
 
-  //   const { data: latestUserVote } = useLatestUserVoteForRef(referendumId);
   const { data: accountBalance, isLoading: isBalanceLoading } =
     useAccountBalance();
   const availableBalance = formatBalance(accountBalance?.data?.free, {
@@ -161,7 +154,7 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
     };
 
     const voteExtrinsic = getVoteTx(
-      api,
+      relay?.api,
       voteChoice,
       parseInt(referendumId),
       voteBalances,
@@ -170,7 +163,7 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
 
     setIsVoteLoading(true);
     await sendAndFinalize(
-      api,
+      relay?.api,
       voteExtrinsic,
       actingAccountSigner,
       actingAccount?.address,

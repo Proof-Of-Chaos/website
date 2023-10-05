@@ -17,7 +17,6 @@ import { SubstrateChain } from "@/types";
 import { getChainInfo } from "@/config/chains";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { useAppStore } from "@/app/zustand";
 import { useDisclosure } from "@nextui-org/modal";
 import ModalCreateNFTCollection from "./modal-new-collection";
@@ -36,6 +35,7 @@ import { mergeWithDefaultConfig } from "@/components/util";
 import { TxTypes } from "@/components/util-client";
 import FormActions from "./form-actions";
 import { rewardsSchema } from "../rewards-schema";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 export default function RewardsCreationForm({
   chain,
@@ -44,7 +44,8 @@ export default function RewardsCreationForm({
 }) {
   const [isCollectionCreatePending, setIsCollectionCreatePending] =
     useState(false);
-  const { ss58Format, name: activeChainName } = getChainInfo(chain);
+  const { activeChainName, activeChainInfo } = usePolkadotApis();
+  const { ss58Format } = activeChainInfo;
 
   const walletAddress = useAppStore(
     (state) => state.user.actingAccount?.address
@@ -101,7 +102,6 @@ export default function RewardsCreationForm({
     watch,
     setError,
   } = formMethods;
-  const { activeChain } = useSubstrateChain();
 
   const watchFormFields = watch();
 
@@ -313,98 +313,6 @@ export default function RewardsCreationForm({
         </div>
 
         <FormActions chain={chain} className="my-8" />
-
-        {/* <Card className="mt-4">
-          <CardHeader className="mx-2 mt-2 text-xl">Action</CardHeader>
-          <CardBody className="flex gap-4">
-            <div className="flex items-center flex-wrap gap-2 text-tiny">
-              <div
-                className={clsx("flex flex-row gap-4 items-center", {
-                  "text-gray-500": formStep !== 0,
-                })}
-              >
-                {formStep === 0 && (
-                  <span className="text-4xl text-secondary">→</span>
-                )}
-                <span className="text-4xl">1</span>Create on chain transactions
-                based on your configuration above <br />
-                (i.e. pin files to ipfs, calculate distribution of nfts, mint
-                nft transactions, set nft attributes, ...)
-              </div>
-              {errors && errors.root && (
-                <p className="text-danger w-full text-center mt-3">
-                  <span>Rewards creation failed: {errors.root.message}</span>
-                  <span className="block">Please try again</span>
-                </p>
-              )}
-
-              <Button
-                type="submit"
-                isDisabled={isSubmitting || formStep !== 0}
-                isLoading={isSubmitting}
-                className={clsx("w-full h-20", vividButtonClasses)}
-              >
-                Generate {activeChain && <activeChain.icon />}reward
-                transactions
-              </Button>
-              <Progress
-                size="sm"
-                isIndeterminate
-                aria-label="Loading..."
-                className="w-full"
-                color="secondary"
-              />
-              <div className="text-tiny text-center flex justify-center w-full z-10">
-                <span className="bg-content1/80 px-6">
-                  🚀 Generating calls for reward distribution of referendum
-                  {refIndex}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center flex-wrap gap-2 text-tiny">
-              <div
-                className={clsx(
-                  "w-full flex flex-row gap-4 items-center flex-wrap",
-                  {
-                    "text-gray-500": formStep !== 1,
-                  }
-                )}
-              >
-                {formStep === 1 && (
-                  <span className="text-4xl text-secondary">→</span>
-                )}
-                <span className="text-4xl">2</span>
-                Start the sendout process. You will be asked to sign{" "}
-                {rewardSendoutData?.kusamaAssetHubTxsBatches?.length ? (
-                  <span className="text-warning text-xl">
-                    {rewardSendoutData?.kusamaAssetHubTxsBatches?.length}
-                  </span>
-                ) : (
-                  "some "
-                )}
-                transactions in sequence. Complete all for a full sendout.
-                {rewardSendoutData && (
-                  <Button
-                    onClick={onAnalyzeOpenChange}
-                    className="self-end flex-grow"
-                  >
-                    Analyze Sendout
-                  </Button>
-                )}
-              </div>
-              <TxButton
-                extrinsic={rewardSendoutData?.kusamaAssetHubTxsBatches}
-                requiredBalance={totalFees}
-                variant="shadow"
-                isDisabled={isSubmitting || formStep !== 1}
-                className={clsx("w-full h-20 border-2", vividButtonClasses)}
-                onFinished={onFinished}
-              >
-                Start the {activeChain && <activeChain.icon />} rewards sendout
-              </TxButton>
-            </div>
-          </CardBody>
-        </Card> */}
 
         <Input
           type="text"

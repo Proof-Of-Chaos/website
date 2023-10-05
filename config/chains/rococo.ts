@@ -1,4 +1,10 @@
-import { ChainConfig, SubstrateChain } from "@/types";
+import {
+  ChainConfig,
+  ChainType,
+  Endpoint,
+  EndpointMap,
+  SubstrateChain,
+} from "@/types";
 import { KusamaIcon, PolkadotIcon, RococoIcon } from "@/components/icons";
 import { BN, formatBalance } from "@polkadot/util";
 import { kusama } from "./kusama";
@@ -33,12 +39,13 @@ const SPEND_LIMITS = {
   Treasurer: formatSpend(10_000, GRAND),
 };
 
-// We are using the relay chain of kusama to get the referenda, all user txs however will be made on the asset hub (see below)
-const endpoints = kusama.endpoints;
-
-const assetHubEndpoints = [
-  { name: "Parity", url: "wss://rococo-asset-hub-rpc.polkadot.io" },
-];
+const endpoints: EndpointMap = {
+  // We are using the relay chain of kusama to get the referenda, all user txs however will be made on the asset hub (see below)
+  [ChainType.Relay]: kusama.endpoints[ChainType.Relay],
+  [ChainType.AssetHub]: [
+    { name: "Parity", url: "wss://rococo-asset-hub-rpc.polkadot.io" },
+  ],
+};
 
 const tracks = [
   {
@@ -136,7 +143,6 @@ const tracks = [
 export const rococo: ChainConfig = {
   name: SubstrateChain.Rococo,
   endpoints,
-  assetHubEndpoints,
   selectedAssetHubEndpoint: 0,
   selectedEndpoint: 0,
   subscan: "https://rococo.subscan.io/",

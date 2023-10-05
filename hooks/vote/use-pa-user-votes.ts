@@ -1,32 +1,27 @@
 import { useAppStore } from "@/app/zustand";
-import { DEFAULT_CHAIN } from "@/config/chains";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { SubstrateChain } from "@/types";
 import { encodeAddress } from "@polkadot/keyring";
 import { useQuery } from "react-query";
 
 export const usePAUserVotes = () => {
   const user = useAppStore((s) => s.user);
-  const { activeChain } = useSubstrateChain();
-  const { ss58Format, name } = activeChain || {};
+  const { activeChainName, activeChainInfo } = usePolkadotApis();
+  const { ss58Format, name } = activeChainInfo || {};
   const userAddress = user?.accounts?.[user.actingAccountIdx]?.address;
   const chainAddress = userAddress
     ? encodeAddress(userAddress, ss58Format)
     : userAddress;
 
-  console.log(
-    "Polkassembly: useLatestUserVote",
-    activeChain?.name,
-    userAddress
-  );
+  console.log("Polkassembly: useLatestUserVote", activeChainName, userAddress);
 
   return useQuery({
-    queryKey: ["PAuserVotes", activeChain?.name, userAddress],
+    queryKey: ["PAuserVotes", activeChainName, userAddress],
     queryFn: async () => {
       const headers = new Headers();
       headers.append(
         "x-network",
-        (activeChain?.name || SubstrateChain.Kusama).toLowerCase()
+        (activeChainName || SubstrateChain.Kusama).toLowerCase()
       );
 
       const requestOptions: RequestInit = {

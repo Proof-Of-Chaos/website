@@ -1,8 +1,7 @@
-import { SubstrateChain } from "@/types";
 import { useQuery } from "react-query";
 import { UIReferendum, UITrack } from "@/app/[chain]/vote/types";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { DEFAULT_CHAIN } from "@/config/chains";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 type UseReferendaType = {
   referenda: UIReferendum[];
@@ -13,8 +12,8 @@ export const useReferenda = (
   refFilter: string = "ongoing",
   withTracks = true
 ) => {
-  const { activeChain } = useSubstrateChain();
-  const chain = activeChain?.name || DEFAULT_CHAIN;
+  const { activeChainName } = usePolkadotApis();
+  const chain = activeChainName || DEFAULT_CHAIN;
 
   return useQuery({
     queryKey: ["referenda", chain, refFilter, withTracks],

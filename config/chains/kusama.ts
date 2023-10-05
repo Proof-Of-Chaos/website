@@ -1,4 +1,10 @@
-import { ChainConfig, SubstrateChain } from "@/types";
+import {
+  ChainConfig,
+  ChainType,
+  Endpoint,
+  EndpointMap,
+  SubstrateChain,
+} from "@/types";
 import { KusamaIcon, PolkadotIcon } from "@/components/icons";
 import { BN, formatBalance } from "@polkadot/util";
 
@@ -32,55 +38,56 @@ const SPEND_LIMITS = {
   Treasurer: formatSpend(10_000, GRAND),
 };
 
-const endpoints = [
-  {
-    name: "Parity",
-    url: "wss://kusama-rpc.polkadot.io",
-  },
-  {
-    name: "OnFinality",
-    url: "wss://kusama.api.onfinality.io/public-ws",
-  },
-  {
-    name: "Dwellir",
-    url: "wss://kusama-rpc.dwellir.com",
-  },
-  {
-    name: "Dwellir Tunisia",
-    url: "wss://kusama-rpc-tn.dwellir.com",
-  },
-  {
-    name: "Automata 1RPC",
-    url: "wss://1rpc.io/ksm",
-  },
-  {
-    name: "IBP-GeoDNS1",
-    url: "wss://rpc.ibp.network/kusama",
-  },
-  {
-    name: "IBP-GeoDNS2",
-    url: "wss://rpc.dotters.network/kusama",
-  },
-  {
-    name: "RadiumBlock",
-    url: "wss://kusama.public.curie.radiumblock.co/ws",
-  },
-];
-
-const assetHubEndpoints = [
-  { name: "Dwellir", url: "wss://statemine-rpc.dwellir.com" },
-  { name: "Dwellir Tunisia", url: "wss://statemine-rpc-tn.dwellir.com" },
-  { name: "IBP-GeoDNS1", url: "wss://sys.ibp.network/statemine" },
-  { name: "IBP-GeoDNS2", url: "wss://sys.dotters.network/statemine" },
-  { name: "LuckyFriday", url: "wss://rpc-asset-hub-kusama.luckyfriday.io" },
-  // { name: // OnFinality, url:'wss://statemine.api.onfinality.io/public-ws'},
-  { name: "Parity", url: "wss://kusama-asset-hub-rpc.polkadot.io" },
-  {
-    name: "RadiumBlock",
-    url: "wss://statemine.public.curie.radiumblock.co/ws",
-  },
-  { name: "Stakeworld", url: "wss://ksm-rpc.stakeworld.io/assethub" },
-];
+const endpoints: EndpointMap = {
+  [ChainType.Relay]: [
+    {
+      name: "Parity",
+      url: "wss://kusama-rpc.polkadot.io",
+    },
+    {
+      name: "OnFinality",
+      url: "wss://kusama.api.onfinality.io/public-ws",
+    },
+    {
+      name: "Dwellir",
+      url: "wss://kusama-rpc.dwellir.com",
+    },
+    {
+      name: "Dwellir Tunisia",
+      url: "wss://kusama-rpc-tn.dwellir.com",
+    },
+    {
+      name: "Automata 1RPC",
+      url: "wss://1rpc.io/ksm",
+    },
+    {
+      name: "IBP-GeoDNS1",
+      url: "wss://rpc.ibp.network/kusama",
+    },
+    {
+      name: "IBP-GeoDNS2",
+      url: "wss://rpc.dotters.network/kusama",
+    },
+    {
+      name: "RadiumBlock",
+      url: "wss://kusama.public.curie.radiumblock.co/ws",
+    },
+  ],
+  [ChainType.AssetHub]: [
+    { name: "Dwellir", url: "wss://statemine-rpc.dwellir.com" },
+    { name: "Dwellir Tunisia", url: "wss://statemine-rpc-tn.dwellir.com" },
+    { name: "IBP-GeoDNS1", url: "wss://sys.ibp.network/statemine" },
+    { name: "IBP-GeoDNS2", url: "wss://sys.dotters.network/statemine" },
+    { name: "LuckyFriday", url: "wss://rpc-asset-hub-kusama.luckyfriday.io" },
+    // { name: // OnFinality, url:'wss://statemine.api.onfinality.io/public-ws'},
+    { name: "Parity", url: "wss://kusama-asset-hub-rpc.polkadot.io" },
+    {
+      name: "RadiumBlock",
+      url: "wss://statemine.public.curie.radiumblock.co/ws",
+    },
+    { name: "Stakeworld", url: "wss://ksm-rpc.stakeworld.io/assethub" },
+  ],
+};
 
 const tracks = [
   {
@@ -178,7 +185,6 @@ const tracks = [
 export const kusama: ChainConfig = {
   name: SubstrateChain.Kusama,
   endpoints,
-  assetHubEndpoints,
   selectedAssetHubEndpoint: 0,
   selectedEndpoint: 0,
   icon: KusamaIcon,

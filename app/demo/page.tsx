@@ -8,20 +8,23 @@ import clsx from "clsx";
 import { Progress } from "@nextui-org/progress";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { sendAndFinalize, streamToJSON } from "@/components/util-client";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { useAppStore } from "../zustand";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 export const revalidate = 3600;
 
 export default function DemoPage() {
-  const { activeChain } = useSubstrateChain();
+  const {
+    activeChainName,
+    apiStates: { assetHub },
+  } = usePolkadotApis();
   const user = useAppStore((state) => state.user);
   const { actingAccountSigner, actingAccount } = user;
 
   async function sendAndFinalizeSth() {
     try {
       const res = await sendAndFinalize(
-        activeChain?.assetHubApi,
-        activeChain?.assetHubApi?.tx.balances.transfer(
+        assetHub?.api,
+        assetHub?.api?.tx.balances.transfer(
           "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
           12345
         ),

@@ -24,8 +24,8 @@ export enum SubstrateChain {
 
 export enum ChainType {
   Relay = "relay",
-  AssetHub = "assethub",
-  BridgeHub = "bridgehub",
+  AssetHub = "assetHub",
+  BridgeHub = "bridgeHub",
 }
 
 export type ChainConfig = {
@@ -34,9 +34,8 @@ export type ChainConfig = {
   decimals: number;
   ss58Format: number;
   blockTime: number;
-  endpoints: Endpoint[];
+  endpoints: EndpointMap;
   selectedEndpoint: number;
-  assetHubEndpoints: Endpoint[];
   selectedAssetHubEndpoint: number;
   tracks: any[];
   icon: React.FC<IconSvgProps>;
@@ -59,6 +58,10 @@ export type PolkadotExtensionType = {
 export type Endpoint = {
   name: string;
   url: string;
+};
+
+export type EndpointMap = {
+  [key in ChainType]?: Endpoint[];
 };
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {

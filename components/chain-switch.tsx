@@ -12,15 +12,22 @@ import {
 import { Spinner } from "@nextui-org/spinner";
 import { Button } from "@nextui-org/button";
 import { Key, useEffect, useState, useTransition } from "react";
-import { useSubstrateChain } from "@/context/substrate-chain-context";
 import { usePathname, useRouter } from "next/navigation";
-import { CHAINS_ENABLED } from "@/config/chains";
+import { CHAINS_ENABLED, getChainInfo } from "@/config/chains";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { getChain } from "@/app/vote/server-actions/get-chain";
 
 export const ChainSwitch = ({ className }: { className?: string }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { activeChain, setActiveChainName, isConnecting } = useSubstrateChain();
-  const setUserWantsConnection = useAppStore((s) => s.setUserWantsConnection);
+  // const { activeChain, setActiveChainName, isConnecting } = useSubstrateChain();
+
+  const {
+    apiStates: { relay: relayApiState },
+    activeChainName,
+    switchChain,
+  } = usePolkadotApis();
+  const activeChainInfo = getChainInfo(activeChainName);
 
   const pathContainsSubstrateChain = Object.values(SubstrateChain).some(
     (chain) => pathname.includes(`/${chain}/`)
@@ -32,12 +39,11 @@ export const ChainSwitch = ({ className }: { className?: string }) => {
 
   useEffect(() => {
     if (selectedChain) {
-      setActiveChainName(selectedChain);
+      switchChain(selectedChain, "relay");
     }
   }, [selectedChain]);
 
   const handleChainChange = (key: Key) => {
-    setUserWantsConnection(true);
     const newChain = key as SubstrateChain;
 
     if (pathContainsSubstrateChain) {
@@ -49,11 +55,11 @@ export const ChainSwitch = ({ className }: { className?: string }) => {
           `/${selectedChain}/`,
           `/${newChain}/`
         );
-        setActiveChainName(newChain);
+        switchChain(newChain, "relay");
         router.replace(newPathname);
       }
     } else {
-      setActiveChainName(newChain);
+      switchChain(newChain, "relay");
     }
   };
 
@@ -71,15 +77,16 @@ export const ChainSwitch = ({ className }: { className?: string }) => {
             isIconOnly={false}
             className="min-w-unit-12 px-unit-1 md:px-unit-4"
           >
-            {isConnecting || typeof activeChain === "undefined" ? (
+            {!relayApiState?.isConnected ||
+            typeof activeChainName === "undefined" ? (
               <span className="text-xs flex items-center">
                 <Spinner size="sm" color="secondary" className="mr-2" />
                 ...
               </span>
             ) : (
-              <activeChain.icon />
+              <activeChainInfo.icon />
             )}
-            <span className="hidden md:flex">{activeChain?.name}</span>
+            <span className="hidden md:flex">{activeChainName}</span>
           </Button>
         </DropdownTrigger>
         <DropdownMenu onAction={handleChainChange} aria-label="Select Chain">
