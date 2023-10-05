@@ -30,8 +30,9 @@ export async function POST(req: NextRequest) {
 
   // declare a variable to hold the result which is either a singleVote or a list of votes,
   // delegated or direct
-  let result: DecoratedConvictionVote | DecoratedConvictionVote[] | undefined;
+  let result: DecoratedConvictionVote[] | undefined;
   result = await getUserVotes(chain, userAddress, referendaFilter);
+
 
   // and return the latest user vote or where they delegated as
   // as serializable json (aka strings, numbers, booleans, plain objects, arrays, etc.)

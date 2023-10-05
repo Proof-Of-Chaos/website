@@ -13,9 +13,10 @@ import {
   formatDelegation,
   formatVote,
 } from "@/app/api/rewards/util";
+import { getOngoingReferenda } from "@/app/[chain]/vote/get-referenda";
 
 export const getUserVotes =
-  async (chain: SubstrateChain, userAddress: string): Promise<DecoratedConvictionVote[]> => {
+  async (chain: SubstrateChain, userAddress: string, referendaFilter: string): Promise<DecoratedConvictionVote[]> => {
     const safeChain = (chain as SubstrateChain) || SubstrateChain.Kusama;
     const chainConfig = await getChainByName(safeChain);
     const { api } = chainConfig;
@@ -23,20 +24,6 @@ export const getUserVotes =
     if (typeof api === "undefined") {
       throw `can not get api of ${chain}`;
     }
-    // const user = useAppStore((s) => s.user);
-
-    // const referendaMap = new Map();
-
-    // console.log(`Querying referenda.....`, { label: "Democracy" });
-    // const { ongoingReferenda, finishedReferenda } =
-    //     await getOpenGovReferenda(api);
-    // console.log(
-    //     `Got ${ongoingReferenda.length} ongoing referenda, ${finishedReferenda.length} finished referenda`,
-    //     { label: "Democracy" }
-    // );
-    // for (const ref of ongoingReferenda) {
-    //     referendaMap.set(ref.index, ref);
-    // }
 
     const votesTillNow = await api.query.convictionVoting.votingFor.entries(
       userAddress
@@ -136,37 +123,24 @@ export const getUserVotes =
       );
     }
 
-    // for (const del of delegating) {
-    //     delegationsAt.push(await formatDelegation(del));
-    // }
-
-    // console.log(`Added ${delegationsAt.length} delegations`, {
-    //     label: "Democracy",
-    // });
-
-    // for (const delegation of delegationsAt) {
-    //     const delegatedToVotes: DecoratedConvictionVote[] = formattedVotes.filter((vote) => {
-    //         return (
-    //             vote.address == delegation.target &&
-    //             vote.track == delegation.track
-    //         );
-    //     });
-    //     if (delegatedToVotes.length > 0) {
-    //         //format delegated votes
-    //         formattedVotes.push(...(await formatDelegatedVotes(delegation, delegatedToVotes)));
-    //     }
-
-    // }
-
-    // const userVotes: DecoratedConvictionVote[] = formattedVotes.filter(vote => vote.address == userAddress);
+    switch (referendaFilter) {
+      case "ongoing":
+        const ongoingRefs = await getOngoingReferenda(chain);
+        const ongoingRefsIndices = ongoingRefs.map(ref => ref.index);
+        formattedVotes = formattedVotes.filter(vote => ongoingRefsIndices.includes(vote.referendumIndex));
+        formattedVotes.sort((a, b) => parseInt(b.referendumIndex) - parseInt(a.referendumIndex));
+        break;
+      default:
+        // filter out only that ref
+        formattedVotes = formattedVotes.filter(vote => vote.referendumIndex === referendaFilter);
+    }
 
     console.log(
-      `Finished filtering and formatting ${formattedVotes.length} user votes for ongoing referenda.`,
+      `Finished filtering and formatting ${formattedVotes.length} user votes for referenda with filter ${referendaFilter}.`,
       {
         label: "Democracy",
       }
     );
-    // console.log(formattedVotes)
 
     return formattedVotes;
   }
