@@ -4,7 +4,7 @@ import {
 } from "@/app/[chain]/vote/util";
 import { useAppStore } from "@/app/zustand";
 import { getChainByName } from "@/config/chains";
-import { DecoratedConvictionVote, SubstrateChain, VotePolkadot } from "@/types";
+import { ConvictionDelegation, DecoratedConvictionVote, SubstrateChain, VotePolkadot } from "@/types";
 import { cache } from "react";
 import type { PalletConvictionVotingVoteVoting } from "@polkadot/types/lookup";
 import { getOpenGovReferenda } from "@/app/api/rewards/get-conviction-voting";
@@ -14,6 +14,7 @@ import {
   formatVote,
 } from "@/app/api/rewards/util";
 import { getOngoingReferenda } from "@/app/[chain]/vote/get-referenda";
+import { UIReferendum } from "@/app/[chain]/vote/types";
 
 export const getUserVotes =
   async (chain: SubstrateChain, userAddress: string, referendaFilter: string): Promise<DecoratedConvictionVote[]> => {
@@ -32,8 +33,8 @@ export const getUserVotes =
     const votingForTillNow: VotePolkadot[] =
       votesTillNow?.map(transformVoteMulti);
 
-    let formattedVotes = [];
-    let delegations = [];
+    let formattedVotes: DecoratedConvictionVote[] = [];
+    let delegations: ConvictionDelegation[] = [];
 
     //format all direct votes
 
@@ -54,7 +55,7 @@ export const getUserVotes =
 
         // push the given referendum votes to refVotes
         for (const [index, referendumVote] of votes) {
-          const formattedVote = await formatVote(
+          const formattedVote: DecoratedConvictionVote | undefined = formatVote(
             accountId,
             track,
             index.toString(),
@@ -103,7 +104,7 @@ export const getUserVotes =
             } = vote.voteData.asCasting;
             // push the given referendum votes to refVotes
             for (const [index, referendumVote] of votes) {
-              const formattedVote = await formatVote(
+              const formattedVote: DecoratedConvictionVote | undefined = await formatVote(
                 accountId,
                 track,
                 index.toString(),
@@ -118,9 +119,12 @@ export const getUserVotes =
           }
         }
       }
-      formattedVotes.push(
-        ...(await formatDelegatedVotes(delegation, formattedDelegatedToVotes))
-      );
+      const formattedDelegations: DecoratedConvictionVote[] = await formatDelegatedVotes(delegation, formattedDelegatedToVotes)
+      if (formattedDelegations.length > 0) {
+        formattedVotes.push(
+          ...formattedDelegations
+        );
+      }
     }
 
     console.log(`Finished adding ${formattedVotes.length -  directVoteCount} delegated votes`, {
@@ -129,7 +133,7 @@ export const getUserVotes =
 
     switch (referendaFilter) {
       case "ongoing":
-        const ongoingRefs = await getOngoingReferenda(chain);
+        const ongoingRefs: UIReferendum[] = await getOngoingReferenda(chain);
         const ongoingRefsIndices = ongoingRefs.map(ref => ref.index);
         formattedVotes = formattedVotes.filter(vote => ongoingRefsIndices.includes(vote.referendumIndex));
         formattedVotes.sort((a, b) => parseInt(b.referendumIndex) - parseInt(a.referendumIndex));
@@ -140,7 +144,7 @@ export const getUserVotes =
     }
 
     console.log(
-      `Finished filtering and formatting ${formattedVotes.length} user votes for referenda with filter ${referendaFilter}.`,
+      `Finished filtering and formatting ${formattedVotes.length} user votes for referenda with filter "${referendaFilter}".`,
       {
         label: "User Votes",
       }
