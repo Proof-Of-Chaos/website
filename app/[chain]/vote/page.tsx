@@ -3,7 +3,6 @@ import { ChainConfig, SubstrateChain } from "@/types";
 import { getReferenda } from "./get-referenda";
 import { getTracks } from "./get-tracks";
 import ReferendumList from "./components/referendum-list";
-import { getUserVotes } from "./get-user-votes";
 
 export async function generateStaticParams() {
   const params: { chain: SubstrateChain }[] = [];

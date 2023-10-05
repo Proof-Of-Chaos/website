@@ -6,7 +6,6 @@ import { useAppStore } from "@/app/zustand";
 import { getChainByName } from "@/config/chains";
 import { DecoratedConvictionVote, SubstrateChain, VotePolkadot } from "@/types";
 import { cache } from "react";
-import "server-only";
 import type { PalletConvictionVotingVoteVoting } from "@polkadot/types/lookup";
 import { getOpenGovReferenda } from "@/app/api/rewards/get-conviction-voting";
 import {
@@ -15,12 +14,8 @@ import {
   formatVote,
 } from "@/app/api/rewards/util";
 
-export const preload = (chain: SubstrateChain, userAddress: string) => {
-  void getUserVotes(chain, userAddress);
-};
-
-export const getUserVotes = cache(
-  async (chain: SubstrateChain, userAddress: string) => {
+export const getUserVotes =
+  async (chain: SubstrateChain, userAddress: string): Promise<DecoratedConvictionVote[]> => {
     const safeChain = (chain as SubstrateChain) || SubstrateChain.Kusama;
     const chainConfig = await getChainByName(safeChain);
     const { api } = chainConfig;
@@ -137,7 +132,7 @@ export const getUserVotes = cache(
         }
       }
       formattedVotes.push(
-        formatDelegatedVotes(delegation, formattedDelegatedToVotes)
+        ...(await formatDelegatedVotes(delegation, formattedDelegatedToVotes))
       );
     }
 
@@ -175,4 +170,3 @@ export const getUserVotes = cache(
 
     return formattedVotes;
   }
-);

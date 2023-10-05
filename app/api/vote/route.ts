@@ -4,7 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { DecoratedConvictionVote, SubstrateChain } from "@/types/index";
 import { getChainByName } from "@/config/chains";
 import { getReferenda } from "@/app/[chain]/vote/get-referenda";
-import { getUserVotes } from "@/app/[chain]/vote/get-user-votes";
+import { getUserVotes } from "@/app/api/vote/get-user-votes";
 
 // function that handles post requests from the client
 export async function POST(req: NextRequest) {
@@ -35,12 +35,16 @@ export async function POST(req: NextRequest) {
     // query the user votes for only that ref
     // ...
     result = await getUserVotes(chain, userAddress);
+    // filter out only that ref
+    result = result.filter(vote => vote.referendumIndex === refIndex);
   } else {
     // you might want to get all ongoing referenda here via
-    const ongoingRefs = getReferenda(chain);
+    const ongoingRefs = await getReferenda(chain);
     result = await getUserVotes(chain, userAddress);
-    result.sort((a, b) => parseInt(b.index) - parseInt(a.index));
-    // ...
+    //filter out only ongoing votes
+    const ongoingRefsIndices = ongoingRefs.map(ref => ref.index);
+    result = result.filter(vote => ongoingRefsIndices.includes(vote.referendumIndex));
+    result.sort((a, b) => parseInt(b.referendumIndex) - parseInt(a.referendumIndex));
   }
 
   // and return the latest user vote or where they delegated as
