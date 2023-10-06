@@ -11,13 +11,6 @@ export const useLatestUserVotes = (referendaFilter: string) => {
   const { selectedAccount } = usePolkadotExtension();
   const userAddress = selectedAccount?.address || "";
 
-  console.log(
-    "useLatestUserVote",
-    activeChainName,
-    userAddress,
-    referendaFilter
-  );
-
   return useQuery<UserVotesReturnType>({
     queryKey: ["userVotes", activeChainName, userAddress, referendaFilter],
     queryFn: async () => {

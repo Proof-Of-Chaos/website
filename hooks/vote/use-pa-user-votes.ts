@@ -13,7 +13,7 @@ export const usePAUserVotes = () => {
     ? encodeAddress(userAddress, ss58Format)
     : userAddress;
 
-  console.log("Polkassembly: useLatestUserVote", activeChainName, userAddress);
+  // console.log("Polkassembly: useLatestUserVote", activeChainName, userAddress);
 
   return useQuery({
     queryKey: ["PAuserVotes", activeChainName, userAddress],

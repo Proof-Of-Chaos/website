@@ -4,11 +4,20 @@ import { useAppStore } from "@/app/zustand";
 import { UIReferendum } from "../types";
 import { formatBalance } from "@polkadot/util";
 import { Card } from "@nextui-org/card";
+import { DecoratedConvictionVote } from "@/types";
+import { ConvictionDelegation } from "../../../../types/index";
+import { InlineLoader } from "@/components/inline-loader";
 
 export function ReferendumUserInfoCard({
   referendum,
+  isUserVotesLoading,
+  userVote,
+  userDelegation,
 }: {
   referendum: UIReferendum;
+  isUserVotesLoading?: boolean;
+  userVote?: DecoratedConvictionVote;
+  userDelegation?: ConvictionDelegation;
 }) {
   const { symbol, decimals } = useAppStore((state) => state.chain);
 
@@ -21,8 +30,6 @@ export function ReferendumUserInfoCard({
     });
   };
 
-  //TODO
-  let isUserVotesLoading = false;
   let decision = "yes";
   let balance = {
     value: 0,
@@ -39,7 +46,12 @@ export function ReferendumUserInfoCard({
       className="p-4 mb-2 text-sm bg-gray-100 dark:bg-slate-800"
       shadow="sm"
     >
-      {!isUserVotesLoading && (
+      {isUserVotesLoading ? (
+        <>
+          Loading your vote
+          <InlineLoader />
+        </>
+      ) : (
         <>
           <div className="flex-col w-full text-center">
             <div className="">

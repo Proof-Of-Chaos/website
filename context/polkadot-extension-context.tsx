@@ -69,13 +69,11 @@ export const PolkadotExtensionProvider = ({
         setAccounts(availableAccounts);
 
         const selectedIndex = localStorage.getItem("selectedAccountIndex");
-        if (
-          selectedIndex !== null &&
-          Number(selectedIndex) < availableAccounts.length
-        ) {
-          console.log("setting selectedIndex", selectedIndex);
-          setSelectedAccountIndex(Number(selectedIndex));
-        }
+        const chosenIndex =
+          !isNaN(Number(selectedIndex)) && Number(selectedIndex) >= 0
+            ? Number(selectedIndex)
+            : 0;
+        setSelectedAccountIndex(chosenIndex);
       } catch (error) {
         console.error("Error enabling the extension:", error);
       }
@@ -119,6 +117,7 @@ export const PolkadotExtensionProvider = ({
         isExtensionAvailable,
         selectedAccount,
         setSelectedAccountIndex: (index) => {
+          console.log("setting accountIndex to local storage", String(index));
           setSelectedAccountIndex(index);
           localStorage.setItem("selectedAccountIndex", String(index));
         },

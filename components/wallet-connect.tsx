@@ -49,9 +49,13 @@ export const WalletConnect = () => {
       router.push(`/${key}`);
       return;
     }
-    const accountIdx =
-      accounts?.findIndex((account) => account.address === key) || 0;
-    setSelectedAccountIndex(accountIdx);
+    const accountIdx = accounts?.findIndex(
+      (account) => account.address === key
+    );
+
+    if (accountIdx >= 0) {
+      setSelectedAccountIndex(accountIdx);
+    }
   };
 
   if (!userWantsConnection) {
