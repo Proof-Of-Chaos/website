@@ -17,15 +17,3 @@ export const useReferendumDetail = (refId: string) => {
     },
   });
 };
-
-// const getEndDateByBlock = (
-//   blockNumber,
-//   currentBlockNumber,
-//   currentTimestamp
-// ) => {
-//   let newStamp =
-//     parseInt(currentTimestamp.toString()) +
-//     (parseInt(blockNumber.toString()) - currentBlockNumber.toNumber()) *
-//       BLOCK_DURATION;
-//   return new Date(newStamp);
-// };

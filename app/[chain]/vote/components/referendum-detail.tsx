@@ -67,10 +67,6 @@ export function ReferendumDetail({
 
   return (
     <div className="referendum-detail relative w-full rounded-sm border border-dashed border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0 hover:shadow-lg dark:shadow-gray-700 transition-all">
-      user vote:
-      <pre className="text-tiny">{JSON.stringify(userVote, null, 2)}</pre>
-      user delegation
-      <pre className="text-tiny">{JSON.stringify(userDelegation, null, 2)}</pre>
       <div className="w-full flex flex-wrap">
         <div className="flex flex-col left w-full sm:w-7/12 md:w-8/12 pb-6 sm:pb-0 sm:pr-6 border-dashed sm:border-r border-b sm:border-b-0">
           <div className="referendum-heading text-2xl mb-3 font-bold flex w-full items-center justify-between">

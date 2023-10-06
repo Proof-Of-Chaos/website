@@ -7,6 +7,10 @@ import { Card } from "@nextui-org/card";
 import { DecoratedConvictionVote } from "@/types";
 import { ConvictionDelegation } from "../../../../types/index";
 import { InlineLoader } from "@/components/inline-loader";
+import { extractNumberFromConviction } from "../util";
+import Identicon from "@polkadot/react-identicon";
+import { trimAddress } from "@/components/util";
+import { Link } from "@nextui-org/link";
 
 export function ReferendumUserInfoCard({
   referendum,
@@ -21,24 +25,32 @@ export function ReferendumUserInfoCard({
 }) {
   const { symbol, decimals } = useAppStore((state) => state.chain);
 
-  const formatToChainDecimals = (value: number) => {
-    return formatBalance(value, {
+  const formatToChainDecimals = (value: number | string) => {
+    const rawBalance = formatBalance(value, {
       decimals,
-      forceUnit: "-",
-      withSi: true,
-      withUnit: symbol,
+      withSi: false,
+      withSiFull: false,
     });
+
+    return `${parseFloat(rawBalance).toFixed(2)} ${symbol}`;
   };
 
-  let decision = "yes";
-  let balance = {
-    value: 0,
-    aye: 0,
-    nay: 0,
-    abstain: 0,
-  };
+  console.log(referendum?.index, "userVote", userVote);
+  console.log(referendum?.index, "userDelegation", userDelegation);
 
-  let lockPeriod = 0;
+  const userVoted =
+    !userVote && !userDelegation
+      ? "none"
+      : userVote && !userDelegation
+      ? "vote"
+      : "delegation";
+
+  userVote?.voteDirection === "splitAbstain" ? "split" : "single";
+
+  let decision = userVote?.voteDirection;
+  let balance = userVote?.balance;
+
+  let lockPeriod = extractNumberFromConviction(userVote?.conviction);
 
   return (
     <Card
@@ -47,80 +59,120 @@ export function ReferendumUserInfoCard({
       shadow="sm"
     >
       {isUserVotesLoading ? (
-        <>
+        <div className="flex-col w-full text-center">
           Loading your vote
           <InlineLoader />
-        </>
+        </div>
       ) : (
         <>
-          <div className="flex-col w-full text-center">
-            <div className="">
-              <span>You voted</span>
-              <b>
-                {decision === "yes" && (
-                  <span className="bg-green-400 text-black px-2 rounded-sm mx-1">
-                    Aye
+          {userVoted === "none" && (
+            <>You have not voted on referendum {referendum?.index} yet</>
+          )}
+          {userVoted === "delegation" && (
+            <>
+              You have delegated your vote to{" "}
+              <div className="flex justify-center items-center">
+                <Link
+                  isExternal
+                  href={`https://kusama.subscan.io/account/${userDelegation?.target}`}
+                  className="text-foreground hover:underline text-tiny border-1 border-foreground rounded-md p-1 m-1"
+                >
+                  <Identicon
+                    value={userDelegation?.target}
+                    size={19}
+                    theme="polkadot"
+                    className="hover:cursor-pointer inline mr-2"
+                  />
+                  {userDelegation?.target && (
+                    <>{trimAddress(userDelegation?.target)}</>
+                  )}
+                </Link>
+              </div>
+            </>
+          )}
+          {userVoted === "vote" && (
+            <div className="flex-col w-full text-center">
+              <div className="">
+                <span>You voted</span>
+                <b>
+                  {decision === "yes" ||
+                    (decision === "Aye" && (
+                      <span className="bg-green-400 text-black px-2 rounded-sm mx-1">
+                        Aye
+                      </span>
+                    ))}
+                  {decision === "no" && (
+                    <span className="bg-red-400 px-2 rounded-sm mx-1">Nay</span>
+                  )}
+                  {decision === "split" && (
+                    <>
+                      <span className="bg-green-400 text-black px-2 rounded-sm mx-1">
+                        Aye
+                      </span>
+                      +
+                      <span className="bg-red-400 px-2 rounded-sm mx-1">
+                        Nay
+                      </span>
+                    </>
+                  )}
+                  {decision === "splitAbstain" && (
+                    <>
+                      <span className="bg-green-400 text-black px-2 rounded-sm mx-1">
+                        Aye
+                      </span>
+                      +
+                      <span className="bg-red-400 px-2 rounded-sm mx-1">
+                        Nay
+                      </span>
+                      +
+                      <span className="bg-gray-400 px-2 rounded-sm mx-1">
+                        Abstain
+                      </span>
+                    </>
+                  )}
+                </b>
+              </div>
+              {decision !== "split" && decision !== "splitAbstain" && (
+                <>
+                  <div className="">
+                    <span>
+                      with <b>{formatToChainDecimals(balance?.aye ?? 0)}</b>
+                    </span>
+                  </div>
+                  <div className="">
+                    <span>
+                      and conviction <b>{lockPeriod}</b>
+                    </span>
+                  </div>
+                </>
+              )}
+              {decision === "split" && (
+                <div className="">
+                  <span>
+                    with <b>{formatToChainDecimals(balance?.aye ?? 0)}</b> +{" "}
+                    <b>{formatToChainDecimals(balance?.nay ?? 0)}</b>
                   </span>
-                )}
-                {decision === "no" && (
-                  <span className="bg-red-400 px-2 rounded-sm mx-1">Nay</span>
-                )}
-                {decision === "split" && (
-                  <>
-                    <span className="bg-green-400 text-black px-2 rounded-sm mx-1">
-                      Aye
-                    </span>
-                    +
-                    <span className="bg-red-400 px-2 rounded-sm mx-1">Nay</span>
-                  </>
-                )}
-                {decision === "splitAbstain" && (
-                  <>
-                    <span className="bg-green-400 text-black px-2 rounded-sm mx-1">
-                      Aye
-                    </span>
-                    +
-                    <span className="bg-red-400 px-2 rounded-sm mx-1">Nay</span>
-                    +
-                    <span className="bg-gray-400 px-2 rounded-sm mx-1">
-                      Abstain
-                    </span>
-                  </>
-                )}
-              </b>
+                </div>
+              )}
+              {decision === "splitAbstain" && (
+                <div className="">
+                  <span>
+                    with <b>{formatToChainDecimals(balance?.aye ?? 0)}</b> +{" "}
+                    <b>{formatToChainDecimals(balance?.nay ?? 0)}</b> +{" "}
+                    <b>{formatToChainDecimals(balance?.abstain ?? 0)} </b>
+                  </span>
+                </div>
+              )}
             </div>
-            {decision !== "split" && decision !== "splitAbstain" && (
-              <>
-                <div className="">
-                  <span>
-                    with <b>{formatToChainDecimals(balance.value)} KSM</b>
-                  </span>
-                </div>
-                <div className="">
-                  <span>
-                    and conviction <b>{lockPeriod}</b>
-                  </span>
-                </div>
-              </>
-            )}
-            {decision === "split" && (
-              <div className="">
-                <span>
-                  with <b>{formatToChainDecimals(balance.aye ?? 0)}</b> +{" "}
-                  <b>{formatToChainDecimals(balance.nay ?? 0)} KSM</b>
-                </span>
-              </div>
-            )}
-            {decision === "splitAbstain" && (
-              <div className="">
-                <span>
-                  with <b>{formatToChainDecimals(balance.aye ?? 0)} KSM</b> +{" "}
-                  <b>{formatToChainDecimals(balance.nay ?? 0)} KSM</b> +{" "}
-                  <b>{formatToChainDecimals(balance.abstain ?? 0)} KSM </b>
-                </span>
-              </div>
-            )}
-          </div>
+          )}
+          {/* <div>
+            user vote:
+            <pre className="text-tiny">{JSON.stringify(userVote, null, 2)}</pre>
+            user delegation:
+            <pre className="text-tiny">
+              {JSON.stringify(userDelegation, null, 2)}
+            </pre>
+          </div> */}
         </>
       )}
     </Card>

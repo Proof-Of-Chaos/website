@@ -68,9 +68,7 @@ export default function ReferendumList(props: Props) {
               (vote) => vote.referendumIndex === ref.index
             );
             const userDelegation = delegations?.find(
-              (delegation) =>
-                delegation.track &&
-                delegation.track.toString() === track?.id.toString()
+              (delegation) => delegation.track.toString() === track?.id
             );
             return (
               <div key={ref.index}>
@@ -102,6 +100,9 @@ export default function ReferendumList(props: Props) {
       ) : (
         <ReferendumNotFound />
       )}
+      <pre className="text-tiny">
+        {JSON.stringify(filteredReferenda, null, 2)}
+      </pre>
     </div>
   );
 }
