@@ -1,8 +1,5 @@
-import { getChainByName } from "@/config/chains";
 import { kusama } from "@/config/chains/kusama";
-import { usePolkadotExtension } from "@/hooks/use-polkadot-extension";
-import { ChainConfig, SubstrateChain } from "@/types";
-import { ApiPromise, WsProvider } from "@polkadot/api";
+import { ChainConfig } from "@/types";
 import {
   InjectedAccountWithMeta,
   InjectedExtension,

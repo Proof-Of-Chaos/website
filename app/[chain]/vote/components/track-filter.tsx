@@ -7,6 +7,7 @@ import { titleCase } from "@/components/util";
 import { useLatestUserVotes } from "@/hooks/vote/use-latest-user-vote";
 import { DecoratedConvictionVote, SubstrateChain } from "@/types";
 import { Button, ButtonGroup } from "@nextui-org/button";
+import clsx from "clsx";
 import Link from "next/link";
 import { Key } from "react";
 
@@ -25,14 +26,33 @@ export function TrackFilter({
   const safeChain = chain || SubstrateChain.Kusama;
 
   const { data: userVotes, isLoading: isUserVotesLoading } =
-    useLatestUserVotes("all");
+    useLatestUserVotes("ongoing");
 
   const votedAmount =
-    userVotes?.votes?.filter(
-      (vote: DecoratedConvictionVote) => vote?.referendumIndex !== undefined
+    referenda?.filter((ref) => {
+      const voted = userVotes?.votes?.find(
+        (vote) => vote.referendumIndex === ref.index
+      );
+      const delegated = userVotes?.delegations?.find(
+        (delegation) => delegation.track.toString() === ref.track
+      );
+      return voted !== undefined && delegated === undefined;
+    }).length || 0;
+  const delegatedAmount =
+    referenda?.filter((ref) =>
+      userVotes?.delegations?.find((del) => del.track.toString() === ref.track)
     ).length || 0;
+
   const unvotedAmount =
-    referenda && referenda.length ? referenda.length - votedAmount : 0;
+    referenda?.filter((ref) => {
+      const findResultDelegated = userVotes?.delegations?.find(
+        (delegation) => delegation.track.toString() === ref.track
+      );
+      const findResultVoted = userVotes?.votes?.find(
+        (vote) => vote.referendumIndex === ref.index
+      );
+      return findResultDelegated === undefined && findResultVoted === undefined;
+    }).length || 0;
 
   // get the count of referenda for each track
   const referendaCountPerTrack = tracks?.map((track) => {
@@ -48,14 +68,18 @@ export function TrackFilter({
     trackId: "all",
     count: totalCount,
   });
-  // referendaCountPerTrack?.push({
-  //   trackId: "voted",
-  //   count: votedAmount,
-  // });
-  // referendaCountPerTrack?.push({
-  //   trackId: "unvoted",
-  //   count: unvotedAmount,
-  // });
+  referendaCountPerTrack?.push({
+    trackId: "voted",
+    count: votedAmount,
+  });
+  referendaCountPerTrack?.push({
+    trackId: "delegated",
+    count: delegatedAmount,
+  });
+  referendaCountPerTrack?.push({
+    trackId: "unvoted",
+    count: unvotedAmount,
+  });
 
   const distinctReferendaTrackIds = referenda
     ?.map((ref) => ref.track)
@@ -69,8 +93,9 @@ export function TrackFilter({
   const moreTracks = [
     { id: "all", name: "all", text: "All" },
     ...(distinctTracks || []),
-    // { id: "voted", name: "voted", text: "Voted" },
-    // { id: "unvoted", name: "unvoted", text: "Unvoted" },
+    { id: "voted", name: "voted", text: "Voted" },
+    { id: "delegated", name: "delegated", text: "Delegated" },
+    { id: "unvoted", name: "unvoted", text: "Unvoted" },
   ];
 
   const handleChange = (key: Key) => {
@@ -78,41 +103,52 @@ export function TrackFilter({
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <ButtonGroup
+    <div className="flex flex-row flex-wrap items-center justify-center">
+      {/* <ButtonGroup
         radius="sm"
         size="sm"
         className="mt-1 flex-wrap justify-start"
         variant="flat"
-      >
-        {moreTracks?.map((track) => {
-          const referendaCount = referendaCountPerTrack?.find(
-            (item) => item.trackId === track.id.toString()
-          )?.count;
-          return (
-            <Button
-              key={track.id}
-              radius="sm"
-              color={
-                trackFilter === track.id.toString() ? "primary" : "default"
-              }
-              onClick={() => handleChange(track.id)}
-            >
-              {/* <Link href={`?trackFilter=${track.id}`}> */}
-              {titleCase(track.name)}
-              <span className="text-xs text-gray-500 ml-1">
-                {isUserVotesLoading &&
-                ["voted", "unvoted"].includes(track.id) ? (
-                  <InlineLoader />
-                ) : (
-                  referendaCount
-                )}
-              </span>
-              {/* </Link> */}
-            </Button>
-          );
-        })}
-      </ButtonGroup>
+      > */}
+      {moreTracks?.map((track) => {
+        const referendaCount = referendaCountPerTrack?.find(
+          (item) => item.trackId === track.id.toString()
+        )?.count;
+        return (
+          <Button
+            key={track.id}
+            radius="sm"
+            size="sm"
+            variant="flat"
+            color={trackFilter === track.id.toString() ? "primary" : "default"}
+            onClick={() => handleChange(track.id)}
+            isDisabled={
+              isUserVotesLoading &&
+              ["voted", "unvoted", "delegated"].includes(track.id)
+            }
+            className={clsx("inline m-0.5", {
+              "border-1 border-foreground": [
+                "voted",
+                "unvoted",
+                "delegated",
+              ].includes(track.id),
+            })}
+          >
+            {/* <Link href={`?trackFilter=${track.id}`}> */}
+            {titleCase(track.name)}
+            <span className="text-xs text-gray-500 ml-1">
+              {isUserVotesLoading &&
+              ["voted", "unvoted", "delegated"].includes(track.id) ? (
+                <InlineLoader />
+              ) : (
+                referendaCount
+              )}
+            </span>
+            {/* </Link> */}
+          </Button>
+        );
+      })}
+      {/* </ButtonGroup> */}
     </div>
   );
 }

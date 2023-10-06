@@ -37,15 +37,26 @@ export default function ReferendumList(props: Props) {
     if (trackFilter === "all") {
       return true;
     } else if (trackFilter === "voted") {
-      const findResult = votes?.find(
+      const voted = votes?.find((vote) => vote.referendumIndex === ref.index);
+      const delegated = delegations?.find(
+        (delegation) => delegation.track.toString() === ref.track
+      );
+      return voted !== undefined && delegated === undefined;
+    } else if (trackFilter === "delegated") {
+      const shouldShow = delegations?.find(
+        (del) => del.track.toString() === ref.track
+      );
+      console.log(ref.index, "shouldShow", shouldShow);
+      return shouldShow !== undefined;
+    } else if (trackFilter === "unvoted") {
+      // remove all referenda that the user has delegations to
+      const findResultDelegated = delegations?.find(
+        (delegation) => delegation.track.toString() === ref.track
+      );
+      const findResultVoted = votes?.find(
         (vote) => vote.referendumIndex === ref.index
       );
-      console.log("findResult", ref.index, findResult);
-      return findResult !== undefined;
-      // } else if (trackFilter === "unvoted") {
-      //   return (
-      //     userVotes?.find()
-      //   );
+      return findResultDelegated === undefined && findResultVoted === undefined;
     } else {
       return ref.track === trackFilter;
     }
@@ -100,9 +111,9 @@ export default function ReferendumList(props: Props) {
       ) : (
         <ReferendumNotFound />
       )}
-      <pre className="text-tiny">
+      {/* <pre className="text-tiny">
         {JSON.stringify(filteredReferenda, null, 2)}
-      </pre>
+      </pre> */}
     </div>
   );
 }

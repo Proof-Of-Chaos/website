@@ -35,9 +35,6 @@ export function ReferendumUserInfoCard({
     return `${parseFloat(rawBalance).toFixed(2)} ${symbol}`;
   };
 
-  console.log(referendum?.index, "userVote", userVote);
-  console.log(referendum?.index, "userDelegation", userDelegation);
-
   const userVoted =
     !userVote && !userDelegation
       ? "none"
@@ -66,7 +63,15 @@ export function ReferendumUserInfoCard({
       ) : (
         <>
           {userVoted === "none" && (
-            <>You have not voted on referendum {referendum?.index} yet</>
+            <>
+              You have not voted on <br />
+              referendum {referendum?.index} yet <br />
+              <div className="flex gap-4 text-2xl justify-center">
+                <span>↓</span>
+                <span>↓</span>
+                <span>↓</span>
+              </div>
+            </>
           )}
           {userVoted === "delegation" && (
             <>

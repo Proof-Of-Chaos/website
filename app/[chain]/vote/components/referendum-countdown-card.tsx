@@ -44,11 +44,12 @@ export default function ReferendumCountdownCard({
       {["preparing", "deciding", "confirming"].includes(ongoingStatus) ? (
         <ReferendumCountdown endDate={endDate} />
       ) : (
-        <Button size="sm" disabled variant="shadow">
-          {ongoingStatus === "awaitingDecisionDeposit"
-            ? "Pay Decision Deposit"
-            : "Pay Submission Deposit"}
-        </Button>
+        // <Button size="sm" disabled variant="shadow">
+        //   {ongoingStatus === "awaitingDecisionDeposit"
+        //     ? "Pay Decision Deposit"
+        //     : "Pay Submission Deposit"}
+        // </Button>
+        <></>
       )}
     </Card>
   );
