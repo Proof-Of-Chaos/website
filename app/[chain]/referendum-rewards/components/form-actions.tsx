@@ -27,6 +27,7 @@ import { mergeWithDefaultConfig } from "../../../../components/util";
 import { error } from "console";
 import { Link } from "@nextui-org/link";
 import { rewardsSchema } from "../rewards-schema";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 export const revalidate = 3600;
 
 type ConfigReqBody = RewardConfiguration & {
@@ -43,8 +44,9 @@ export default function FormActions({
   // onSubmit?: (data: any) => Promise<any>;
   chain: SubstrateChain;
 }) {
-  const { actingAccount } = useAppStore((state) => state.user);
-  const userAddress = actingAccount?.address;
+  const { selectedAccount } = usePolkadotExtension();
+  const userAddress = selectedAccount?.address;
+
   const activeChain = getChainInfo(chain);
   const { ss58Format, name: activeChainName, icon } = activeChain;
   const chainRewardsSchema = rewardsSchema(
@@ -63,9 +65,6 @@ export default function FormActions({
   } = useDisclosure();
 
   const explode = useAppStore((s) => s.explode);
-  const walletAddress = useAppStore(
-    (state) => state.user.actingAccount?.address
-  );
 
   const [rewardSendoutData, setRewardSendoutData] =
     useState<GenerateRewardsResult>(undefined);
@@ -116,8 +115,8 @@ export default function FormActions({
 
     // chain + walletAddress of the sender
     formData.append("chain", chain);
-    if (walletAddress) {
-      formData.append("sender", walletAddress);
+    if (userAddress) {
+      formData.append("sender", userAddress);
     }
 
     // uploaded files
@@ -142,6 +141,8 @@ export default function FormActions({
       method: "POST",
       body: formData,
     });
+
+    console.log("rawRespoinse", response);
     const responseData = await response.json();
     console.log("raw response data", responseData);
 

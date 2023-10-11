@@ -24,10 +24,7 @@ import { mergeWithDefaultConfig } from "@/components/util";
 import { zodSchemaObject } from "@/app/[chain]/referendum-rewards/rewards-schema";
 
 export async function POST(req: NextRequest) {
-  //   let { rewardsConfig }: { rewardsConfig: unknown } = await req.json();
-
   let res = NextResponse<GenerateRewardsResult>;
-  const { DEFAULT_REWARDS_CONFIG } = rewardsConfig;
 
   let zodErrors = {};
   let formData: FormData;
@@ -41,13 +38,19 @@ export async function POST(req: NextRequest) {
 
   sender = formData?.get("sender")?.toString();
   if (!sender) {
-    throw new Error("Missing sender");
+    return res.json({
+      status: "error",
+      errors: { form: "No sender address" },
+    });
   }
 
   // get the form data as json so we can work with it
   const rewardConfigData = formData?.get("rewardConfig");
   if (!rewardConfigData) {
-    throw new Error("Missing formData");
+    return res.json({
+      status: "error",
+      errors: { form: "No reward config data" },
+    });
   }
 
   try {

@@ -11,6 +11,7 @@ import { extractNumberFromConviction } from "../util";
 import Identicon from "@polkadot/react-identicon";
 import { trimAddress } from "@/components/util";
 import { Link } from "@nextui-org/link";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 export function ReferendumUserInfoCard({
   referendum,
@@ -23,7 +24,8 @@ export function ReferendumUserInfoCard({
   userVote?: DecoratedConvictionVote;
   userDelegation?: ConvictionDelegation;
 }) {
-  const { symbol, decimals } = useAppStore((state) => state.chain);
+  const { activeChainInfo } = usePolkadotApis();
+  const { decimals, symbol } = activeChainInfo;
 
   const formatToChainDecimals = (value: number | string) => {
     const rawBalance = formatBalance(value, {

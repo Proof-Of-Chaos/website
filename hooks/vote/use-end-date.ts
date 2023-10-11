@@ -1,5 +1,3 @@
-import { useAppStore } from "@/app/zustand";
-import { useEffect } from "react";
 import { useQuery } from "react-query";
 import { SubstrateChain } from "../../types/index";
 

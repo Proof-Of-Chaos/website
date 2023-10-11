@@ -5,15 +5,14 @@ import { useAccountBalance } from "@/hooks/use-account-balance";
 import { Button, ButtonGroup } from "@nextui-org/button";
 import { VoteChoice } from "../types";
 import clsx from "clsx";
-import { useAppStore } from "@/app/zustand";
 import { formatBalance, bnToBn, BN_ZERO } from "@polkadot/util";
-import { Spinner } from "@nextui-org/spinner";
+
 import { Input } from "@nextui-org/input";
 import { getVoteTx } from "../util";
 import { sendAndFinalize } from "@/components/util-client";
-import { web3FromAddress } from "@polkadot/extension-dapp";
+
 import { vividButtonClasses } from "@/components/primitives";
-import { kusama } from "@/config/chains/kusama";
+
 import { InlineLoader } from "@/components/inline-loader";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
@@ -118,7 +117,7 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
         {isBalanceLoading ? (
           <InlineLoader className="ml-2" />
         ) : (
-          `${availableBalance} ${symbol}`
+          `${availableBalance}`
         )}
       </span>
     </>

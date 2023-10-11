@@ -9,7 +9,6 @@ import { Suspense, use } from "react";
 import { useAppStore } from "@/app/zustand";
 import { getChainInfo } from "@/config/chains";
 import { ReferendumNotFound } from "./referendum-not-found";
-import { useUserVotes } from "@/hooks/vote/use-user-votes";
 import { useLatestUserVotes } from "@/hooks/vote/use-latest-user-vote";
 
 interface Props {

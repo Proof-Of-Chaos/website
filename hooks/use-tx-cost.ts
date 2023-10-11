@@ -7,6 +7,7 @@ import { ChainType } from "@/types";
 import { useQuery } from "react-query";
 import { Observable } from "rxjs";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 
 type Type = RuntimeDispatchInfo | Observable<RuntimeDispatchInfo>;
 
@@ -16,8 +17,8 @@ export const useTxCost = (tx: TxTypes, chainType?: ChainType) => {
     apiStates: { relay, assetHub },
   } = usePolkadotApis();
   const chainName = activeChainName || DEFAULT_CHAIN;
-  const user = useAppStore((s) => s.user);
-  const { address } = user?.accounts?.[user.actingAccountIdx] || {};
+  const { selectedAccount } = usePolkadotExtension();
+  const address = selectedAccount?.address || "";
 
   const api = chainType === ChainType.AssetHub ? assetHub?.api : relay?.api;
 

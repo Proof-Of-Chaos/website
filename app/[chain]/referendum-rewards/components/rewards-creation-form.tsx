@@ -7,35 +7,21 @@ import { useEffect, useState } from "react";
 import { useReferendumDetail } from "@/hooks/vote/use-referendum-detail";
 import { InlineLoader } from "@/components/inline-loader";
 import { Button } from "@nextui-org/button";
-import { Progress } from "@nextui-org/progress";
 import { RewardsCreationRarityFields } from "./rewards-rarity-fields";
 import { rewardsConfig } from "@/config/rewards";
-import { vividButtonClasses } from "@/components/primitives";
-import clsx from "clsx";
 import { FormProvider, useForm } from "react-hook-form";
 import { SubstrateChain } from "@/types";
-import { getChainInfo } from "@/config/chains";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAppStore } from "@/app/zustand";
 import { useDisclosure } from "@nextui-org/modal";
 import ModalCreateNFTCollection from "./modal-new-collection";
-import {
-  CollectionConfiguration,
-  GenerateRewardsResult,
-  RewardConfiguration,
-  RewardCriteria,
-  SendAndFinalizeResult,
-} from "../types";
-import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { CollectionConfiguration, GenerateRewardsResult } from "../types";
 import ModalAnalyzeSendout from "./modal-analyze-sendout";
-import { TxButton } from "@/components/TxButton";
 import { bnToBn } from "@polkadot/util";
-import { mergeWithDefaultConfig } from "@/components/util";
-import { TxTypes } from "@/components/util-client";
 import FormActions from "./form-actions";
 import { rewardsSchema } from "../rewards-schema";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 
 export default function RewardsCreationForm({
   chain,
@@ -46,18 +32,13 @@ export default function RewardsCreationForm({
     useState(false);
   const { activeChainName, activeChainInfo } = usePolkadotApis();
   const { ss58Format } = activeChainInfo;
-
-  const walletAddress = useAppStore(
-    (state) => state.user.actingAccount?.address
-  );
+  const { selectedAccount } = usePolkadotExtension();
 
   const chainRewardsSchema = rewardsSchema(
     activeChainName,
-    walletAddress,
+    selectedAccount?.address,
     ss58Format
   );
-
-  const explode = useAppStore((s) => s.explode);
 
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
   const { DEFAULT_REWARDS_CONFIG } = rewardsConfig;

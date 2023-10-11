@@ -24,7 +24,7 @@ const fileUpload =
         .any()
         .refine(
           (file) => file?.length === 0 || file?.size <= 2 * 1024 * 1024,
-          `File of max size 2MB`
+          `File of max size 2MB, if you need larger files use ipfs option`
         )
         .refine(
           (file) =>
@@ -36,7 +36,7 @@ const fileUpload =
         .any()
         .refine(
           (files) => files?.length === 0 || files?.[0]?.size <= 2 * 1024 * 1024,
-          `File of max size 2MB`
+          `File of max size 2MB, if you need larger files use ipfs option`
         )
         .refine(
           (files) =>

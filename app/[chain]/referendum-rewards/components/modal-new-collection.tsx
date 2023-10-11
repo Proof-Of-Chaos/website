@@ -19,6 +19,7 @@ import { Button } from "@nextui-org/button";
 import { Deposit } from "@/hooks/use-deposit";
 import { getTxCollectionCreate } from "@/config/txs";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 
 type PropType = Omit<ModalProps, "children"> & {
   setCollectionConfig: (config: CollectionConfiguration) => void;
@@ -45,11 +46,11 @@ export default function ModalCreateNFTCollection({
     apiStates: { assetHub },
   } = usePolkadotApis();
 
-  const connectedAccount = useAppStore((state) => state.user.actingAccount);
+  const { selectedAccount } = usePolkadotExtension();
 
   const txCreateCollection = useMemo(() => {
-    return getTxCollectionCreate(assetHub?.api, connectedAccount?.address);
-  }, [assetHub?.api, connectedAccount]);
+    return getTxCollectionCreate(assetHub?.api, selectedAccount?.address);
+  }, [assetHub?.api, selectedAccount]);
 
   const formMethods = useForm({
     defaultValues: {

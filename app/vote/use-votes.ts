@@ -1,7 +1,4 @@
 import { ApiPromise } from "@polkadot/api";
-import { useQuery } from "react-query";
-import { useAppStore } from "../zustand";
-import { some } from "lodash";
 
 async function getTitleAndContentForRefs(referendumIds: string[]) {
   const promises = referendumIds.map((id) => getTitleAndContentForRef(id));
