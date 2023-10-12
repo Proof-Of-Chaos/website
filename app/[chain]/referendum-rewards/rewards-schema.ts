@@ -4,7 +4,7 @@ import { ChainConfig, SubstrateChain } from "@/types";
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { z } from "zod";
 import { RewardCriteria, SendAndFinalizeResult } from "./types";
-import { getChainInfo } from "@/config/chains";
+import { getChainByName, getChainInfo } from "@/config/chains";
 import { getChain } from "@/app/vote/server-actions/get-chain";
 
 export function validateAddress(address: string, ss58Format: number) {
@@ -66,8 +66,8 @@ export const zodSchemaObject = (
         .transform((id) => parseInt(id) || -1)
         .refine((id) => id >= 0, "Id must be a positive number")
         .refine(async (id) => {
-          const { assetHubApi } = getChainInfo(chain);
-          console.log("Aaa", id);
+          const { assetHubApi } = await getChainByName(chain);
+          await assetHubApi?.isReady;
 
           if (id >= 0) {
             const collectionData = await assetHubApi?.query.nfts.collection(id);
@@ -100,7 +100,8 @@ export const zodSchemaObject = (
           imageCid: z.string().optional(),
           //TODO
           file: fileUpload,
-          // file: z.any().optional(),
+          fileCover: fileUpload.optional(),
+          coverCid: z.string().optional(),
         })
         .refine(
           (option) => {

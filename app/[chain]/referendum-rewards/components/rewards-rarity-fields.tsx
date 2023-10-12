@@ -27,7 +27,6 @@ export function RewardsCreationRarityFields({
   const {
     register,
     formState: { errors },
-    watch,
   } = formMethods;
   const { acceptedNftFormats, acceptedNonImageFormats } = rewardsConfig;
   const [isUploadSelected, setIsUploadSelected] = useState(true);
@@ -40,7 +39,6 @@ export function RewardsCreationRarityFields({
     undefined,
     ss58Format
   );
-  type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
 
   let optionIndex = rewardConfig.options.findIndex(
     (opt) => opt.rarity === rarity

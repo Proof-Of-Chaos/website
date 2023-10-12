@@ -19,7 +19,6 @@ import {
   getNFTMetadataDeposit,
 } from "@/config/txs";
 import fs from "fs";
-import { rewardsConfig } from "../../../config/rewards";
 import { mergeWithDefaultConfig } from "@/components/util";
 import { zodSchemaObject } from "@/app/[chain]/referendum-rewards/rewards-schema";
 
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
 
   // parse the form data that is coming from the client
   formData = await req.formData();
-  console.log("formData", formData);
+  // console.log("formData", formData);
 
   sender = formData?.get("sender")?.toString();
   if (!sender) {
@@ -55,7 +54,6 @@ export async function POST(req: NextRequest) {
 
   try {
     rewardConfig = JSON.parse(rewardConfigData?.toString());
-
     console.log("rewardConfig json", rewardConfig);
   } catch (error) {
     console.log("Error parsing form data", error);
@@ -74,6 +72,7 @@ export async function POST(req: NextRequest) {
     // this is needed because the file is not serializable
     rewardConfig.options.forEach((option) => {
       option.file = formData?.get(`${option.rarity}File`);
+      option.fileCover = formData?.get(`${option.rarity}FileCover`);
     });
 
     // override the file of the collection config with a file from the parsed form data
@@ -84,9 +83,9 @@ export async function POST(req: NextRequest) {
     const schemaObject = zodSchemaObject(selectedChain, sender, ss58Format);
     const schema = zfd.formData(schemaObject);
 
-    console.info("validating form data", rewardConfig);
+    // console.info("validating form data", rewardConfig);
     const result = await schema.safeParseAsync(rewardConfig);
-    console.log("result", result);
+    // console.log("result", result);
 
     if (!result.success) {
       result.error.issues.map((issue) => {
@@ -109,10 +108,18 @@ export async function POST(req: NextRequest) {
     // add the Buffers instead of the files so we can work with it
     rewardConfig?.options?.forEach(async (option) => {
       const file: File | null = formData?.get(`${option.rarity}File`) as File;
+      const fileCover: File | null = formData?.get(
+        `${option.rarity}FileCover`
+      ) as File;
 
       if (file) {
         const bytes = await file?.arrayBuffer();
         option.file = option.file = Readable.from(Buffer.from(bytes));
+      }
+
+      if (fileCover) {
+        const bytes = await fileCover?.arrayBuffer();
+        option.fileCover = option.fileCover = Readable.from(Buffer.from(bytes));
       }
     });
 
@@ -200,9 +207,8 @@ const generateCalls = async (
 
   //computing the actual calls is still WIP and likely to change
 
-  // get all transactions that are needed for the distribution
-  // TODO --- warning we slice by 10 here
-
+  // get all transactions that are needed for the distribution of the rewards
+  // ipfs pinning, metadata, also happens here
   let { txsKusamaAssetHub, txsPerVote } = await getTxsReferendumRewards(
     nftPalletApi,
     referendaPalletApi,

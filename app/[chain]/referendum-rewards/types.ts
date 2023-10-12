@@ -259,6 +259,8 @@ export interface RewardOption {
   metadataCidDelegated?: string;
   file?: any;
   imageCid?: string;
+  fileCover?: any;
+  coverCid?: string;
 }
 
 export interface SendAndFinalizeResult {

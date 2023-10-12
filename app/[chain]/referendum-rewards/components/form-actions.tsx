@@ -48,21 +48,16 @@ export default function FormActions({
   const userAddress = selectedAccount?.address;
 
   const activeChain = getChainInfo(chain);
-  const { ss58Format, name: activeChainName, icon } = activeChain;
+  const { ss58Format, name: activeChainName } = activeChain;
   const chainRewardsSchema = rewardsSchema(
     activeChainName,
     userAddress,
     ss58Format
   );
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
-  const { DEFAULT_REWARDS_CONFIG } = rewardsConfig;
 
-  const {
-    isOpen: isAnalyzeOpen,
-    onOpen: onAnalzeOpen,
-    onOpenChange: onAnalyzeOpenChange,
-    onClose: onAnalyzeClose,
-  } = useDisclosure();
+  const { isOpen: isAnalyzeOpen, onOpenChange: onAnalyzeOpenChange } =
+    useDisclosure();
 
   const explode = useAppStore((s) => s.explode);
 
@@ -98,9 +93,6 @@ export default function FormActions({
 
   const watchFormFields = watch();
 
-  const [streamData, setStreamData] = useState<StreamResult>();
-  const dataCounter = useRef(0);
-
   function onReset() {
     setStep(0);
     reset();
@@ -122,10 +114,19 @@ export default function FormActions({
     // uploaded files
     data.options?.forEach((option) => {
       if (!option.imageCid && option.file?.[0]) {
+        console.log("appending image file");
         formData.append(
           `${option.rarity}File`,
           option.file[0],
           option.file[0].name
+        );
+      }
+      if (!option.coverCid && option.fileCover?.[0]) {
+        console.log("appending coverfile");
+        formData.append(
+          `${option.rarity}FileCover`,
+          option.fileCover[0],
+          option.fileCover[0].name
         );
       }
     });
@@ -170,8 +171,6 @@ export default function FormActions({
         });
       }
     }
-
-    console.log("response", response);
 
     if (response.ok && responseData.status === "success") {
       const maxTxsPerBatch =
@@ -269,19 +268,6 @@ export default function FormActions({
       });
     }
   }
-
-  // useEffect(() => {
-  //   if (streamData) {
-  //     dataCounter.current += 1;
-  //     let p = document.createElement("p");
-  //     p.append(`${streamData?.value}`);
-  //     resultNode.current?.append(p);
-
-  //     if (resultNode.current) {
-  //       resultNode.current.scrollTop = resultNode.current.scrollHeight;
-  //     }
-  //   }
-  // });
 
   return (
     <div
@@ -439,6 +425,9 @@ export default function FormActions({
         onOpenChange={onAnalyzeOpenChange}
         isOpen={isAnalyzeOpen}
       />
+      {/* <pre className="text-tiny">
+        {JSON.stringify(watchFormFields, null, 2)}
+      </pre> */}
     </div>
   );
 }
