@@ -198,6 +198,7 @@ export const pinImageAndMetadataForOptions = async (
         ...baseMetadata,
         image: `ipfs://ipfs/${coverIpfsCid}`,
         animation_url: `ipfs://ipfs/${imageIpfsCid}`,
+        type: option.fileType,
       };
     }
 

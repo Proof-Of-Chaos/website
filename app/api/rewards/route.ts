@@ -112,14 +112,19 @@ export async function POST(req: NextRequest) {
         `${option.rarity}FileCover`
       ) as File;
 
+      console.log("filenames", option.rarity, file?.name, fileCover?.name);
+      console.log("filetypes", file?.type, fileCover?.type);
+
       if (file) {
+        option.fileType = file?.type;
         const bytes = await file?.arrayBuffer();
-        option.file = option.file = Readable.from(Buffer.from(bytes));
+        option.file = Readable.from(Buffer.from(bytes));
       }
 
       if (fileCover) {
+        option.coverFileType = fileCover?.type;
         const bytes = await fileCover?.arrayBuffer();
-        option.fileCover = option.fileCover = Readable.from(Buffer.from(bytes));
+        option.fileCover = Readable.from(Buffer.from(bytes));
       }
     });
 

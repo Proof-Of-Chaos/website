@@ -1,4 +1,3 @@
-import { ZodType, z } from "zod";
 import { Input, Textarea } from "@nextui-org/input";
 import { Switch } from "@nextui-org/switch";
 import { useState } from "react";
@@ -9,8 +8,6 @@ import clsx from "clsx";
 import styles from "./style.module.scss";
 import { titleCase } from "@/components/util";
 import { useFormContext } from "react-hook-form";
-import { getChainInfo } from "@/config/chains";
-import { SubstrateChain } from "@/types";
 import { rewardsSchema } from "../rewards-schema";
 import { Checkbox } from "@nextui-org/checkbox";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
@@ -125,6 +122,7 @@ export function RewardsCreationRarityFields({
                     {...register(`options.${optionIndex}.file`)}
                     onChange={(e) => {
                       const mediaType = e.target.files?.[0]?.type;
+                      console.log("mediaType", mediaType);
                       const needsCover =
                         mediaType && acceptedNonImageFormats.includes(mediaType)
                           ? true
