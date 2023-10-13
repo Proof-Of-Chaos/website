@@ -11,6 +11,7 @@ import {
   RewardOption,
 } from "@/app/[chain]/referendum-rewards/types";
 import {
+  CastingVotingNode,
   ConvictionDelegation,
   ConvictionVote,
   DecoratedConvictionVote,
@@ -1148,3 +1149,71 @@ export const formatVote = (
     });
   }
 };
+
+export const formatCastingVoteIndexer = (
+  accountId: string,
+  castingVote: CastingVotingNode
+): DecoratedConvictionVote | undefined => {
+  const { referendumId, standardVote, splitVote, splitAbstainVote, referendum } = castingVote;
+  const track = referendum.trackId;
+
+  let formattedVote: DecoratedConvictionVote;
+  let voteBase = {
+    track,
+    address: accountId,
+    referendumIndex: referendumId,
+    voteType: "Casting",
+    delegatedTo: null,
+  };
+
+  if (standardVote) {
+    const { aye, vote } = standardVote;
+    formattedVote = {
+      ...voteBase,
+      conviction: vote.conviction,
+      balance: {
+        aye: aye ? vote.amount : "0",
+        nay: aye ? "0" : vote.amount,
+        abstain: "0",
+      },
+      voteDirection: aye ? "Aye" : "Nay",
+      voteDirectionType: "Standard",
+    };
+  } else if (splitVote) {
+    const { ayeAmount, nayAmount } = splitVote;
+    formattedVote = {
+      ...voteBase,
+      conviction: "Locked1x",
+      balance: {
+        aye: ayeAmount,
+        nay: nayAmount,
+        abstain: "0",
+      },
+      voteDirection: BigInt(ayeAmount) >= BigInt(nayAmount) ? "Aye" : "Nay",
+      voteDirectionType: "Split",
+    };
+  } else if (splitAbstainVote) {
+    const { ayeAmount, nayAmount, abstainAmount } = splitAbstainVote;
+    formattedVote = {
+      ...voteBase,
+      conviction: "Locked1x",
+      balance: {
+        aye: ayeAmount,
+        nay: nayAmount,
+        abstain: abstainAmount,
+      },
+      voteDirection: 
+        BigInt(abstainAmount) >= BigInt(ayeAmount) && BigInt(abstainAmount) >= BigInt(nayAmount)
+          ? "Abstain"
+          : BigInt(ayeAmount) >= BigInt(nayAmount)
+          ? "Aye"
+          : "Nay",
+      voteDirectionType: "SplitAbstain",
+    };
+  } else {
+    console.log("Unknown vote type for castingVote", castingVote);
+    return;
+  }
+
+  return formattedVote;
+}
