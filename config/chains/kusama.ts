@@ -40,10 +40,10 @@ const SPEND_LIMITS = {
 
 const endpoints: EndpointMap = {
   [ChainType.Relay]: [
-    {
-      name: "Parity",
-      url: "wss://kusama-rpc.polkadot.io",
-    },
+    // {
+    //   name: "Parity",
+    //   url: "wss://kusama-rpc.polkadot.io",
+    // },
     {
       name: "OnFinality",
       url: "wss://kusama.api.onfinality.io/public-ws",

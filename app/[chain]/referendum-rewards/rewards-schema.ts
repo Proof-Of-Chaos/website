@@ -16,6 +16,37 @@ export function validateAddress(address: string, ss58Format: number) {
   return true;
 }
 
+const fileUploadOptional =
+  typeof window === "undefined"
+    ? z
+        .any()
+        .refine(
+          (file) => file?.length === 0 || file?.size <= 2 * 1024 * 1024,
+          `File of max size 2MB, if you need larger files use ipfs option`
+        )
+        .optional()
+        .refine(
+          (file) =>
+            file?.length === 0 ||
+            rewardsConfig.acceptedNftFormats.includes(file?.type),
+          "File Format not supported"
+        )
+        .optional()
+    : z
+        .any()
+        .refine(
+          (files) => files?.length === 0 || files?.[0]?.size <= 2 * 1024 * 1024,
+          `File of max size 2MB, if you need larger files use ipfs option`
+        )
+        .optional()
+        .refine(
+          (files) =>
+            files?.length === 0 ||
+            rewardsConfig.acceptedNftFormats.includes(files?.[0]?.type),
+          "File Format not supported"
+        )
+        .optional();
+
 // this is needed because on client side we have a FileList and on server side we have a File
 // however next does not support FileList / File on server side so this workaround is needed
 const fileUpload =
@@ -88,7 +119,7 @@ export const zodSchemaObject = (
       // name: z.string().min(1, "Name is required"),
       // description: z.string().min(1, "Description is required"),
       isNew: z.boolean().default(false),
-      file: fileUpload.optional(),
+      file: fileUploadOptional,
     }),
     options: z.array(
       z
