@@ -258,7 +258,11 @@ export interface RewardOption {
   metadataCidDirect?: string;
   metadataCidDelegated?: string;
   file?: any;
+  fileType?: string;
   imageCid?: string;
+  fileCover?: any;
+  coverFileType?: string;
+  coverCid?: string;
 }
 
 export interface SendAndFinalizeResult {

@@ -64,6 +64,12 @@ export const getTxsReferendumRewards = async (
   config.options.forEach((option) => {
     option.file =
       "ipfs://ipfs/" + fileAndMetadataCids.imageIpfsCids[option.rarity];
+
+    if (option.fileCover) {
+      option.fileCover =
+        "ipfs://ipfs/" +
+        fileAndMetadataCids.imageIpfsCids[`${option.rarity}_cover`];
+    }
   });
 
   // generate NFT mint txs for each vote(er)

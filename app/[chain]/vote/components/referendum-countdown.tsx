@@ -2,9 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Countdown, { zeroPad } from "react-countdown";
-import { useEndDate } from "@/hooks/vote/use-end-date";
-import { Spinner } from "@nextui-org/spinner";
-import { useAppStore } from "@/app/zustand";
 import { InlineLoader } from "@/components/inline-loader";
 
 type RendererProps = {

@@ -120,19 +120,24 @@ export function TrackFilter({
             radius="sm"
             size="sm"
             variant="flat"
-            color={trackFilter === track.id.toString() ? "primary" : "default"}
+            color={
+              trackFilter === track.id.toString()
+                ? "primary"
+                : ["voted", "unvoted", "delegated"].includes(track.id)
+                ? "secondary"
+                : "default"
+            }
             onClick={() => handleChange(track.id)}
             isDisabled={
               isUserVotesLoading &&
               ["voted", "unvoted", "delegated"].includes(track.id)
             }
-            className={clsx("inline m-0.5", {
-              "border-1 border-foreground": [
-                "voted",
-                "unvoted",
-                "delegated",
-              ].includes(track.id),
-            })}
+            className={clsx(
+              "inline m-0.5 transition-all border-1 border-transparent",
+              {
+                "border-foreground": trackFilter === track.id.toString(),
+              }
+            )}
           >
             {/* <Link href={`?trackFilter=${track.id}`}> */}
             {titleCase(track.name)}

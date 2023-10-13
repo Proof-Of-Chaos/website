@@ -45,6 +45,7 @@ export type ChainConfig = {
   assetHubApi?: ApiPromise;
   subscan?: string;
   subscanAssetHub?: string;
+  kodadot?: string;
 };
 
 export type PolkadotExtensionType = {
@@ -127,9 +128,9 @@ export interface DecoratedConvictionVote extends ConvictionVote {
 }
 
 export interface UserVotesReturnType {
-  votes: DecoratedConvictionVote[],
-  delegations: ConvictionDelegation[]
-};
+  votes: DecoratedConvictionVote[];
+  delegations: ConvictionDelegation[];
+}
 
 export type Chances = { [key: string]: number };
 

@@ -30,6 +30,7 @@ export const rewardsConfig: RewardsConfigType = {
     "video/mp4",
     "video/webp",
     "audio/mp3",
+    "audio/mpeg",
     "audio/flac",
     "3d/glb",
   ],
@@ -38,6 +39,7 @@ export const rewardsConfig: RewardsConfigType = {
     "video/webp",
     "audio/mp3",
     "audio/flac",
+    "audio/mpeg",
     "3d/glb",
     "image/jpeg",
     "image/png",
@@ -66,7 +68,7 @@ export const rewardsConfig: RewardsConfigType = {
         "This is the config NFT for the referendum rewards. You can use this NFT to verify the configuration that was used for the specific sendout.",
     },
     collectionConfig: {
-      id: 76, // not used atm as its an env variable now
+      id: 195,
       name: "",
       description: "",
       isNew: false,
@@ -81,7 +83,7 @@ export const rewardsConfig: RewardsConfigType = {
     // encointerBonus: 50,
     minAmount: 0.2,
     defaultRoyalty: 95,
-    royaltyAddress: "5FbpLGeHYmGncjPEcYmzcj5CA3BtorgB4g4QzoRwz18UFGBR",
+    royaltyAddress: "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
     options: [
       {
         maxProbability: 25,

@@ -94,6 +94,7 @@ export const pinImageAndMetadataForOptions = async (
   }
 
   for (const option of configOptionsAndDefault) {
+    let COVER_KEY = `${option.rarity}_cover`;
     const pinataFileOptions: PinataPinOptions = {
       pinataMetadata: {
         name: `referendum-${config.refIndex}_${option.rarity}`,
@@ -115,6 +116,7 @@ export const pinImageAndMetadataForOptions = async (
 
     //image file
     let imageIpfsCid = imageIpfsCids[option.rarity];
+    let coverIpfsCid = imageIpfsCids[COVER_KEY];
 
     // console.log("pinImageAndMetadataForOptions options.file", option.file);
 
@@ -129,11 +131,30 @@ export const pinImageAndMetadataForOptions = async (
         );
         imageIpfsCid = option.imageCid;
       } else {
+        console.info("📌 pinning file for", option.rarity);
         imageIpfsCid = (
           await pinata.pinFileToIPFS(option.file, pinataFileOptions)
         ).IpfsHash;
       }
       imageIpfsCids[option.rarity] = imageIpfsCid;
+    }
+
+    if (!coverIpfsCid) {
+      if (option.coverCid) {
+        console.info(
+          "getting cover cid from config",
+          option.coverCid,
+          "for rarity",
+          option.rarity
+        );
+        coverIpfsCid = option.coverCid;
+      } else if (option.fileCover) {
+        console.info("📌 pinning cover file for", option.rarity);
+        coverIpfsCid = (
+          await pinata.pinFileToIPFS(option.fileCover, pinataFileOptions)
+        ).IpfsHash;
+      }
+      imageIpfsCids[COVER_KEY] = coverIpfsCid;
     }
 
     let recipientValue;
@@ -149,7 +170,7 @@ export const pinImageAndMetadataForOptions = async (
     const totalNFTs = sum(Object.values(rarityDistribution));
 
     // Base metadata
-    const baseMetadata = {
+    let baseMetadata: Record<string, any> = {
       external_url: "https://www.proofofchaos.app/",
       mediaUri: `ipfs://ipfs/${imageIpfsCid}`,
       image: `ipfs://ipfs/${imageIpfsCid}`,
@@ -170,6 +191,16 @@ export const pinImageAndMetadataForOptions = async (
         { trait_type: "royalty", value: option.royalty },
       ],
     };
+
+    // if there is a cover, thats the image and the other one is the `animation_url` on Kodadot
+    if (option.fileCover) {
+      baseMetadata = {
+        ...baseMetadata,
+        image: `ipfs://ipfs/${coverIpfsCid}`,
+        animation_url: `ipfs://ipfs/${imageIpfsCid}`,
+        type: option.fileType,
+      };
+    }
 
     // Create metadataDirect and metadataDelegated by spreading the baseMetadata
     // and appending the unique voteType attribute.
@@ -206,6 +237,8 @@ export const pinImageAndMetadataForOptions = async (
       delegated: metadataIpfsCidDelegated.IpfsHash,
     };
   }
+
+  console.info("📌 Pin Results:", { imageIpfsCids, metadataIpfsCids });
 
   return {
     imageIpfsCids,

@@ -1,4 +1,3 @@
-import { ZodType, z } from "zod";
 import { Input, Textarea } from "@nextui-org/input";
 import { Switch } from "@nextui-org/switch";
 import { useState } from "react";
@@ -9,11 +8,10 @@ import clsx from "clsx";
 import styles from "./style.module.scss";
 import { titleCase } from "@/components/util";
 import { useFormContext } from "react-hook-form";
-import { getChainInfo } from "@/config/chains";
-import { SubstrateChain } from "@/types";
 import { rewardsSchema } from "../rewards-schema";
 import { Checkbox } from "@nextui-org/checkbox";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { Tooltip } from "@nextui-org/tooltip";
 
 export function RewardsCreationRarityFields({
   rarity,
@@ -26,7 +24,6 @@ export function RewardsCreationRarityFields({
   const {
     register,
     formState: { errors },
-    watch,
   } = formMethods;
   const { acceptedNftFormats, acceptedNonImageFormats } = rewardsConfig;
   const [isUploadSelected, setIsUploadSelected] = useState(true);
@@ -39,7 +36,6 @@ export function RewardsCreationRarityFields({
     undefined,
     ss58Format
   );
-  type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
 
   let optionIndex = rewardConfig.options.findIndex(
     (opt) => opt.rarity === rarity
@@ -81,14 +77,30 @@ export function RewardsCreationRarityFields({
               <Switch
                 size="sm"
                 color="secondary"
-                onChange={() => setIsUploadSelected(!isUploadSelected)}
+                onChange={() => {
+                  setIsUploadSelected(!isUploadSelected);
+                }}
               >
                 ipfs cid
               </Switch>
             </div>
-            <Checkbox size="sm" color="secondary">
-              Cover
-            </Checkbox>
+            {!isUploadSelected && (
+              <Checkbox
+                size="sm"
+                color="secondary"
+                isSelected={shouldHaveCover[rarity]}
+                onValueChange={(value) => {
+                  setShouldHaveCover({
+                    ...shouldHaveCover,
+                    [rarity]: value,
+                  });
+                }}
+              >
+                <Tooltip content="Add a cover image (when using e.g. music or video as NFTs)">
+                  <span>Cover</span>
+                </Tooltip>
+              </Checkbox>
+            )}
           </div>
           <span className="text-tiny text-foreground-400">
             Either upload files here but be limited in size, or directly set a
@@ -97,7 +109,7 @@ export function RewardsCreationRarityFields({
           <div className="text-xs flex flex-col">
             {isUploadSelected ? (
               <>
-                <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100  rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background h-20 py-2 overflow-x-clip">
+                <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100  rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background py-2 overflow-x-clip">
                   <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
                     Upload {rarity} File (max 1.5MB)
                   </label>
@@ -110,6 +122,7 @@ export function RewardsCreationRarityFields({
                     {...register(`options.${optionIndex}.file`)}
                     onChange={(e) => {
                       const mediaType = e.target.files?.[0]?.type;
+                      console.log("mediaType", mediaType);
                       const needsCover =
                         mediaType && acceptedNonImageFormats.includes(mediaType)
                           ? true
@@ -132,7 +145,7 @@ export function RewardsCreationRarityFields({
                 {shouldHaveCover[rarity] && (
                   <div className="mt-4 relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-unit-12 py-2 overflow-x-clip">
                     <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
-                      Upload {rarity} Cover File (max 1.5MB)
+                      Upload {rarity} Cover Image (max 1.5MB)
                     </label>
 
                     <input
@@ -159,7 +172,7 @@ export function RewardsCreationRarityFields({
                   label={`IPFS  CID of ${rarity} NFT`}
                   placeholder={`ipfs://ipfs/...`}
                   type="text"
-                  className="h-20"
+                  className="min-h-unit-12"
                   color={
                     !!errors[`options.${optionIndex}].imageCid`]
                       ? "danger"
@@ -179,7 +192,7 @@ export function RewardsCreationRarityFields({
                     label={`IPFS  Cover CID of ${rarity} NFT`}
                     placeholder={`ipfs://ipfs/...`}
                     type="text"
-                    className="h-20"
+                    className="min-h-unit-12 mt-2"
                     color={
                       !!errors[`options.${optionIndex}].coverCid`]
                         ? "danger"

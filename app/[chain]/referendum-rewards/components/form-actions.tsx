@@ -27,6 +27,8 @@ import { mergeWithDefaultConfig } from "../../../../components/util";
 import { error } from "console";
 import { Link } from "@nextui-org/link";
 import { rewardsSchema } from "../rewards-schema";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
+import { config } from "process";
 export const revalidate = 3600;
 
 type ConfigReqBody = RewardConfiguration & {
@@ -43,29 +45,22 @@ export default function FormActions({
   // onSubmit?: (data: any) => Promise<any>;
   chain: SubstrateChain;
 }) {
-  const { actingAccount } = useAppStore((state) => state.user);
-  const userAddress = actingAccount?.address;
+  const { selectedAccount } = usePolkadotExtension();
+  const userAddress = selectedAccount?.address;
+
   const activeChain = getChainInfo(chain);
-  const { ss58Format, name: activeChainName, icon } = activeChain;
+  const { ss58Format, name: activeChainName } = activeChain;
   const chainRewardsSchema = rewardsSchema(
     activeChainName,
     userAddress,
     ss58Format
   );
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
-  const { DEFAULT_REWARDS_CONFIG } = rewardsConfig;
 
-  const {
-    isOpen: isAnalyzeOpen,
-    onOpen: onAnalzeOpen,
-    onOpenChange: onAnalyzeOpenChange,
-    onClose: onAnalyzeClose,
-  } = useDisclosure();
+  const { isOpen: isAnalyzeOpen, onOpenChange: onAnalyzeOpenChange } =
+    useDisclosure();
 
   const explode = useAppStore((s) => s.explode);
-  const walletAddress = useAppStore(
-    (state) => state.user.actingAccount?.address
-  );
 
   const [rewardSendoutData, setRewardSendoutData] =
     useState<GenerateRewardsResult>(undefined);
@@ -99,9 +94,6 @@ export default function FormActions({
 
   const watchFormFields = watch();
 
-  const [streamData, setStreamData] = useState<StreamResult>();
-  const dataCounter = useRef(0);
-
   function onReset() {
     setStep(0);
     reset();
@@ -116,17 +108,26 @@ export default function FormActions({
 
     // chain + walletAddress of the sender
     formData.append("chain", chain);
-    if (walletAddress) {
-      formData.append("sender", walletAddress);
+    if (userAddress) {
+      formData.append("sender", userAddress);
     }
 
     // uploaded files
     data.options?.forEach((option) => {
       if (!option.imageCid && option.file?.[0]) {
+        console.log("appending image file");
         formData.append(
           `${option.rarity}File`,
           option.file[0],
           option.file[0].name
+        );
+      }
+      if (!option.coverCid && option.fileCover?.[0]) {
+        console.log("appending coverfile");
+        formData.append(
+          `${option.rarity}FileCover`,
+          option.fileCover[0],
+          option.fileCover[0].name
         );
       }
     });
@@ -142,6 +143,8 @@ export default function FormActions({
       method: "POST",
       body: formData,
     });
+
+    console.log("rawRespoinse", response);
     const responseData = await response.json();
     console.log("raw response data", responseData);
 
@@ -169,8 +172,6 @@ export default function FormActions({
         });
       }
     }
-
-    console.log("response", response);
 
     if (response.ok && responseData.status === "success") {
       const maxTxsPerBatch =
@@ -268,19 +269,6 @@ export default function FormActions({
       });
     }
   }
-
-  // useEffect(() => {
-  //   if (streamData) {
-  //     dataCounter.current += 1;
-  //     let p = document.createElement("p");
-  //     p.append(`${streamData?.value}`);
-  //     resultNode.current?.append(p);
-
-  //     if (resultNode.current) {
-  //       resultNode.current.scrollTop = resultNode.current.scrollHeight;
-  //     }
-  //   }
-  // });
 
   return (
     <div
@@ -403,8 +391,11 @@ export default function FormActions({
                 <span className="text-warning">59</span>epic.
               </div>
               <div className="flex gap-4 flex-wrap">
-                {activeChainName !== SubstrateChain.Rococo && (
-                  <Link href="" isExternal>
+                {activeChain.kodadot && (
+                  <Link
+                    href={`${activeChain.kodadot}/collection/${watchFormFields.collectionConfig?.id}`}
+                    isExternal
+                  >
                     <Button color="secondary">
                       View Collection on Kodadot
                     </Button>
@@ -438,6 +429,9 @@ export default function FormActions({
         onOpenChange={onAnalyzeOpenChange}
         isOpen={isAnalyzeOpen}
       />
+      {/* <pre className="text-tiny">
+        {JSON.stringify(watchFormFields, null, 2)}
+      </pre> */}
     </div>
   );
 }

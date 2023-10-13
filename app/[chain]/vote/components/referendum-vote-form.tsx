@@ -5,17 +5,17 @@ import { useAccountBalance } from "@/hooks/use-account-balance";
 import { Button, ButtonGroup } from "@nextui-org/button";
 import { VoteChoice } from "../types";
 import clsx from "clsx";
-import { useAppStore } from "@/app/zustand";
 import { formatBalance, bnToBn, BN_ZERO } from "@polkadot/util";
-import { Spinner } from "@nextui-org/spinner";
+
 import { Input } from "@nextui-org/input";
 import { getVoteTx } from "../util";
 import { sendAndFinalize } from "@/components/util-client";
-import { web3FromAddress } from "@polkadot/extension-dapp";
+
 import { vividButtonClasses } from "@/components/primitives";
-import { kusama } from "@/config/chains/kusama";
+
 import { InlineLoader } from "@/components/inline-loader";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 
 const VOTE_LOCK_OPTIONS = [
   {
@@ -98,8 +98,8 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
   } = usePolkadotApis();
   const { decimals, symbol } = activeChainInfo;
   const voteInChainDecimalsMultiplier = bnToBn(10).pow(bnToBn(decimals));
-  const user = useAppStore((state) => state.user);
-  const { actingAccount, actingAccountSigner } = user;
+
+  const { selectedAccount, getSigner } = usePolkadotExtension();
 
   const { data: accountBalance, isLoading: isBalanceLoading } =
     useAccountBalance();
@@ -117,7 +117,7 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
         {isBalanceLoading ? (
           <InlineLoader className="ml-2" />
         ) : (
-          `${availableBalance} ${symbol}`
+          `${availableBalance}`
         )}
       </span>
     </>
@@ -161,12 +161,18 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
       conviction < 1 ? 0 : sliderValue.value
     );
 
+    const accountSigner = await getSigner();
+    if (!accountSigner) {
+      console.error("No signer found");
+      return;
+    }
+
     setIsVoteLoading(true);
     await sendAndFinalize(
       relay?.api,
       voteExtrinsic,
-      actingAccountSigner,
-      actingAccount?.address,
+      accountSigner,
+      selectedAccount?.address,
       {
         title: `Vote on Referendum ${referendumId}`,
       }
@@ -210,13 +216,15 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
     "vote-amount-abstain",
     0
   );
-
+  console.log(watchAyeVoteAmount);
   const totalAyeVotes = !isNaN(watchAyeVoteAmount)
     ? voteChoice === VoteChoice.Aye
       ? (parseFloat(sliderValue.value.toString()) * watchAyeVoteAmount)
           .toFixed(2)
           .replace(/[.,]00$/, "")
-      : watchAyeVoteAmount.toFixed(2).replace(/[.,]00$/, "")
+      : parseFloat(watchAyeVoteAmount.toString())
+          ?.toFixed(2)
+          .replace(/[.,]00$/, "")
     : "-";
 
   const totalNayVotes = !isNaN(watchNayVoteAmount)
@@ -224,11 +232,15 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
       ? (parseFloat(sliderValue.value.toString()) * watchNayVoteAmount)
           .toFixed(2)
           .replace(/[.,]00$/, "")
-      : watchNayVoteAmount.toFixed(2).replace(/[.,]00$/, "")
+      : parseFloat(watchNayVoteAmount.toString())
+          ?.toFixed(2)
+          .replace(/[.,]00$/, "")
     : "-";
 
   const totalAbstainVotes = !isNaN(watchAbstainVoteAmount)
-    ? watchAbstainVoteAmount.toFixed(2).replace(/[.,]00$/, "")
+    ? parseFloat(watchAbstainVoteAmount.toString())
+        ?.toFixed(2)
+        .replace(/[.,]00$/, "")
     : "-";
 
   return (

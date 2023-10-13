@@ -1,6 +1,5 @@
 "use client";
 
-import { useAppStore } from "@/app/zustand";
 import { DEFAULT_CHAIN, getChainInfo } from "@/config/chains";
 import { useAccountBalance } from "@/hooks/use-account-balance";
 import { ChainType, SendAndFinalizeResult, SubstrateChain } from "@/types";
@@ -23,7 +22,8 @@ import Check from "@w3f/polkadot-icons/keyline/Check";
 import Error from "@w3f/polkadot-icons/keyline/Error";
 import { executeTxsInSequence } from "@/app/[chain]/referendum-rewards/util";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
-import { chain } from "lodash";
+import { chain, get } from "lodash";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 
 type DepositCountType = {
   type: Deposit;
@@ -74,8 +74,8 @@ export function TxButton<T>(
     name: "",
   });
 
-  const user = useAppStore((state) => state.user);
-  const { actingAccount, actingAccountSigner } = user;
+  const { selectedAccount, getSigner } = usePolkadotExtension();
+
   const { data: accountBalance, isLoading: isAccountBalanceLoading } =
     useAccountBalance(chainType);
   const {
@@ -107,8 +107,10 @@ export function TxButton<T>(
     ? bnToBn(requiredBalance)
     : isTxCostLoading || isDepositCostLoading
     ? BN_MAX_INTEGER
-    : //@ts-ignore
-      totalDeposit?.add(txCost?.partialFee);
+    : totalDeposit
+    ? //@ts-ignore
+      totalDeposit.add(txCost?.partialFee)
+    : BN_ZERO;
 
   const humanRequiredBalance = formatBalance(requiredBalanceCalculated, {
     decimals,
@@ -143,6 +145,11 @@ export function TxButton<T>(
 
         let res;
 
+        const actingAccountSigner = await getSigner();
+        if (!actingAccountSigner) {
+          throw "No signer found";
+        }
+
         if (Array.isArray(extrinsic)) {
           // execute sendAndFinalize for each batch and record the results
           const userSignatureRequests = extrinsic.map((batch) => {
@@ -151,7 +158,7 @@ export function TxButton<T>(
                 api,
                 batch,
                 actingAccountSigner,
-                actingAccount?.address
+                selectedAccount?.address
               );
           });
 
@@ -191,7 +198,7 @@ export function TxButton<T>(
             api,
             extrinsic,
             actingAccountSigner,
-            actingAccount?.address
+            selectedAccount?.address
           );
 
           if (res.status !== "error") {

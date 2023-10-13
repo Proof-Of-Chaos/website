@@ -48,7 +48,7 @@ export async function getChainByName(name: SubstrateChain) {
       relayEndpoints.map((e) => e.url),
       1000,
       undefined,
-      5000
+      10000
     );
   } else {
     console.log(`provider from cache for ${name}`);
@@ -63,7 +63,7 @@ export async function getChainByName(name: SubstrateChain) {
       assetHubEndpoints.map((e) => e.url),
       1000,
       undefined,
-      5000
+      10000
     );
   }
   if (!chainSettings.api) {
@@ -73,13 +73,13 @@ export async function getChainByName(name: SubstrateChain) {
     });
 
     chainSettings.api.on("connected", () => {
-      console.log(
-        `⚡️ ${name} relay api ready. Connected to ${chainSettings.api?.runtimeVersion.specName} spec:${chainSettings.api?.runtimeVersion.specVersion}`
-      );
+      // console.log(
+      //   `⚡️ ${name} relay api ready. Connected to ${chainSettings.api?.runtimeVersion.specName} spec:${chainSettings.api?.runtimeVersion.specVersion}`
+      // );
     });
 
     chainSettings.api.on("disconnected", () => {
-      console.log(`disconnected from ${name} relay`);
+      // console.log(`disconnected from ${name} relay`);
     });
 
     chainSettings.api.on("error", () => {
@@ -95,9 +95,9 @@ export async function getChainByName(name: SubstrateChain) {
   }
 
   chainSettings.assetHubApi?.on("connected", () => {
-    console.log(
-      `⚡️ ${name} assetHub api ready. Connected to ${chainSettings.api?.runtimeVersion.specName} spec:${chainSettings.api?.runtimeVersion.specVersion}`
-    );
+    // console.log(
+    //   `⚡️ ${name} assetHub api ready. Connected to ${chainSettings.api?.runtimeVersion.specName} spec:${chainSettings.api?.runtimeVersion.specVersion}`
+    // );
   });
 
   chainSettings.assetHubApi.on("disconnected", () => {

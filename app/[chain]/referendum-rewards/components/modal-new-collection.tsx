@@ -19,6 +19,7 @@ import { Button } from "@nextui-org/button";
 import { Deposit } from "@/hooks/use-deposit";
 import { getTxCollectionCreate } from "@/config/txs";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 
 type PropType = Omit<ModalProps, "children"> & {
   setCollectionConfig: (config: CollectionConfiguration) => void;
@@ -45,11 +46,11 @@ export default function ModalCreateNFTCollection({
     apiStates: { assetHub },
   } = usePolkadotApis();
 
-  const connectedAccount = useAppStore((state) => state.user.actingAccount);
+  const { selectedAccount } = usePolkadotExtension();
 
   const txCreateCollection = useMemo(() => {
-    return getTxCollectionCreate(assetHub?.api, connectedAccount?.address);
-  }, [assetHub?.api, connectedAccount]);
+    return getTxCollectionCreate(assetHub?.api, selectedAccount?.address);
+  }, [assetHub?.api, selectedAccount]);
 
   const formMethods = useForm({
     defaultValues: {
@@ -143,10 +144,10 @@ export default function ModalCreateNFTCollection({
 
             <ModalBody>
               <p className="form-helper text-sm">
-                Sending the form will create a new collection on{" "}
-                {titleCase(activeChainName)} Asset Hub. The metadata of the
-                collection (image, name, description) will be set in the next
-                step when your rewards transactions are signed.
+                You need a collection for your NFTs on{" "}
+                {titleCase(activeChainName)} Asset Hub. Create one here. The
+                metadata of the collection (image, name, description) will be
+                set in the next step when your rewards transactions are signed.
               </p>
 
               <form className="flex w-full flex-wrap gap-4">

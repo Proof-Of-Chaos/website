@@ -1,6 +1,5 @@
 "use client";
 
-import { useAppStore } from "@/app/zustand";
 import { ChainConfig, SubstrateChain } from "@/types";
 import clsx from "clsx";
 import {
