@@ -189,6 +189,7 @@ export const kusama: ChainConfig = {
   selectedEndpoint: 0,
   subscan: "https://kusama.subscan.io/",
   subscanAssetHub: "https://assethub-kusama.subscan.io",
+  kodadot: "https://kodadot.xyz/ahk",
   icon: KusamaIcon,
   tracks,
   ...kusamaConfig,

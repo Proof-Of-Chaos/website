@@ -108,7 +108,8 @@ export function TxButton<T>(
     : isTxCostLoading || isDepositCostLoading
     ? BN_MAX_INTEGER
     : totalDeposit
-    ? totalDeposit.add(txCost?.partialFee)
+    ? //@ts-ignore
+      totalDeposit.add(txCost?.partialFee)
     : BN_ZERO;
 
   const humanRequiredBalance = formatBalance(requiredBalanceCalculated, {

@@ -28,6 +28,7 @@ import { error } from "console";
 import { Link } from "@nextui-org/link";
 import { rewardsSchema } from "../rewards-schema";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
+import { config } from "process";
 export const revalidate = 3600;
 
 type ConfigReqBody = RewardConfiguration & {
@@ -390,8 +391,11 @@ export default function FormActions({
                 <span className="text-warning">59</span>epic.
               </div>
               <div className="flex gap-4 flex-wrap">
-                {activeChainName !== SubstrateChain.Rococo && (
-                  <Link href="" isExternal>
+                {activeChain.kodadot && (
+                  <Link
+                    href={`${activeChain.kodadot}/collection/${watchFormFields.collectionConfig?.id}`}
+                    isExternal
+                  >
                     <Button color="secondary">
                       View Collection on Kodadot
                     </Button>

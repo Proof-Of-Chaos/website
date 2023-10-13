@@ -189,6 +189,7 @@ export const polkadot: ChainConfig = {
   selectedEndpoint: 0,
   subscan: "https://polkadot.subscan.io/",
   subscanAssetHub: "https://assethub-polkadot.subscan.io",
+  kodadot: "https://kodadot.xyz/ahp",
   icon: PolkadotIcon,
   tracks,
   ...polkadotConfig,
