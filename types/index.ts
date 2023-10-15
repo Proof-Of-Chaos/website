@@ -81,9 +81,9 @@ export interface SendAndFinalizeResult {
 export type ToastType =
   | undefined
   | {
-      title: string;
-      messages?: string[];
-    };
+    title: string;
+    messages?: string[];
+  };
 
 export type ConvictionVote = {
   // The particular governance track
@@ -101,9 +101,9 @@ export type ConvictionVote = {
     abstain: string;
   };
   // The total amount of tokens that were delegated to them (including conviction)
-  delegatedConvictionBalance: string;
+  delegatedConvictionBalance?: string;
   // the total amount of tokens that were delegated to them (without conviction)
-  delegatedBalance: string;
+  delegatedBalance?: string;
   // The vote type, either 'aye', or 'nay'
   voteDirection: string;
   // Either "Standard", "Split", or "SplitAbstain",
@@ -188,7 +188,70 @@ export interface VotePolkadot {
 
 export type StreamResult =
   | {
-      done: boolean;
-      value: string;
-    }
+    done: boolean;
+    value: string;
+  }
   | undefined;
+
+
+export type ResponseDataWalletVotesIndexer = {
+  _metadata: {
+    lastProcessedHeight: number;
+    indexerHealthy: boolean;
+  };
+  castingVotings: {
+    nodes: CastingVotingNode[];
+  };
+  delegatorVotings: {
+    nodes: DelegatorVotingNode[];
+  };
+};
+
+export type CastingVotingNode = {
+  referendumId: string;
+  standardVote: {
+    aye: boolean;
+    vote: Vote;
+  } | null;
+  splitVote: {
+    ayeAmount: string;
+    nayAmount: string;
+  } | null;
+  splitAbstainVote: {
+    ayeAmount: string;
+    nayAmount: string;
+    abstainAmount: string;
+  } | null;
+  referendum: {
+    trackId: number
+  };
+};
+
+export type DelegatorVotingNode = {
+  vote: Vote;
+  parent: {
+    referendumId: string;
+    voter: string;
+    standardVote: {
+      aye: boolean;
+      vote: Vote;
+    } | null;
+    splitVote: {
+      ayeAmount: string;
+      nayAmount: string;
+    } | null;
+    splitAbstainVote: {
+      ayeAmount: string;
+      nayAmount: string;
+      abstainAmount: string;
+    } | null;
+    referendum: {
+      trackId: number
+    };
+  };
+};
+
+export type Vote = {
+  amount: string;
+  conviction: string;
+};
