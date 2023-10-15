@@ -20,7 +20,7 @@ class ApiContainer {
     })();
   }
 
-  nextEndpoint(): string {
+  public nextEndpoint(): string {
     this.endpointIndex = (this.endpointIndex + 1) % this.endpoints.length;
     return this.endpoints[this.endpointIndex];
   }

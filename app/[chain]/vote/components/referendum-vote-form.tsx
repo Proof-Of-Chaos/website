@@ -128,17 +128,6 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
   }
 
   async function onSubmit() {
-    // voteOnRef(
-    //   referendumId,
-    //   voteChoice,
-    //   {
-    //     "vote-amount-aye": watchAyeVoteAmount,
-    //     "vote-amount-nay": watchNayVoteAmount,
-    //     "vote-amount-abstain": watchAbstainVoteAmount,
-    //   },
-    //   sliderValue.value
-    // );
-
     const conviction = sliderValue.value;
 
     const voteBalances = {

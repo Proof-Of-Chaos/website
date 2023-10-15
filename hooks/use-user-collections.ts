@@ -4,14 +4,18 @@ import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 import { encodeAddress } from "@polkadot/keyring";
 
+export type TypeUserCollections = {
+  collectionId: string;
+  collection: {
+    owner: string;
+    items: number;
+  };
+};
+
 export const useUserCollections = () => {
-  const {
-    activeChainName,
-    activeChainInfo,
-    apiStates: { assetHub },
-  } = usePolkadotApis();
+  const { activeChainName, activeChainInfo, apiStates } = usePolkadotApis();
   const chainName = activeChainName || DEFAULT_CHAIN;
-  const api = assetHub?.api;
+  const api = apiStates?.assetHub?.api;
 
   const { ss58Format } = activeChainInfo || {};
   const { selectedAccount } = usePolkadotExtension();
@@ -20,7 +24,7 @@ export const useUserCollections = () => {
       ? encodeAddress(selectedAccount?.address, ss58Format)
       : "";
 
-  return useQuery({
+  return useQuery<TypeUserCollections[] | undefined, Error>({
     queryKey: ["userCollections", chainName, userAddress],
     enabled: !!api,
     queryFn: async () => {
