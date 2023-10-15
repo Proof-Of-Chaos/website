@@ -311,7 +311,13 @@ export default function RewardsCreationForm({
               {...register("collectionConfig.id")}
             /> */}
             {/* <p>{errors?.["collectionConfig.id"]?.message}</p> */}
-            <div className="flex h-100">or</div>
+            <div className="flex h-100">
+              {userCollections && userCollections.length > 0 ? (
+                "or"
+              ) : (
+                <span className="text-xl">→</span>
+              )}
+            </div>
             <Button
               className="w-full"
               onClick={createNewCollection}
