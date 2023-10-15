@@ -122,7 +122,6 @@ export function RewardsCreationRarityFields({
                     {...register(`options.${optionIndex}.file`)}
                     onChange={(e) => {
                       const mediaType = e.target.files?.[0]?.type;
-                      console.log("mediaType", mediaType);
                       const needsCover =
                         mediaType && acceptedNonImageFormats.includes(mediaType)
                           ? true

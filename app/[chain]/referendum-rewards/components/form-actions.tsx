@@ -115,7 +115,6 @@ export default function FormActions({
     // uploaded files
     data.options?.forEach((option) => {
       if (!option.imageCid && option.file?.[0]) {
-        console.log("appending image file");
         formData.append(
           `${option.rarity}File`,
           option.file[0],
@@ -123,7 +122,6 @@ export default function FormActions({
         );
       }
       if (!option.coverCid && option.fileCover?.[0]) {
-        console.log("appending coverfile");
         formData.append(
           `${option.rarity}FileCover`,
           option.fileCover[0],
