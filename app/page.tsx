@@ -1,10 +1,5 @@
 import { title, subtitle } from "@/components/primitives";
 
-import { ChainSwitch } from "@/components/chain-switch";
-import { useChainDetails } from "@/store/server/chain/queries";
-import { useAppStore } from "./zustand";
-import { useAccountBalance } from "@/hooks/use-account-balance";
-import { formatBalance } from "@polkadot/util";
 import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import { NFTSnippets } from "@/components/nft-snippets";

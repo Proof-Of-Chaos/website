@@ -14,10 +14,7 @@ import { useUserCollections } from "@/hooks/use-user-collections";
 export const revalidate = 3600;
 
 export default function DemoPage() {
-  const {
-    activeChainName,
-    apiStates: { assetHub },
-  } = usePolkadotApis();
+  const { activeChainName, apiStates } = usePolkadotApis();
 
   const { data, isLoading, isFetching } = useUserCollections();
 
