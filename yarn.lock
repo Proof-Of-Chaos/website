@@ -2062,9 +2062,9 @@
     "@nextui-org/theme" "2.1.9"
     "@nextui-org/use-data-scroll-overflow" "2.1.1"
 
-"@nextui-org/select@^2.1.8":
+"@nextui-org/select@^2.1.11":
   version "2.1.11"
-  resolved "https://registry.npmjs.org/@nextui-org/select/-/select-2.1.11.tgz"
+  resolved "https://registry.yarnpkg.com/@nextui-org/select/-/select-2.1.11.tgz#dc89b42505ff806ec0ff96340e5e5508b368efd7"
   integrity sha512-SDFlzgyKtUd+dL8gSYmw+olVtePr0Z3RVjAc7qQPFkZR156Bh7MrldYi98e5BxdRaAHppYawtcj3EAByFr8iuA==
   dependencies:
     "@nextui-org/aria-utils" "2.0.10"

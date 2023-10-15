@@ -20,6 +20,7 @@ import { Deposit } from "@/hooks/use-deposit";
 import { getTxCollectionCreate } from "@/config/txs";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
+import { useUserCollections } from "@/hooks/use-user-collections";
 
 type PropType = Omit<ModalProps, "children"> & {
   setCollectionConfig: (config: CollectionConfiguration) => void;
@@ -52,6 +53,8 @@ export default function ModalCreateNFTCollection({
     return getTxCollectionCreate(assetHub?.api, selectedAccount?.address);
   }, [assetHub?.api, selectedAccount]);
 
+  const { refetch } = useUserCollections();
+
   const formMethods = useForm({
     defaultValues: {
       name: "",
@@ -68,7 +71,7 @@ export default function ModalCreateNFTCollection({
 
   const watchFormFields = watch();
 
-  const onFinished = (
+  const onFinished = async (
     data: SendAndFinalizeResult | SendAndFinalizeResult[]
   ) => {
     console.log("onFinished", data);
@@ -89,6 +92,8 @@ export default function ModalCreateNFTCollection({
         "the new id of your created collection is",
         newCollectionId.toHuman()
       );
+
+      await refetch();
 
       setCollectionConfig({
         id: newCollectionId.toString(),

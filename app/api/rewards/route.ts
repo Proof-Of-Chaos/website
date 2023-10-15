@@ -18,7 +18,6 @@ import {
   getNFTItemDeposit,
   getNFTMetadataDeposit,
 } from "@/config/txs";
-import fs from "fs";
 import { mergeWithDefaultConfig } from "@/components/util";
 import { zodSchemaObject } from "@/app/[chain]/referendum-rewards/rewards-schema";
 

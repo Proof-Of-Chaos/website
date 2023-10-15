@@ -63,7 +63,6 @@ export const zodSchemaObject = (
     collectionConfig: z.object({
       id: z
         .any()
-        .transform((id) => parseInt(id) || -1)
         .refine((id) => id >= 0, "Id must be a positive number")
         .refine(async (id) => {
           const { assetHubApi } = await getChainByName(chain);
