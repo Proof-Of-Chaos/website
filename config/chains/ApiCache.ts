@@ -12,11 +12,8 @@ class ApiContainer {
     this.api = api;
     this.endpoints = endpoints;
 
-    console.log("apicontainer constructor", api);
-
     (async () => {
       if (this.api) {
-        console.log("Aaaaa ready");
         await this.api.isReady;
         this.isConnected = true;
       }

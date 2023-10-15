@@ -8,11 +8,6 @@ import React, {
   Dispatch,
 } from "react";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
-import {
-  web3Enable,
-  web3Accounts,
-  web3FromSource,
-} from "@polkadot/extension-dapp";
 import { Signer } from "@polkadot/types/types";
 
 interface PolkadotContextProps {
@@ -50,6 +45,10 @@ export const PolkadotExtensionProvider = ({
   useEffect(() => {
     const enableExtension = async () => {
       if (!userWantsConnection) return;
+
+      const { web3Accounts, web3Enable } = await import(
+        "@polkadot/extension-dapp"
+      );
 
       try {
         const extensions = await web3Enable(
@@ -93,6 +92,7 @@ export const PolkadotExtensionProvider = ({
   };
 
   const getSigner = async () => {
+    const { web3FromSource } = await import("@polkadot/extension-dapp");
     if (
       selectedAccountIndex !== null &&
       accounts.length > selectedAccountIndex
