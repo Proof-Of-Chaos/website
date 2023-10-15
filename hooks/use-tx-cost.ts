@@ -12,15 +12,13 @@ import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 type Type = RuntimeDispatchInfo | Observable<RuntimeDispatchInfo>;
 
 export const useTxCost = (tx: TxTypes, chainType?: ChainType) => {
-  const {
-    activeChainName,
-    apiStates: { relay, assetHub },
-  } = usePolkadotApis();
+  const { activeChainName, apiStates } = usePolkadotApis();
   const chainName = activeChainName || DEFAULT_CHAIN;
   const { selectedAccount } = usePolkadotExtension();
   const address = selectedAccount?.address || "";
 
-  const api = chainType === ChainType.AssetHub ? assetHub?.api : relay?.api;
+  const api =
+    chainType === "assetHub" ? apiStates?.assetHub?.api : apiStates?.relay?.api;
 
   return useQuery<Type, Error>({
     queryKey: ["txCost", chainName, chainType, tx?.toString(), address],

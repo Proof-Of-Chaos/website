@@ -22,11 +22,13 @@ export enum SubstrateChain {
   Local = "local",
 }
 
-export enum ChainType {
-  Relay = "relay",
-  AssetHub = "assetHub",
-  BridgeHub = "bridgeHub",
-}
+// export enum ChainType {
+//   Relay = "relay",
+//   AssetHub = "assetHub",
+//   BridgeHub = "bridgeHub",
+// }
+
+export type ChainType = "relay" | "assetHub" | "bridgeHub";
 
 export type ChainConfig = {
   name: SubstrateChain;
@@ -101,9 +103,9 @@ export type ConvictionVote = {
     abstain: string;
   };
   // The total amount of tokens that were delegated to them (including conviction)
-  delegatedConvictionBalance: string;
+  delegatedConvictionBalance?: string;
   // the total amount of tokens that were delegated to them (without conviction)
-  delegatedBalance: string;
+  delegatedBalance?: string;
   // The vote type, either 'aye', or 'nay'
   voteDirection: string;
   // Either "Standard", "Split", or "SplitAbstain",
@@ -192,3 +194,65 @@ export type StreamResult =
       value: string;
     }
   | undefined;
+
+export type ResponseDataWalletVotesIndexer = {
+  _metadata: {
+    lastProcessedHeight: number;
+    indexerHealthy: boolean;
+  };
+  castingVotings: {
+    nodes: CastingVotingNode[];
+  };
+  delegatorVotings: {
+    nodes: DelegatorVotingNode[];
+  };
+};
+
+export type CastingVotingNode = {
+  referendumId: string;
+  standardVote: {
+    aye: boolean;
+    vote: Vote;
+  } | null;
+  splitVote: {
+    ayeAmount: string;
+    nayAmount: string;
+  } | null;
+  splitAbstainVote: {
+    ayeAmount: string;
+    nayAmount: string;
+    abstainAmount: string;
+  } | null;
+  referendum: {
+    trackId: number;
+  };
+};
+
+export type DelegatorVotingNode = {
+  vote: Vote;
+  parent: {
+    referendumId: string;
+    voter: string;
+    standardVote: {
+      aye: boolean;
+      vote: Vote;
+    } | null;
+    splitVote: {
+      ayeAmount: string;
+      nayAmount: string;
+    } | null;
+    splitAbstainVote: {
+      ayeAmount: string;
+      nayAmount: string;
+      abstainAmount: string;
+    } | null;
+    referendum: {
+      trackId: number;
+    };
+  };
+};
+
+export type Vote = {
+  amount: string;
+  conviction: string;
+};

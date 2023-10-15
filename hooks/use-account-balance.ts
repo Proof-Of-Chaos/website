@@ -4,7 +4,7 @@ import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 
 export const useAccountBalance = (
-  chainType: ChainType | undefined = ChainType.Relay
+  chainType: ChainType | undefined = "relay"
 ) => {
   const { activeChainName, activeChainInfo } = usePolkadotApis();
 

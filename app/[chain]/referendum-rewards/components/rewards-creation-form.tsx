@@ -22,6 +22,7 @@ import FormActions from "./form-actions";
 import { rewardsSchema } from "../rewards-schema";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
+import { useUserCollections } from "@/hooks/use-user-collections";
 
 export default function RewardsCreationForm({
   chain,
@@ -96,6 +97,9 @@ export default function RewardsCreationForm({
     },
     isLoading: isPastReferendaLoading,
   } = useReferenda("past", false);
+
+  const { data: userCollections, isLoading: isUserCollectionsLoading } =
+    useUserCollections();
 
   const [refIndex, setRefIndex] = useState<number>(-1);
   const { data: referendumDetail, isLoading: isReferendumDetailLoading } =
@@ -248,7 +252,51 @@ export default function RewardsCreationForm({
             rights to mint NFTs into, or create a new collection.
           </div>
           <div className="w-full md:w-2/3 flex gap-4 items-center flex-wrap md:flex-nowrap justify-center">
-            <Input
+            {userCollections && userCollections?.length > 0 ? (
+              <Select
+                items={userCollections}
+                key="0"
+                value={watchFormFields.collectionConfig?.id}
+                label="Collection Id"
+                placeholder="Select an existing collection"
+                isLoading={isUserCollectionsLoading}
+                classNames={{
+                  label: "after:content-['*'] after:text-danger after:ml-0.5",
+                }}
+                description="Select a collection that you are the owner of. NFTs will be minted to this collection."
+                isInvalid={!!errors.collectionConfig?.id}
+                isDisabled={isUserCollectionsLoading || isNewCollectionLoading}
+                color={!!errors.collectionConfig?.id ? "danger" : "default"}
+                errorMessage={
+                  !!errors.collectionConfig?.id &&
+                  `${errors.collectionConfig.id?.message}`
+                }
+                {...register("collectionConfig.id", {
+                  required: "Please select a collection",
+                })}
+              >
+                {(collection) => (
+                  <SelectItem
+                    key={collection.collectionId}
+                    value={collection.collectionId}
+                    description={`${collection.collection.items} items`}
+                  >
+                    {collection.collectionId}
+                  </SelectItem>
+                )}
+              </Select>
+            ) : (
+              <Select
+                key="1"
+                placeholder="You don't have any collections yet"
+                isDisabled={true}
+                isLoading={isUserCollectionsLoading}
+                description="Select a collection that you are the owner of. NFTs will be minted to this collection."
+              >
+                <SelectItem key="nocollection">No collection</SelectItem>
+              </Select>
+            )}
+            {/* <Input
               label="Collection Id"
               placeholder="The id of your existing collection"
               type="number"
@@ -265,7 +313,7 @@ export default function RewardsCreationForm({
                 `${errors.collectionConfig.id?.message}`
               }
               {...register("collectionConfig.id")}
-            />
+            /> */}
             {/* <p>{errors?.["collectionConfig.id"]?.message}</p> */}
             <div className="flex h-100">or</div>
             <Button
@@ -303,7 +351,7 @@ export default function RewardsCreationForm({
           {...register(`chain`)}
         />
 
-        {/* <pre className="text-xs">{JSON.stringify(watch(), null, 2)}</pre> */}
+        <pre className="text-xs">{JSON.stringify(watch(), null, 2)}</pre>
       </form>
       <ModalCreateNFTCollection
         setCollectionConfig={setCollectionConfig}

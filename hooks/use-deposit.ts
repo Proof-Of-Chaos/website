@@ -17,19 +17,12 @@ export interface UseDepositsType extends Record<Deposit, string | undefined> {
   attributeDeposit: string | undefined;
 }
 
-export const useDeposits = (
-  chainType: ChainType | undefined = ChainType.Relay
-) => {
-  const {
-    activeChainName,
-    apiStates: { relay, assetHub },
-  } = usePolkadotApis();
+export const useDeposits = (chainType: ChainType | undefined = "relay") => {
+  const { activeChainName, apiStates } = usePolkadotApis();
   const chainName = activeChainName || DEFAULT_CHAIN;
 
   const api =
-    chainType === ChainType.AssetHub
-      ? assetHub?.api
-      : relay?.api || assetHub?.api;
+    chainType === "assetHub" ? apiStates?.assetHub?.api : apiStates?.relay?.api;
 
   return useQuery<UseDepositsType, Error>({
     queryKey: ["deposits", chainName, chainType],

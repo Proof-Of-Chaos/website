@@ -12,9 +12,7 @@ export async function POST(req: Request) {
     await req.json();
   const chainConfig = await getChainByName(chain);
   const api =
-    chainType === ChainType.AssetHub
-      ? chainConfig.assetHubApi
-      : chainConfig.api;
+    chainType === "assetHub" ? chainConfig.assetHubApi : chainConfig.api;
 
   const balance = await api?.query.system.account(address);
 

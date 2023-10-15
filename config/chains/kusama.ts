@@ -39,11 +39,11 @@ const SPEND_LIMITS = {
 };
 
 const endpoints: EndpointMap = {
-  [ChainType.Relay]: [
-    // {
-    //   name: "Parity",
-    //   url: "wss://kusama-rpc.polkadot.io",
-    // },
+  relay: [
+    {
+      name: "Parity",
+      url: "wss://kusama-rpc.polkadot.io",
+    },
     {
       name: "OnFinality",
       url: "wss://kusama.api.onfinality.io/public-ws",
@@ -73,7 +73,7 @@ const endpoints: EndpointMap = {
       url: "wss://kusama.public.curie.radiumblock.co/ws",
     },
   ],
-  [ChainType.AssetHub]: [
+  assetHub: [
     { name: "Dwellir", url: "wss://statemine-rpc.dwellir.com" },
     { name: "Dwellir Tunisia", url: "wss://statemine-rpc-tn.dwellir.com" },
     { name: "IBP-GeoDNS1", url: "wss://sys.ibp.network/statemine" },
