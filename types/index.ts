@@ -22,11 +22,13 @@ export enum SubstrateChain {
   Local = "local",
 }
 
-export enum ChainType {
-  Relay = "relay",
-  AssetHub = "assetHub",
-  BridgeHub = "bridgeHub",
-}
+// export enum ChainType {
+//   Relay = "relay",
+//   AssetHub = "assetHub",
+//   BridgeHub = "bridgeHub",
+// }
+
+export type ChainType = "relay" | "assetHub" | "bridgeHub";
 
 export type ChainConfig = {
   name: SubstrateChain;
@@ -193,7 +195,6 @@ export type StreamResult =
   }
   | undefined;
 
-
 export type ResponseDataWalletVotesIndexer = {
   _metadata: {
     lastProcessedHeight: number;
@@ -223,7 +224,11 @@ export type CastingVotingNode = {
     abstainAmount: string;
   } | null;
   referendum: {
+<<<<<<< HEAD
     trackId: number
+=======
+    trackId: number;
+>>>>>>> providerSingleto
   };
 };
 
@@ -246,7 +251,11 @@ export type DelegatorVotingNode = {
       abstainAmount: string;
     } | null;
     referendum: {
+<<<<<<< HEAD
       trackId: number
+=======
+      trackId: number;
+>>>>>>> providerSingleto
     };
   };
 };

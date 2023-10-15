@@ -56,7 +56,7 @@ export function TxButton<T>(
     extrinsic,
     deposits,
     children,
-    chainType = ChainType.AssetHub,
+    chainType = "assetHub",
     successText,
     loadingText,
     onPendingChange,
@@ -78,12 +78,10 @@ export function TxButton<T>(
 
   const { data: accountBalance, isLoading: isAccountBalanceLoading } =
     useAccountBalance(chainType);
-  const {
-    activeChainName,
-    apiStates: { relay, assetHub },
-  } = usePolkadotApis();
+  const { activeChainName, apiStates } = usePolkadotApis();
 
-  const api = chainType === ChainType.Relay ? relay?.api : assetHub?.api;
+  const api =
+    chainType === "relay" ? apiStates?.relay?.api : apiStates?.assetHub?.api;
 
   const { symbol, decimals } = getChainInfo(activeChainName || DEFAULT_CHAIN);
 

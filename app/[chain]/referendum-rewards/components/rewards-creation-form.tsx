@@ -76,13 +76,9 @@ export default function RewardsCreationForm({
   });
   const {
     register,
-    handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
-    getValues,
     setValue,
     watch,
-    setError,
   } = formMethods;
 
   const watchFormFields = watch();
@@ -103,7 +99,7 @@ export default function RewardsCreationForm({
 
   const [refIndex, setRefIndex] = useState<number>(-1);
   const { data: referendumDetail, isLoading: isReferendumDetailLoading } =
-    useReferendumDetail(refIndex.toString());
+    useReferendumDetail(watchFormFields.refIndex);
 
   // function is passed to the modal in order to change the state of the form fields
   function setCollectionConfig(collectionConfig: CollectionConfiguration) {
@@ -205,9 +201,9 @@ export default function RewardsCreationForm({
                 ))}
               </Select>
 
-              {refIndex !== -1 && (
+              {watchFormFields.refIndex && (
                 <span className="text-xs flex items-start mt-1 ml-1 min-h-unit-10 align-top">
-                  You selected Referendum {`${refIndex}`}&nbsp;
+                  Referendum {`${watchFormFields.refIndex}`}
                   {isReferendumDetailLoading ? (
                     <InlineLoader />
                   ) : (

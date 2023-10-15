@@ -39,7 +39,7 @@ const SPEND_LIMITS = {
 };
 
 const endpoints: EndpointMap = {
-  [ChainType.Relay]: [
+  relay: [
     {
       name: "Parity",
       url: "wss://rpc.polkadot.io",
@@ -73,7 +73,7 @@ const endpoints: EndpointMap = {
       url: "wss://polkadot.public.curie.radiumblock.co/ws",
     },
   ],
-  [ChainType.AssetHub]: [
+  assetHub: [
     { name: "Dwellir", url: "wss://statemint-rpc.dwellir.com" },
     { name: "Dwellir Tunisia", url: "wss://statemint-rpc-tn.dwellir.com" },
     { name: "IBP-GeoDNS1", url: "wss://sys.ibp.network/statemint" },

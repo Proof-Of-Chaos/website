@@ -42,12 +42,10 @@ export default function ModalCreateNFTCollection({
     message: "",
     name: "",
   });
-  const {
-    activeChainName,
-    apiStates: { assetHub },
-  } = usePolkadotApis();
-
+  const { activeChainName, apiStates } = usePolkadotApis();
   const { selectedAccount } = usePolkadotExtension();
+
+  const { assetHub } = apiStates || {};
 
   const txCreateCollection = useMemo(() => {
     return getTxCollectionCreate(assetHub?.api, selectedAccount?.address);

@@ -41,10 +41,8 @@ const SPEND_LIMITS = {
 
 const endpoints: EndpointMap = {
   // We are using the relay chain of kusama to get the referenda, all user txs however will be made on the asset hub (see below)
-  [ChainType.Relay]: kusama.endpoints[ChainType.Relay],
-  [ChainType.AssetHub]: [
-    { name: "Parity", url: "wss://rococo-asset-hub-rpc.polkadot.io" },
-  ],
+  relay: kusama.endpoints["relay"],
+  assetHub: [{ name: "Parity", url: "wss://rococo-asset-hub-rpc.polkadot.io" }],
 };
 
 const tracks = [

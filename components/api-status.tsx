@@ -12,11 +12,10 @@ import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 import { InlineLoader } from "./inline-loader";
 
 export const ApiStatus: React.FC = () => {
-  const {
-    apiStates: { relay, assetHub },
-    switchChain,
-    activeChainName,
-  } = usePolkadotApis();
+  const { apiStates, switchChain, activeChainName } = usePolkadotApis();
+
+  const relay = apiStates?.relay;
+  const assetHub = apiStates?.assetHub;
 
   const { selectedAccount } = usePolkadotExtension();
   const [freeBalanceRelay, setFreeBalanceRelay] = React.useState<string>("0");
@@ -97,31 +96,33 @@ export const ApiStatus: React.FC = () => {
         Api: Relay
         <h3>
           Free Balance:{" "}
-          {relay?.isConnected ? freeBalanceRelay : <InlineLoader />}
+          {relay?.api?.isConnected ? freeBalanceRelay : <InlineLoader />}
         </h3>
         <h3>
           Api Status:{" "}
-          {relay?.isConnected ? (
+          {relay?.api?.isConnected ? (
             <div className="p-1 rounded-full w-2 h-2 animate-pulse inline-block bg-green-500"></div>
           ) : (
             <div className="p-1 rounded-full w-2 h-2 animate-pulse inline-block bg-red-500"></div>
           )}
         </h3>
+        <button onClick={relay?.api?.disconnect}>disconnect</button>
       </div>
       <div>
         Api: AssetHub
         <h3>
           Free Balance:{" "}
-          {assetHub?.isConnected ? freeBalanceAssetHub : <InlineLoader />}
+          {assetHub?.api?.isConnected ? freeBalanceAssetHub : <InlineLoader />}
         </h3>
         <h3>
           Api Status:{" "}
-          {assetHub?.isConnected ? (
+          {assetHub?.api?.isConnected ? (
             <div className="p-1 rounded-full w-2 h-2 animate-pulse inline-block bg-green-500"></div>
           ) : (
             <div className="p-1 rounded-full w-2 h-2 animate-pulse inline-block bg-red-500"></div>
           )}
         </h3>
+        <button onClick={assetHub?.api?.disconnect}>disconnect</button>
       </div>
     </div>
   );

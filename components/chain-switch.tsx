@@ -21,11 +21,9 @@ export const ChainSwitch = ({ className }: { className?: string }) => {
   const pathname = usePathname();
   // const { activeChain, setActiveChainName, isConnecting } = useSubstrateChain();
 
-  const {
-    apiStates: { relay: relayApiState },
-    activeChainName,
-    switchChain,
-  } = usePolkadotApis();
+  const { apiStates, activeChainName, switchChain } = usePolkadotApis();
+
+  const relayApiState = apiStates?.relay;
   const activeChainInfo = getChainInfo(activeChainName);
 
   const pathContainsSubstrateChain = Object.values(SubstrateChain).some(
@@ -80,7 +78,6 @@ export const ChainSwitch = ({ className }: { className?: string }) => {
             typeof activeChainName === "undefined" ? (
               <span className="text-xs flex items-center">
                 <Spinner size="sm" color="secondary" className="mr-2" />
-                ...
               </span>
             ) : (
               <activeChainInfo.icon />

@@ -80,11 +80,6 @@ const marks = [
 ];
 
 export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
-  //   const hasUserSubmittedAnswers = useAppStore(
-  //     (state) => state.user.quizAnswers?.[referendumId]?.submitted
-  //   );
-
-  //TODO
   const hasUserSubmittedAnswers = false;
   const latestUserVote = null;
 
@@ -92,10 +87,8 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
   const [voteChoice, setVoteChoice] = useState(VoteChoice.Aye);
   const [sliderValue, setSliderValue] = useState(VOTE_LOCK_OPTIONS[1]);
   const sliderRef = useRef<any>(undefined);
-  const {
-    activeChainInfo,
-    apiStates: { relay },
-  } = usePolkadotApis();
+  const { activeChainInfo, apiStates } = usePolkadotApis();
+  const relay = apiStates?.relay;
   const { decimals, symbol } = activeChainInfo;
   const voteInChainDecimalsMultiplier = bnToBn(10).pow(bnToBn(decimals));
 
@@ -128,17 +121,6 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
   }
 
   async function onSubmit() {
-    // voteOnRef(
-    //   referendumId,
-    //   voteChoice,
-    //   {
-    //     "vote-amount-aye": watchAyeVoteAmount,
-    //     "vote-amount-nay": watchNayVoteAmount,
-    //     "vote-amount-abstain": watchAbstainVoteAmount,
-    //   },
-    //   sliderValue.value
-    // );
-
     const conviction = sliderValue.value;
 
     const voteBalances = {
