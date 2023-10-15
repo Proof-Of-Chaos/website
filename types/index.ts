@@ -83,9 +83,9 @@ export interface SendAndFinalizeResult {
 export type ToastType =
   | undefined
   | {
-    title: string;
-    messages?: string[];
-  };
+      title: string;
+      messages?: string[];
+    };
 
 export type ConvictionVote = {
   // The particular governance track
@@ -190,9 +190,9 @@ export interface VotePolkadot {
 
 export type StreamResult =
   | {
-    done: boolean;
-    value: string;
-  }
+      done: boolean;
+      value: string;
+    }
   | undefined;
 
 export type ResponseDataWalletVotesIndexer = {
@@ -224,11 +224,7 @@ export type CastingVotingNode = {
     abstainAmount: string;
   } | null;
   referendum: {
-<<<<<<< HEAD
-    trackId: number
-=======
     trackId: number;
->>>>>>> providerSingleto
   };
 };
 
@@ -251,11 +247,7 @@ export type DelegatorVotingNode = {
       abstainAmount: string;
     } | null;
     referendum: {
-<<<<<<< HEAD
-      trackId: number
-=======
       trackId: number;
->>>>>>> providerSingleto
     };
   };
 };
