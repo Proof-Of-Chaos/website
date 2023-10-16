@@ -31,6 +31,8 @@ export const createConfigNFT = async (
       throw "createConfigNFT: KUSAMA_CONFIG_COLLECTION_ID not found";
     }
     configCollectionId = parseInt(process.env.KUSAMA_CONFIG_COLLECTION_ID);
+  } else {
+    throw "createConfigNFT: Unsupported chain"; // Throw an error for unsupported chains
   }
 
   const txs = [];
@@ -43,7 +45,7 @@ export const createConfigNFT = async (
 
   txs.push(
     apiWithNftPallet.tx.nfts.mint(
-      config.configNFT.settingsCollectionId,
+      configCollectionId,
       nftId,
       encodeAddress(account.address, ss58Format),
       null
@@ -62,7 +64,7 @@ export const createConfigNFT = async (
 
   txs.push(
     apiWithNftPallet.tx.nfts.setMetadata(
-      config.configNFT.settingsCollectionId,
+      configCollectionId,
       nftId,
       config.configNFT.metadataCid
     )
@@ -70,7 +72,7 @@ export const createConfigNFT = async (
 
   txs.push(
     apiWithNftPallet.tx.nfts.lockItemProperties(
-      config.configNFT.settingsCollectionId,
+      configCollectionId,
       nftId,
       true,
       true
