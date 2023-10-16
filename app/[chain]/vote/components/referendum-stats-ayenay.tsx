@@ -52,12 +52,16 @@ export function ReferendumStatsAyeNay({
         </svg>
       </div>
       <div className="flex items-start justify-between gap-1">
-        <div className="text-green-500 text-left">
-          <h5 className="uppercase text-sm">Aye ({ayePercentage}%)</h5>
+        <div className="text-green-600 dark:text-green-400 text-left">
+          <h5 className="uppercase text-sm">
+            <span className="font-bold">Aye</span> ({ayePercentage}%)
+          </h5>
           <p className="text-sm">{ayeVoteVolume}</p>
         </div>
-        <div className="text-red-500 text-right">
-          <h5 className="uppercase text-sm">({nayPercentage}%) Nay</h5>
+        <div className="text-red-600 dark:text-red-400 text-right">
+          <h5 className="uppercase text-sm">
+            ({nayPercentage}%) <span className="font-bold">Nay</span>
+          </h5>
           <p className="text-sm">{nayVoteVolume}</p>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { bnToBn, formatBalance } from "@polkadot/util";
 import PaperMoney from "@w3f/polkadot-icons/keyline/PaperMoney";
+import ReactMarkdown from "react-markdown";
 
 import { ScrollShadow } from "@nextui-org/scroll-shadow";
 import { Skeleton } from "@nextui-org/skeleton";
@@ -66,6 +67,20 @@ export function ReferendumDetail({
 
   const { title, content, requested } = referendumDetail ?? {};
 
+  const allowedHtmlTags = [
+    "div",
+    "span",
+    "a",
+    "strong",
+    "em",
+    "p",
+    "h1",
+    "h2",
+    "h3",
+    "ul",
+    "li",
+  ]; // Add or remove tags based on your needs
+
   return (
     <div className="referendum-detail relative w-full rounded-sm border border-dashed border-gray-300 p-3 sm:p-4 md:p-6 lg:p-10 xl:p-12 my-4 mb-0 hover:shadow-lg dark:shadow-gray-700 transition-all">
       <div className="w-full flex flex-wrap">
@@ -110,17 +125,15 @@ export function ReferendumDetail({
                 </>
               ) : (
                 <ScrollShadow className="w-full h-[350px]">
-                  <div
+                  <ReactMarkdown
                     className={clsx(
                       styles.referendumDescription,
                       "referendum-description break-words text-sm"
-                      // {
-                      //   [styles.descriptionOverflowHidden]:
-                      //     !isDescriptionExpanded,
-                      // }
                     )}
-                    dangerouslySetInnerHTML={{ __html: content ?? "" }}
-                  ></div>
+                    // allowedElements={allowedHtmlTags}
+                  >
+                    {content}
+                  </ReactMarkdown>
                 </ScrollShadow>
               )}
             </div>
@@ -152,12 +165,12 @@ export function ReferendumDetail({
         </div>
       </div>
       {/* <pre className="text-xs">
-        <b>trackInfo:</b>
-        {JSON.stringify(track, null, 2)}
-      </pre>
-      <pre className="text-xs">
-        <b>refInfo:</b> {JSON.stringify(referendum, null, 2)}
-      </pre> */}
+          <b>trackInfo:</b>
+          {JSON.stringify(track, null, 2)}
+        </pre>
+        <pre className="text-xs">
+          <b>refInfo:</b> {JSON.stringify(referendum, null, 2)}
+        </pre> */}
     </div>
   );
 }
