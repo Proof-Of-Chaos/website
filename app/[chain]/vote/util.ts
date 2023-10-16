@@ -329,10 +329,10 @@ export const transformReferendum = ([id, info]: [
         status,
         ongoingStatus,
         tally: {
-          ayes: ayes.toHuman(),
-          nays: nays.toHuman(),
-          support: support.toHuman(),
-          total: ayes.add(nays).toJSON(),
+          ayes: ayes.toString(),
+          nays: nays.toString(),
+          support: support.toString(),
+          total: ayes.add(nays).toString(),
         },
         track: track.toString(),
         deciding: deciding.toJSON(),
@@ -542,4 +542,34 @@ export function extractNumberFromConviction(str: string | undefined) {
   if (!str) return "None";
   const match = str.match(/\d+/); // This regex matches one or more digits
   return match ? `${match[0]}x` : "None";
+}
+
+/**
+ * return the percentage (0 <= percentage <= 1) of the total period already passed
+ * @param {*} totalPeriod The period in blocks, that something will last
+ * @param {*} decidingSince The start of the current period (blockNumber)
+ * @param {*} currentBlock The current block number
+ */
+export function getPercentagePassed(total: BN, since: BN, currentBlock: BN) {
+  if (!since || !total || !currentBlock) {
+    return null;
+  }
+
+  const passedBlocks = currentBlock.sub(since);
+  const percBN = BN.min(passedBlocks.div(total), BN_ONE);
+  return percBN.toNumber();
+}
+
+export function BNToFixedPercentage(
+  part: BN,
+  total: BN,
+  PRECISION = 100 // 2 decimal places
+): number {
+  // Calculate percentage with precision
+  let precision = new BN(PRECISION);
+  let percentageBN = part.mul(precision.mul(new BN(100))).div(total);
+
+  // Convert to number and format
+  let percentage = parseFloat(percentageBN.toString(10)) / PRECISION; // Adjust by the precision factor
+  return percentage;
 }

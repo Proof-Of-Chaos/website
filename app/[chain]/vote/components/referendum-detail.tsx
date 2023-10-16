@@ -26,6 +26,7 @@ import ReferendumVoteButtons from "./referendum-vote-buttons";
 import ReferendumCountdownCard from "./referendum-countdown-card";
 import { useEndDate } from "@/hooks/vote/use-end-date";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
+import { ReferendumStats } from "./referendum-stats";
 
 export type ReferendumDetailType = {
   chain: SubstrateChain;
@@ -147,6 +148,7 @@ export function ReferendumDetail({
             />
           )}
           <ReferendumVoteButtons referendum={{ ...referendum }} userVote={{}} />
+          <ReferendumStats referendum={referendum} />
         </div>
       </div>
       {/* <pre className="text-xs">
