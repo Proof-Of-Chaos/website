@@ -353,7 +353,7 @@ export default function RewardsCreationForm({
           {...register(`chain`)}
         />
 
-        <pre className="text-xs">{JSON.stringify(watch(), null, 2)}</pre>
+        {/* <pre className="text-xs">{JSON.stringify(watch(), null, 2)}</pre> */}
       </form>
       <ModalCreateNFTCollection
         setCollectionConfig={setCollectionConfig}

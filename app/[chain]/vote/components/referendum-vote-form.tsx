@@ -96,7 +96,8 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
 
   const { data: accountBalance, isLoading: isBalanceLoading } =
     useAccountBalance();
-  const availableBalance = formatBalance(accountBalance?.data?.free, {
+  const availableBalanceRaw = accountBalance?.data?.free;
+  const availableBalance = formatBalance(availableBalanceRaw, {
     decimals,
     withSi: true,
     withUnit: symbol,
@@ -305,10 +306,10 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
                 validate: {
                   positiveNumber: (value) => value >= 0.0,
                   hasEnoughFunds: (value) =>
-                    accountBalance?.data?.free &&
+                    availableBalanceRaw &&
                     bnToBn(value)
                       .mul(voteInChainDecimalsMultiplier)
-                      .lte(bnToBn(accountBalance?.data?.free)),
+                      .lte(bnToBn(availableBalanceRaw)),
                 },
               })}
             />
@@ -345,19 +346,22 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
                 validate: {
                   positiveNumber: (value) => value >= 0,
                   hasEnoughFunds: (value) =>
-                    availableBalance && value <= parseFloat(availableBalance),
+                    availableBalanceRaw &&
+                    bnToBn(value)
+                      .mul(voteInChainDecimalsMultiplier)
+                      .lte(bnToBn(availableBalanceRaw)),
                 },
               })}
             />
             {errors["vote-amount-nay"] &&
               errors["vote-amount-nay"].type === "positiveNumber" && (
-                <p className="form-error">
+                <p className="form-error text-red-600 text-sm">
                   Your vote amount must be a positive number
                 </p>
               )}
             {errors["vote-amount-nay"] &&
               errors["vote-amount-nay"].type === "hasEnoughFunds" && (
-                <p className="form-error">
+                <p className="form-error text-red-600 text-sm">
                   {`You do not have enough available ${symbol}`}
                 </p>
               )}
@@ -379,19 +383,22 @@ export function ReferendumVoteForm({ referendumId }: { referendumId: string }) {
                 validate: {
                   positiveNumber: (value) => value >= 0.0,
                   hasEnoughFunds: (value) =>
-                    availableBalance && value <= parseFloat(availableBalance),
+                    availableBalanceRaw &&
+                    bnToBn(value)
+                      .mul(voteInChainDecimalsMultiplier)
+                      .lte(bnToBn(availableBalanceRaw)),
                 },
               })}
             />
             {errors["vote-amount-abstain"] &&
               errors["vote-amount-abstain"].type === "positiveNumber" && (
-                <p className="form-error">
+                <p className="form-error text-red-600 text-sm">
                   Your vote amount must be a positive number
                 </p>
               )}
             {errors["vote-amount-abstain"] &&
               errors["vote-amount-abstain"].type === "hasEnoughFunds" && (
-                <p className="form-error">
+                <p className="form-error text-red-600 text-sm">
                   {`You do not have enough available ${symbol}`}
                 </p>
               )}

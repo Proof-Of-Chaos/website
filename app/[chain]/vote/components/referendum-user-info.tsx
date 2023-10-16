@@ -12,6 +12,7 @@ import Identicon from "@polkadot/react-identicon";
 import { trimAddress } from "@/components/util";
 import { Link } from "@nextui-org/link";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
+import { chain } from "lodash";
 
 export function ReferendumUserInfoCard({
   referendum,
@@ -30,11 +31,13 @@ export function ReferendumUserInfoCard({
   const formatToChainDecimals = (value: number | string) => {
     const rawBalance = formatBalance(value, {
       decimals,
-      withSi: false,
-      withSiFull: false,
+      withSi: true,
+      withUnit: symbol,
+      withAll: false,
+      withZero: false,
     });
 
-    return `${parseFloat(rawBalance).toFixed(2)} ${symbol}`;
+    return rawBalance;
   };
 
   const userVoted =
