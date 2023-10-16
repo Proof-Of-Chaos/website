@@ -28,7 +28,7 @@ import { useEndDate } from "@/hooks/vote/use-end-date";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 
 export type ReferendumDetailType = {
-  chain: string;
+  chain: SubstrateChain;
   referendum: UIReferendum;
   track?: UITrack;
   isExpanded: boolean;
@@ -123,7 +123,7 @@ export function ReferendumDetail({
                 </ScrollShadow>
               )}
             </div>
-            <ReferendumLinks referendumId={index} />
+            <ReferendumLinks referendumId={index} chain={chain} />
           </>
         </div>
         <div className="right text-center w-full sm:w-5/12 md:w-4/12 pt-6 sm:pt-0 sticky self-start top-24 sm:pl-4 md:pl-6">
@@ -202,7 +202,7 @@ export const ReferendumDetailLoading = ({
               <div className="w-full h-4 rounded-lg"></div>
             </Skeleton>
           ))}
-          <ReferendumLinks referendumId={index} />
+          <ReferendumLinks referendumId={index} chain={chain} />
         </div>
         <div className="right text-center w-full sm:w-5/12 md:w-4/12 pt-6 sm:pt-0 sticky self-start top-24 sm:pl-4 md:pl-6">
           <ReferendumBadges
