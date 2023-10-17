@@ -229,8 +229,8 @@ export default function RewardsCreationForm({
               }}
               type="text"
               placeholder="Enter the address of the royalty receiver"
-              description="Where trading royalties should go to (Kusama / Asset Hub).
-                  80% will go to the entered address, 20% to the Proof of Chaos multisig."
+              description="Where trading royalties should go to on Asset Hub.
+                  80% will go to the entered address, 20% to the Proof of Chaos multisig. You can copy your address from the account dropdown top right."
               isInvalid={!!errors.royaltyAddress}
               color={!!errors.royaltyAddress ? "danger" : "default"}
               errorMessage={

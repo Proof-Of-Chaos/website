@@ -1,6 +1,7 @@
 import { RewardConfiguration } from "@/app/[chain]/referendum-rewards/types";
 import { pinMetadataForConfigNFT } from "@/app/api/_pinata-utils";
 import { generateNFTId } from "@/app/api/rewards/get-txs-vote";
+import { ApiCache } from "@/config/chains/ApiCache";
 import { initAccount } from "@/store/server/account";
 import { ChainConfig, SubstrateChain } from "@/types";
 import PinataClient from "@pinata/sdk";
@@ -39,7 +40,10 @@ export const createConfigNFT = async (
   const account = await initAccount();
   const nftId = generateNFTId(Date.now());
 
-  const { assetHubApi: apiWithNftPallet, ss58Format } = chain;
+  const ss58Format = chain.ss58Format;
+  const apis = await ApiCache.getApis(chain.name);
+  const apiWithNftPallet = apis["assetHub"]?.api;
+  await apiWithNftPallet?.isReady;
 
   if (!apiWithNftPallet) throw "createConfigNFT: apiWithNftPallet not found";
 
