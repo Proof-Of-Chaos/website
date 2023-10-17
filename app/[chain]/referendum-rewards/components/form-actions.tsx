@@ -406,7 +406,9 @@ export default function FormActions({
                       isExternal
                       key={idx}
                     >
-                      <Button color="secondary">View Transaction {idx}</Button>
+                      <Button color="secondary">
+                        View Transaction {idx + 1}
+                      </Button>
                     </Link>
                   ))}
                 <Button className="w-full" onClick={onReset}>
