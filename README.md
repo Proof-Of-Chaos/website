@@ -1,31 +1,40 @@
-# Proof of Chaos
+# Next.js & NextUI Template
 
-![Proof of Chaos Website Screenshot](public/proof-of-chaos.png?raw=true "Proof of Chaos")
+This is a template for creating applications using Next.js 13 (app directory) and NextUI (v2) Wirkung with polkadot JS and polkadot Browser extension.
 
-The repo of the website [https://proofofchaos.app](https://proofofchaos.app)
+## Technologies Used
 
-Find us on [discord](https://discord.gg/ugE6Brwj22) | [twitter](https://twitter.com/GovPartRewKSM) | [singular](https://singular.app/collections/3208723ec6f65df810-ITEM?page=1&sortBy=priceDescending)
-## Contributing
+- [Next.js 13](https://nextjs.org/docs/getting-started)
+- [NextUI v2](https://nextui.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Tailwind Variants](https://tailwind-variants.org)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [next-themes](https://github.com/pacocoursey/next-themes)
 
-You can always submit pull requests and issues.
+## How to Use
 
-### Installing Dependencies
+
+### Use the template with create-next-app
+
+To create a new project based on this template using `create-next-app`, run the following command:
+
+```bash
+npx create-next-app -e https://github.com/nextui-org/next-app-template
 ```
-yarn install
+
+### Install dependencies
+
+```bash
+npm install
 ```
 
-### Providing Pinata API Key and Secret
-
-Please create a `.env` file following in the `.env-sample` and filling in your own Pinata API and Secret
-
-### Building the Site
-
-First, run the development server:
+### Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## License
+
+Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
