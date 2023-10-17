@@ -31,7 +31,8 @@ export default function ModalAnalyzeSendout({
   const { isOpen, onOpenChange } = props;
 
   const displayedData = pick(sendoutData, [
-    "kusamaAssetHubTxsBatches",
+    // "kusamaAssetHubTxsBatches",
+    "kusamaAssetHubTxsHuman",
     "distribution",
     "voters",
     "config",

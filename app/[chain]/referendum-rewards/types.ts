@@ -10,6 +10,7 @@ export type GenerateRewardsResult =
       kusamaAssetHubCall?: string;
       kusamaAssetHubTxs?: string[];
       kusamaAssetHubTxsBatches?: string[];
+      kusamaAssetHubTxsHuman?: any[];
       distribution?: RarityDistribution;
       voters?: string[];
       fees?: {

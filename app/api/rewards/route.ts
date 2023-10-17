@@ -291,6 +291,7 @@ const generateCalls = async (
     kusamaCall: "",
     kusamaAssetHubCall: "", // JSON.stringify(nftCalls),
     kusamaAssetHubTxs: txsKusamaAssetHub,
+    kusamaAssetHubTxsHuman: txsKusamaAssetHub.map((tx) => tx.method.toHuman()),
     voters,
     distribution: rarityDistribution,
     fees: {
