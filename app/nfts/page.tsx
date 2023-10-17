@@ -14,6 +14,7 @@ export default function NFTPage() {
         The NFT page is currently under construction as we are preparing the
         transition from RMRK NFTs to nft pallet NFTs
       </p>
+      <ApiStatus />
       <p className="text-center text-4xl">🔥</p>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useAppStore } from "@/app/zustand";
 import { useForm } from "react-hook-form";
 import { CollectionConfiguration } from "../types";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { SendAndFinalizeResult } from "@/types";
 import {
   Modal,
@@ -21,6 +21,7 @@ import { getTxCollectionCreate } from "@/config/txs";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 import { useUserCollections } from "@/hooks/use-user-collections";
+import { TxTypes } from "@/components/util-client";
 
 type PropType = Omit<ModalProps, "children"> & {
   setCollectionConfig: (config: CollectionConfiguration) => void;
@@ -45,11 +46,29 @@ export default function ModalCreateNFTCollection({
   const { activeChainName, apiStates } = usePolkadotApis();
   const { selectedAccount } = usePolkadotExtension();
 
-  const { assetHub } = apiStates || {};
+  const apiAssetHub = apiStates?.assetHub?.api;
 
-  const txCreateCollection = useMemo(() => {
-    return getTxCollectionCreate(assetHub?.api, selectedAccount?.address);
-  }, [assetHub?.api, selectedAccount]);
+  const [txCollectionCreate, setTxCollectionCreate] =
+    useState<TxTypes>(undefined);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getTxCollectionCreate(
+        activeChainName,
+        selectedAccount?.address
+      );
+      setTxCollectionCreate(result);
+    };
+
+    fetchData();
+  }, [activeChainName, selectedAccount?.address]);
+
+  const txCreateCollection = useMemo(async () => {
+    return await getTxCollectionCreate(
+      activeChainName,
+      selectedAccount?.address
+    );
+  }, [activeChainName, selectedAccount]);
 
   const { refetch } = useUserCollections();
 
@@ -204,7 +223,7 @@ export default function ModalCreateNFTCollection({
                 color="secondary"
                 className="w-full"
                 successText="Collection created!"
-                extrinsic={txCreateCollection}
+                extrinsic={txCollectionCreate}
                 loadingText="Creating collection..."
                 onFinished={onFinished}
                 onPendingChange={setIsTxPending}

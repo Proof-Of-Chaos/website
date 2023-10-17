@@ -5,37 +5,8 @@ import { RuntimeDispatchInfo } from "@polkadot/types/interfaces";
 import { TxTypes } from "@/components/util-client";
 import { RewardConfiguration } from "@/app/[chain]/referendum-rewards/types";
 import { pinImageAndMetadataForCollection } from "../_pinata-utils";
-
-/**
- * Will get the txs for creating a collection but NOT adding the metadata
- * @param apiKusamaAssetHub
- * @param rewardConfig
- * @returns
- */
-export const getTxCollectionCreate = async (
-  apiKusamaAssetHub: ApiPromise,
-  rewardConfig: RewardConfiguration
-): Promise<any> => {
-  let txsKusamaAssetHub = [];
-  // console.log("getting collection create call")
-  //create collection
-  const admin = {
-    Id: rewardConfig.sender,
-  };
-  const config = {
-    max_supply: null,
-    mint_settings: {
-      default_item_settings: 0,
-      end_block: null,
-      mint_type: "Issuer",
-      price: null,
-      start_block: null,
-    },
-    settings: 0,
-  };
-
-  return apiKusamaAssetHub.tx.nfts.create(admin, config);
-};
+import { ApiCache } from "@/config/chains/ApiCache";
+import { SubstrateChain } from "@/types";
 
 export const getUserLatestCollectionId = async (
   apiKusamaAssetHub: ApiPromise,

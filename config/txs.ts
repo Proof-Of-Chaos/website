@@ -1,4 +1,6 @@
 import { ApiPromise } from "@polkadot/api";
+import { ApiCache } from "./chains/ApiCache";
+import { SubstrateChain } from "@/types";
 
 /**
  * Will get the txs for creating a collection but NOT adding the metadata
@@ -6,10 +8,12 @@ import { ApiPromise } from "@polkadot/api";
  * @param rewardConfig
  * @returns
  */
-export const getTxCollectionCreate = (
-  apiWithNFTsPallet: ApiPromise | undefined,
+export const getTxCollectionCreate = async (
+  chain: SubstrateChain,
   address: string | undefined
 ) => {
+  const apiWithNFTsPallet = (await ApiCache.getApis(chain))["assetHub"]?.api;
+  await apiWithNFTsPallet?.isReady;
   const admin = {
     Id: address,
   };

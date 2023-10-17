@@ -14,12 +14,10 @@ import { Key, useEffect, useState, useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { CHAINS_ENABLED, getChainInfo } from "@/config/chains";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
-import { getChain } from "@/app/vote/server-actions/get-chain";
 
 export const ChainSwitch = ({ className }: { className?: string }) => {
   const router = useRouter();
   const pathname = usePathname();
-  // const { activeChain, setActiveChainName, isConnecting } = useSubstrateChain();
 
   const { apiStates, activeChainName, switchChain } = usePolkadotApis();
 
@@ -74,7 +72,7 @@ export const ChainSwitch = ({ className }: { className?: string }) => {
             isIconOnly={false}
             className="min-w-unit-12 px-unit-1 md:px-unit-4"
           >
-            {!relayApiState?.isConnected ||
+            {!relayApiState?.api?.isConnected ||
             typeof activeChainName === "undefined" ? (
               <span className="text-xs flex items-center">
                 <Spinner size="sm" color="secondary" className="mr-2" />

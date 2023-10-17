@@ -28,6 +28,7 @@ export const ApiStatus: React.FC = () => {
   useEffect(() => {
     const asyncEffect = async (api: ApiPromise | undefined) => {
       if (api) {
+        await api.isReady;
         const { data: balance } = (await api?.query?.system?.account(
           address
         )) || {
@@ -93,7 +94,7 @@ export const ApiStatus: React.FC = () => {
         </Button>
       </div>
       <div>
-        Api: Relay
+        Api: Relayc
         <h3>
           Free Balance:{" "}
           {relay?.api?.isConnected ? freeBalanceRelay : <InlineLoader />}

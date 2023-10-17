@@ -2,11 +2,14 @@ import { WsProvider, ApiPromise } from "@polkadot/api";
 import { getChainInfo } from ".";
 import { ChainType, SubstrateChain } from "@/types";
 
+const MAX_TRIES = 10;
+
 class ApiContainer {
   api: ApiPromise | undefined = undefined;
   endpointIndex: number = 0;
   endpoints: string[];
   isConnected: boolean = false;
+  retries: number = 0;
 
   constructor(api: ApiPromise | undefined, endpoints: string[]) {
     this.api = api;
@@ -20,9 +23,9 @@ class ApiContainer {
     })();
   }
 
-  public nextEndpoint(): string {
+  public nextEndpoint(): number {
     this.endpointIndex = (this.endpointIndex + 1) % this.endpoints.length;
-    return this.endpoints[this.endpointIndex];
+    return this.endpointIndex;
   }
 }
 
@@ -53,17 +56,18 @@ class DoubleIndexedMap {
 class ApiCache {
   private static apiCache = new DoubleIndexedMap();
 
-  private static async createApi(
+  private static createApi(
     chainName: SubstrateChain,
     chainType: ChainType,
-    eventHandlers: any
-  ): Promise<ApiContainer> {
+    eventHandlers: any,
+    endpointIndex: number = 0
+  ): ApiContainer {
     const endpoints =
       getChainInfo(chainName).endpoints[chainType]?.map(
         (endpoint) => endpoint.url
       ) || [];
 
-    const provider = new WsProvider(endpoints[0]);
+    const provider = new WsProvider(endpoints[endpointIndex]);
     const api = new ApiPromise({ provider });
 
     api.on("connected", eventHandlers.connectedHandler);
@@ -74,46 +78,51 @@ class ApiCache {
       eventHandlers.errorHandler(chainName, chainType, error)
     );
 
-    await api.isReady;
+    const apiContainer = new ApiContainer(api, endpoints);
 
-    return new ApiContainer(api, endpoints);
+    return apiContainer;
   }
 
-  private static async reconnect(
-    apiContainer: ApiContainer,
+  private static reconnect(
     chainName: SubstrateChain,
     chainType: ChainType,
     eventHandlers: any
-  ) {
-    const nextEndpoint = apiContainer?.nextEndpoint();
-    const newApiContainer = await this.createApi(
-      chainName,
-      chainType,
-      eventHandlers
-    );
-    this.apiCache.set(chainName, chainType, newApiContainer);
+  ): void {
+    const apiContainer = this.apiCache.get(chainName, chainType);
+    if (apiContainer) {
+      apiContainer.retries += 1;
+
+      if (apiContainer.retries >= MAX_TRIES) {
+        console.error("Max retries reached. Stopping reconnect attempts.");
+        return;
+      }
+
+      const nextEndpoint = apiContainer.nextEndpoint();
+      const newApiContainer = this.createApi(
+        chainName,
+        chainType,
+        eventHandlers,
+        nextEndpoint
+      );
+      this.apiCache.set(chainName, chainType, newApiContainer);
+    }
   }
 
   private static eventHandlers = {
     connectedHandler: () => {
       // Handle connection logic if needed.
     },
-    disconnectedHandler: (
-      chainName: SubstrateChain,
-      chainType: ChainType,
-      apiContainer: ApiContainer
-    ) => {
+    disconnectedHandler: (chainName: SubstrateChain, chainType: ChainType) => {
       console.log("disconnected", chainName, chainType);
-      this.reconnect(apiContainer, chainName, chainType, this.eventHandlers);
+      this.reconnect(chainName, chainType, this.eventHandlers);
     },
     errorHandler: (
       chainName: SubstrateChain,
       chainType: ChainType,
-      apiContainer: ApiContainer,
       error: Error
     ) => {
-      console.log("disconnected", chainName, chainType);
-      this.reconnect(apiContainer, chainName, chainType, this.eventHandlers);
+      console.log("error", chainName, chainType, error);
+      this.reconnect(chainName, chainType, this.eventHandlers);
     },
   };
 

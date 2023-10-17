@@ -13,6 +13,7 @@ import React, {
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { getChainInfo } from "@/config/chains";
 import { ApiCache } from "@/config/chains/ApiCache";
+import { usePathname } from "next/navigation";
 
 export interface PolkadotApiState {
   api: ApiPromise | undefined;
@@ -36,9 +37,15 @@ type PolkadotApiProviderProps = {
 export const PolkadotApisProvider: React.FC<PolkadotApiProviderProps> = ({
   children,
 }) => {
-  const [activeChainName, setActiveChainName] = useState<SubstrateChain>(
-    SubstrateChain.Kusama
+  const pathname = usePathname();
+  const selectedChain = Object.values(SubstrateChain).find((substrateChain) =>
+    pathname.includes(`/${substrateChain}/`)
   );
+
+  const [activeChainName, setActiveChainName] = useState<SubstrateChain>(
+    selectedChain || SubstrateChain.Kusama
+  );
+
   const apisToActivate: ChainType[] = ["relay", "assetHub"];
 
   const activeChainInfo = useMemo(
@@ -65,28 +72,41 @@ export const PolkadotApisProvider: React.FC<PolkadotApiProviderProps> = ({
 
   useEffect(() => {
     console.log("switching chain to ", activeChainName);
+    setApiStates((prev) => ({
+      ...prev,
+      relay: {
+        ...prev.relay,
+        api: undefined,
+        isConnected: false,
+      },
+      assetHub: {
+        ...prev.assetHub,
+        api: undefined,
+        isConnected: false,
+      },
+      bridgeHub: {
+        ...prev.bridgeHub,
+        api: undefined,
+        isConnected: false,
+      },
+    }));
     (async () => {
-      setApiStates((prev) => ({
-        ...prev,
-        relay: {
-          ...prev.relay,
-          api: undefined,
-          isConnected: false,
-        },
-        assetHub: {
-          ...prev.assetHub,
-          api: undefined,
-          isConnected: false,
-        },
-        bridgeHub: {
-          ...prev.bridgeHub,
-          api: undefined,
-          isConnected: false,
-        },
-      }));
       const apis = await ApiCache.getApis(activeChainName);
-
-      console.log("apis", apis);
+      await Promise.all(
+        apisToActivate.map(async (apiName) => {
+          const apiContainer = apis[apiName];
+          if (apiContainer?.api) {
+            await apiContainer?.api?.isReady;
+            setApiStates((prev) => ({
+              ...prev,
+              [apiName]: {
+                apiContainer,
+                isConnected: true,
+              },
+            }));
+          }
+        })
+      );
 
       setApiStates((prev) => ({
         ...prev,

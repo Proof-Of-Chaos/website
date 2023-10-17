@@ -28,7 +28,7 @@ export const useUserCollections = () => {
     queryKey: ["userCollections", chainName, userAddress],
     enabled: !!api,
     queryFn: async () => {
-      const allCollections = await api?.query.nfts.collection.entries();
+      const allCollections = await api?.query.nfts?.collection.entries();
       return allCollections
         ?.map(([key, value]) => ({
           collectionId: key.args[0].toString(),

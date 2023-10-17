@@ -250,6 +250,7 @@ export default function RewardsCreationForm({
           <div className="w-full md:w-2/3 flex gap-4 items-center flex-wrap md:flex-nowrap justify-center">
             {userCollections && userCollections?.length > 0 ? (
               <Select
+                aria-label="Collection Id"
                 items={userCollections}
                 key="0"
                 value={watchFormFields.collectionConfig?.id}
