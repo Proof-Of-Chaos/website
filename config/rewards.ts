@@ -83,7 +83,7 @@ export const rewardsConfig: RewardsConfigType = {
     // encointerBonus: 50,
     minAmount: 0.2,
     defaultRoyalty: 95,
-    royaltyAddress: "DT7kRjGFvRKxGSx5CPUCA1pazj6gzJ6Db11xmkX4yYSNK7m",
+    royaltyAddress: "",
     options: [
       {
         maxProbability: 25,

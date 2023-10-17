@@ -22,6 +22,7 @@ import Copy from "@w3f/polkadot-icons/keyline/Copy";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 export const WalletConnect = () => {
   const {
@@ -34,8 +35,9 @@ export const WalletConnect = () => {
     disconnect,
   } = usePolkadotExtension();
 
-  const { data: chainDetails, isLoading } = useChainDetails();
-  const { ss58Prefix } = chainDetails || {};
+  const { activeChainInfo } = usePolkadotApis();
+
+  const { ss58Format } = activeChainInfo;
   const router = useRouter();
 
   const [isClient, setIsClient] = useState(false);
@@ -116,7 +118,7 @@ export const WalletConnect = () => {
                 key={account.address}
                 value={account.address}
                 description={trimAddress(
-                  encodeAddress(account.address, ss58Prefix?.toNumber())
+                  encodeAddress(account.address, ss58Format)
                 )}
                 startContent={
                   <Identicon
@@ -133,7 +135,7 @@ export const WalletConnect = () => {
                     isIconOnly={true}
                     onClick={(e) => {
                       navigator.clipboard.writeText(
-                        encodeAddress(account.address, ss58Prefix?.toNumber())
+                        encodeAddress(account.address, ss58Format)
                       );
                     }}
                   >
