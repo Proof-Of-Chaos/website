@@ -160,7 +160,11 @@ export function ReferendumDetail({
               isUserVotesLoading={isUserVotesLoading}
             />
           )}
-          <ReferendumVoteButtons referendum={{ ...referendum }} userVote={{}} />
+          <ReferendumVoteButtons
+            referendum={{ ...referendum }}
+            userVote={userVote}
+            userDelegation={userDelegation}
+          />
           <ReferendumStats referendum={referendum} />
         </div>
       </div>
@@ -228,7 +232,11 @@ export const ReferendumDetailLoading = ({
           />
           {/* <ReferendumCountdownCard endDate={endDate} referendum={referendum} /> */}
           <ReferendumUserInfoCard referendum={referendum} />
-          <ReferendumVoteButtons referendum={{ ...referendum }} userVote={{}} />
+          <ReferendumVoteButtons
+            referendum={{ ...referendum }}
+            userVote={{}}
+            userDelegation={{}}
+          />
         </div>
       </div>
     </div>
