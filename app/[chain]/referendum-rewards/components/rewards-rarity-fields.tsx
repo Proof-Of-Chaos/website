@@ -169,7 +169,6 @@ export function RewardsCreationRarityFields({
                 <Input
                   id={`imageCid-${rarity}`}
                   label={`IPFS  CID of ${rarity} NFT`}
-                  placeholder={`ipfs://ipfs/...`}
                   type="text"
                   className="min-h-unit-12"
                   color={
@@ -189,7 +188,6 @@ export function RewardsCreationRarityFields({
                   <Input
                     id={`coverCid-${rarity}`}
                     label={`IPFS  Cover CID of ${rarity} NFT`}
-                    placeholder={`ipfs://ipfs/...`}
                     type="text"
                     className="min-h-unit-12 mt-2"
                     color={

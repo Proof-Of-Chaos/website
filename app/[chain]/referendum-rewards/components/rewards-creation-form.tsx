@@ -289,6 +289,12 @@ export default function RewardsCreationForm({
                 isDisabled={true}
                 isLoading={isUserCollectionsLoading}
                 description="Select a collection that you are the owner of. NFTs will be minted to this collection."
+                color={!!errors.collectionConfig?.id ? "danger" : "default"}
+                isInvalid={!!errors.collectionConfig?.id}
+                errorMessage={
+                  !!errors.collectionConfig?.id &&
+                  `${errors.collectionConfig.id?.message}`
+                }
               >
                 <SelectItem key="nocollection">No collection</SelectItem>
               </Select>

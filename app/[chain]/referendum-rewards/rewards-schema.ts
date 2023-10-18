@@ -1,3 +1,4 @@
+import { CID } from "multiformats/cid";
 import { titleCase } from "@/components/util";
 import { rewardsConfig } from "@/config/rewards";
 import { ChainConfig, SubstrateChain } from "@/types";
@@ -14,6 +15,16 @@ export function validateAddress(address: string, ss58Format: number) {
     return false;
   }
   return true;
+}
+
+function isValidCID(cidString: string): boolean {
+  if ("" === cidString || cidString === undefined) return true;
+  try {
+    CID.parse(cidString);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 // this is needed because on client side we have a FileList and on server side we have a File
@@ -96,11 +107,18 @@ export const zodSchemaObject = (
           title: z.string().min(1, "Title is required"),
           description: z.string().optional(),
           artist: z.string().optional(),
-          imageCid: z.string().optional(),
+          // imageCid: z.string().optional(),
+          imageCid: z.custom<string>(
+            (value) => isValidCID(value as string),
+            `Not a valid ipfs cid`
+          ),
           //TODO
           file: fileUpload,
           fileCover: fileUpload.optional(),
-          coverCid: z.string().optional(),
+          coverCid: z.custom<string>(
+            (value) => isValidCID(value as string),
+            `Not a valid ipfs cid`
+          ),
         })
         .refine(
           (option) => {
