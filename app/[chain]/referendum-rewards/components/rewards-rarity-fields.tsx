@@ -240,9 +240,7 @@ export function RewardsCreationRarityFields({
             label={`Description of ${rarity} NFT (1000 chars)`}
             placeholder={`Enter description of ${rarity} NFT`}
             maxLength={1000}
-            // {...register(`options[${optionIndex}].description`, {
-            //   validate: {},
-            // })}
+            {...register(`options.${optionIndex}.description`)}
           />
           <Input
             id={`artist-${rarity}`}
