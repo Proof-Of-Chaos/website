@@ -193,7 +193,7 @@ export const pinImageAndMetadataForOptions = async (
     };
 
     // if there is a cover, thats the image and the other one is the `animation_url` on Kodadot
-    if (option.fileCover) {
+    if (option.fileCover || option.coverCid) {
       baseMetadata = {
         ...baseMetadata,
         image: `ipfs://ipfs/${coverIpfsCid}`,
