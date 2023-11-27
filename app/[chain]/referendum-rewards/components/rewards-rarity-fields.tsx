@@ -89,7 +89,7 @@ export function RewardsCreationRarityFields({
                 size="sm"
                 color="secondary"
                 isSelected={shouldHaveCover[rarity]}
-                onValueChange={(value) => {
+                onValueChange={(value: any) => {
                   setShouldHaveCover({
                     ...shouldHaveCover,
                     [rarity]: value,

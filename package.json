@@ -21,7 +21,7 @@
     "@nextui-org/code": "2.0.13",
     "@nextui-org/divider": "^2.0.20",
     "@nextui-org/dropdown": "^2.1.7",
-    "@nextui-org/input": "2.1.3",
+    "@nextui-org/input": "latest",
     "@nextui-org/kbd": "2.0.14",
     "@nextui-org/link": "2.0.16",
     "@nextui-org/modal": "^2.0.22",
