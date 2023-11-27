@@ -14,15 +14,11 @@ import { Button } from "@nextui-org/button";
 
 import { pick } from "lodash";
 
-import dynamic from "next/dynamic";
+import ReactJson from "react-json-view";
 
 type PropType = Omit<ModalProps, "children"> & {
   sendoutData: GenerateRewardsResult;
 };
-
-const ReactJsonNoSSR = dynamic(() => import("react-json-view"), {
-  ssr: false,
-});
 
 export default function ModalAnalyzeSendout({
   sendoutData,
@@ -58,12 +54,11 @@ export default function ModalAnalyzeSendout({
             <ModalBody>
               {displayedData ? (
                 <div className="overflow-hidden overflow-y-scroll">
-                  <ReactJsonNoSSR
+                  <ReactJson
                     theme="chalk"
                     src={displayedData}
                     iconStyle="circle"
                   />
-                  {/* {JSON.stringify(sendoutData, null, 2)} */}
                 </div>
               ) : (
                 "Error reading sendout data"
