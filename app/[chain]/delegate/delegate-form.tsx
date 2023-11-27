@@ -20,7 +20,7 @@ import { siteConfig } from "@/config/site";
 
 const VOTE_LOCK_OPTIONS = [
   {
-    value: 0.1,
+    value: 0,
     label: "No lockup",
   },
   {
@@ -51,7 +51,7 @@ const VOTE_LOCK_OPTIONS = [
 
 const marks = [
   {
-    value: 0,
+    value: 0.1,
     label: "0.1x",
   },
   {
@@ -138,7 +138,7 @@ export function DelegateForm() {
       0,
       siteConfig.delegator,
       conviction,
-      bnToBn(watchDelegateBalance.toString())
+      delegateBalance
     );
 
     const accountSigner = await getSigner();
@@ -194,9 +194,7 @@ export function DelegateForm() {
     ? (parseFloat(sliderValue.value.toString()) * watchDelegateBalance)
         .toFixed(2)
         .replace(/[.,]00$/, "")
-    : parseFloat(watchDelegateBalance.toString())
-        ?.toFixed(2)
-        .replace(/[.,]00$/, "");
+    : "-";
 
   return (
     <div>
