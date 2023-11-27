@@ -11132,7 +11132,7 @@ __metadata:
     react-dom-confetti: ^0.2.0
     react-hook-form: ^7.46.1
     react-hot-toast: ^2.4.1
-    react-json-view: ^1.21.3
+    react-json-view: latest
     react-markdown: ^9.0.0
     react-query: ^3.39.3
     react-use: ^17.4.0
@@ -11994,7 +11994,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-json-view@npm:^1.21.3":
+"react-json-view@npm:latest":
   version: 1.21.3
   resolution: "react-json-view@npm:1.21.3"
   dependencies:
