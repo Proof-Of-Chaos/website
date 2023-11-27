@@ -70,17 +70,16 @@ export const ChainSwitch = ({ className }: { className?: string }) => {
             variant="bordered"
             size="lg"
             isIconOnly={false}
-            className="min-w-unit-12 px-unit-1 md:px-unit-4"
+            className="min-w-unit-12 px-3"
           >
             {!relayApiState?.api?.isConnected ||
             typeof activeChainName === "undefined" ? (
               <span className="text-xs flex items-center">
-                <Spinner size="sm" color="secondary" className="mr-2" />
+                <Spinner size="sm" color="secondary" className="" />
               </span>
             ) : (
               <activeChainInfo.icon />
             )}
-            <span className="hidden md:flex">{activeChainName}</span>
           </Button>
         </DropdownTrigger>
         <DropdownMenu onAction={handleChainChange} aria-label="Select Chain">
