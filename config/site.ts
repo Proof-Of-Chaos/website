@@ -48,4 +48,5 @@ export const siteConfig = {
     twitter: "https://twitter.com/GovPartRewKSM",
     discord: "https://discord.gg/raMucevj",
   },
+  delegator: "5G3cJ9jQPmY4iD4yyQh85KVbTEMAPxUBy6RM6f2eV2TJNvKm",
 };

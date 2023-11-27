@@ -201,10 +201,13 @@ export const sendAndFinalize = async (
               }
 
               if (toastId) {
-                hotToast.error(toastMessages[4], {
-                  id: toastId,
-                  duration: 4000,
-                });
+                hotToast.error(
+                  `${toastMessages[4]}: ${dispatchError.toString()}`,
+                  {
+                    id: toastId,
+                    duration: 4000,
+                  }
+                );
               }
             } else {
               if (toastId) {
@@ -240,7 +243,7 @@ export const sendAndFinalize = async (
     console.error("sendAndFinalize error", error);
 
     if (toastId) {
-      hotToast.error(error.message, {
+      hotToast.error(`${defaultToastMessages[4]}: ${error}`, {
         id: toastId,
         duration: 4000,
       });

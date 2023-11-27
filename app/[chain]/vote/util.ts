@@ -464,6 +464,16 @@ export const transformTrack = ([id, info]: [
   };
 };
 
+export function getDelegateTX(
+  api: ApiPromise | undefined,
+  tracks: number = 0,
+  to: string,
+  conviction: number,
+  balance: BN
+) {
+  return api?.tx.convictionVoting.delegate(tracks, to, conviction, balance);
+}
+
 export function getVoteTx(
   api: ApiPromise | undefined,
   voteChoice: VoteChoice,
