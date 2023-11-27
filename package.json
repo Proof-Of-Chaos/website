@@ -48,6 +48,7 @@
     "@polkadot/util": "^12.4.2",
     "@react-aria/ssr": "^3.7.1",
     "@react-aria/visually-hidden": "^3.8.3",
+    "@textea/json-viewer": "^3.2.3",
     "@tippyjs/react": "^4.2.6",
     "@types/formidable": "^3.4.3",
     "@types/node": "20.5.7",

@@ -6132,6 +6132,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@textea/json-viewer@npm:^3.2.3":
+  version: 3.2.3
+  resolution: "@textea/json-viewer@npm:3.2.3"
+  dependencies:
+    clsx: ^2.0.0
+    copy-to-clipboard: ^3.3.3
+    zustand: ^4.4.1
+  peerDependencies:
+    "@emotion/react": ^11
+    "@emotion/styled": ^11
+    "@mui/material": ^5
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+  checksum: a858bfc7398d522685341ca702e457ba9d2cb19ce9e0c60724354583ed80b51945e5f90f1f95e9f500f214fe90f68604322bcc7e69411d18d9cc2933cdb7d88b
+  languageName: node
+  linkType: hard
+
 "@tippyjs/react@npm:^4.2.6":
   version: 4.2.6
   resolution: "@tippyjs/react@npm:4.2.6"
@@ -7480,7 +7497,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-to-clipboard@npm:^3.3.1":
+"copy-to-clipboard@npm:^3.3.1, copy-to-clipboard@npm:^3.3.3":
   version: 3.3.3
   resolution: "copy-to-clipboard@npm:3.3.3"
   dependencies:
@@ -11175,6 +11192,7 @@ __metadata:
     "@polkadot/util": ^12.4.2
     "@react-aria/ssr": ^3.7.1
     "@react-aria/visually-hidden": ^3.8.3
+    "@textea/json-viewer": ^3.2.3
     "@tippyjs/react": ^4.2.6
     "@types/formidable": ^3.4.3
     "@types/node": 20.5.7

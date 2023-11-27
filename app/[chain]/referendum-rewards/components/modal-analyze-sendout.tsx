@@ -14,8 +14,7 @@ import { Button } from "@nextui-org/button";
 
 import { pick } from "lodash";
 
-import ReactJson from "react-json-view";
-
+import { JsonViewer } from "@textea/json-viewer";
 type PropType = Omit<ModalProps, "children"> & {
   sendoutData: GenerateRewardsResult;
 };
@@ -54,11 +53,7 @@ export default function ModalAnalyzeSendout({
             <ModalBody>
               {displayedData ? (
                 <div className="overflow-hidden overflow-y-scroll">
-                  <ReactJson
-                    theme="chalk"
-                    src={displayedData}
-                    iconStyle="circle"
-                  />
+                  <JsonViewer value={displayedData} />
                 </div>
               ) : (
                 "Error reading sendout data"
