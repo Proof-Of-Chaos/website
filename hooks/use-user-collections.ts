@@ -19,8 +19,11 @@ export const useUserCollections = () => {
 
   const { ss58Format } = activeChainInfo || {};
   const { selectedAccount } = usePolkadotExtension();
+
+  const isValidSs58Format = typeof ss58Format === 'number';
+
   const userAddress =
-    selectedAccount?.address && ss58Format
+    selectedAccount?.address && isValidSs58Format
       ? encodeAddress(selectedAccount?.address, ss58Format)
       : "";
 

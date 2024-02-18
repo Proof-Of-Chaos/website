@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const apiPinata = await setupPinata();
-    rewardConfig = mergeWithDefaultConfig(rewardConfig);
+    rewardConfig = mergeWithDefaultConfig(rewardConfig, selectedChain);
 
     const callResult: GenerateRewardsResult = await generateCalls(
       apiPinata,
