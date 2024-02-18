@@ -2,20 +2,19 @@
 
 import { useReferenda } from "@/hooks/vote/use-referenda";
 import { Input } from "@nextui-org/input";
-import { Select, SelectItem, SelectSection } from "@nextui-org/select";
-import { useEffect, useState } from "react";
+import { Select, SelectItem } from "@nextui-org/select";
+import { useEffect, useRef, useState } from "react";
 import { useReferendumDetail } from "@/hooks/vote/use-referendum-detail";
 import { InlineLoader } from "@/components/inline-loader";
 import { Button } from "@nextui-org/button";
 import { RewardsCreationRarityFields } from "./rewards-rarity-fields";
-import { rewardsConfig } from "@/config/rewards";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, Controller } from "react-hook-form";
 import { SubstrateChain } from "@/types";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDisclosure } from "@nextui-org/modal";
 import ModalCreateNFTCollection from "./modal-new-collection";
-import { CollectionConfiguration, GenerateRewardsResult } from "../types";
+import { CollectionConfiguration, GenerateRewardsResult, Item, VirtualizedDropdownProps } from "../types";
 import ModalAnalyzeSendout from "./modal-analyze-sendout";
 import { bnToBn } from "@polkadot/util";
 import FormActions from "./form-actions";
@@ -23,6 +22,9 @@ import { rewardsSchema } from "../rewards-schema";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { usePolkadotExtension } from "@/context/polkadot-extension-context";
 import { useUserCollections } from "@/hooks/use-user-collections";
+import { FixedSizeList as List } from 'react-window';
+import { ListChildComponentProps } from 'react-window';
+import { Spinner } from '@nextui-org/react';
 
 export default function RewardsCreationForm({
   chain,
@@ -42,7 +44,7 @@ export default function RewardsCreationForm({
   );
 
   type TypeRewardsSchema = z.infer<typeof chainRewardsSchema>;
-  const { DEFAULT_REWARDS_CONFIG } = rewardsConfig;
+  const { DEFAULT_REWARDS_CONFIG } = activeChainInfo;
 
   // const openModal = useAppStore((state) => state.openModal);
 
@@ -62,8 +64,8 @@ export default function RewardsCreationForm({
   const totalFees =
     rewardSendoutData?.fees?.nfts && rewardSendoutData?.fees?.deposit
       ? bnToBn(rewardSendoutData.fees.nfts).add(
-          bnToBn(rewardSendoutData.fees.deposit)
-        )
+        bnToBn(rewardSendoutData.fees.deposit)
+      )
       : undefined;
 
   const [formStep, setFormStep] = useState(0);
@@ -79,6 +81,7 @@ export default function RewardsCreationForm({
     formState: { errors, isSubmitting },
     setValue,
     watch,
+    control,
   } = formMethods;
 
   const watchFormFields = watch();
@@ -121,18 +124,90 @@ export default function RewardsCreationForm({
     onOpen();
   }
 
+  
+
+  const VirtualizedDropdown: React.FC<VirtualizedDropdownProps> = ({ items, onSelectedChange, selectedValue, error, isLoading, // Use isLoading prop
+  }) => {
+    const dropdownRef = useRef(null); // Add a ref for the dropdown
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleSelect = (item: any) => {
+      onSelectedChange(item); // Notify parent component or form
+      setIsOpen(false); // Close dropdown
+    };
+
+    const rowRenderer = ({ index, style }: ListChildComponentProps) => {
+      const item = items[index];
+      return (
+        <div style={style}
+          key={item.index}
+          onClick={() => onSelectedChange(item)}
+          className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100">
+          {`Referendum ${item.index}`}
+        </div>
+      );
+    };
+
+    return (
+      <div className="relative w-full" ref={dropdownRef}>
+        <div onClick={() => setIsOpen(!isOpen)}
+          className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100  rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background py-2 overflow-x-clip">
+          <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
+            Referendum Index
+            <span className="text-red-500 required-dot">*</span>
+          </label>
+          <div className="text-foreground-500 text-small">
+            {isLoading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <Spinner size="sm" /> {/* Spinner for loading indicator */}
+                <span>Referenda loading...</span>
+              </div>
+            ) : selectedValue ? (
+              `Referendum ${selectedValue}`
+            ) : (
+              'Select any past referendum'
+            )}
+          </div>
+          <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+          </span>
+        </div>
+        {error && (
+          <div className="text-red-500 text-sm mt-2">
+            {error.message}
+          </div>
+        )}
+        {isOpen && (
+          <div
+            className="absolute z-50 mt-1 w-full bg-content1 shadow-lg max-h-60 rounded-md text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+            <List
+              height={200} // Adjust based on your needs
+              itemCount={items.length}
+              itemSize={35} // Adjust based on your item size
+              width={"100%"} // Adjust based on your needs
+              className="w-full flex flex-col gap-0.5 outline-none"
+            >
+              {rowRenderer}
+            </List>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <FormProvider {...formMethods}>
       <form className="test">
-        <h3 className="mb-4 text-lg">What should be rewarded?</h3>
+        <h3 className="mb-4 text-lg">Which Referendum?</h3>
         <div className="flex mb-4 min-h-[100px]">
           <div className="hidden md:flex md:w-1/3 text-xs pr-8">
-            At the moment we support rewarding participation in OpenGov
-            Referenda. All participants of your selected referendum will receive
+            Select the referendum by its Index. All participants of your selected referendum will receive
             1 of the NFTs you set below.
           </div>
           <div className="w-full md:w-2/3 flex gap-4 flex-wrap md:flex-nowrap">
-            <Select
+
+            {/* <Select
               classNames={{
                 label: "after:content-['*'] after:text-danger after:ml-0.5",
               }}
@@ -176,30 +251,22 @@ export default function RewardsCreationForm({
                   Any Aritrary Extrinsic Caller
                 </SelectItem>
               </SelectSection>
-            </Select>
+            </Select> */}
             <div className="w-full md:w-1/2">
-              <Select
-                label="Referendum Index"
-                classNames={{
-                  label: "after:content-['*'] after:text-danger after:ml-0.5",
-                }}
-                value={refIndex}
-                isLoading={isPastReferendaLoading}
-                placeholder={"Select any past referendum"}
-                isInvalid={!!errors.refIndex}
-                errorMessage={
-                  !!errors.refIndex && `${errors.refIndex?.message}`
-                }
-                {...register("refIndex", {
-                  required: "Please select a referendum",
-                })}
-              >
-                {pastReferenda?.map(({ index }) => (
-                  <SelectItem key={index} value={index}>
-                    {index}
-                  </SelectItem>
-                ))}
-              </Select>
+              <Controller
+                name="refIndex"
+                control={control}
+                rules={{ required: "Please select a referendum" }}
+                render={({ field: { onChange, value } }) => (
+                  <VirtualizedDropdown
+                    items={pastReferenda}
+                    selectedValue={value}
+                    onSelectedChange={(item: Item) => onChange(item.index)} // Ensure 'item' is typed
+                    error={errors.refIndex}
+                    isLoading={isPastReferendaLoading}
+                  />
+                )}
+              />
 
               {watchFormFields.refIndex && (
                 <span className="text-xs flex items-start mt-1 ml-1 min-h-unit-10 align-top">
