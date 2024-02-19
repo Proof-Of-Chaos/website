@@ -8,7 +8,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage, devtools } from "zustand/middleware";
 import { Modal, type ModalProps } from "@nextui-org/modal";
 import { Signer } from "@polkadot/api/types";
-import { rewardsConfig } from "@/config/rewards";
+import { usePolkadotApis } from "@/context/polkadot-api-context";
 
 interface AppState {
   chain: ChainConfig;
@@ -63,6 +63,7 @@ interface AppState {
     };
   };
   setRewardFormValues: (values: any) => void;
+  setChainConfig: (chain: string) => void;
 }
 
 const emptyUser = {
@@ -92,8 +93,21 @@ export const useAppStore = create<AppState>()(
       },
       rewards: {
         form: {
-          values: rewardsConfig.DEFAULT_REWARDS_CONFIG,
+          values: {},
         },
+      },
+      // Implement the setChainConfig method
+      setChainConfig: async (chain) => {
+        const { activeChainInfo } = usePolkadotApis();
+        const { DEFAULT_REWARDS_CONFIG } = activeChainInfo;
+        set({
+          chain: activeChainInfo, // Update the chain state with the new chain configuration
+          rewards: {
+            form: {
+              values: DEFAULT_REWARDS_CONFIG, // Use the default rewards config from the updated chain
+            },
+          },
+        });
       },
       confetti: false,
       explode: (show) => {
