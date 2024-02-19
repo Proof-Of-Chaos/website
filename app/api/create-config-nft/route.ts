@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     );
     const apiPinata = await setupPinata();
 
-    const newConfig = mergeWithDefaultConfig(config);
+    const newConfig = mergeWithDefaultConfig(config, selectedChain);
     const result = await createConfigNFT(
       selectedChainConfig,
       apiPinata,
