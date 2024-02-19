@@ -63,7 +63,6 @@ interface AppState {
     };
   };
   setRewardFormValues: (values: any) => void;
-  setChainConfig: (chain: string) => void;
 }
 
 const emptyUser = {
@@ -95,19 +94,6 @@ export const useAppStore = create<AppState>()(
         form: {
           values: {},
         },
-      },
-      // Implement the setChainConfig method
-      setChainConfig: async (chain) => {
-        const { activeChainInfo } = usePolkadotApis();
-        const { DEFAULT_REWARDS_CONFIG } = activeChainInfo;
-        set({
-          chain: activeChainInfo, // Update the chain state with the new chain configuration
-          rewards: {
-            form: {
-              values: DEFAULT_REWARDS_CONFIG, // Use the default rewards config from the updated chain
-            },
-          },
-        });
       },
       confetti: false,
       explode: (show) => {
