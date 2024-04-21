@@ -150,7 +150,7 @@ export default function FormActions({
     let responseData;
 
     try {
-      responseData = await response.json(); // Try parsing it as JSON
+      responseData = JSON.parse(text); // Try parsing it as JSON
       console.log("Parsed response data:", responseData);
     } catch (error) {
       console.error("Error parsing response as JSON:", error);
