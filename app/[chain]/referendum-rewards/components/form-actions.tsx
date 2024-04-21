@@ -252,7 +252,7 @@ export default function FormActions({
       const sendoutConfig = rewardSendoutData?.config ?? watchFormFields;
 
       const configReqBody = {
-        ...mergeWithDefaultConfig(sendoutConfig),
+        ...mergeWithDefaultConfig(sendoutConfig, activeChainName),
         chain: activeChainName,
         criteria: watchFormFields.criteria as RewardCriteria,
         blockNumbers: results.map((res) => res.blockHeader?.number.toNumber()),

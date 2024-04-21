@@ -2,7 +2,8 @@ import {
   RewardConfiguration,
   RewardOption,
 } from "@/app/[chain]/referendum-rewards/types";
-import { rewardsConfig } from "../config/rewards";
+import { ChainConfig, SubstrateChain } from "@/types";
+import { getChainInfo } from "@/config/chains";
 
 export const trimAddress = (address: string, amount: number = 5) => {
   if (!address) {
@@ -17,15 +18,16 @@ export const titleCase = (s: string | undefined) =>
     c ? c.toUpperCase() : " " + d.toUpperCase()
   );
 
-export function mergeWithDefaultConfig(config: any): RewardConfiguration {
+export function mergeWithDefaultConfig(config: any, chain: SubstrateChain): RewardConfiguration {
+  const chainConfig: ChainConfig = getChainInfo(chain);
   return {
-    ...rewardsConfig.DEFAULT_REWARDS_CONFIG,
+    ...chainConfig.DEFAULT_REWARDS_CONFIG,
     ...config,
     collectionConfig: {
-      ...rewardsConfig.DEFAULT_REWARDS_CONFIG.collectionConfig,
+      ...chainConfig.DEFAULT_REWARDS_CONFIG.collectionConfig,
       ...config.collectionConfig,
     },
-    options: rewardsConfig.DEFAULT_REWARDS_CONFIG.options.map(
+    options: chainConfig.DEFAULT_REWARDS_CONFIG.options.map(
       (defaultOption: RewardOption) => {
         const overrideOption = config.options?.find(
           (option: any) => option.rarity === defaultOption.rarity

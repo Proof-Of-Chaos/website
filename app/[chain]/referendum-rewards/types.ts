@@ -274,3 +274,15 @@ export interface SendAndFinalizeResult {
   blockHeader?: Header;
   toast?: ToastType;
 }
+
+export interface Item {
+  index: string; // Assuming index is a string, adjust accordingly
+}
+
+export interface VirtualizedDropdownProps {
+  items: Item[];
+  onSelectedChange: (item: Item) => void;
+  selectedValue?: string; // Assuming the selected value is represented by the item index
+  error?: { message?: string }; // Allow message to be undefined
+  isLoading: boolean; // Add this prop to indicate loading state
+}

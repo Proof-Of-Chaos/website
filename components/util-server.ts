@@ -32,6 +32,11 @@ export const createConfigNFT = async (
       throw "createConfigNFT: KUSAMA_CONFIG_COLLECTION_ID not found";
     }
     configCollectionId = parseInt(process.env.KUSAMA_CONFIG_COLLECTION_ID);
+  } else if (chain.name === SubstrateChain.Polkadot) {
+    if (!process.env.POLKADOT_CONFIG_COLLECTION_ID) {
+      throw "createConfigNFT: POLKADOT_CONFIG_COLLECTION_ID not found";
+    }
+    configCollectionId = parseInt(process.env.POLKADOT_CONFIG_COLLECTION_ID);
   } else {
     throw "createConfigNFT: Unsupported chain"; // Throw an error for unsupported chains
   }

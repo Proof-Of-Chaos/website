@@ -10,7 +10,7 @@ import {
 } from "@polkadot/extension-inject/types";
 import { ReactNode, ReactSVGElement, SVGProps } from "react";
 import { Header } from "@polkadot/types/interfaces";
-import { RewardOption } from "@/app/[chain]/referendum-rewards/types";
+import { RewardConfiguration, RewardOption } from "@/app/[chain]/referendum-rewards/types";
 import { BN } from "@polkadot/util";
 import { subtitle } from "../components/primitives";
 
@@ -48,6 +48,7 @@ export type ChainConfig = {
   subscan?: string;
   subscanAssetHub?: string;
   kodadot?: string;
+  DEFAULT_REWARDS_CONFIG: RewardConfiguration;
 };
 
 export type PolkadotExtensionType = {

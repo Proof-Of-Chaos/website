@@ -7,6 +7,7 @@ import {
 } from "@/types";
 import { KusamaIcon, PolkadotIcon } from "@/components/icons";
 import { BN, formatBalance } from "@polkadot/util";
+import { RewardCriteria } from "@/app/[chain]/referendum-rewards/types";
 
 const kusamaConfig = {
   symbol: "KSM",
@@ -88,6 +89,77 @@ const endpoints: EndpointMap = {
     { name: "Stakeworld", url: "wss://ksm-rpc.stakeworld.io/assethub" },
   ],
 };
+
+const DEFAULT_REWARDS_CONFIG = {
+  chain: SubstrateChain.Kusama,
+  refIndex: "",
+  criteria: RewardCriteria.Referenda,
+  min: "1200000000000",
+  max: "100000000000000000000000000000000000000000",
+  first: null,
+  blockCutOff: null,
+  directOnly: false,
+  configNFT: {
+    settingsCollectionId: parseInt(
+      process.env.KUSAMA_CONFIG_COLLECTION_ID || "86"
+    ),
+    file: undefined,
+    imageCid: "ipfs://ipfs/QmZX9JAhur4ozT2mbHBVAWNRFZGfFRQLgkRgd1yyE35eme",
+    description:
+      "This is the config NFT for the referendum rewards. You can use this NFT to verify the configuration that was used for the specific sendout.",
+  },
+  collectionConfig: {
+    id: 195,
+    name: "",
+    description: "",
+    isNew: false,
+    file: undefined,
+  },
+  // babyBonus: 7,
+  // toddlerBonus: 13,
+  // adolescentBonus: 16,
+  // adultBonus: null,
+  // quizBonus: 20,
+  // identityBonus: null,
+  // encointerBonus: 50,
+  minAmount: 0.2,
+  defaultRoyalty: 95,
+  royaltyAddress: "",
+  options: [
+    {
+      maxProbability: 25,
+      minProbability: 3,
+      transferable: true,
+      artist: "",
+      rarity: "epic",
+      title: "epic",
+      royalty: 30,
+      description: "",
+    },
+    {
+      maxProbability: 40,
+      minProbability: 10,
+      transferable: true,
+      artist: "",
+      rarity: "rare",
+      title: "rare",
+      royalty: 25,
+      description: "",
+    },
+    {
+      maxProbability: 67,
+      minProbability: 28,
+      transferable: true,
+      artist: "",
+      rarity: "common",
+      title: "common",
+      royalty: 20,
+      description: "",
+    },
+  ],
+  isMetadataLocked: false,
+  isAttributesLocked: false,
+}
 
 const tracks = [
   {
@@ -193,4 +265,5 @@ export const kusama: ChainConfig = {
   icon: KusamaIcon,
   tracks,
   ...kusamaConfig,
+  DEFAULT_REWARDS_CONFIG
 };
