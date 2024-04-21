@@ -28,39 +28,50 @@ export const getTxCost = async (
   address: string | undefined
 ): Promise<RuntimeDispatchInfo | Observable<RuntimeDispatchInfo>> => {
   if (!api || typeof api === "undefined") {
-    throw "api is not ready";
+    throw new Error("API is not ready");
   }
 
   if (!tx) {
-    throw "invalid tx";
+    throw new Error("Invalid transaction");
   }
 
   if (!address) {
-    throw "invalid address";
+    throw new Error("Invalid address");
   }
 
   await api.isReady;
 
-  // if someone passes a hex encoded tx we need to decode it
   const maybeHexTxToSubmittable = (tx: SubmittableExtrinsic<any> | string) => {
     if (typeof tx === "string") {
-      return api?.tx(tx);
+      return api.tx(tx);
     }
     return tx;
+  };
+
+  // Handle nested arrays
+  const flattenAndConvertTx = (txArray: any[]) => {
+    return txArray.flatMap(t => Array.isArray(t) ? t.map(maybeHexTxToSubmittable) : maybeHexTxToSubmittable(t));
   };
 
   let call;
 
   if (Array.isArray(tx)) {
-    const txs = tx.map(maybeHexTxToSubmittable) as SubmittableExtrinsic<any>[];
+    console.log("Processing batch of transactions");
+    const txs = flattenAndConvertTx(tx);
     call = api.tx.utility.batchAll(txs).paymentInfo(address);
   } else {
+    console.log("Processing single transaction");
     call = maybeHexTxToSubmittable(tx).paymentInfo(address);
   }
 
-  const fees = await call;
-  return fees;
+  try {
+    const fees = await call;
+    return fees;
+  } catch (error) {
+    throw new Error(`Error calculating transaction cost: ${error}`);
+  }
 };
+
 
 /**
  * @see https://polkadot.js.org/docs/api/cookbook/tx
