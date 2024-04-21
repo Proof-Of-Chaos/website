@@ -45,10 +45,10 @@ const endpoints: EndpointMap = {
       name: "Parity",
       url: "wss://kusama-rpc.polkadot.io",
     },
-    {
-      name: "OnFinality",
-      url: "wss://kusama.api.onfinality.io/public-ws",
-    },
+    // {
+    //   name: "OnFinality",
+    //   url: "wss://kusama.api.onfinality.io/public-ws",
+    // },
     {
       name: "Dwellir",
       url: "wss://kusama-rpc.dwellir.com",
