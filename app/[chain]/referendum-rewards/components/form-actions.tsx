@@ -68,8 +68,8 @@ export default function FormActions({
   const totalFees =
     rewardSendoutData?.fees?.nfts && rewardSendoutData?.fees?.deposit
       ? bnToBn(rewardSendoutData.fees.nfts).add(
-          bnToBn(rewardSendoutData.fees.deposit)
-        )
+        bnToBn(rewardSendoutData.fees.deposit)
+      )
       : undefined;
 
   const [step, setStep] = useState(0);
@@ -142,9 +142,19 @@ export default function FormActions({
       body: formData,
     });
 
-    console.log("rawRespoinse", response);
-    const responseData = await response.json();
-    console.log("raw response data", responseData);
+    console.log("Response status:", response.status);
+    console.log("Response headers:", response.headers.get("Content-Type"));
+    const text = await response.text();  // Get the response text first
+    console.log("Response text:", text);
+
+    let responseData;
+
+    try {
+      responseData = await response.json(); // Try parsing it as JSON
+      console.log("Parsed response data:", responseData);
+    } catch (error) {
+      console.error("Error parsing response as JSON:", error);
+    }
 
     if (!response.ok) {
       console.error("error getting response from server", responseData);
