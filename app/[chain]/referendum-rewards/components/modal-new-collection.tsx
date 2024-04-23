@@ -30,6 +30,12 @@ type PropType = Omit<ModalProps, "children"> & {
   setIsTxPending: Dispatch<SetStateAction<boolean>>;
 };
 
+interface FormFields {
+  name: string;
+  description: string;
+  imageFile: File | null;
+}
+
 export default function ModalCreateNFTCollection({
   setCollectionConfig,
   setIsNewCollectionLoading,
@@ -67,7 +73,7 @@ export default function ModalCreateNFTCollection({
 
   const { refetch } = useUserCollections();
 
-  const formMethods = useForm({
+  const formMethods = useForm<FormFields>({
     defaultValues: {
       name: "",
       description: "",
@@ -78,6 +84,7 @@ export default function ModalCreateNFTCollection({
   const {
     watch,
     register,
+    setValue,
     setError,
     clearErrors,
     formState: { errors, isSubmitting, isDirty, isValid },
@@ -113,7 +120,7 @@ export default function ModalCreateNFTCollection({
         id: newCollectionId.toString(),
         name: watchFormFields.name,
         description: watchFormFields.description,
-        file: watchFormFields.imageFile,
+        file: watchFormFields.imageFile ? watchFormFields.imageFile : null,
         isNew: true,
       });
       setIsNewCollectionLoading(false);
@@ -190,6 +197,7 @@ export default function ModalCreateNFTCollection({
                   <label>Collection Image (max 1MB):</label>
                   <input
                     type="file"
+                    accept={rewardsConfig.acceptedNftFormats.join(",")}
                     className="mt-0 pb-2"
                     {...register(`imageFile`)}
                     onChange={(e) => {
@@ -203,6 +211,7 @@ export default function ModalCreateNFTCollection({
                           });
                         } else {
                           clearErrors(`imageFile`);
+                          setValue("imageFile", file); // Manually set the file
                         }
                       } else {
                         // Handle case where no file is selected
