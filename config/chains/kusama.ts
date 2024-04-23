@@ -42,6 +42,14 @@ const SPEND_LIMITS = {
 const endpoints: EndpointMap = {
   relay: [
     {
+      name: "IBP-GeoDNS1",
+      url: "wss://rpc.ibp.network/kusama",
+    },
+    {
+      name: "IBP-GeoDNS2",
+      url: "wss://rpc.dotters.network/kusama",
+    },
+    {
       name: "Parity",
       url: "wss://kusama-rpc.polkadot.io",
     },
@@ -62,23 +70,15 @@ const endpoints: EndpointMap = {
       url: "wss://1rpc.io/ksm",
     },
     {
-      name: "IBP-GeoDNS1",
-      url: "wss://rpc.ibp.network/kusama",
-    },
-    {
-      name: "IBP-GeoDNS2",
-      url: "wss://rpc.dotters.network/kusama",
-    },
-    {
       name: "RadiumBlock",
       url: "wss://kusama.public.curie.radiumblock.co/ws",
     },
   ],
   assetHub: [
-    { name: "Dwellir", url: "wss://statemine-rpc.dwellir.com" },
-    { name: "Dwellir Tunisia", url: "wss://statemine-rpc-tn.dwellir.com" },
     { name: "IBP-GeoDNS1", url: "wss://sys.ibp.network/statemine" },
     { name: "IBP-GeoDNS2", url: "wss://sys.dotters.network/statemine" },
+    { name: "Dwellir", url: "wss://statemine-rpc.dwellir.com" },
+    { name: "Dwellir Tunisia", url: "wss://statemine-rpc-tn.dwellir.com" },
     { name: "LuckyFriday", url: "wss://rpc-asset-hub-kusama.luckyfriday.io" },
     // { name: // OnFinality, url:'wss://statemine.api.onfinality.io/public-ws'},
     { name: "Parity", url: "wss://kusama-asset-hub-rpc.polkadot.io" },
