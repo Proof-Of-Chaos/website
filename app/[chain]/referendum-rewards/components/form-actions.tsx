@@ -145,7 +145,6 @@ export default function FormActions({
     console.log("Response status:", response.status);
     console.log("Response headers:", response.headers.get("Content-Type"));
     const text = await response.text();  // Get the response text first
-    console.log("Response text:", text);
 
     let responseData;
 
