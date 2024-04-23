@@ -20,11 +20,7 @@ export function RewardsCreationRarityFields({
   rarity: string;
   rewardConfig: RewardConfiguration;
 }) {
-  const formMethods = useFormContext();
-  const {
-    register,
-    formState: { errors },
-  } = formMethods;
+  const { register, formState: { errors }, setError, clearErrors } = useFormContext();
   const { acceptedNftFormats, acceptedNonImageFormats } = rewardsConfig;
   const [isUploadSelected, setIsUploadSelected] = useState(true);
 
@@ -111,7 +107,7 @@ export function RewardsCreationRarityFields({
               <>
                 <div className="relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100  rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background py-2 overflow-x-clip">
                   <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
-                    Upload {rarity} File (max 1.5MB)
+                    Upload {rarity} File (max 1MB)
                     <span className="text-red-500 required-dot">*</span>
                   </label>
 
@@ -122,16 +118,26 @@ export function RewardsCreationRarityFields({
                     className="mt-0 pb-2"
                     {...register(`options.${optionIndex}.file`)}
                     onChange={(e) => {
-                      const mediaType = e.target.files?.[0]?.type;
-                      const needsCover =
-                        mediaType && acceptedNonImageFormats.includes(mediaType)
-                          ? true
-                          : false;
+                      const file = e.target.files ? e.target.files[0] : null;
+                      if (file) {
+                        // Check if the file size exceeds 1MB
+                        if (file.size > 1048576) { // 1MB in bytes
+                          setError(`options.${optionIndex}.file`, {
+                            type: "size",
+                            message: "File size should not exceed 1MB"
+                          });
+                        } else {
+                          clearErrors(`options.${optionIndex}.file`);
 
-                      setShouldHaveCover({
-                        ...shouldHaveCover,
-                        [rarity]: needsCover,
-                      });
+                          // Determine if a cover is needed based on the media type
+                          const mediaType = file.type;
+                          const needsCover = mediaType && acceptedNonImageFormats.includes(mediaType);
+                          setShouldHaveCover({
+                            ...shouldHaveCover,
+                            [rarity]: !!needsCover
+                          });
+                        }
+                      }
                     }}
                   />
                   {/* @ts-ignore */}
@@ -145,7 +151,7 @@ export function RewardsCreationRarityFields({
                 {shouldHaveCover[rarity] && (
                   <div className="mt-4 relative w-full inline-flex tap-highlight-transparent shadow-sm px-3 bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 rounded-medium flex-col items-start justify-center gap-0 transition-background motion-reduce:transition-none !duration-150 outline-none group-data-[focus-visible=true]:z-10 group-data-[focus-visible=true]:ring-2 group-data-[focus-visible=true]:ring-focus group-data-[focus-visible=true]:ring-offset-2 group-data-[focus-visible=true]:ring-offset-background min-h-unit-12 py-2 overflow-x-clip">
                     <label className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-1 pb-0">
-                      Upload {rarity} Cover Image (max 1.5MB)
+                      Upload {rarity} Cover Image (max 1MB)
                     </label>
 
                     <input
@@ -154,6 +160,23 @@ export function RewardsCreationRarityFields({
                       type="file"
                       className="mt-0 pb-2"
                       {...register(`options.${optionIndex}.fileCover`)}
+                      onChange={(e) => {
+                        const file = e.target.files ? e.target.files[0] : null;
+                        if (file) {
+                          // Check if the file size exceeds 1MB
+                          if (file.size > 1048576) { // 1MB in bytes
+                            setError(`options.${optionIndex}.fileCover`, {
+                              type: "size",
+                              message: "Cover image size should not exceed 1MB"
+                            });
+                          } else {
+                            clearErrors(`options.${optionIndex}.fileCover`);
+                          }
+                        } else {
+                          // Handle case where no file is selected
+                          clearErrors(`options.${optionIndex}.fileCover`);
+                        }
+                      }}
                     />
                     {/* @ts-ignore */}
                     {errors?.options?.[optionIndex]?.fileCover && (

@@ -38,11 +38,6 @@ export default function ModalCreateNFTCollection({
   ...props
 }: PropType) {
   const { isOpen, onOpenChange } = props;
-
-  const [error, setError] = useState({
-    message: "",
-    name: "",
-  });
   const { activeChainName, apiStates } = usePolkadotApis();
   const { selectedAccount } = usePolkadotExtension();
 
@@ -83,6 +78,8 @@ export default function ModalCreateNFTCollection({
   const {
     watch,
     register,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting, isDirty, isValid },
   } = formMethods;
 
@@ -138,6 +135,7 @@ export default function ModalCreateNFTCollection({
   };
 
   const onSubmit = async (data: any) => {
+
     const result = await fetch("/api/new-collection/", {
       method: "POST",
       body: JSON.stringify(watchFormFields),
@@ -178,37 +176,55 @@ export default function ModalCreateNFTCollection({
                   label="Collection Name"
                   placeholder="The name of your new collection"
                   type="text"
-                  {...register("name")}
+                  {...register("name", { required: "Collection name is required" })}
                 />
                 <Input
                   isRequired
                   label="Collection Description"
                   placeholder="The description of your new collection"
                   type="text"
-                  {...register("description")}
+                  {...register("description", { required: "Collection description is required" })}
                 />
 
                 <div className="text-xs flex flex-col overflow-auto px-3">
-                  <label
-                    htmlFor={`imageFile`}
-                    className="block font-medium text-foreground-600 text-tiny cursor-text will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none mb-0 pb-0"
-                  >
-                    Collection Image (max 3MB)
-                  </label>
+                  <label>Collection Image (max 1MB):</label>
                   <input
-                    accept={rewardsConfig.acceptedNftFormats.join(",")}
                     type="file"
+                    className="mt-0 pb-2"
                     {...register(`imageFile`)}
+                    onChange={(e) => {
+                      const file = e.target.files ? e.target.files[0] : null;
+                      if (file) {
+                        // Check if the file size exceeds 1MB
+                        if (file.size > 1048576) { // 1MB in bytes
+                          setError(`imageFile`, {
+                            type: "size",
+                            message: "Cover image size should not exceed 1MB"
+                          });
+                        } else {
+                          clearErrors(`imageFile`);
+                        }
+                      } else {
+                        // Handle case where no file is selected
+                        clearErrors(`imageFile`);
+                      }
+                    }}
+
                   />
+                  {/* @ts-ignore */}
+                  {errors?.imageFile && (
+                    <span className="w-full text-tiny text-danger px-1">
+                      {/* @ts-ignore */}
+                      <>{errors?.imageFile.message}</>
+                    </span>
+                  )}
                 </div>
-                {errors.imageFile && (
-                  <span className="w-full text-sm text-red-500">
-                    <>{errors.imageFile.message}</>
-                  </span>
-                )}
+
               </form>
-              {error.message && (
-                <div className="text-red-500 text-sm">{error.message}</div>
+              {errors && Object.keys(errors).length > 0 && (
+                <span className="text-danger text-lg text-center w-full">
+                  There are input errors, please see above.
+                </span>
               )}
             </ModalBody>
             <ModalFooter>
@@ -225,6 +241,7 @@ export default function ModalCreateNFTCollection({
                 successText="Collection created!"
                 extrinsic={txCollectionCreate}
                 loadingText="Creating collection..."
+                disabled={!isValid}
                 onFinished={onFinished}
                 onPendingChange={setIsTxPending}
                 deposits={[
