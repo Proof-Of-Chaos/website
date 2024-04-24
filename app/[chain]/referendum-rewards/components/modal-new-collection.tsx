@@ -33,7 +33,7 @@ type PropType = Omit<ModalProps, "children"> & {
 interface FormFields {
   name: string;
   description: string;
-  imageFile: File | null;
+  imageFile: FileList | null;  // Specify that imageFile can be a FileList or null
 }
 
 export default function ModalCreateNFTCollection({
@@ -84,7 +84,7 @@ export default function ModalCreateNFTCollection({
   const {
     watch,
     register,
-    setValue,
+    getValues,
     setError,
     clearErrors,
     formState: { errors, isSubmitting, isDirty, isValid },
@@ -116,11 +116,20 @@ export default function ModalCreateNFTCollection({
 
       await refetch();
 
+      let collectionFile;
+
+      if (getValues().imageFile && getValues().imageFile?.[0]) {
+        collectionFile = getValues().imageFile?.[0];
+
+      } else {
+        collectionFile = null;
+      }
+
       setCollectionConfig({
         id: newCollectionId.toString(),
         name: watchFormFields.name,
         description: watchFormFields.description,
-        file: watchFormFields.imageFile ? watchFormFields.imageFile : null,
+        file: collectionFile,
         isNew: true,
       });
       setIsNewCollectionLoading(false);
@@ -194,7 +203,7 @@ export default function ModalCreateNFTCollection({
                 />
 
                 <div className="text-xs flex flex-col overflow-auto px-3">
-                  <label>Collection Image (max 1MB):</label>
+                <label>Collection Image (max 1MB):</label>
                   <input
                     type="file"
                     accept={rewardsConfig.acceptedNftFormats.join(",")}
@@ -211,7 +220,6 @@ export default function ModalCreateNFTCollection({
                           });
                         } else {
                           clearErrors(`imageFile`);
-                          setValue("imageFile", file); // Manually set the file
                         }
                       } else {
                         // Handle case where no file is selected
