@@ -118,8 +118,8 @@ export default function ModalCreateNFTCollection({
 
       let collectionFile;
 
-      if (getValues().imageFile && getValues().imageFile?.[0]) {
-        collectionFile = getValues().imageFile?.[0];
+      if (getValues().imageFile) {
+        collectionFile = getValues().imageFile;
 
       } else {
         collectionFile = null;
