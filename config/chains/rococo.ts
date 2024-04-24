@@ -12,7 +12,7 @@ import { RewardCriteria } from "@/app/[chain]/referendum-rewards/types";
 
 const rococoConfig = {
   symbol: "ROC",
-  ss58Format: 2,
+  ss58Format: 42,
   decimals: 12,
   blockTime: 6000,
 };
