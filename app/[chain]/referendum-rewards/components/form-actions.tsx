@@ -94,11 +94,15 @@ export default function FormActions({
 
   const watchFormFields = watch();
 
+  let amountOfTxs: number;
+
   if (!rewardSendoutData?.kusamaAssetHubTxs) {
     // It's better to handle this condition differently or ensure the layout still renders without functional impact.
-    return <div>No transactions found</div>;
+    amountOfTxs = 0;
   }
-  const amountOfTxs = Math.ceil(rewardSendoutData?.kusamaAssetHubTxs?.length / rewardsConfig.NFT_BATCH_SIZE_MAX);
+  else {
+    amountOfTxs = Math.ceil(rewardSendoutData?.kusamaAssetHubTxs?.length / rewardsConfig.NFT_BATCH_SIZE_MAX);
+  }
 
   function onReset() {
     setStep(0);
@@ -398,12 +402,12 @@ export default function FormActions({
             <CardBody>
               <div className="flex gap-4 flex-wrap items-center mb-4">
                 🎉 Congratulations, you successfully minted{" "}
-                <span className="text-warning">{(rewardSendoutData.distribution?.epic ?? 0) +
-                  (rewardSendoutData.distribution?.rare ?? 0) +
-                  (rewardSendoutData.distribution?.common ?? 0)}</span> NFTs in total: <br />
-                <span className="text-warning">{rewardSendoutData.distribution?.common ?? 0}</span> common,
-                <span className="text-warning">{rewardSendoutData.distribution?.rare ?? 0}</span> rare,
-                <span className="text-warning">{rewardSendoutData.distribution?.epic ?? 0}</span> epic.
+                <span className="text-warning">{(rewardSendoutData?.distribution?.epic ?? 0) +
+                  (rewardSendoutData?.distribution?.rare ?? 0) +
+                  (rewardSendoutData?.distribution?.common ?? 0)}</span> NFTs in total: <br />
+                <span className="text-warning">{rewardSendoutData?.distribution?.common ?? 0}</span> common,
+                <span className="text-warning">{rewardSendoutData?.distribution?.rare ?? 0}</span> rare,
+                <span className="text-warning">{rewardSendoutData?.distribution?.epic ?? 0}</span> epic.
               </div>
               <div className="flex gap-4 flex-wrap">
                 {activeChain.kodadot && (
