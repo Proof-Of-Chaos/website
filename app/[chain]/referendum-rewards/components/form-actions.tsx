@@ -358,11 +358,13 @@ export default function FormActions({
                 <p>
                   Start the sendout process. You will be asked to sign
                   <span className="text-warning px-4">
-                    {amountOfTxs ?? "multiple"} transactions in sequence.
+                    {amountOfTxs === 1 ? "1 transaction" : `${amountOfTxs ?? "multiple"} transactions`}
                   </span>
-                  Complete all for a full sendout.
+                  in sequence.
+                  {amountOfTxs > 1 && "Complete all for a full sendout."}
                 </p>
               </div>
+
               {rewardSendoutData && (
                 <Button
                   onClick={onAnalyzeOpenChange}
