@@ -83,6 +83,7 @@ export default function FormActions({
     return;
   }
   const amountOfTxs = Math.ceil(rewardSendoutData?.kusamaAssetHubTxs?.length / rewardsConfig.NFT_BATCH_SIZE_MAX);
+  
   const [txResult, setTxResult] = useState<SendAndFinalizeResult[]>();
 
   const formMethods = useFormContext();
