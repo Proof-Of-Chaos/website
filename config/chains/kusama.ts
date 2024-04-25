@@ -127,7 +127,7 @@ const DEFAULT_REWARDS_CONFIG = {
   royaltyAddress: "",
   options: [
     {
-      maxProbability: 25,
+      maxProbability: 20,
       minProbability: 3,
       transferable: true,
       artist: "",
@@ -137,8 +137,8 @@ const DEFAULT_REWARDS_CONFIG = {
       description: "",
     },
     {
-      maxProbability: 40,
-      minProbability: 10,
+      maxProbability: 35,
+      minProbability: 6,
       transferable: true,
       artist: "",
       rarity: "rare",
