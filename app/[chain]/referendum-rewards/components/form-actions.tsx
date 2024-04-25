@@ -79,7 +79,10 @@ export default function FormActions({
   const otherSteps = [0, 1, 2].filter((index) => index > step).map(String);
 
   const [signingIndex, setSigningIndex] = useState<number>(0);
-  const amountOfTxs = rewardSendoutData?.txsCount?.txsPerVote;
+  if (!rewardSendoutData?.kusamaAssetHubTxs) {
+    return;
+  }
+  const amountOfTxs = Math.ceil(rewardSendoutData?.kusamaAssetHubTxs?.length / rewardsConfig.NFT_BATCH_SIZE_MAX);
   const [txResult, setTxResult] = useState<SendAndFinalizeResult[]>();
 
   const formMethods = useFormContext();
@@ -392,10 +395,12 @@ export default function FormActions({
             <CardBody>
               <div className="flex gap-4 flex-wrap items-center mb-4">
                 🎉 Congratulations, you successfully minted{" "}
-                <span className="text-warning">732</span> NFTs in total: <br />
-                <span className="text-warning">523</span>common,
-                <span className="text-warning">109</span>rare,
-                <span className="text-warning">59</span>epic.
+                <span className="text-warning">{(rewardSendoutData.distribution?.epic ?? 0) +
+                  (rewardSendoutData.distribution?.rare ?? 0) +
+                  (rewardSendoutData.distribution?.common ?? 0)}</span> NFTs in total: <br />
+                <span className="text-warning">{rewardSendoutData.distribution?.common ?? 0}</span> common,
+                <span className="text-warning">{rewardSendoutData.distribution?.rare ?? 0}</span> rare,
+                <span className="text-warning">{rewardSendoutData.distribution?.epic ?? 0}</span> epic.
               </div>
               <div className="flex gap-4 flex-wrap">
                 {activeChain.kodadot && (
