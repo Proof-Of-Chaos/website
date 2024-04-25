@@ -79,11 +79,7 @@ export default function FormActions({
   const otherSteps = [0, 1, 2].filter((index) => index > step).map(String);
 
   const [signingIndex, setSigningIndex] = useState<number>(0);
-  if (!rewardSendoutData?.kusamaAssetHubTxs) {
-    return;
-  }
-  const amountOfTxs = Math.ceil(rewardSendoutData?.kusamaAssetHubTxs?.length / rewardsConfig.NFT_BATCH_SIZE_MAX);
-  
+
   const [txResult, setTxResult] = useState<SendAndFinalizeResult[]>();
 
   const formMethods = useFormContext();
@@ -97,6 +93,12 @@ export default function FormActions({
   } = formMethods;
 
   const watchFormFields = watch();
+
+  if (!rewardSendoutData?.kusamaAssetHubTxs) {
+    // It's better to handle this condition differently or ensure the layout still renders without functional impact.
+    return <div>No transactions found</div>;
+  }
+  const amountOfTxs = Math.ceil(rewardSendoutData?.kusamaAssetHubTxs?.length / rewardsConfig.NFT_BATCH_SIZE_MAX);
 
   function onReset() {
     setStep(0);
