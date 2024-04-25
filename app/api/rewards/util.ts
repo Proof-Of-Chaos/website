@@ -412,12 +412,12 @@ export const retrieveAccountLocks = async (
         const userLockPeriods = userVote.endBlock.eqn(0)
           ? 0
           : Math.floor(
-              userVote.endBlock
-                .sub(endBlockBN)
-                .muln(10)
-                .div(sevenDaysBlocks)
-                .toNumber() / 10
-            );
+            userVote.endBlock
+              .sub(endBlockBN)
+              .muln(10)
+              .div(sevenDaysBlocks)
+              .toNumber() / 10
+          );
         const matchingPeriod = lockPeriods.reduce(
           (acc, curr, index) => (userLockPeriods >= curr ? index : acc),
           0
@@ -428,8 +428,8 @@ export const retrieveAccountLocks = async (
     const maxLockedWithConviction =
       userLockedBalancesWithConviction.length > 0
         ? userLockedBalancesWithConviction.reduce((max, current) =>
-            BN.max(max, current)
-          )
+          BN.max(max, current)
+        )
         : new BN(0);
 
     return { ...vote, lockedWithConviction: maxLockedWithConviction };
@@ -561,67 +561,66 @@ const decorateWithChances = (
   medianOfCurve: number,
   seed: number = 0
   // logger: Logger
-): {
-  votesWithChances: DecoratedConvictionVote[];
-  distribution: RarityDistribution;
-} => {
-  //seed the randomizer
-  const rng = seedrandom(seed.toString());
+) => {
+  let invariantHolds = false;
+  let votesWithChances: DecoratedConvictionVote [] = [];
+  let rarityDistribution: RarityDistribution = {};
 
-  config.lowerLimitOfCurve = lowerLimitOfCurve;
-  config.upperLimitOfCurve = upperLimitOfCurve;
-  config.medianOfCurve = medianOfCurve;
+  while (!invariantHolds) {
+    // Seed the randomizer for each iteration
+    const rng = seedrandom(seed.toString());
 
-  const rarityDistribution: Record<string, number> = {};
+    // Adjust the configuration with current limits and median
+    config.lowerLimitOfCurve = lowerLimitOfCurve;
+    config.upperLimitOfCurve = upperLimitOfCurve;
+    config.medianOfCurve = medianOfCurve;
+    rarityDistribution = {}; // Reset distribution for each iteration
 
-  let votesWithChances = votes.map((vote) => {
-    let chances = lucksForConfig(
-      vote.lockedWithConvictionDecimal ?? 0,
-      config,
-      1.0
-    );
-    let chosenRarity = weightedRandom(
-      rng,
-      Object.keys(chances),
-      Object.values(chances)
-    );
-    const chosenOption = config.options.find(
-      (option) => option.rarity === chosenRarity
-    );
+    // Calculate chances for each vote
+    votesWithChances = votes.map((vote) => {
+      let chances = lucksForConfig(
+        vote.lockedWithConvictionDecimal ?? 0,
+        config,
+        1.0
+      );
+      let chosenRarity = weightedRandom(
+        rng,
+        Object.keys(chances),
+        Object.values(chances)
+      );
+      const chosenOption = config.options.find(
+        (option) => option.rarity === chosenRarity
+      );
 
-    // Count the distribution
-    rarityDistribution[chosenRarity] = rarityDistribution[chosenRarity]
-      ? rarityDistribution[chosenRarity] + 1
-      : 1;
+      // Count the distribution
+      rarityDistribution[chosenRarity] = rarityDistribution[chosenRarity]
+        ? rarityDistribution[chosenRarity] + 1
+        : 1;
 
-    return { ...vote, chances, chosenOption };
-  });
+      return { ...vote, chances, chosenOption };
+    });
 
-  //TODO this is not generic
-  const invariantHolds =
-    rarityDistribution["common"] > rarityDistribution["rare"] * 4 &&
-    rarityDistribution["rare"] > rarityDistribution["epic"] * 2;
+    // Check if the distribution invariant holds
+    invariantHolds =
+      rarityDistribution["common"] > rarityDistribution["rare"] * 3 &&
+      rarityDistribution["rare"] > rarityDistribution["epic"] * 2;
 
-  if (invariantHolds) {
-    console.log(
-      `✅ Distribution invariant holds for ${JSON.stringify(
-        rarityDistribution
-      )} after ${seed} iterations.`
-    );
-    config.seed = seed.toString();
-    return { votesWithChances, distribution: rarityDistribution };
-  } else {
-    return decorateWithChances(
-      votes,
-      config,
-      lowerLimitOfCurve,
-      upperLimitOfCurve,
-      medianOfCurve,
-      ++seed
-      // logger
-    );
+    // If invariant does not hold, increment the seed and try again
+    if (!invariantHolds) {
+      seed++;
+    }
   }
+
+  // Log and return results once the invariant holds
+  console.log(
+    `✅ Distribution invariant holds for ${JSON.stringify(
+      rarityDistribution
+    )} after ${seed} iterations.`
+  );
+  config.seed = seed.toString();
+  return { votesWithChances, distribution: rarityDistribution };
 };
+
 
 export const getApiAt = async (
   api: ApiPromise | undefined,
@@ -920,13 +919,13 @@ export const formatDelegatedVotes = async (
           aye: totalForSplit.isZero()
             ? "0"
             : new BN(delegation.balance)
-                .mul(new BN(vote.balance.aye).div(totalForSplit))
-                .toString(),
+              .mul(new BN(vote.balance.aye).div(totalForSplit))
+              .toString(),
           nay: totalForSplit.isZero()
             ? "0"
             : new BN(delegation.balance)
-                .mul(new BN(vote.balance.nay).div(totalForSplit))
-                .toString(),
+              .mul(new BN(vote.balance.nay).div(totalForSplit))
+              .toString(),
           abstain: "0",
         };
         break;
@@ -935,18 +934,18 @@ export const formatDelegatedVotes = async (
           aye: totalForSplitAbstain.isZero()
             ? "0"
             : new BN(delegation.balance)
-                .mul(new BN(vote.balance.aye).div(totalForSplitAbstain))
-                .toString(),
+              .mul(new BN(vote.balance.aye).div(totalForSplitAbstain))
+              .toString(),
           nay: totalForSplitAbstain.isZero()
             ? "0"
             : new BN(delegation.balance)
-                .mul(new BN(vote.balance.nay).div(totalForSplitAbstain))
-                .toString(),
+              .mul(new BN(vote.balance.nay).div(totalForSplitAbstain))
+              .toString(),
           abstain: totalForSplitAbstain.isZero()
             ? "0"
             : new BN(delegation.balance)
-                .mul(new BN(vote.balance.abstain).div(totalForSplitAbstain))
-                .toString(),
+              .mul(new BN(vote.balance.abstain).div(totalForSplitAbstain))
+              .toString(),
         };
         break;
     }
@@ -1138,8 +1137,8 @@ export const formatVote = (
         abstain.gte(aye) && abstain.gte(nay)
           ? "Abstain"
           : aye.gte(nay.abs())
-          ? "Aye"
-          : "Nay",
+            ? "Aye"
+            : "Nay",
     };
     return formattedVote;
   } else {
@@ -1202,12 +1201,12 @@ export const formatCastingVoteIndexer = (
         nay: nayAmount,
         abstain: abstainAmount,
       },
-      voteDirection: 
+      voteDirection:
         BigInt(abstainAmount) >= BigInt(ayeAmount) && BigInt(abstainAmount) >= BigInt(nayAmount)
           ? "Abstain"
           : BigInt(ayeAmount) >= BigInt(nayAmount)
-          ? "Aye"
-          : "Nay",
+            ? "Aye"
+            : "Nay",
       voteDirectionType: "SplitAbstain",
     };
   } else {
