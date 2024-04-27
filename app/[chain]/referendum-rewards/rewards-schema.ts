@@ -34,24 +34,24 @@ const fileUpload =
     ? z
         .any()
         .refine(
-          (file) => file?.length === 0 || file?.size <= 2 * 1024 * 1024,
+          (file) => !file || file?.length === 0 || file?.size <= 2 * 1024 * 1024,
           `File of max size 2MB, if you need larger files use ipfs option`
         )
         .refine(
           (file) =>
-            file?.length === 0 ||
+            !file || file?.length === 0 ||
             rewardsConfig.acceptedNftFormats.includes(file?.type),
           "File Format not supported"
         )
     : z
         .any()
         .refine(
-          (files) => files?.length === 0 || files?.[0]?.size <= 2 * 1024 * 1024,
+          (files) => !files || files?.length === 0 || files?.[0]?.size <= 2 * 1024 * 1024,
           `File of max size 2MB, if you need larger files use ipfs option`
         )
         .refine(
           (files) =>
-            files?.length === 0 ||
+            !files || files?.length === 0 ||
             rewardsConfig.acceptedNftFormats.includes(files?.[0]?.type),
           "File Format not supported"
         );
