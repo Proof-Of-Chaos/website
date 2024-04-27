@@ -128,9 +128,11 @@ export async function POST(req: NextRequest) {
     });
 
     if (rewardConfig.collectionConfig.isNew) {
-      const file = formData?.get("collectionImage") as File;
-      const bytes = await file?.arrayBuffer();
-      rewardConfig.collectionConfig.file = Readable.from(Buffer.from(bytes));
+      const file = formData?.get("collectionImage") as File | null;
+      if (file) {
+        const bytes = await file.arrayBuffer();
+        rewardConfig.collectionConfig.file = Readable.from(Buffer.from(bytes));
+      }
     }
   } catch (e) {
     throw "Error converting files to readable streams";
