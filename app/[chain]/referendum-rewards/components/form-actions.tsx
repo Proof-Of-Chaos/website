@@ -96,12 +96,12 @@ export default function FormActions({
 
   let amountOfTxs: number;
 
-  if (!rewardSendoutData?.kusamaAssetHubTxs) {
+  if (!rewardSendoutData?.assetHubTxs) {
     // It's better to handle this condition differently or ensure the layout still renders without functional impact.
     amountOfTxs = 0;
   }
   else {
-    amountOfTxs = Math.ceil(rewardSendoutData?.kusamaAssetHubTxs?.length / rewardsConfig.NFT_BATCH_SIZE_MAX);
+    amountOfTxs = Math.ceil(rewardSendoutData?.assetHubTxs?.length / rewardsConfig.NFT_BATCH_SIZE_MAX);
   }
 
   function onReset() {
@@ -196,12 +196,12 @@ export default function FormActions({
           rewardsConfig.NFT_BATCH_SIZE_MAX / responseData?.txsCount?.txsPerVote
         ) * responseData?.txsCount?.txsPerVote;
 
-      let kusamaAssetHubTxsBatches: TxTypes[] | undefined =
-        responseData?.kusamaAssetHubTxs;
+      let assetHubTxsBatches: TxTypes[] | undefined =
+        responseData?.assetHubTxs;
 
-      if (kusamaAssetHubTxsBatches && Array.isArray(kusamaAssetHubTxsBatches)) {
-        // group the kusamaAssetHubTxs in batches of max size maxTxsPerbatch making sure that txs belonging together (multiples of 13) are never split to different batches
-        const batches = kusamaAssetHubTxsBatches.reduce((acc, tx, index) => {
+      if (assetHubTxsBatches && Array.isArray(assetHubTxsBatches)) {
+        // group the assetHubTxs in batches of max size maxTxsPerbatch making sure that txs belonging together (multiples of 13) are never split to different batches
+        const batches = assetHubTxsBatches.reduce((acc, tx, index) => {
           const batchIndex: number = Math.floor(index / maxTxsPerBatch);
           if (!acc[batchIndex]) {
             acc[batchIndex] = [];
@@ -212,7 +212,7 @@ export default function FormActions({
 
         setRewardSendoutData({
           ...responseData,
-          kusamaAssetHubTxsBatches: batches,
+          assetHubTxsBatches: batches,
         });
       } else {
         setRewardSendoutData({
@@ -358,9 +358,8 @@ export default function FormActions({
                 <p>
                   Start the sendout process. You will be asked to sign
                   <span className="text-warning px-4">
-                    {amountOfTxs === 1 ? "1 transaction" : `${amountOfTxs ?? "multiple"} transactions`}
+                    {amountOfTxs === 1 ? "1 transaction" : `${amountOfTxs ?? "multiple"} transactions in sequence.`}
                   </span>
-                  in sequence.
                   {amountOfTxs > 1 && "Complete all for a full sendout."}
                 </p>
               </div>
@@ -376,7 +375,7 @@ export default function FormActions({
                 </Button>
               )}
               <TxButton
-                extrinsic={rewardSendoutData?.kusamaAssetHubTxsBatches}
+                extrinsic={rewardSendoutData?.assetHubTxsBatches}
                 requiredBalance={totalFees}
                 variant="shadow"
                 isDisabled={isSubmitting || step !== 1}

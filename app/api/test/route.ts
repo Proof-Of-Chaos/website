@@ -96,7 +96,7 @@ async function* getTxsReferendumRewards({
   await sleep(500);
   yield "some other action is done";
   await sleep(500);
-  yield { txsPerVote: 2, txsKusamaAssetHub: ["0x123", "0x456"] };
+  yield { txsPerVote: 2, txsAssetHub: ["0x123", "0x456"] };
 }
 
 async function* generator2(data: any) {

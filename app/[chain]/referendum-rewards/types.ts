@@ -6,11 +6,11 @@ export type GenerateRewardsResult =
   | {
       call?: string;
       config?: RewardConfiguration;
-      kusamaCall?: string;
-      kusamaAssetHubCall?: string;
-      kusamaAssetHubTxs?: string[];
-      kusamaAssetHubTxsBatches?: string[];
-      kusamaAssetHubTxsHuman?: any[];
+      // kusamaCall?: string;
+      assetHubCall?: string;
+      assetHubTxs?: string[];
+      assetHubTxsBatches?: string[];
+      assetHubTxsHuman?: any[];
       distribution?: RarityDistribution;
       voters?: string[];
       fees?: {
@@ -29,8 +29,8 @@ export type GenerateRewardsResult =
 
 export type CreateCollectionResult = {
   call: string | undefined;
-  kusamaAssetHubCall: string | undefined;
-  kusamaAssetHubTxs: string[] | undefined;
+  assetHubCall: string | undefined;
+  assetHubTxs: string[] | undefined;
   fees: string | undefined;
   txsCount: number | undefined;
 };

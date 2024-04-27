@@ -8,7 +8,7 @@ import { ApiPromise } from "@polkadot/api";
 import crypto from "crypto";
 
 export const getTxsForVotes = (
-  apiKusamaAssetHub: ApiPromise,
+  apiAssetHub: ApiPromise,
   config: RewardConfiguration,
   fileAndMetadataCids: PinImageAndMetadataForOptionsResult,
   attributes: any,
@@ -69,7 +69,7 @@ export const getTxsForVotes = (
     }
 
     txs.push(
-      apiKusamaAssetHub.tx.nfts.mint(
+      apiAssetHub.tx.nfts.mint(
         config.collectionConfig.id,
         nftId,
         vote.address.toString(),
@@ -79,7 +79,7 @@ export const getTxsForVotes = (
 
     // txs.push(
     //   ...getAllSetAttributeTxs(
-    //     apiKusamaAssetHub,
+    //     apiAssetHub,
     //     config,
     //     fileAndMetadataCids,
     //     attributes,
@@ -93,7 +93,7 @@ export const getTxsForVotes = (
     const ipfsIdentifier = `ipfs://ipfs/${metadataCid}`;
 
     txs.push(
-      apiKusamaAssetHub.tx.nfts.setMetadata(
+      apiAssetHub.tx.nfts.setMetadata(
         config.collectionConfig.id,
         nftId,
         ipfsIdentifier
@@ -102,7 +102,7 @@ export const getTxsForVotes = (
 
     if (config.isMetadataLocked || config.isAttributesLocked) {
       txs.push(
-        apiKusamaAssetHub.tx.nfts.lockItemProperties(
+        apiAssetHub.tx.nfts.lockItemProperties(
           config.collectionConfig.id,
           nftId,
           config.isMetadataLocked,
@@ -111,7 +111,7 @@ export const getTxsForVotes = (
       );
     }
     // txs.push(
-    //   apiKusamaAssetHub.tx.nfts.transfer(
+    //   apiAssetHub.tx.nfts.transfer(
     //     config.collectionConfig.id,
     //     nftId,
     //     vote.address.toString()

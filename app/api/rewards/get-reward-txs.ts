@@ -21,14 +21,14 @@ export const getTxsReferendumRewards = async (
   rarityDistribution: RarityDistribution,
   rng: RNG
 ): Promise<{
-  txsKusamaAssetHub: any[];
+  txsAssetHub: any[];
   txsKusama: any[];
   txsPerVote: number;
 }> => {
   if (!apiAssetHub || !apiRelay || !apiPinata)
     throw "getTxsReferendumRewards needs defined apis";
 
-  let txsKusamaAssetHub: TxTypes[] = [];
+  let txsAssetHub: TxTypes[] = [];
   let txsKusama: TxTypes[] = [];
 
   const { refIndex: referendumIndex } = config;
@@ -40,9 +40,9 @@ export const getTxsReferendumRewards = async (
       apiPinata,
       config
     );
-    txsKusamaAssetHub = [
-      ...txsKusamaAssetHub,
-      ...txsCollectionSetMetadata.txsKusamaAssetHub,
+    txsAssetHub = [
+      ...txsAssetHub,
+      ...txsCollectionSetMetadata.txsAssetHub,
     ];
   }
   //todo lock collection after mint if new collection
@@ -85,9 +85,9 @@ export const getTxsReferendumRewards = async (
 
   const txsPerVote = txsVotes.length / decoratedVotes.length;
 
-  txsKusamaAssetHub = [...txsKusamaAssetHub, ...txsVotes];
+  txsAssetHub = [...txsAssetHub, ...txsVotes];
 
-  // txsKusamaAssetHub = [
+  // txsAssetHub = [
   //   apiAssetHub.tx.system.remark(
   //     "Created with https://www.proofofchaos.app/referendum-rewards/"
   //   ),
@@ -96,10 +96,10 @@ export const getTxsReferendumRewards = async (
   // const txsKusamaXCM = await getTxsKusamaXCM(
   //   apiRelay,
   //   apiAssetHub,
-  //   txsKusamaAssetHub
+  //   txsAssetHub
   // );
 
   // txsKusama = [...txsKusama, ...txsKusamaXCM];
 
-  return { txsKusamaAssetHub, txsKusama, txsPerVote };
+  return { txsAssetHub, txsKusama, txsPerVote };
 };

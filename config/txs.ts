@@ -4,7 +4,7 @@ import { SubstrateChain } from "@/types";
 
 /**
  * Will get the txs for creating a collection but NOT adding the metadata
- * @param apiKusamaAssetHub
+ * @param apiAssetHub
  * @param rewardConfig
  * @returns
  */

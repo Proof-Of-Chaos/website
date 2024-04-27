@@ -215,7 +215,7 @@ const generateCalls = async (
 
   // get all transactions that are needed for the distribution of the rewards
   // ipfs pinning, metadata, also happens here
-  let { txsKusamaAssetHub, txsPerVote } = await getTxsReferendumRewards(
+  let { txsAssetHub, txsPerVote } = await getTxsReferendumRewards(
     nftPalletApi,
     referendaPalletApi,
     apiPinata,
@@ -226,13 +226,13 @@ const generateCalls = async (
   );
 
   // const nftCalls = nftPalletApi?.tx.utility
-  //   .batchAll(txsKusamaAssetHub)
+  //   .batchAll(txsAssetHub)
   //   .method.toHex();
 
   // // const kusamaCalls = referendaPalletApi.tx.utility.batchAll(txsKusama).method.toHex();
 
   console.info(
-    `📊 Generated ${txsKusamaAssetHub.length} txs for minting NFTs on Asset Hub (Kusama)`
+    `📊 Generated ${txsAssetHub.length} txs for minting NFTs on Asset Hub (Kusama)`
     // ,` and ${txsKusama.length} txs for Kusama XCM calls`
   );
 
@@ -244,7 +244,7 @@ const generateCalls = async (
       `💵 Calculating fees for sender ${sender} on chain address ${encodedAddress}`
     );
 
-    const amountOfTxs = txsKusamaAssetHub.length;
+    const amountOfTxs = txsAssetHub.length;
     const amountOfNFTs = decoratedVotes.length;
     const txsPerNFT = amountOfTxs / amountOfNFTs;
 
@@ -252,7 +252,7 @@ const generateCalls = async (
     console.info(`📊 Generated ${txsPerNFT} txs per NFT`);
 
     infoNftCalls = await nftPalletApi?.tx.utility
-      .batchAll(txsKusamaAssetHub)
+      .batchAll(txsAssetHub)
       .paymentInfo(encodedAddress);
 
     console.info("successfully calculated fees");
@@ -290,10 +290,10 @@ const generateCalls = async (
     call: "omitted",
     config,
     // kusamaCall: JSON.stringify(kusamaCalls),
-    kusamaCall: "",
-    kusamaAssetHubCall: "", // JSON.stringify(nftCalls),
-    kusamaAssetHubTxs: txsKusamaAssetHub,
-    kusamaAssetHubTxsHuman: txsKusamaAssetHub.map((tx) => tx.method.toHuman()),
+    // kusamaCall: "",
+    assetHubCall: "", // JSON.stringify(nftCalls),
+    assetHubTxs: txsAssetHub,
+    assetHubTxsHuman: txsAssetHub.map((tx) => tx.method.toHuman()),
     voters,
     distribution: rarityDistribution,
     fees: {
@@ -306,8 +306,8 @@ const generateCalls = async (
       deposit: totalDeposit?.toString(),
     },
     txsCount: {
-      kusama: txsKusamaAssetHub.length,
-      nfts: txsKusamaAssetHub.length,
+      kusama: txsAssetHub.length,
+      nfts: txsAssetHub.length,
       txsPerVote,
     },
   };

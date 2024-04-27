@@ -9,11 +9,11 @@ import { ApiCache } from "@/config/chains/ApiCache";
 import { SubstrateChain } from "@/types";
 
 export const getUserLatestCollectionId = async (
-  apiKusamaAssetHub: ApiPromise,
+  apiAssetHub: ApiPromise,
   address: string
 ): Promise<string> => {
   const allUserCollections =
-    await apiKusamaAssetHub.query.nfts.collectionAccount.keys(address);
+    await apiAssetHub.query.nfts.collectionAccount.keys(address);
   const collectionIds: BN[] = allUserCollections.map(
     ({ args: [, collectionId] }) => new BN(collectionId.toString())
   );
@@ -25,19 +25,19 @@ export const getUserLatestCollectionId = async (
 
 /**
  * Get the txs for setting the metadata for a collection
- * @param apiKusamaAssetHub
+ * @param apiAssetHub
  * @param apiPinata
  * @param config
  * @returns
  */
 export const getTxsCollectionSetMetadata = async (
-  apiKusamaAssetHub: ApiPromise,
+  apiAssetHub: ApiPromise,
   apiPinata: PinataClient,
   config: RewardConfiguration
 ): Promise<{
-  txsKusamaAssetHub: TxTypes[];
+  txsAssetHub: TxTypes[];
 }> => {
-  let txsKusamaAssetHub = [];
+  let txsAssetHub = [];
 
   if (!config.collectionConfig.id)
     throw "getTxsCollectionSetMetadata needs a collection config id";
@@ -48,11 +48,11 @@ export const getTxsCollectionSetMetadata = async (
 
   const ipfsIdentifier = `ipfs://ipfs/${config.collectionConfig.metadataCid}`;
 
-  txsKusamaAssetHub.push(
-    apiKusamaAssetHub.tx.nfts.setCollectionMetadata(
+  txsAssetHub.push(
+    apiAssetHub.tx.nfts.setCollectionMetadata(
       config.collectionConfig.id,
       ipfsIdentifier
     )
   );
-  return { txsKusamaAssetHub };
+  return { txsAssetHub };
 };
