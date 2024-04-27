@@ -194,7 +194,7 @@ const DEFAULT_REWARDS_CONFIG = {
   directOnly: false,
   configNFT: {
     settingsCollectionId: parseInt(
-      process.env.POLKADOT_CONFIG_COLLECTION_ID || "86"
+      process.env.POLKADOT_CONFIG_COLLECTION_ID || "122"
     ),
     file: undefined,
     imageCid: "ipfs://ipfs/QmZX9JAhur4ozT2mbHBVAWNRFZGfFRQLgkRgd1yyE35eme",
