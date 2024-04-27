@@ -45,10 +45,10 @@ const endpoints: EndpointMap = {
       name: "Parity",
       url: "wss://rpc.polkadot.io",
     },
-    {
-      name: "OnFinality",
-      url: "wss://polkadot.api.onfinality.io/public-ws",
-    },
+    // {
+    //   name: "OnFinality",
+    //   url: "wss://polkadot.api.onfinality.io/public-ws",
+    // },
     {
       name: "Dwellir",
       url: "wss://polkadot-rpc.dwellir.com",
@@ -80,7 +80,7 @@ const endpoints: EndpointMap = {
     { name: "IBP-GeoDNS1", url: "wss://sys.ibp.network/statemint" },
     { name: "IBP-GeoDNS2", url: "wss://sys.dotters.network/statemint" },
     { name: "LuckyFriday", url: "wss://rpc-asset-hub-polkadot.luckyfriday.io" },
-    { name: "OnFinality", url: "wss://statemint.api.onfinality.io/public-ws" },
+    // { name: "OnFinality", url: "wss://statemint.api.onfinality.io/public-ws" },
     { name: "Parity", url: "wss://polkadot-asset-hub-rpc.polkadot.io" },
     {
       name: "RadiumBlock",
