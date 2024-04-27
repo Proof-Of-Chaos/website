@@ -32,29 +32,29 @@ function isValidCID(cidString: string): boolean {
 const fileUpload =
   typeof window === "undefined"
     ? z
-        .any()
-        .refine(
-          (file) => !file || file?.length === 0 || file?.size <= 2 * 1024 * 1024,
-          `File of max size 2MB, if you need larger files use ipfs option`
-        )
-        .refine(
-          (file) =>
-            !file || file?.length === 0 ||
-            rewardsConfig.acceptedNftFormats.includes(file?.type),
-          "File Format not supported"
-        )
+      .any()
+      .refine(
+        (file) => file?.length === 0 || file?.size <= 1 * 1024 * 1024,
+        `File of max size 1MB, if you need larger files use ipfs option`
+      )
+      .refine(
+        (file) =>
+          file?.length === 0 ||
+          rewardsConfig.acceptedNftFormats.includes(file?.type),
+        "File Format not supported"
+      )
     : z
-        .any()
-        .refine(
-          (files) => !files || files?.length === 0 || files?.[0]?.size <= 2 * 1024 * 1024,
-          `File of max size 2MB, if you need larger files use ipfs option`
-        )
-        .refine(
-          (files) =>
-            !files || files?.length === 0 ||
-            rewardsConfig.acceptedNftFormats.includes(files?.[0]?.type),
-          "File Format not supported"
-        );
+      .any()
+      .refine(
+        (files) => files?.length === 0 || files?.[0]?.size <= 1 * 1024 * 1024,
+        `File of max size 1MB, if you need larger files use ipfs option`
+      )
+      .refine(
+        (files) =>
+          files?.length === 0 ||
+          rewardsConfig.acceptedNftFormats.includes(files?.[0]?.type),
+        "File Format not supported"
+      );
 
 export const zodSchemaObject = (
   chain: SubstrateChain,
@@ -94,11 +94,33 @@ export const zodSchemaObject = (
         }, "You do not own this collection"),
       name: z.string().optional(),
       description: z.string().optional(),
-      // TODO
-      // name: z.string().min(1, "Name is required"),
-      // description: z.string().min(1, "Description is required"),
       isNew: z.boolean().default(false),
       file: fileUpload.optional(),
+    }).superRefine((data, ctx) => {
+      // Ensure file is provided if `isNew` is true
+      if (data.isNew) {
+        if (!data.file || data.file?.length === 0) {
+          ctx.addIssue({
+            path: ['file'],
+            message: "File is required for new collections",
+            code: z.ZodIssueCode.custom,
+          });
+        }
+        if (!data.name) {
+          ctx.addIssue({
+            path: ['name'],
+            message: "Name is required for new collections",
+            code: z.ZodIssueCode.custom,
+          });
+        }
+        if (!data.description) {
+          ctx.addIssue({
+            path: ['description'],
+            message: "Description is required for new collections",
+            code: z.ZodIssueCode.custom,
+          });
+        }
+      }
     }),
     options: z.array(
       z

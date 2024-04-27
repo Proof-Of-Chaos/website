@@ -203,17 +203,21 @@ export default function ModalCreateNFTCollection({
                 />
 
                 <div className="text-xs flex flex-col overflow-auto px-3">
-                <label>Collection Image (max 1MB):</label>
+                  <label>Collection Image (max 1MB)
+                    <span className="text-red-500 required-dot">*</span>
+                  </label>
                   <input
                     type="file"
                     accept={rewardsConfig.acceptedNftFormats.join(",")}
                     className="mt-0 pb-2"
-                    {...register(`imageFile`)}
+                    {...register(`imageFile`, {
+                      required: "Collection image is required",
+                    })}
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
                       if (file) {
                         // Check if the file size exceeds 1MB
-                        if (file.size > 1048576) { // 1MB in bytes
+                        if (file.size > 1024 * 1024) { // 1MB in bytes
                           setError(`imageFile`, {
                             type: "size",
                             message: "Cover image size should not exceed 1MB"
