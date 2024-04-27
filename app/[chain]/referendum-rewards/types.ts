@@ -19,8 +19,8 @@ export type GenerateRewardsResult =
         deposit?: string;
       };
       txsCount?: {
-        kusama?: number;
-        nfts?: number;
+        // kusama?: number;
+        assetHub?: number;
         txsPerVote?: number;
       };
       status: "success" | "error";

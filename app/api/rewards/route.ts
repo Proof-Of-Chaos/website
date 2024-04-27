@@ -306,8 +306,8 @@ const generateCalls = async (
       deposit: totalDeposit?.toString(),
     },
     txsCount: {
-      kusama: txsAssetHub.length,
-      nfts: txsAssetHub.length,
+      // kusama: txsAssetHub.length,
+      assetHub: txsAssetHub.length,
       txsPerVote,
     },
   };
