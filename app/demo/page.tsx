@@ -11,7 +11,6 @@ import { sendAndFinalize, streamToJSON } from "@/components/util-client";
 import { useAppStore } from "../zustand";
 import { usePolkadotApis } from "@/context/polkadot-api-context";
 import { useUserCollections } from "@/hooks/use-user-collections";
-export const revalidate = 3600;
 
 export default function DemoPage() {
   const { activeChainName, apiStates } = usePolkadotApis();

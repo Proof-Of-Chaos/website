@@ -3,8 +3,6 @@
 import { ApiStatus } from "@/components/api-status";
 import { title } from "@/components/primitives";
 
-export const revalidate = 3600;
-
 export default function NFTPage() {
   return (
     <div>
