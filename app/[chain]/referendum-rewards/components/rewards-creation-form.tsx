@@ -99,19 +99,20 @@ export default function RewardsCreationForm({
 
   //remove comma
   const cleanedReferenda = pastReferenda.map(referendum => {
-    const cleanedIndex = referendum.index.replace(/,/g, '');
+    const cleanedIndex = referendum.index.replace(/,/g, ''); // Remove commas from the index
     return {
       ...referendum,
-      cleanedIndex, // Store the cleaned index
+      index: cleanedIndex, // Replace the original index with the cleaned one
     };
   });
 
   //sort referenda
   const sortedReferenda = cleanedReferenda.sort((a, b) => {
-    const aIndex = parseInt(a.cleanedIndex);
-    const bIndex = parseInt(b.cleanedIndex);
+    const aIndex = parseInt(a.index);
+    const bIndex = parseInt(b.index);
     return bIndex - aIndex;
   });
+  
 
   const { data: userCollections, isLoading: isUserCollectionsLoading } =
     useUserCollections();
