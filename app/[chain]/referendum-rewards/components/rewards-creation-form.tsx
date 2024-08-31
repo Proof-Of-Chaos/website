@@ -97,6 +97,11 @@ export default function RewardsCreationForm({
     isLoading: isPastReferendaLoading,
   } = useReferenda("past", false);
 
+  // Sort referenda by index in descending order so that higher numbers appear at the top
+  const sortedReferenda = pastReferenda.sort((a, b) => {
+    return parseInt(b.index) - parseInt(a.index);
+  });
+  
   const { data: userCollections, isLoading: isUserCollectionsLoading } =
     useUserCollections();
 
@@ -124,7 +129,7 @@ export default function RewardsCreationForm({
     onOpen();
   }
 
-  
+
 
   const VirtualizedDropdown: React.FC<VirtualizedDropdownProps> = ({ items, onSelectedChange, selectedValue, error, isLoading, // Use isLoading prop
   }) => {
@@ -259,7 +264,7 @@ export default function RewardsCreationForm({
                 rules={{ required: "Please select a referendum" }}
                 render={({ field: { onChange, value } }) => (
                   <VirtualizedDropdown
-                    items={pastReferenda}
+                    items={sortedReferenda}
                     selectedValue={value}
                     onSelectedChange={(item: Item) => onChange(item.index)} // Ensure 'item' is typed
                     error={errors.refIndex}
