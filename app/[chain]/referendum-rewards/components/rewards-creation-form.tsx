@@ -99,7 +99,9 @@ export default function RewardsCreationForm({
 
   // Sort referenda by index in descending order so that higher numbers appear at the top
   const sortedReferenda = pastReferenda.sort((a, b) => {
-    return parseInt(b.index) - parseInt(a.index);
+    const aIndex = parseInt(a.index.replace(/,/g, '')); // Remove commas and convert to number
+    const bIndex = parseInt(b.index.replace(/,/g, '')); // Remove commas and convert to number
+    return bIndex - aIndex; // Sort in descending order
   });
   
   const { data: userCollections, isLoading: isUserCollectionsLoading } =
