@@ -97,13 +97,22 @@ export default function RewardsCreationForm({
     isLoading: isPastReferendaLoading,
   } = useReferenda("past", false);
 
-  // Sort referenda by index in descending order so that higher numbers appear at the top
-  const sortedReferenda = pastReferenda.sort((a, b) => {
-    const aIndex = parseInt(a.index.replace(/,/g, '')); // Remove commas and convert to number
-    const bIndex = parseInt(b.index.replace(/,/g, '')); // Remove commas and convert to number
-    return bIndex - aIndex; // Sort in descending order
+  //remove comma
+  const cleanedReferenda = pastReferenda.map(referendum => {
+    const cleanedIndex = referendum.index.replace(/,/g, '');
+    return {
+      ...referendum,
+      cleanedIndex, // Store the cleaned index
+    };
   });
-  
+
+  //sort referenda
+  const sortedReferenda = cleanedReferenda.sort((a, b) => {
+    const aIndex = parseInt(a.cleanedIndex);
+    const bIndex = parseInt(b.cleanedIndex);
+    return bIndex - aIndex;
+  });
+
   const { data: userCollections, isLoading: isUserCollectionsLoading } =
     useUserCollections();
 
